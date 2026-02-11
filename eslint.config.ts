@@ -16,6 +16,12 @@ export default defineConfig(
     },
   },
   {
-    ignores: ["eslint.config.ts", "node_modules", "dist"],
+    ignores: [
+      "eslint.config.ts",
+      "node_modules",
+      "dist",
+      "coverage",
+      "vitest.config.ts",
+    ],
   },
 );
