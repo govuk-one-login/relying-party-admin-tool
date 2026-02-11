@@ -10,7 +10,7 @@
     "dev": "nodemon"
   },
   "dependencies": {
-    "express": "~4.16.1",
+    "express": "~4.22.0",
     "nunjucks": "^3.2.4"
   },
   "devDependencies": {
