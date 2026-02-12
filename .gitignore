@@ -9,6 +9,9 @@ node_modules/
 # Build directories
 dist/
 
+# Test results
+coverage/
+
 # TypeScript cache
 *.tsbuildinfo
 

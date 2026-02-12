@@ -7,7 +7,9 @@
     "node": "20.17.x"
   },
   "scripts": {
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "express": "~4.16.1",
