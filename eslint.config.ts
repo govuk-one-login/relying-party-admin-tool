@@ -3,6 +3,7 @@ import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 import { includeIgnoreFile } from "@eslint/compat";
 import { fileURLToPath } from "node:url";
+import playwrightEslint from "eslint-plugin-playwright";
 
 export default defineConfig(
   includeIgnoreFile(
@@ -22,9 +23,18 @@ export default defineConfig(
     },
   },
   {
+    ...playwrightEslint.configs["flat/recommended"],
+    files: ["integration-tests/tests/**"],
+    rules: {
+      ...playwrightEslint.configs["flat/recommended"].rules,
+      "playwright/no-standalone-expect": "off",
+    },
+  },
+  {
     ignores: [
       "eslint.config.ts",
       "vitest.config.ts",
+      "integration-tests/playwright.config.ts",
     ],
   },
 );
