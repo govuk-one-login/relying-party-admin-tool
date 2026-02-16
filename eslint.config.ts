@@ -1,8 +1,14 @@
 import eslint from "@eslint/js";
 import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
+import { includeIgnoreFile } from "@eslint/compat";
+import { fileURLToPath } from "node:url";
 
 export default defineConfig(
+  includeIgnoreFile(
+    fileURLToPath(new URL(".gitignore", import.meta.url)),
+    "Imported .gitignore patterns",
+  ),
   eslint.configs.recommended,
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
@@ -18,9 +24,6 @@ export default defineConfig(
   {
     ignores: [
       "eslint.config.ts",
-      "node_modules",
-      "dist",
-      "coverage",
       "vitest.config.ts",
     ],
   },
