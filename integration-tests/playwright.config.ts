@@ -1,0 +1,42 @@
+import path from "node:path";
+import { defineConfig, devices, PlaywrightTestConfig } from "@playwright/test";
+import { cucumberReporter, defineBddConfig } from "playwright-bdd";
+import { env } from "./env";
+import { getBaseUrl } from "./utils/getBaseUrl";
+
+const testDir = defineBddConfig({
+  features: "tests/features/**/*.feature",
+  steps: "tests/steps/**/*.ts",
+});
+
+const webServers: PlaywrightTestConfig["webServer"] = [];
+
+export default defineConfig({
+  testDir,
+  forbidOnly: !env.HUMAN_IN_THE_LOOP,
+  preserveOutput: "failures-only",
+  workers: "50%",
+  snapshotPathTemplate: `./${env.UPDATE_SNAPSHOTS ? "snapshots-updated" : "snapshots"}/{projectName}/{testFilePath}/{arg}{ext}`,
+  reporter: env.TEST_REPORT_DIR
+    ? [
+        // See https://govukverify.atlassian.net/wiki/spaces/PLAT/pages/3054010402/How+to+run+tests+against+your+deployed+application+in+a+SAM+deployment+pipeline#Test-reports
+        cucumberReporter("json", {
+          outputFile: path.join(env.TEST_REPORT_DIR, "report.json"),
+        }),
+      ]
+    : "list",
+  webServer: webServers,
+  use: {
+    baseURL: getBaseUrl(),
+    video: "retain-on-failure",
+  },
+  projects: [
+    {
+      name: "Desktop",
+      use: {
+        ...devices["Desktop Chrome"],
+        channel: "chromium",
+      },
+    },
+  ],
+});
