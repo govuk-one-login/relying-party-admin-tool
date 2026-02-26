@@ -4,6 +4,7 @@ import tseslint from "typescript-eslint";
 import { includeIgnoreFile } from "@eslint/compat";
 import { fileURLToPath } from "node:url";
 import playwrightEslint from "eslint-plugin-playwright";
+import vitestEslint from "@vitest/eslint-plugin";
 
 export default defineConfig(
   includeIgnoreFile(
@@ -20,6 +21,16 @@ export default defineConfig(
       parserOptions: {
         projectService: true,
       },
+    },
+  },
+  {
+    plugins: {
+      vitest: vitestEslint,
+    },
+    files: ["**/*.test.ts"],
+    rules: {
+      ...vitestEslint.configs.all.rules,
+      "vitest/prefer-importing-vitest-globals": "off",
     },
   },
   {
