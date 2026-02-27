@@ -11,6 +11,29 @@ const testDir = defineBddConfig({
 
 const webServers: PlaywrightTestConfig["webServer"] = [];
 
+webServers.push(
+  {
+    command: "npm run start-test-frontend",
+    url: "http://localhost:3000",
+    reuseExistingServer: true,
+    timeout: 300000,
+    name: "frontend",
+    gracefulShutdown: { signal: "SIGTERM", timeout: 30000 },
+    stderr: "pipe",
+    stdout: "pipe",
+  },
+  {
+    command: "npm run run:frontend",
+    url: "http://localhost:3000/healthcheck",
+    reuseExistingServer: true,
+    timeout: 300000,
+    name: "frontend-healthcheck",
+    gracefulShutdown: { signal: "SIGTERM", timeout: 30000 },
+    stderr: "pipe",
+    stdout: "pipe",
+  },
+);
+
 export default defineConfig({
   testDir,
   forbidOnly: !env.HUMAN_IN_THE_LOOP,

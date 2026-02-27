@@ -8,8 +8,9 @@
   },
   "scripts": {
     "dev": "nodemon",
+    "build": "docker build -t relying-party-admin-tool-frontend .",
     "test:unit": "vitest",
-    "test:integration": "cd integration-tests && npm run test:integration",
+    "test:integration": "cd integration-tests && npm run test",
     "coverage:unit": "vitest run --coverage",
     "lint": "prettier --check \"*/**/*.{ts,json}\" ; eslint . ",
     "lint:fix": "prettier . --write \"*/**/*.{ts,json}\" ; eslint . --fix"
