@@ -1,5 +1,5 @@
 import { test as base, createBdd } from "playwright-bdd";
-import { env } from "../../env";
+import { env } from "../../env.js";
 import type { UUID } from "node:crypto";
 import { randomUUID } from "node:crypto";
 
