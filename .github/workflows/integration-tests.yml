@@ -1,0 +1,44 @@
+name: Integration test
+
+permissions: {}
+
+on:
+  pull_request:
+  merge_group:
+
+jobs:
+  integration-test:
+    name: Run integration tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Necessary to prevent localstack errors
+      - name: Upgrade click
+        run: pip3 install --upgrade click
+
+      - name: Install LocalStack CLIs
+        uses: LocalStack/setup-localstack@1feaef8f3b6f6f22261b7e7c827ff1ae9cdd3c2b
+        with:
+          skip-startup: "true"
+
+      - name: Run integration tests
+        run: |
+          cd integration-tests
+          npm run test

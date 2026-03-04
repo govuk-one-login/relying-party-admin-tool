@@ -4,12 +4,13 @@
   "license": "ISC",
   "type": "module",
   "engines": {
-    "node": "20.17.x"
+    "node": ">=24.11.1 <25"
   },
   "scripts": {
     "dev": "nodemon",
+    "build": "docker build -t relying-party-admin-tool-frontend .",
     "test:unit": "vitest",
-    "test:integration": "cd integration-tests && npm run test:integration",
+    "test:integration": "cd integration-tests && npm run test",
     "coverage:unit": "vitest run --coverage",
     "lint": "prettier --check \"*/**/*.{ts,json}\" ; eslint . ",
     "lint:fix": "prettier . --write \"*/**/*.{ts,json}\" ; eslint . --fix"
@@ -17,6 +18,8 @@
   "dependencies": {
     "@eslint/compat": "^2.0.2",
     "@eslint/js": "^10.0.1",
+    "@typescript-eslint/parser": "^8.56.1",
+    "@vitest/eslint-plugin": "^1.6.9",
     "eslint-plugin-playwright": "^2.5.1",
     "express": "~5.2.1",
     "jiti": "^2.6.1",

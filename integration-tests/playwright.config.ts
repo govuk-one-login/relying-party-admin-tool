@@ -1,8 +1,8 @@
 import path from "node:path";
 import { defineConfig, devices, PlaywrightTestConfig } from "@playwright/test";
 import { cucumberReporter, defineBddConfig } from "playwright-bdd";
-import { env } from "./env";
-import { getBaseUrl } from "./utils/getBaseUrl";
+import { env } from "./env.js";
+import { getBaseUrl } from "./utils/getBaseUrl.js";
 
 const testDir = defineBddConfig({
   features: "tests/features/**/*.feature",
@@ -10,6 +10,29 @@ const testDir = defineBddConfig({
 });
 
 const webServers: PlaywrightTestConfig["webServer"] = [];
+
+webServers.push(
+  {
+    command: "npm run start-test-frontend",
+    url: "http://localhost:3000",
+    reuseExistingServer: true,
+    timeout: 300000,
+    name: "frontend",
+    gracefulShutdown: { signal: "SIGTERM", timeout: 30000 },
+    stderr: "pipe",
+    stdout: "pipe",
+  },
+  {
+    command: "npm run run:frontend",
+    url: "http://localhost:3000/healthcheck",
+    reuseExistingServer: true,
+    timeout: 300000,
+    name: "frontend-healthcheck",
+    gracefulShutdown: { signal: "SIGTERM", timeout: 30000 },
+    stderr: "pipe",
+    stdout: "pipe",
+  },
+);
 
 export default defineConfig({
   testDir,

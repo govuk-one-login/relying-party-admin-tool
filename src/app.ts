@@ -18,6 +18,11 @@ app.set("view engine", configureNunjucks(app, APP_VIEWS));
 
 app.use("/", indexRouter);
 
+app.get("/healthcheck", function (_request, reply) {
+  reply.send("ok");
+  return reply;
+});
+
 app.listen(port, () => {
   console.log(`App listening on http://localhost:${port.toString()}`);
 });
