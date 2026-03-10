@@ -40,3 +40,7 @@ integration-tests/.features-gen/
 .env
 .env.*
 !.env.example
+
+# Terraform outputs
+infra/.terraform
+infra/.terraform.lock.hcl
