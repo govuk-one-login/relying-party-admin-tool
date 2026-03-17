@@ -13,7 +13,9 @@
     "test:integration": "cd integration-tests && npm run test",
     "coverage:unit": "vitest run --coverage",
     "lint": "prettier --check \"*/**/*.{ts,json}\" ; eslint . ",
-    "lint:fix": "prettier . --write \"*/**/*.{ts,json}\" ; eslint . --fix"
+    "lint:fix": "prettier . --write \"*/**/*.{ts,json}\" ; eslint . --fix",
+    "tflint": "tflint --init && tflint --recursive --format compact --chdir infra",
+    "tflint:fix": "tflint --init && tflint --recursive --format compact --chdir infra --fix"
   },
   "dependencies": {
     "@eslint/compat": "^2.0.2",

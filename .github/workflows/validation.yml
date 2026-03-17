@@ -28,4 +28,10 @@ jobs:
       - name: Check ESLint and Prettier
         run: npm run lint
 
-      # TODO: add tflint, cfnlint, and SAM validate
+      - name: Set up tflint
+        uses: terraform-linters/setup-tflint@4cb9feea73331a35b422df102992a03a44a3bb33
+
+      - name: Lint Terraform
+        run: npm run tflint
+
+      # TODO: add cfnlint, and SAM validate
