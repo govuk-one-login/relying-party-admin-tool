@@ -1,0 +1,3 @@
+bucket = "di-rp-service-management-staging-tfstate"
+key    = "rp-service-management.tfstate"
+region = "eu-west-2"
