@@ -35,3 +35,41 @@ variable "signer_allowed_accounts" {
   type        = list(string)
   description = "The AWS account IDs that can read the code signing KMS key"
 }
+
+variable "transit_gateway_hub_account_id" {
+  type        = string
+  description = "The account ID of the account containing the Transit Gateway hub"
+}
+
+variable "transit_gateway_hub_dr_account_id" {
+  type        = string
+  description = "The account ID of the account containing the disaster recovery Transit Gateway hub. Should only be set in production or in accounts where we're testing a DR scenario"
+  # This default matches the default value in the Transit Gateway Cross account role template
+  default = "none"
+}
+variable "transit_gateway_id" {
+  type        = string
+  description = "The ID of the transit gateway we will attach our spoke VPC to"
+  default     = "None"
+}
+
+variable "transit_gateway_dr_id" {
+  type        = string
+  description = "The ID of the disaster recovery transit gateway we can attach our VPC to in the case the main one becomes unavailable. Should only be set in production environments."
+  default     = "None"
+}
+
+variable "use_dr_transit_gateway" {
+  type        = bool
+  description = "A flag which allows us to send our egress via the disaster recovery transit gateway instead of the normal one. Should only be set in production AND if the main transit gateway is unavailable."
+  default     = false
+}
+
+variable "transit_gateway_ipam_pool" {
+  type        = string
+  description = "Select the pool of IP addresses you want an allocation from for this VPC. This is managed in the transit gateway IPAM."
+  validation {
+    condition     = contains(["Development", "Build", "Staging", "Integration", "Production"], var.transit_gateway_ipam_pool)
+    error_message = "Valid values for the IPAM pool are: (Development, Build, Staging, Integration, Production)"
+  }
+}
