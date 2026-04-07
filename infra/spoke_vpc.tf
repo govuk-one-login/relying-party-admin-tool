@@ -56,4 +56,6 @@ resource "aws_cloudformation_stack" "spoke_vpc_stack" {
   } : {})
 
   capabilities = ["CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
+
+  depends_on = [aws_cloudformation_stack.transit_gateway_cross_account_role]
 }
