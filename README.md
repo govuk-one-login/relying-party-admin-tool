@@ -25,3 +25,7 @@ Follow the steps below, while running `npm run dev`
 #### To run against a deployed environment
 
 Change the url found in integration-tests/utils/getBaseUrl.ts
+
+## Development
+
+You should install the [pre-commit](http://pre-commit.com/) config by running `pre-commit install` in the root of the repository.
