@@ -13,6 +13,11 @@ variable "create_build_stacks" {
   default     = false
 }
 
+variable "container_signer_kms_key_arn" {
+  description = "Container signer KMS key ARN - get from build account container-signer stack after pipeline deployment"
+  type        = string
+}
+
 variable "system" {
   type        = string
   description = "The name of the system. Used in tags."
@@ -31,9 +36,21 @@ variable "owner_email" {
   default     = "di-orchestration@digital.cabinet-office.gov.uk"
 }
 
+variable "repository_name" {
+  type        = string
+  description = "The Github repository name"
+  default     = "relying-party-admin-tool"
+}
+
 variable "signer_allowed_accounts" {
   type        = list(string)
   description = "The AWS account IDs that can read the code signing KMS key"
+}
+
+variable "allowed_promotion_accounts" {
+  type        = list(string)
+  description = "The AWS account IDs that this pipeline will promote to. Maximum 2 accounts"
+  default     = []
 }
 
 variable "transit_gateway_hub_account_id" {
