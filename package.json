@@ -20,7 +20,7 @@
   "dependencies": {
     "@eslint/compat": "^2.0.5",
     "@eslint/js": "^10.0.1",
-    "@typescript-eslint/parser": "^8.56.1",
+    "@typescript-eslint/parser": "^8.59.2",
     "@vitest/eslint-plugin": "^1.6.16",
     "eslint-plugin-playwright": "^2.9.0",
     "express": "~5.2.1",
