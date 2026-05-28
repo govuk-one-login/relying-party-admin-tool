@@ -1,0 +1,34 @@
+name: build and deploy dev
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./node
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@d979d5b3a71173a29b74b5b88418bfda9437d885 # v6.1.1
+        with:
+          role-to-assume: ${{ secrets.DEV_GH_ACTIONS_ROLE_ARN }}
+          aws-region: eu-west-2
+
+      - name: Upload to ECR and tag
+        uses: govuk-one-login/devplatform-upload-action-ecr@f82c8774a6390f200b15112b3cbb9faf3442173c # v1.5.0
+        with:
+          role-to-assume-arn: ${{ secrets.DEV_GH_ACTIONS_ROLE_ARN  }}
+          container-sign-kms-key-arn: ${{ secrets.DEV_CONTAINER_SIGN_KMS_KEY }}
+          working-directory: ./
+          docker-build-path: ./
+          ecr-repo-name: ${{ secrets.DEV_ECR_REPOSITORY }}
+          artifact-bucket-name: ${{ secrets.DEV_ARTIFACT_SOURCE_BUCKET_NAME }}
