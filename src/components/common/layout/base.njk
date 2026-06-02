@@ -1,0 +1,25 @@
+{% extends "govuk/template.njk" %}
+
+{% block head %}
+  <link href="/public/style.css" rel="stylesheet">
+{% endblock %}
+
+{% block pageTitle %}
+    {% if pageTitleName %}
+        {{ pageTitleName }}
+        -
+    {% endif %}
+    Admin Tool
+{% endblock %}
+
+{% block header %}
+    {% include 'common/layout/header.njk' %}
+{% endblock %}
+
+{% block main %}
+  <div class="govuk-width-container">
+      <main class="govuk-main-wrapper" id="main-content">
+          {% block content %}{% endblock %}
+      </main>
+  </div>
+{% endblock %}
