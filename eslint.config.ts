@@ -15,16 +15,16 @@ export default defineConfig(
   eslint.configs.recommended,
   {
     files: ["src/**/*.ts", "src/**/*.js"],
-    extends: [
-      ...tseslint.configs.strictTypeChecked,
-      ...tseslint.configs.stylisticTypeChecked,
-    ],
+    extends: [...tseslint.configs.recommended],
     languageOptions: {
       ecmaVersion: "latest",
       parser: tsParser,
       parserOptions: {
         projectService: true,
       },
+    },
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
   {

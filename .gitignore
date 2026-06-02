@@ -20,6 +20,7 @@ integration-tests/blob-report/
 integration-tests/playwright/.cache/
 integration-tests/playwright/.auth/
 integration-tests/.features-gen/
+integration-tests/.DS_Store/
 
 # TypeScript cache
 *.tsbuildinfo
@@ -44,3 +45,7 @@ integration-tests/.features-gen/
 # Terraform outputs
 infra/.terraform
 infra/.terraform.lock.hcl
+
+# Additional ignores
+.idea
+.DS_Store

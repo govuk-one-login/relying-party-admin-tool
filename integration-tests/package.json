@@ -7,7 +7,7 @@
     "run:frontend": "cd ../ && npm run dev",
     "build": "docker build -t relying-party-admin-tool-integration-test .",
     "install-browsers": "playwright install --with-deps chromium",
-    "start-test-frontend": "npm run install-browsers && cd ../ && npm run build && docker run --network=host --rm --init relying-party-admin-tool-frontend",
+    "start-test-frontend": "npm run install-browsers && cd ../ && npm run build-docker && docker run --network=host --rm --init relying-party-admin-tool-frontend",
     "test": "npm ci && bddgen && playwright test",
     "test:report": "playwright show-report"
   },
