@@ -8,7 +8,9 @@ export function configureNunjucks(
   const nunjucksEnv: nunjucks.Environment = nunjucks.configure(viewsPath, {
     autoescape: true,
     express: app,
+    noCache: true,
   });
+  nunjucksEnv.addGlobal("govukRebrand", true);
 
   return nunjucksEnv;
 }
