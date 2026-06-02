@@ -4,7 +4,7 @@ const router = express.Router();
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 router.get("/", function (req, res, next) {
-  res.render("index.njk");
+  res.render("home/index.njk");
 });
 
 export { router as indexRouter };
