@@ -83,7 +83,7 @@ async function startServer(app: Application): Promise<{
   server: Server;
   closeServer: (callback?: (err?: Error) => void) => Promise<void>;
 }> {
-  const port: number | string = process.env.PORT || 3000;
+  const port: number | string = process.env.PORT || 6001;
 
   const server = await new Promise<Server>((resolve) => {
     const server = app

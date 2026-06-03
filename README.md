@@ -20,7 +20,7 @@ To debug tests, use either the ui command above or `npx playwright test --debug`
 
 #### To run tests locally
 
-Follow the steps below, while running `npm run dev`
+Follow the steps below, while running `npm run dev` and go to localhost:6001.
 
 #### To run against a deployed environment
 
