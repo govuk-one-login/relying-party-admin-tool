@@ -1,0 +1,82 @@
+# Integration tests
+
+The integration tests are written with [Playwright](https://playwright.dev/) and [Playwright BDD](https://vitalets.github.io/playwright-bdd).
+
+The `integration-tests` directory should be treated as a separate project. It should not import things from outside and the main project should not import things from within the `integration-tests` directory.
+
+By default all tests are run against a desktop viewport.
+
+## Authoring tests
+
+When authoring tests try to stick to the Playwright best practices (https://playwright.dev/docs/best-practices).
+
+Tests should be written in a BDD (business driven development) style from the context of a user. Try to avoid including technical details in steps.
+
+Steps in files not prefixed with `@` are available to features up to the parent directory prefixed with `@`. If there is no parent directory prefixed with `@` then the steps will be available to all features. Try to scope steps as narrowly as possible.
+
+## Running the tests locally
+
+Tests are run on your local machine but control browsers running in a Docker container by utilising Playwright's server mode. Running the browsers in a container ensures consistent test results across different machines and architectures.
+
+If using Docker Desktop on Mac or Windows you will need to `Enable host networking` in `Settings > Resources > Network`.
+
+Being connected to the VPN may make some webchat related tests fail.
+
+When running tests locally they are run against `http://localhost:6001` by default. Change the value of the environment variable `TEST_ENVIRONMENT` to one of `dev | build | staging | integration | production` to run tests against the corresponding deployment instead.
+
+### Steps to run the tests:
+
+Copy the file `integration-tests/.env.sample` to `integration-tests/.env`.
+
+To run the tests:
+
+```bash
+cd integration-tests
+npm run test
+```
+
+Before running the tests these commands will start the app and also start the test server in which the browsers will run. These servers are also stopped once the tests have run. Starting the servers can take some time. If you’re writing or updating tests and will need to frequently run them whilst doing so then prefer starting the app and test server manually:
+
+To run the app:
+
+```bash
+cd integration-tests
+npm run run-app
+```
+
+To run the test server:
+
+```bash
+cd integration-tests
+npm run start-test-server
+```
+
+With the servers already running the tests will execute more quickly as they don't need to wait for the servers to start.
+
+If you’re using the VS Code Playwright extension (prefer using UI mode where possible) then you can run watch mode to automatically update the tests as changes are made:
+
+```
+cd integration-tests
+npm run test:ui:watch
+```
+
+## Extra commands
+
+To test one specific file, use `npx playwright test path_to_file`.
+To test the last failed tests, use `npx playwright test --last-failed`.
+To view the integration tests in the browser as they run, use `npm run test:ui:run`.
+To debug tests, use either the ui command above or `npx playwright test --debug`.
+
+## Test tagging
+
+Tests can be tagged using the following custom tags to alter their behaviour:
+
+- `@postDeploy` - will run in post-deployment environment
+- `@skipPreDeploy` - will not run in pre-deployment environment
+- `@skipDesktop` - will not run against the desktop viewport
+- `@skipTarget-{target} e.g. @skipTarget-local, @skipTarget-build, @skipTarget-staging` - will not run when the test target matches `{target}`
+- `@failDesktop` - is expected to fail when run against the desktop viewport
+- `@failTarget-{target} e.g. @failTarget-local, @failTarget-build, @failTarget-staging` - is expected to fail when the test target matches `{target}`
+- `@noJs` - will run against a browser witb JavaScript disabled
+
+There are also tags made available by Playwright BDD. See https://vitalets.github.io/playwright-bdd/#/writing-features/special-tags.

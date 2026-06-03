@@ -4,18 +4,22 @@
   "license": "ISC",
   "type": "module",
   "scripts": {
-    "run:frontend": "cd ../ && npm run dev",
-    "build": "docker build -t relying-party-admin-tool-integration-test .",
+    "run-app": "cd ../ && docker compose build && docker compose up",
+    "build": "docker build -t di-relying-party-admin-tool-frontend-integration-test .",
     "install-browsers": "playwright install --with-deps chromium",
-    "start-test-frontend": "npm run install-browsers && cd ../ && npm run build-docker && docker run --network=host --rm --init relying-party-admin-tool-frontend",
+    "start-test-server": "npm run build && docker run --network=host --rm --init di-relying-party-admin-tool-frontend-integration-test run-server",
+    "watch": "nodemon -w ./tests -w ./utils -w ./.env.ts -w ./.env -e \"*\" --exec \"bddgen\"",
     "test": "npm ci && bddgen && playwright test",
+    "test:ui": "npm ci && run-p test:ui:*",
+    "test:ui:watch": "npm run watch",
+    "test:ui:run": "playwright test --ui",
     "test:report": "playwright show-report"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "@types/node": "^25.2.3",
     "playwright": "^1.58.2",
-    "playwright-bdd": "^8.4.2"
+    "playwright-bdd": "^9.0.0"
   },
   "dependencies": {
     "@axe-core/playwright": "^4.11.1",

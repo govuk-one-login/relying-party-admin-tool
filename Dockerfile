@@ -1,12 +1,29 @@
-FROM node:24-bookworm@sha256:3a09aa6354567619221ef6c45a5051b671f953f0a1924d1f819ffb236e520e6b
+FROM node:24.15.0-alpine3.22@sha256:b689d4005875ae167178471a7a622ec2909459a3bbb32277260be1971af7a99f as builder
 
-COPY package.json package.json
-COPY package-lock.json package-lock.json
-COPY .npmrc .npmrc
-COPY .nvmrc .nvmrc
-
-RUN npm ci
+WORKDIR /app
 
 COPY . .
 
-CMD npm run dev
+RUN apk add --no-cache git && npm run install-all && npm run build && npm ci
+
+FROM node:24.15.0-alpine3.22@sha256:b689d4005875ae167178471a7a622ec2909459a3bbb32277260be1971af7a99f as final
+
+RUN apk add --no-cache tini
+RUN apk add --no-cache curl
+
+WORKDIR /app
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules/ node_modules
+COPY --from=builder /app/dist/ dist
+
+ENV NODE_ENV "production"
+ENV PORT 6001
+EXPOSE $PORT
+
+HEALTHCHECK CMD curl --fail http://localhost:6001/healthcheck || exit 1
+
+USER node
+
+ENTRYPOINT ["tini", "--"]
+
+CMD ["npm", "start"]

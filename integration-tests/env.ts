@@ -6,7 +6,7 @@ const boolish = v.pipe(
   v.transform((val) => {
     const truthyValues: unknown[] = [1, "1", true, "true"];
     return truthyValues.includes(val);
-  }),
+  })
 );
 
 const envSchema = v.object({
@@ -20,7 +20,7 @@ const envSchema = v.object({
       v.literal("integration"),
       v.literal("production"),
     ]),
-    "local",
+    "local"
   ),
   TEST_REPORT_DIR: v.optional(v.string()),
   UPDATE_SNAPSHOTS: v.optional(boolish, false),
