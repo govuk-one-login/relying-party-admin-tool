@@ -9,3 +9,14 @@ resource "aws_cloudformation_stack" "ecr_stack" {
 
   capabilities = ["CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
 }
+
+resource "aws_cloudformation_stack" "test_image_ecr_stack" {
+  name         = "${var.environment}-rpat-test-image-ecr"
+  template_url = "https://template-storage-templatebucket-1upzyw6v9cs42.s3.amazonaws.com/test-image-repository/template.yaml"
+  parameters = {
+    PipelineStackName  = "${var.environment}-rpat-pipeline"
+    RetainedImageCount = 10
+  }
+
+  capabilities = ["CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
+}
