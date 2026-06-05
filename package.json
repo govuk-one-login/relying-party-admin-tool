@@ -22,7 +22,7 @@
     "@eslint/js": "^10.0.1",
     "@typescript-eslint/parser": "^8.56.1",
     "@vitest/eslint-plugin": "^1.6.16",
-    "eslint-plugin-playwright": "^2.9.0",
+    "eslint-plugin-playwright": "^2.10.2",
     "express": "~5.2.1",
     "jiti": "^2.6.1",
     "nunjucks": "^3.2.4",
