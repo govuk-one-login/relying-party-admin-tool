@@ -2,5 +2,14 @@
 {% set pageTitleName = 'Home'%}
 
 {% block pageContent %}
-  <p class="govuk-body">Hello World!</p>
+<p class="govuk-body">Hello World!</p>
+  {% if isLocalEnv %}
+    {% if isAuthenticated %}
+      <p>Logged in as {{user.name}}</p>
+      <a href="/logout">Logout</a>
+      <a href="/custom-link">Reauth</a>
+    {% else %}
+      <a href="/login">Login</a>
+    {% endif %}
+  {% endif %}
 {% endblock %}

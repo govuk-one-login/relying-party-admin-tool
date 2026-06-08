@@ -10,6 +10,9 @@ import { getVitalSignsIntervalSeconds, isLocalEnv } from "./config.js";
 import { Server } from "http";
 import { applyOverloadProtection } from "./middleware/overload-protection-middleware.js";
 import { healthcheckRouter } from "./components/healthcheck/healthcheck-routes.js";
+import * as client from "openid-client";
+import { importPKCS8 } from "jose";
+import session from "express-session";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -24,6 +27,121 @@ const APP_VIEWS = [
 async function createApp(): Promise<express.Application> {
   const app: express.Application = express();
   const isDeployedEnvironment = !isLocalEnv();
+
+  if (isLocalEnv()) {
+    app.use(
+      session({
+        secret: process.env.SECRET!,
+        resave: false,
+        saveUninitialized: true,
+      }),
+    );
+
+    const privateKey = await importPKCS8(process.env.PRIVATE_KEY!, "PS256");
+
+    const config = await client.discovery(
+      new URL(process.env.ISSUER_BASE_URL!),
+      process.env.CLIENT_ID!,
+      {},
+      client.PrivateKeyJwt(privateKey),
+    );
+
+    app.get("/login", async (req, res) => {
+      const codeVerifier = client.randomPKCECodeVerifier();
+      const codeChallenge =
+        await client.calculatePKCECodeChallenge(codeVerifier);
+      const state = client.randomState();
+      const nonce = client.randomNonce();
+
+      req.session.state = state;
+      req.session.nonce = nonce;
+      req.session.codeVerifier = codeVerifier;
+
+      const redirectTo = await client.buildAuthorizationUrlWithJAR(
+        config,
+        {
+          redirect_uri: `${process.env.BASE_URL}/callback`,
+          scope: "openid profile email",
+          code_challenge: codeChallenge,
+          code_challenge_method: "S256",
+          state,
+          nonce,
+        },
+        privateKey,
+      );
+
+      res.redirect(redirectTo.toString());
+    });
+
+    app.get("/custom-link", async (req, res) => {
+      const codeVerifier = client.randomPKCECodeVerifier();
+      const codeChallenge =
+        await client.calculatePKCECodeChallenge(codeVerifier);
+      const state = client.randomState();
+      const nonce = client.randomNonce();
+
+      req.session.state = state;
+      req.session.nonce = nonce;
+      req.session.codeVerifier = codeVerifier;
+
+      const redirectTo = await client.buildAuthorizationUrlWithJAR(
+        config,
+        {
+          redirect_uri: `${process.env.BASE_URL}/callback`,
+          scope: "openid profile email",
+          code_challenge: codeChallenge,
+          code_challenge_method: "S256",
+          state,
+          nonce,
+          prompt: "login",
+        },
+        privateKey,
+      );
+
+      res.redirect(redirectTo.toString());
+    });
+
+    app.get("/callback", async (req, res) => {
+      try {
+        const currentUrl = new URL(`${process.env.BASE_URL}${req.originalUrl}`);
+
+        const returnedState = currentUrl.searchParams.get("state");
+        if (returnedState !== req.session.state) {
+          return res.status(403).send("State mismatch");
+        }
+
+        currentUrl.searchParams.delete("state");
+
+        const tokenSet = await client.authorizationCodeGrant(
+          config,
+          currentUrl,
+          {
+            pkceCodeVerifier: req.session.codeVerifier,
+            expectedNonce: req.session.nonce,
+          },
+        );
+
+        req.session.tokenSet = tokenSet as unknown as Record<string, unknown>;
+        req.session.user = tokenSet.claims() as unknown as Record<
+          string,
+          unknown
+        >;
+
+        res.redirect("/");
+      } catch (error: unknown) {
+        logger.error(error, "Callback failed");
+        res.status(500).send("Authentication failed");
+      }
+    });
+
+    app.get("/logout", (req, res) => {
+      req.session.destroy(() => {
+        res.redirect(
+          `${process.env.ISSUER_BASE_URL}/v2/logout?client_id=${process.env.CLIENT_ID}&returnTo=${process.env.BASE_URL}`,
+        );
+      });
+    });
+  }
 
   app.enable("trust proxy");
 
