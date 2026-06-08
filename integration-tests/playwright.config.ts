@@ -1,38 +1,13 @@
 import path from "node:path";
-import { defineConfig, devices, PlaywrightTestConfig } from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test";
 import { cucumberReporter, defineBddConfig } from "playwright-bdd";
-import { env } from "./env.js";
-import { getBaseUrl } from "./utils/getBaseUrl.js";
+import { env } from "./env";
+import { getBaseUrl } from "./utils/getBaseUrl";
 
 const testDir = defineBddConfig({
   features: "tests/features/**/*.feature",
   steps: "tests/steps/**/*.ts",
 });
-
-const webServers: PlaywrightTestConfig["webServer"] = [];
-
-webServers.push(
-  {
-    command: "npm run start-test-frontend",
-    url: "http://localhost:3000",
-    reuseExistingServer: true,
-    timeout: 300000,
-    name: "frontend",
-    gracefulShutdown: { signal: "SIGTERM", timeout: 30000 },
-    stderr: "pipe",
-    stdout: "pipe",
-  },
-  {
-    command: "npm run run:frontend",
-    url: "http://localhost:3000/healthcheck",
-    reuseExistingServer: true,
-    timeout: 300000,
-    name: "frontend-healthcheck",
-    gracefulShutdown: { signal: "SIGTERM", timeout: 30000 },
-    stderr: "pipe",
-    stdout: "pipe",
-  },
-);
 
 export default defineConfig({
   testDir,
@@ -47,8 +22,28 @@ export default defineConfig({
           outputFile: path.join(env.TEST_REPORT_DIR, "report.json"),
         }),
       ]
-    : "list",
-  webServer: webServers,
+    : undefined,
+  webServer:
+    env.TEST_TARGET === "local"
+      ? [
+          {
+            command: "npm run run-app",
+            url: "http://localhost:6001/healthcheck",
+            reuseExistingServer: true,
+            timeout: 300000,
+            name: "app-server",
+            gracefulShutdown: { signal: "SIGTERM", timeout: 30000 },
+          },
+          {
+            command: "npm run start-test-server",
+            url: "http://localhost:8000",
+            reuseExistingServer: true,
+            timeout: 300000,
+            name: "test-server",
+            gracefulShutdown: { signal: "SIGTERM", timeout: 30000 },
+          },
+        ]
+      : undefined,
   use: {
     baseURL: getBaseUrl(),
     video: "retain-on-failure",

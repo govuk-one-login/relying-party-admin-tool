@@ -27,18 +27,15 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Install dependencies
-        run: npm ci
+        run: npm run install-all
 
-      # Necessary to prevent localstack errors
-      - name: Upgrade click
-        run: pip3 install --upgrade click
-
-      - name: Install LocalStack CLIs
-        uses: LocalStack/setup-localstack@7c8a0cb3405bc58be4c8f763f812aa000bc46303
-        with:
-          skip-startup: "true"
+      - name: Build app
+        run: npm run build
 
       - name: Run integration tests
         run: |
           cd integration-tests
+          touch .env
+          echo "PRE_OR_POST_DEPLOY=pre" >> .env
+          echo "PW_TEST_CONNECT_WS_ENDPOINT=ws://127.0.0.1:3000/" >> .env
           npm run test
