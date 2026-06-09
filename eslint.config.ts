@@ -35,6 +35,10 @@ export default defineConfig(
     rules: {
       ...vitestEslint.configs.all.rules,
       "vitest/prefer-importing-vitest-globals": "off",
+      "vitest/no-hooks": "off",
+      "vitest/prefer-expect-assertions": "off",
+      "vitest/require-mock-type-parameters": "off",
+      "vitest/valid-title": "off",
     },
   },
   {

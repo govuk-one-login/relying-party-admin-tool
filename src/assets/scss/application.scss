@@ -14,7 +14,6 @@
 @import "components/skip-link";
 // end Design System component imports
 
-
 .govuk-service-navigation__item:last-child {
   margin-left: auto;
 }
@@ -24,7 +23,7 @@
     text-align: right;
   }
 
-  @include govuk-media-query ($until: tablet) {
+  @include govuk-media-query($until: tablet) {
     .govuk-header__navigation-list {
       display: block !important;
     }

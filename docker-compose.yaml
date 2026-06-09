@@ -1,17 +1,17 @@
 services:
   relying-party-admin-tool-frontend:
-      container_name: relying-party-admin-tool-frontend
-      build:
-        context: .
-        dockerfile: local.Dockerfile
-      ports:
-        - "6001:6001"
-        - "9240:9230"
-        - "9229:9229"
-      volumes:
-        - ./:/app
-        - ./tmp/keys:/tmp/keys
-      environment:
-        - DEBUG=express-session
-        - ENVIRONMENT=${ENVIRONMENT}
-      restart: on-failure
+    container_name: relying-party-admin-tool-frontend
+    build:
+      context: .
+      dockerfile: local.Dockerfile
+    ports:
+      - "6001:6001"
+      - "9240:9230"
+      - "9229:9229"
+    volumes:
+      - ./:/app
+      - ./tmp/keys:/tmp/keys
+    environment:
+      - DEBUG=express-session
+      - ENVIRONMENT=${ENVIRONMENT}
+    restart: on-failure
