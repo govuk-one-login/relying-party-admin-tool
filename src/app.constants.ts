@@ -13,3 +13,12 @@ export const HTTP_STATUS_CODES = {
   NO_CONTENT: 204,
   REDIRECT: 303,
 };
+
+export const PRODUCT_PAGE_BASE_URL: { [id: string]: string } = {
+  local: "http://localhost:3000",
+  dev: "https://development.sign-in.service.gov.uk",
+  build: "https://build.sign-in.service.gov.uk",
+  staging: "https://staging.sign-in.service.gov.uk",
+  integration: "https://integration.sign-in.service.gov.uk",
+  production: "https://sign-in.service.gov.uk",
+};

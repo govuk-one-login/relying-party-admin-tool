@@ -1,3 +1,5 @@
+import { PRODUCT_PAGE_BASE_URL } from "./app.constants.js";
+
 export function getAppEnv(): string {
   return process.env.APP_ENV || "local";
 }
@@ -12,4 +14,8 @@ export function getLogLevel(): string {
 
 export function getVitalSignsIntervalSeconds(): number {
   return Number(process.env.VITAL_SIGNS_INTERVAL_SECONDS) || 10;
+}
+
+export function getProductPagesBaseUrl(): string {
+  return PRODUCT_PAGE_BASE_URL[getAppEnv()] ?? PRODUCT_PAGE_BASE_URL.local;
 }

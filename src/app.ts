@@ -6,7 +6,7 @@ import path, { dirname } from "path";
 import { configureNunjucks } from "./config/nunjucks.js";
 import { logger, loggerMiddleware } from "./utils/logger.js";
 import { frontendVitalSignsInit } from "@govuk-one-login/frontend-vital-signs";
-import { getVitalSignsIntervalSeconds, isLocalEnv } from "./config.js";
+import { getProductPagesBaseUrl, getVitalSignsIntervalSeconds, isLocalEnv } from "./config.js";
 import { Server } from "http";
 import { applyOverloadProtection } from "./middleware/overload-protection-middleware.js";
 import { healthcheckRouter } from "./components/healthcheck/healthcheck-routes.js";
@@ -54,6 +54,8 @@ async function createApp(): Promise<express.Application> {
       maxAge: isLocalEnv() ? "0" : "1y",
     }),
   );
+
+  app.locals.productPagesBaseUrl = getProductPagesBaseUrl();
 
   app.use((req, res, next) => {
     void (async () => {
