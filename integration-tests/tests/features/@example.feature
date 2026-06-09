@@ -11,3 +11,8 @@ Feature: Test page load
     Given I go to the "home" page
     And the page has finished loading
     Then the header links to the home page
+
+  Scenario: Navigation bar shows
+    Given I go to the "home" page
+    And the page has finished loading
+    Then the navigation bar shows

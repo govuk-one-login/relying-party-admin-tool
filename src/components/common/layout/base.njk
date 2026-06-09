@@ -1,5 +1,7 @@
 {% extends "govuk/template.njk" %}
 
+{% set showTopNav = showTopNav | default(true) %}
+
 {% block head %}
   <link href="/public/style.css" rel="stylesheet">
 {% endblock %}
@@ -14,6 +16,7 @@
 
 {% block header %}
   {% include 'common/layout/header.njk' %}
+  {% include 'common/layout/navigation.njk' %}
 {% endblock %}
 
 {% block main %}
