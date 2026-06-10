@@ -9,7 +9,7 @@ defaults:
     working-directory: ./node
 
 jobs:
-  deploy:
+  build-and-push:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
