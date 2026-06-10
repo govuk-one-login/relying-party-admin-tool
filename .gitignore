@@ -50,3 +50,6 @@ infra/.terraform.lock.hcl
 .idea
 .DS_Store
 volume
+
+# DynamoDBLocal
+docker/dynamodb/**

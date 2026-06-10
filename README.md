@@ -17,7 +17,18 @@ To run UI tests, read the README in `/tests/ui-tests`.
 
 Follow the steps below, while running `npm run dev` and go to localhost:6001.
 
-#### To run against a deployed environment
+## Running the application locally
+
+Note that before you run the application locally you need to create the tables in DynamoDBLocal. There is a script you can use to do this and it only has to be done once.
+
+```bash
+npm run dynamodblocal:up
+./scripts/create-local-tables.sh
+```
+
+Then you can run `npm run dev` and go to localhost:6001.
+
+## Running the application against a deployed environment
 
 Change the url found in tests/ui-tests/utils/getBaseUrl.ts
 
