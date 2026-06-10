@@ -15,9 +15,9 @@ Feature: Test page load
   Scenario: Navigation bar shows
     Given I go to the "home" page
     And the page has finished loading
-    Then the navigation bar shows
+    Then the navigation bar shows with correct urls
 
   Scenario: Footer shows
     Given I go to the "home" page
     And the page has finished loading
-    Then the footer shows
+    Then the footer shows with correct urls

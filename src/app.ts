@@ -14,6 +14,7 @@ import {
 import { Server } from "http";
 import { applyOverloadProtection } from "./middleware/overload-protection-middleware.js";
 import { healthcheckRouter } from "./components/healthcheck/healthcheck-routes.js";
+import { servicesRouter } from "./routes/services-router.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -81,6 +82,7 @@ async function createApp(): Promise<express.Application> {
   });
 
   app.use(indexRouter);
+  app.use(servicesRouter);
 
   return app;
 }

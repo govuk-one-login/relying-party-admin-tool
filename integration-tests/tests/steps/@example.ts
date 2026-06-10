@@ -11,7 +11,7 @@ Then("the header links to the home page", async ({ page }) => {
   await expect(page).toHaveURL("/");
 });
 
-Then("the navigation bar shows", async ({ page }) => {
+Then("the navigation bar shows with correct urls", async ({ page }) => {
   await expect(page.getByRole("navigation")).toBeVisible();
   const locator = page.getByRole("navigation");
   await expect(
@@ -46,7 +46,7 @@ Then("the navigation bar shows", async ({ page }) => {
   ).toHaveAttribute("href", "/sign-in");
 });
 
-Then("the footer shows", async ({ page }) => {
+Then("the footer shows with correct urls", async ({ page }) => {
   await expect(
     page.getByRole("list").filter({
       has: page.getByRole("link", {
