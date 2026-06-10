@@ -21,6 +21,10 @@ Given("I go to the {string} page", async ({ page }, pageName: string) => {
   await page.goto(pageNameToPath[pageName]);
 });
 
+Then("the page title is {string}", async ({ page }, pageTitle: string) => {
+  expect(await page.title()).toBe(pageTitle);
+});
+
 Given("the page has finished loading", async ({ page }) => {
   // eslint-disable-next-line playwright/no-networkidle
   await page.waitForLoadState("networkidle");

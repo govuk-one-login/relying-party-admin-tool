@@ -1,0 +1,54 @@
+{% set active = activeNav if activeNav else "security" %}
+{% set navItems = [] %}
+
+{% if not isSignedIn %}
+  {% set navItems = navItems.concat([
+    {
+      href: productPagesBaseUrl + "/about",
+      text: "About"
+    }
+  ]) %}
+{% endif %}
+
+{% set navItems = navItems.concat([
+  {
+    href: productPagesBaseUrl + "/documentation",
+    text: "Documentation"
+  },
+  {
+    href: productPagesBaseUrl + "/support",
+    text: "Support"
+  }
+]) %}
+
+{% if isSignedIn %}
+  {% set navItems = navItems.concat([
+    {
+      href: "/your-account",
+      text: "Your account"
+    },
+    {
+      href: "/sign-out",
+      text: "Sign out"
+    }
+  ]) %}
+{% else %}
+  {% set navItems = navItems.concat([
+    {
+      href: productPagesBaseUrl + "/get-started",
+      text: "Get started"
+    },
+    {
+      href: "/sign-in",
+      text: "Sign in"
+    }
+  ]) %}
+{% endif %}
+
+{% if showTopNav %}
+  {{ govukServiceNavigation({
+    serviceName: "One Login Admin Tool",
+    serviceUrl: "/",
+    navigation: navItems
+  }) }}
+{% endif %}
