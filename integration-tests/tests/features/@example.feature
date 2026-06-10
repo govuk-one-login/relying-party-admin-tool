@@ -16,3 +16,8 @@ Feature: Test page load
     Given I go to the "home" page
     And the page has finished loading
     Then the navigation bar shows
+
+  Scenario: Footer shows
+    Given I go to the "home" page
+    And the page has finished loading
+    Then the footer shows

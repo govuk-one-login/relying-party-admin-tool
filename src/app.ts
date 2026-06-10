@@ -6,7 +6,11 @@ import path, { dirname } from "path";
 import { configureNunjucks } from "./config/nunjucks.js";
 import { logger, loggerMiddleware } from "./utils/logger.js";
 import { frontendVitalSignsInit } from "@govuk-one-login/frontend-vital-signs";
-import { getProductPagesBaseUrl, getVitalSignsIntervalSeconds, isLocalEnv } from "./config.js";
+import {
+  getProductPagesBaseUrl,
+  getVitalSignsIntervalSeconds,
+  isLocalEnv,
+} from "./config.js";
 import { Server } from "http";
 import { applyOverloadProtection } from "./middleware/overload-protection-middleware.js";
 import { healthcheckRouter } from "./components/healthcheck/healthcheck-routes.js";

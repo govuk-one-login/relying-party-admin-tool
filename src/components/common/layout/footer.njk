@@ -1,0 +1,57 @@
+{{ govukFooter({
+  navigation: [
+    {
+      title: "About",
+      width: "one-half",
+      items: [
+        {
+          href: productPagesBaseUrl + "/about",
+          text: "About GOV.UK One Login"
+        },
+        {
+          href: productPagesBaseUrl + "/documentation",
+          text: "Documentation"
+        },
+        {
+          href: "https://gds.blog.gov.uk/category/govuk-onelogin/",
+          text: "Blog"
+        }
+      ]
+    },
+    {
+      title: "Support",
+      width: "one-half",
+      items: [
+        {
+          href: productPagesBaseUrl + "/support",
+          text: "Contact us"
+        },
+        {
+          href: "https://ukgovernmentdigital.slack.com/archives/C02AQUJ6WTC",
+          text: "Chat to us on Slack"
+        },
+        {
+          href: "https://status.account.gov.uk",
+          text: "Status page"
+        }
+      ]
+    }
+  ],
+  meta: {
+    items: [
+      {
+        href: productPagesBaseUrl + "/accessibility",
+        text: "Accessibility"
+      },
+      {
+        href: "https://www.gov.uk/government/publications/govuk-one-login-privacy-notice",
+        text: "Privacy"
+      },
+      {
+        href: productPagesBaseUrl + "/cookies",
+        text: "Cookies"
+      }
+    ],
+    html: 'Built by the <a href="https://www.gov.uk/government/organisations/government-digital-service" class="govuk-footer__link">Government Digital Service</a>'
+  }
+}) }}
