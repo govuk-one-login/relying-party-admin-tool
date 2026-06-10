@@ -80,7 +80,7 @@ async function createApp(): Promise<express.Application> {
     })();
   });
 
-  app.use("/", indexRouter);
+  app.use(indexRouter);
 
   return app;
 }
