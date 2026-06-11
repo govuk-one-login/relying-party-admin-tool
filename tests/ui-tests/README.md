@@ -1,8 +1,8 @@
-# Integration tests
+# UI tests
 
-The integration tests are written with [Playwright](https://playwright.dev/) and [Playwright BDD](https://vitalets.github.io/playwright-bdd).
+The UI tests are written with [Playwright](https://playwright.dev/) and [Playwright BDD](https://vitalets.github.io/playwright-bdd).
 
-The `integration-tests` directory should be treated as a separate project. It should not import things from outside and the main project should not import things from within the `integration-tests` directory.
+The `ui-tests` directory should be treated as a separate project. It should not import things from outside and the main project should not import things from within the `ui-tests` directory.
 
 By default all tests are run against a desktop viewport.
 
@@ -26,12 +26,12 @@ When running tests locally they are run against `http://localhost:6001` by defau
 
 ### Steps to run the tests:
 
-Copy the file `integration-tests/.env.sample` to `integration-tests/.env`.
+Copy the file `ui-tests/.env.sample` to `ui-tests/.env`.
 
 To run the tests:
 
 ```bash
-cd integration-tests
+cd ui-tests
 npm run test
 ```
 
@@ -40,14 +40,14 @@ Before running the tests these commands will start the app and also start the te
 To run the app:
 
 ```bash
-cd integration-tests
+cd ui-tests
 npm run run-app
 ```
 
 To run the test server:
 
 ```bash
-cd integration-tests
+cd ui-tests
 npm run start-test-server
 ```
 
@@ -56,7 +56,7 @@ With the servers already running the tests will execute more quickly as they don
 If you’re using the VS Code Playwright extension (prefer using UI mode where possible) then you can run watch mode to automatically update the tests as changes are made:
 
 ```
-cd integration-tests
+cd ui-tests
 npm run test:ui:watch
 ```
 
@@ -64,7 +64,7 @@ npm run test:ui:watch
 
 To test one specific file, use `npx playwright test path_to_file`.
 To test the last failed tests, use `npx playwright test --last-failed`.
-To view the integration tests in the browser as they run, use `npm run test:ui:run`.
+To view the ui tests in the browser as they run, use `npm run test:ui:run`.
 To debug tests, use either the ui command above or `npx playwright test --debug`.
 
 ## Test tagging

@@ -38,8 +38,8 @@ jobs:
           role-to-assume-arn: ${{ secrets.GH_ACTIONS_ROLE_ARN  }}
           build-and-push-image-only: true
           container-sign-kms-key-arn: ${{ secrets.CONTAINER_SIGN_KMS_KEY }}
-          artifact-bucket-name: ""
-          docker-build-path: ./integration-tests
+          artifact-bucket-name: ''
+          docker-build-path: ./tests
           push-latest-tag: true
           ecr-repo-name: ${{ secrets.TEST_ECR_REPOSITORY }}
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3

@@ -1,13 +1,13 @@
 {
-  "name": "integration-tests",
+  "name": "ui-tests",
   "version": "1.0.0",
   "license": "ISC",
   "type": "module",
   "scripts": {
     "run-app": "cd ../ && docker compose build && docker compose up",
-    "build": "docker build -t di-relying-party-admin-tool-frontend-integration-test .",
+    "build": "docker build -t di-relying-party-admin-tool-frontend-ui-tests .",
     "install-browsers": "playwright install --with-deps chromium",
-    "start-test-server": "npm run build && docker run --network=host --rm --init di-relying-party-admin-tool-frontend-integration-test run-server",
+    "start-test-server": "npm run build && docker run --network=host --rm --init di-relying-party-admin-tool-frontend-ui-tests run-server",
     "watch": "nodemon -w ./tests -w ./utils -w ./.env.ts -w ./.env -e \"*\" --exec \"bddgen\"",
     "test": "npm ci && bddgen && playwright test",
     "test:ui": "npm ci && run-p test:ui:*",
