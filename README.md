@@ -13,9 +13,14 @@ Use `npm run test:coverage` to see the test coverage from unit tests.
 
 To run UI tests, read the README in `/tests/ui-tests`.
 
-#### To run tests locally
+### Integration tests
 
-Follow the steps below, while running `npm run dev` and go to localhost:6001.
+To run integration tests, you need to run DynamoDBLocal first:
+
+```bash
+npm run dynamodblocal:up # This only needs to be done once
+npm run test:integration
+```
 
 ## Running the application locally
 
