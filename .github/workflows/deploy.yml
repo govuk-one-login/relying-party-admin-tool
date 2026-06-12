@@ -1,4 +1,4 @@
-name: build and deploy
+name: Build and deploy
 
 on:
   workflow_dispatch:
@@ -19,17 +19,19 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: govuk-one-login/devplatform-upload-action-ecr@f82c8774a6390f200b15112b3cbb9faf3442173c # v1.5.0
+      - name: Upload test image
+        uses: govuk-one-login/devplatform-upload-action-ecr@f82c8774a6390f200b15112b3cbb9faf3442173c # v1.5.0
         with:
           role-to-assume-arn: ${{ secrets.GH_ACTIONS_ROLE_ARN  }}
           build-and-push-image-only: true
           container-sign-kms-key-arn: ${{ secrets.CONTAINER_SIGN_KMS_KEY }}
-          artifact-bucket-name: ''
+          artifact-bucket-name: ""
           docker-build-path: ./integration-tests
           push-latest-tag: true
           ecr-repo-name: ${{ secrets.TEST_ECR_REPOSITORY }}
 
   build-and-push:
+    name: Build and push
     runs-on: ubuntu-latest
     timeout-minutes: 60
     environment: ${{ inputs.environment }}
@@ -37,7 +39,8 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Checkout code
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Set up AWS credentials
         uses: aws-actions/configure-aws-credentials@e7f100cf4c008499ea8adda475de1042d6975c7b # v6.2.0
         with:

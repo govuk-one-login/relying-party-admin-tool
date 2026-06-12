@@ -7,6 +7,7 @@ const { Then, Given } = bdd;
 
 const pageNameToPath: Record<string, string> = {
   home: "/",
+  services: "/services",
 };
 
 Then("the page meets our accessibility standards", async ({ page }) => {
@@ -47,4 +48,25 @@ Then("the page looks as expected", async ({ page }) => {
 
 Then("I click the browser's back button", async ({ page }) => {
   await page.goBack();
+});
+
+Then("the header shows", async ({ page }) => {
+  await expect(
+    page.getByText("One Login Admin", { exact: true }),
+  ).toBeVisible();
+});
+
+Then("the navigation bar shows", async ({ page }) => {
+  await expect(page.getByRole("navigation")).toBeVisible();
+});
+
+Then("the footer shows", async ({ page }) => {
+  await expect(
+    page.getByRole("list").filter({
+      has: page.getByRole("link", {
+        name: "About GOV.UK One Login",
+        exact: true,
+      }),
+    }),
+  ).toBeVisible();
 });
