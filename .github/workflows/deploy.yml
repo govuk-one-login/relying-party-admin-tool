@@ -22,7 +22,6 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: ./node
 
 jobs:
   deploy:
@@ -31,6 +30,18 @@ jobs:
     timeout-minutes: 60
     environment: ${{ inputs.environment }}
     steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        name: Checkout code
+      - name: Copy source code into test image # TODO: Remove this once we have an ECS task running with a domain we can point to
+        working-directory: ${{ github.workspace }}
+        run: |
+          mkdir "tests/app"
+          cp -r "src" "tests/app/src"
+          cp ".npmrc" "tests/app/.npmrc"
+          cp ".nvmrc" "tests/app/.nvmrc"
+          cp "package.json" "tests/app/package.json"
+          cp "package-lock.json" "tests/app/package-lock.json"
+          cp "tsconfig.json" "tests/app/tsconfig.json"
       - name: Build and push test image
         if: ${{ inputs.PUSH_TEST_IMAGE }}
         uses: govuk-one-login/devplatform-upload-action-ecr@f82c8774a6390f200b15112b3cbb9faf3442173c # v1.5.0
@@ -38,12 +49,11 @@ jobs:
           role-to-assume-arn: ${{ secrets.GH_ACTIONS_ROLE_ARN  }}
           build-and-push-image-only: true
           container-sign-kms-key-arn: ${{ secrets.CONTAINER_SIGN_KMS_KEY }}
-          artifact-bucket-name: ""
-          docker-build-path: ./integration-tests
+          artifact-bucket-name: ''
+          docker-build-path: ./tests
           push-latest-tag: true
           ecr-repo-name: ${{ secrets.TEST_ECR_REPOSITORY }}
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        name: Checkout code
+          checkout-repo: false
       - name: Set up AWS credentials
         uses: aws-actions/configure-aws-credentials@e7f100cf4c008499ea8adda475de1042d6975c7b # v6.2.0
         with:

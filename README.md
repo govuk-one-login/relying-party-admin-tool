@@ -9,9 +9,9 @@ Use `npm run install-all` to install packages.
 Use `npm run test:unit` to run unit tests.
 Use `npm run test:coverage` to see the test coverage from unit tests.
 
-### Integration tests
+### UI tests
 
-To run integration tests, read the README in `/integration-tests`.
+To run UI tests, read the README in `/tests/ui-tests`.
 
 #### To run tests locally
 
@@ -19,7 +19,7 @@ Follow the steps below, while running `npm run dev` and go to localhost:6001.
 
 #### To run against a deployed environment
 
-Change the url found in integration-tests/utils/getBaseUrl.ts
+Change the url found in tests/ui-tests/utils/getBaseUrl.ts
 
 ## Development
 

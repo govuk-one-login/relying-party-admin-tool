@@ -43,7 +43,7 @@ export default defineConfig(
   },
   {
     ...playwrightEslint.configs["flat/recommended"],
-    files: ["integration-tests/tests/**"],
+    files: ["tests/ui-tests/tests/**"],
     rules: {
       ...playwrightEslint.configs["flat/recommended"].rules,
       "playwright/no-standalone-expect": "off",
@@ -53,7 +53,7 @@ export default defineConfig(
     ignores: [
       "eslint.config.ts",
       "vitest.config.ts",
-      "integration-tests/playwright.config.ts",
+      "tests/ui-tests/playwright.config.ts",
     ],
   },
 );

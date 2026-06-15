@@ -32,9 +32,9 @@ jobs:
       - name: Build app
         run: npm run build
 
-      - name: Run integration tests
+      - name: Run UI tests
         run: |
-          cd integration-tests
+          cd tests/ui-tests
           touch .env
           echo "PRE_OR_POST_DEPLOY=pre" >> .env
           echo "PW_TEST_CONNECT_WS_ENDPOINT=ws://127.0.0.1:3000/" >> .env

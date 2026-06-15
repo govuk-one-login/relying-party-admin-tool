@@ -6,5 +6,5 @@ node_modules/
 .features-gen
 /cucumber-report
 .env*
-!.env.sample
+!.env.example
 /snapshots-updated

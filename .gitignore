@@ -13,14 +13,14 @@ dist/
 coverage/
 
 # Playwright
-integration-tests/node_modules/
-integration-tests/test-results/
-integration-tests/playwright-report/
-integration-tests/blob-report/
-integration-tests/playwright/.cache/
-integration-tests/playwright/.auth/
-integration-tests/.features-gen/
-integration-tests/.DS_Store/
+tests/ui-tests/node_modules/
+tests/ui-tests/test-results/
+tests/ui-tests/playwright-report/
+tests/ui-tests/blob-report/
+tests/ui-tests/playwright/.cache/
+tests/ui-tests/playwright/.auth/
+tests/ui-tests/.features-gen/
+tests/ui-tests/.DS_Store/
 
 # TypeScript cache
 *.tsbuildinfo

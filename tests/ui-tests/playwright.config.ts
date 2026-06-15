@@ -43,7 +43,16 @@ export default defineConfig({
             gracefulShutdown: { signal: "SIGTERM", timeout: 30000 },
           },
         ]
-      : undefined,
+      : [
+          {
+            command: "npm run run-app",
+            url: "http://localhost:6001/healthcheck",
+            reuseExistingServer: true,
+            timeout: 300000,
+            name: "app-server",
+            gracefulShutdown: { signal: "SIGTERM", timeout: 30000 },
+          },
+        ],
   use: {
     baseURL: getBaseUrl(),
     video: "retain-on-failure",
