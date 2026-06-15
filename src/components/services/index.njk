@@ -1,5 +1,6 @@
 {% extends "common/layout/base-layout.njk" %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set pageTitleName = 'View all services'%}
 
@@ -46,4 +47,10 @@
       }) }}
     </li>
   </ul>
+
+  {{ govukButton({
+    text: "Create a new service",
+    href: "/services/create",
+    classes: "govuk-button--secondary"
+  }) }}
 {% endblock %}
