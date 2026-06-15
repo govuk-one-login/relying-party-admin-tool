@@ -1,10 +1,23 @@
 name: Build and deploy
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
+  workflow_call:
+    secrets:
+      GH_ACTIONS_ROLE_ARN:
+        required: true
+      ARTIFACT_SOURCE_BUCKET_NAME:
+        required: true
+      CONTAINER_SIGN_KMS_KEY:
+        required: true
+      ECR_REPOSITORY:
+        required: true
+      TEST_ECR_REPOSITORY:
+        required: true
+    inputs:
+      PUSH_TEST_IMAGE:
+        type: boolean
+        required: false
+        default: false
 
 defaults:
   run:
@@ -12,14 +25,14 @@ defaults:
     working-directory: ./node
 
 jobs:
-  test-image-build-and-push:
-    name: Build and push test image
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
+    timeout-minutes: 60
+    environment: ${{ inputs.environment }}
     steps:
-      - name: Upload test image
+      - name: Build and push test image
+        if: ${{ inputs.PUSH_TEST_IMAGE }}
         uses: govuk-one-login/devplatform-upload-action-ecr@f82c8774a6390f200b15112b3cbb9faf3442173c # v1.5.0
         with:
           role-to-assume-arn: ${{ secrets.GH_ACTIONS_ROLE_ARN  }}
@@ -29,24 +42,13 @@ jobs:
           docker-build-path: ./integration-tests
           push-latest-tag: true
           ecr-repo-name: ${{ secrets.TEST_ECR_REPOSITORY }}
-
-  build-and-push:
-    name: Build and push
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    environment: ${{ inputs.environment }}
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        name: Checkout code
       - name: Set up AWS credentials
         uses: aws-actions/configure-aws-credentials@e7f100cf4c008499ea8adda475de1042d6975c7b # v6.2.0
         with:
           role-to-assume: ${{ secrets.GH_ACTIONS_ROLE_ARN }}
           aws-region: eu-west-2
-
       - name: Upload to ECR and tag
         uses: govuk-one-login/devplatform-upload-action-ecr@fba7a3f15d06c6abe52acb3c80cd0882180ea563 # v1.6.0
         with:
