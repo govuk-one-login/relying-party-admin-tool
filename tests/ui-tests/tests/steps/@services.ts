@@ -10,9 +10,9 @@ Then(
     await expect(parent.getByRole("link", { name: "Manage" })).toBeVisible();
     await expect(parent.getByRole("link", { name: "Manage" })).toHaveAttribute(
       "href",
-      "#",
+      "#"
     );
-  },
+  }
 );
 
 Then(
@@ -21,7 +21,7 @@ Then(
     const parent = await getServiceInfoCard(page, serviceName);
     await expect(parent.getByText("Description")).toBeVisible();
     await expect(parent.getByText(description)).toBeVisible();
-  },
+  }
 );
 
 Then(
@@ -29,17 +29,17 @@ Then(
   async ({ page }, serviceName: string) => {
     const parent = await getServiceInfoCard(page, serviceName);
     await expect(parent).not.toContainText("Description");
-  },
+  }
 );
 
 const getServiceInfoCard = async (
   page: Page,
-  serviceName: string,
+  serviceName: string
 ): Promise<Locator> => {
   await expect(page.getByRole("heading", { name: serviceName })).toBeVisible();
   const heading = page.getByRole("heading", { name: serviceName });
   await expect(
-    page.getByRole("listitem").filter({ has: heading }),
+    page.getByRole("listitem").filter({ has: heading })
   ).toBeVisible();
   const parent = page.getByRole("listitem").filter({ has: heading });
   return parent;
