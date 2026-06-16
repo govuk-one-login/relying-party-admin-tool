@@ -8,6 +8,7 @@ const { Then, Given } = bdd;
 const pageNameToPath: Record<string, string> = {
   home: "/",
   services: "/services",
+  "create service": "/services/create",
 };
 
 Then("the page meets our accessibility standards", async ({ page }) => {

@@ -1,4 +1,4 @@
-Feature: Test page load
+Feature: Test page
 
   Scenario: Testing page loads with text
     Given I go to the "home" page

@@ -2,6 +2,7 @@ export const PATH_NAMES = {
   ROOT: "/",
   HEALTHCHECK: "/healthcheck",
   SERVICES: "/services",
+  CREATE_SERVICE: "/services/create",
 };
 
 export const HTTP_STATUS_CODES = {
