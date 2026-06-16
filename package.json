@@ -17,7 +17,7 @@
     "copy-scripts": "rm -r dist/public/scripts || true && mkdir -p dist/public/scripts && cp node_modules/govuk-frontend/dist/govuk/govuk-frontend.min.js dist/public/scripts",
     "coverage:unit": "vitest run --coverage",
     "dev": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"npm run watch-node\"",
-    "lint": "prettier --check \"*/**/*.{ts,json}\" ; eslint . ",
+    "lint": "prettier . --check \"*/**/*.{ts,json}\" ; eslint . ",
     "lint:fix": "prettier . --write \"*/**/*.{ts,json}\" ; eslint . --fix",
     "start": "node dist/server.js",
     "test:unit": "vitest",
