@@ -1,10 +1,49 @@
 {% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
 {% set pageTitleName = 'View all services'%}
 
 {% block pageContent %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">Your services</h1>
-    </div>
-  </div>
+  <h1 class="govuk-heading-l">Your services</h1>
+
+  <ul class="govuk-list">
+    <li>
+      {{ govukSummaryList({
+        card: {
+          title: { text: "RPAT Service 1" },
+          actions: {
+            items: [
+              {
+                href: "#",
+                text: "Manage",
+                visuallyHiddenText: "RPAT Service 1"
+              }
+            ]
+          }
+        },
+        rows: [
+          {
+            key: { text: "Description" },
+            value: { text: "This is my service for RPAT" }
+          }
+        ]
+      }) }}
+    </li>
+    <li>
+      {{ govukSummaryList({
+        card: {
+          title: { text: "RPAT Service 2" },
+          actions: {
+            items: [
+              {
+                href: "#",
+                text: "Manage",
+                visuallyHiddenText: "RPAT Service 2"
+              }
+            ]
+          }
+        }
+      }) }}
+    </li>
+  </ul>
 {% endblock %}

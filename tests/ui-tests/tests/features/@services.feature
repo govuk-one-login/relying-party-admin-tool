@@ -3,9 +3,21 @@ Feature: View all services page load
   Scenario: View all services page loads with expected layout
     Given I go to the "services" page
     And the page has finished loading
-    And the page meets our accessibility standards
+    Then the page meets our accessibility standards
     And the page title is "View all services - Admin Tool"
     And the header shows
     And the navigation bar shows
     And the footer shows
-    Then the page contains the text: "Your services"
+    And the page contains the text: "Your services"
+
+  Scenario: View all services page loads with the first service card
+    Given I go to the "services" page
+    And the page has finished loading
+    Then the service: "RPAT Service 1" has a manage link
+    And the service: "RPAT Service 1" has the description: "This is my service for RPAT"
+
+  Scenario: View all services page loads with the second service card
+    Given I go to the "services" page
+    And the page has finished loading
+    Then the service: "RPAT Service 2" has a manage link
+    And the service: "RPAT Service 2" has no description
