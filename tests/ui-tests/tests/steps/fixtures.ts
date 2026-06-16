@@ -20,7 +20,7 @@ export const test = base.extend<
     async ({ $test, $tags }, use) => {
       $test.skip(
         $tags.includes("@skipDesktop") ||
-          $tags.includes(`@skipTarget-${env.TEST_TARGET}`),
+          $tags.includes(`@skipTarget-${env.TEST_TARGET}`)
       );
 
       await use(undefined);
@@ -32,7 +32,7 @@ export const test = base.extend<
     async ({ $test, $tags }, use) => {
       $test.fail(
         $tags.includes("@failDesktop") ||
-          $tags.includes(`@failTarget-${env.TEST_TARGET}`),
+          $tags.includes(`@failTarget-${env.TEST_TARGET}`)
       );
 
       await use(undefined);

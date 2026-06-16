@@ -21,7 +21,7 @@ describe("applyOverloadProtection", () => {
 
     expect(overloadProtectionStub).toHaveBeenCalledWith(
       "express",
-      expectedOverloadProtectionConfig(true),
+      expectedOverloadProtectionConfig(true)
     );
   });
 
@@ -31,7 +31,7 @@ describe("applyOverloadProtection", () => {
 
     expect(overloadProtectionStub).toHaveBeenCalledWith(
       "express",
-      expectedOverloadProtectionConfig(false),
+      expectedOverloadProtectionConfig(false)
     );
   });
 });

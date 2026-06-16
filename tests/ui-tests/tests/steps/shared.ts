@@ -42,7 +42,7 @@ Then("the page looks as expected", async ({ page }) => {
       quality: 50,
       type: "jpeg",
       mask: [page.locator("[data-test-mask]")],
-    }),
+    })
   ).toMatchSnapshot();
 });
 
@@ -52,7 +52,7 @@ Then("I click the browser's back button", async ({ page }) => {
 
 Then("the header shows", async ({ page }) => {
   await expect(
-    page.getByText("One Login Admin", { exact: true }),
+    page.getByText("One Login Admin", { exact: true })
   ).toBeVisible();
 });
 
@@ -67,6 +67,6 @@ Then("the footer shows", async ({ page }) => {
         name: "About GOV.UK One Login",
         exact: true,
       }),
-    }),
+    })
   ).toBeVisible();
 });

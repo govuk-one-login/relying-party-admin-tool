@@ -10,7 +10,7 @@ import tsParser from "@typescript-eslint/parser";
 export default defineConfig(
   includeIgnoreFile(
     fileURLToPath(new URL(".gitignore", import.meta.url)),
-    "Imported .gitignore patterns",
+    "Imported .gitignore patterns"
   ),
   eslint.configs.recommended,
   {
@@ -55,5 +55,5 @@ export default defineConfig(
       "vitest.config.ts",
       "tests/ui-tests/playwright.config.ts",
     ],
-  },
+  }
 );
