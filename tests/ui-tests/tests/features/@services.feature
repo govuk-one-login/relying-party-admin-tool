@@ -21,3 +21,8 @@ Feature: View all services page load
     And the page has finished loading
     Then the service: "RPAT Service 2" has a manage link
     And the service: "RPAT Service 2" has no description
+
+  Scenario: View all services page loads with create a new service button
+    Given I go to the "services" page
+    And the page has finished loading
+    Then the page contains the button: "Create a new service" with the href: "/services/create"
