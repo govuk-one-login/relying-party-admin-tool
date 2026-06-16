@@ -1,4 +1,4 @@
-Feature: View all services page load
+Feature: View all services page
 
   Scenario: View all services page loads with expected layout
     Given I go to the "services" page
