@@ -35,11 +35,10 @@ repos:
         entry: bash
         args:
           - -c
-          - export GITHUB_WORKSPACE=$(pwd)
-          - sam validate --lint --ignore-lint-errors W1001 -t template.yml
+          - export GITHUB_WORKSPACE=$(pwd) && sam validate --lint -t template.yaml
         language: system
         pass_filenames: false
-        files: "^template.yml$"
+        files: "^template.yaml$"
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
