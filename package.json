@@ -16,16 +16,18 @@
     "copy-assets": "copyfiles -u 1 src/**/*.njk dist/ && npm run copy-scripts",
     "copy-scripts": "rm -r dist/public/scripts || true && mkdir -p dist/public/scripts && cp node_modules/govuk-frontend/dist/govuk/govuk-frontend.min.js dist/public/scripts",
     "coverage:unit": "vitest run --coverage",
-    "dev": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "dev": "npm run dynamodblocal:up && concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"npm run watch-node\"",
     "lint": "prettier . --check \"*/**/*.{ts,json}\" ; eslint . ",
     "lint:fix": "prettier . --write \"*/**/*.{ts,json}\" ; eslint . --fix",
     "start": "node dist/server.js",
-    "test:unit": "vitest",
+    "test:unit": "vitest run",
     "tflint": "tflint --init && tflint --recursive --format compact --chdir infra",
     "tflint:fix": "tflint --init && tflint --recursive --format compact --chdir infra --fix",
     "watch-node": "nodemon -r dotenv/config --inspect=0.0.0.0:3000 dist/server.js",
     "watch-ts": "tsc -w",
-    "watch-sass": "sass --load-path=node_modules/govuk-frontend/dist/govuk --watch src/assets/scss/application.scss dist/public/style.css"
+    "watch-sass": "sass --load-path=node_modules/govuk-frontend/dist/govuk --watch src/assets/scss/application.scss dist/public/style.css",
+    "dynamodblocal:up": "docker compose -f dynamodb.local.yml up -d",
+    "dynamodblocal:down": "docker compose -f dynamodb.local.yml down"
   },
   "dependencies": {
     "@eslint/compat": "^2.0.5",
