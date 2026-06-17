@@ -1,6 +1,8 @@
 import overloadProtection from "overload-protection";
 
-export const applyOverloadProtection = (isProduction: boolean) => {
+export const applyOverloadProtection = (
+  isProduction: boolean
+): overloadProtection.HttpProtectionInstance => {
   return overloadProtection("express", {
     production: isProduction,
     clientRetrySecs: 3,

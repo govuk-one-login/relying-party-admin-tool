@@ -1,7 +1,7 @@
 import { createApp, shutdownProcess, startServer } from "./app.js";
 import { logger } from "./utils/logger.js";
 
-(async () => {
+(async (): Promise<void> => {
   const app = await createApp();
   const { closeServer } = await startServer(app);
   const shutdown = shutdownProcess(closeServer);

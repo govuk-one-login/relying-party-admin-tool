@@ -16,7 +16,7 @@ export const HTTP_STATUS_CODES = {
   REDIRECT: 303,
 };
 
-export const PRODUCT_PAGE_BASE_URL: { [id: string]: string } = {
+export const PRODUCT_PAGE_BASE_URL: Record<string, string> = {
   local: "http://localhost:3000",
   dev: "https://development.sign-in.service.gov.uk",
   build: "https://build.sign-in.service.gov.uk",
