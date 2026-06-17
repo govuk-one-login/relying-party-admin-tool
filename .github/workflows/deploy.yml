@@ -44,7 +44,7 @@ jobs:
           cp "tsconfig.json" "tests/app/tsconfig.json"
       - name: Build and push test image
         if: ${{ inputs.PUSH_TEST_IMAGE }}
-        uses: govuk-one-login/devplatform-upload-action-ecr@f82c8774a6390f200b15112b3cbb9faf3442173c # v1.5.0
+        uses: govuk-one-login/devplatform-upload-action-ecr@156ca69f253c67f2f71488d0d81f7a3d97657e43 # v1.6.1
         with:
           role-to-assume-arn: ${{ secrets.GH_ACTIONS_ROLE_ARN  }}
           build-and-push-image-only: true
@@ -60,7 +60,7 @@ jobs:
           role-to-assume: ${{ secrets.GH_ACTIONS_ROLE_ARN }}
           aws-region: eu-west-2
       - name: Upload to ECR and tag
-        uses: govuk-one-login/devplatform-upload-action-ecr@fba7a3f15d06c6abe52acb3c80cd0882180ea563 # v1.6.0
+        uses: govuk-one-login/devplatform-upload-action-ecr@156ca69f253c67f2f71488d0d81f7a3d97657e43 # v1.6.1
         with:
           role-to-assume-arn: ${{ secrets.GH_ACTIONS_ROLE_ARN  }}
           container-sign-kms-key-arn: ${{ secrets.CONTAINER_SIGN_KMS_KEY }}
