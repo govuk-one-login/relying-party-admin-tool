@@ -2,6 +2,17 @@ AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: Relying Party Admin Tool
 
+Parameters:
+  Environment:
+    Type: String
+    Description: The name of the environment to deploy to
+    AllowedValues:
+      - dev
+      - build
+      - staging
+      - integration
+      - production
+
 Resources:
   UserPermissionsTableEncryptionKey:
     Type: AWS::KMS::Key
