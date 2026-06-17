@@ -1,12 +1,13 @@
 import pino from "pino";
 import { pinoHttp } from "pino-http";
 import { getLogLevel } from "../config.js";
+import { Request, Response } from "express";
 
 const logger = pino({
   name: "di-relying-party-admin-tool-frontend",
   level: getLogLevel(),
   serializers: {
-    req: (req) => {
+    req: (req: Request) => {
       return {
         id: req.id,
         method: req.method,
@@ -14,7 +15,7 @@ const logger = pino({
         from: getRefererFrom(req.headers.referer),
       };
     },
-    res: (res) => {
+    res: (res: Response) => {
       return {
         status: res.statusCode,
         sessionId: res.locals.sessionId,
@@ -26,7 +27,7 @@ const logger = pino({
   },
 });
 
-export function getRefererFrom(referer: string): string | undefined {
+export const getRefererFrom = (referer?: string | null): string | undefined => {
   if (referer) {
     try {
       const refererUrl = new URL(referer);
@@ -38,7 +39,7 @@ export function getRefererFrom(referer: string): string | undefined {
   } else {
     return undefined;
   }
-}
+};
 
 const ignorePaths = [
   "/public/style.css",
@@ -51,7 +52,7 @@ const loggerMiddleware = pinoHttp({
   wrapSerializers: false,
   autoLogging: { ignore: (req: Request) => ignorePaths.includes(req.url) },
   customErrorMessage: function (_error, res) {
-    return "request errored with status code: " + res.statusCode;
+    return `request errored with status code: ${res.statusCode}`;
   },
   customSuccessMessage: function (req, res) {
     if (res.statusCode === 404) {

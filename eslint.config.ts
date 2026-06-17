@@ -12,10 +12,7 @@ export default defineConfig(
     fileURLToPath(new URL(".gitignore", import.meta.url)),
     "Imported .gitignore patterns"
   ),
-  eslint.configs.recommended,
   {
-    files: ["src/**/*.ts", "src/**/*.js"],
-    extends: [...tseslint.configs.recommended],
     languageOptions: {
       ecmaVersion: "latest",
       parser: tsParser,
@@ -23,8 +20,15 @@ export default defineConfig(
         projectService: true,
       },
     },
+  },
+  eslint.configs.recommended,
+  {
+    files: ["src/**/*.ts", "src/**/*.js"],
+    ignores: ["src/**/*.test.ts"],
+    extends: [...tseslint.configs.recommended],
     rules: {
-      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/explicit-function-return-type": "error",
+      "@typescript-eslint/consistent-indexed-object-style": ["error", "record"],
     },
   },
   {
@@ -39,6 +43,7 @@ export default defineConfig(
       "vitest/prefer-expect-assertions": "off",
       "vitest/require-mock-type-parameters": "off",
       "vitest/valid-title": "off",
+      "no-undef": "off",
     },
   },
   {

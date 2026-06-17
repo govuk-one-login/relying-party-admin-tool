@@ -72,10 +72,13 @@ Then("the footer shows", async ({ page }) => {
   ).toBeVisible();
 });
 
-Then("the page contains the button: {string} with the href: {string}", async ({ page }, text: string, href: string) => {
-  await expect(page.getByRole("button", { name: text })).toBeVisible();
-  await expect(page.getByRole("button", { name: text })).toHaveAttribute(
-    "href",
-    href,
-  );
-});
+Then(
+  "the page contains the button: {string} with the href: {string}",
+  async ({ page }, text: string, href: string) => {
+    await expect(page.getByRole("button", { name: text })).toBeVisible();
+    await expect(page.getByRole("button", { name: text })).toHaveAttribute(
+      "href",
+      href
+    );
+  }
+);

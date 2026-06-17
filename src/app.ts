@@ -32,7 +32,6 @@ async function createApp(): Promise<express.Application> {
 
   app.enable("trust proxy");
 
-  // @ts-expect-error HttpLogger type from pino-http doesn't match Express middleware signature
   app.use(loggerMiddleware);
 
   if (isDeployedEnvironment) {
@@ -63,22 +62,18 @@ async function createApp(): Promise<express.Application> {
   app.locals.productPagesBaseUrl = getProductPagesBaseUrl();
 
   app.use((req, res, next) => {
-    void (async () => {
-      req.log = req.log.child({
-        trace: res.locals.trace,
-      });
-      next();
-    })();
+    req.log = req.log.child({
+      trace: res.locals.trace,
+    });
+    next();
   });
 
   app.set("nunjucksEngine", configureNunjucks(app, APP_VIEWS));
   app.use((req, res, next) => {
-    void (async () => {
-      const engine = res.app.get("nunjucksEngine");
-      engine.addGlobal("request", req);
-      engine.addGlobal("response", res);
-      next();
-    })();
+    const engine = res.app.get("nunjucksEngine");
+    engine.addGlobal("request", req);
+    engine.addGlobal("response", res);
+    next();
   });
 
   app.use(indexRouter);
@@ -113,7 +108,7 @@ async function startServer(app: Application): Promise<{
     interval: getVitalSignsIntervalSeconds() * 1000,
   });
 
-  const closeServer = async () => {
+  const closeServer = async (): Promise<void> => {
     if (stopVitalSigns) {
       stopVitalSigns();
       logger.info(`vital-signs stopped`);
