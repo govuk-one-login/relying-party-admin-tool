@@ -43,6 +43,8 @@ export default defineConfig(
       "vitest/prefer-expect-assertions": "off",
       "vitest/require-mock-type-parameters": "off",
       "vitest/valid-title": "off",
+      "vitest/prefer-describe-function-title": "off",
+      "vitest/prefer-lowercase-title": "off",
       "no-undef": "off",
     },
   },
