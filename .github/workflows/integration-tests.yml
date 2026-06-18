@@ -26,15 +26,30 @@ jobs:
         with:
           node-version-file: .nvmrc
 
-      - name: Install dependencies
+      - name: Install dependencies (tests)
         run: npm ci
+        working-directory: tests/ui-tests
 
-      - name: Build app
-        run: npm run build
+      - name: Get Playwright version
+        id: playwright-version
+        working-directory: tests/ui-tests
+        run: echo "version=$(npx playwright --version)" >> $GITHUB_OUTPUT
+
+      - name: Cache browsers
+        id: cache-browsers
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+
+      - name: Install browsers
+        if: ${{ steps.cache-browsers.outputs.cache-hit != 'true' }}
+        run: npm run install-browsers
+        working-directory: tests/ui-tests
 
       - name: Run UI tests
+        working-directory: tests/ui-tests
         run: |
-          cd tests/ui-tests
           touch .env
           echo "PRE_OR_POST_DEPLOY=pre" >> .env
           echo "PW_TEST_CONNECT_WS_ENDPOINT=ws://127.0.0.1:3000/" >> .env
