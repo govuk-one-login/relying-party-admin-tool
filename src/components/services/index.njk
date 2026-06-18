@@ -2,55 +2,61 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set pageTitleName = 'View all services'%}
+{% set pageTitleName = 'View all services' %}
 
 {% block pageContent %}
   <h1 class="govuk-heading-l">Your services</h1>
 
   <ul class="govuk-list">
     <li>
-      {{ govukSummaryList({
-        card: {
-          title: { text: "RPAT Service 1" },
-          actions: {
-            items: [
-              {
-                href: "#",
-                text: "Manage",
-                visuallyHiddenText: "RPAT Service 1"
-              }
-            ]
-          }
-        },
-        rows: [
-          {
-            key: { text: "Description" },
-            value: { text: "This is my service for RPAT" }
-          }
-        ]
-      }) }}
+      {{
+        govukSummaryList({
+          card: {
+            title: { text: "RPAT Service 1" },
+            actions: {
+              items: [
+                {
+                  href: "#",
+                  text: "Manage",
+                  visuallyHiddenText: "RPAT Service 1"
+                }
+              ]
+            }
+          },
+          rows: [
+            {
+              key: { text: "Description" },
+              value: { text: "This is my service for RPAT" }
+            }
+          ]
+        })
+      }}
     </li>
     <li>
-      {{ govukSummaryList({
-        card: {
-          title: { text: "RPAT Service 2" },
-          actions: {
-            items: [
-              {
-                href: "#",
-                text: "Manage",
-                visuallyHiddenText: "RPAT Service 2"
-              }
-            ]
+      {{
+        govukSummaryList({
+          card: {
+            title: { text: "RPAT Service 2" },
+            actions: {
+              items: [
+                {
+                  href: "#",
+                  text: "Manage",
+                  visuallyHiddenText: "RPAT Service 2"
+                }
+              ]
+            }
           }
-        }
-      }) }}
+        })
+      }}
     </li>
   </ul>
 
-  {{ govukButton({
-    text: "Create a new service",
-    href: "/services/create",
-    classes: "govuk-button--secondary"
-  }) }}
+  {{
+    govukButton({
+      text: "Create a new service",
+      href: "/services/create",
+      classes: "govuk-button--secondary"
+    })
+  }}
 {% endblock %}

@@ -17,8 +17,8 @@
     "copy-scripts": "rm -r dist/public/scripts || true && mkdir -p dist/public/scripts && cp node_modules/govuk-frontend/dist/govuk/govuk-frontend.min.js dist/public/scripts",
     "coverage:unit": "vitest run --coverage",
     "dev": "npm run dynamodblocal:up && concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"npm run watch-node\"",
-    "lint": "prettier . --check \"*/**/*.{ts,json}\" ; eslint . ",
-    "lint:fix": "prettier . --write \"*/**/*.{ts,json}\" ; eslint . --fix",
+    "lint": "prettier . --check \"*/**/*.{ts,json,njk}\" ; eslint . ",
+    "lint:fix": "prettier . --write \"*/**/*.{ts,json,njk}\" ; eslint . --fix",
     "start": "node dist/server.js",
     "test:unit": "vitest run",
     "tflint": "tflint --init && tflint --recursive --format compact --chdir infra",
@@ -46,7 +46,6 @@
     "overload-protection": "^1.2.3",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0",
-    "prettier": "^3.8.3",
     "sass": "^1.100.0",
     "vitest": "^4.1.8"
   },
@@ -59,6 +58,8 @@
     "@vitest/coverage-v8": "^4.1.8",
     "eslint": "^10.4.0",
     "nodemon": "^3.1.14",
+    "prettier": "^3.8.4",
+    "prettier-plugin-jinja-template": "^2.2.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1"
