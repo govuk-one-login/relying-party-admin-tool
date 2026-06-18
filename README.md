@@ -1,6 +1,6 @@
 # relying-party-admin-tool
 
-Use `npm run install-all` to install packages.
+Use `npm ci` to install packages.
 
 ## Running tests
 

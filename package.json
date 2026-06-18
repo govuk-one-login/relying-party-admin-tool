@@ -7,8 +7,6 @@
     "node": ">=24.11.1 <25"
   },
   "scripts": {
-    "install-all": "npm ci && npm run install-submodules",
-    "install-submodules": "git submodule update --init --recursive",
     "build-docker": "docker build -t relying-party-admin-tool-frontend .",
     "build-ts": "tsc",
     "build": "npm run build-sass && npm run build-ts && npm run copy-assets",
