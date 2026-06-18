@@ -14,6 +14,68 @@ Parameters:
       - production
 
 Resources:
+  #region Services DynamoDB Table
+  ServicesTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      TableName: !Sub ${Environment}-services
+      AttributeDefinitions:
+        - AttributeName: serviceId
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: serviceId
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+      SSESpecification:
+        SSEEnabled: true
+        KMSMasterKeyId: !GetAtt ServicesTableEncryptionKey.Arn
+        SSEType: KMS
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      DeletionProtectionEnabled: true
+      Tags:
+        - Key: Name
+          Value: ServicesTable
+
+  ServicesTableEncryptionKey:
+    Type: AWS::KMS::Key
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      Description: KMS encryption key for Services DynamoDB table
+      EnableKeyRotation: true
+      KeyPolicy:
+        Version: 2012-10-17
+        Statement:
+          - Sid: AllowIamManagement
+            Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action: kms:*
+            Resource: "*"
+          - Sid: AllowDynamodbAccessToEncryptionKey
+            Effect: Allow
+            Principal:
+              Service: dynamodb.amazonaws.com
+            Action:
+              - kms:Encrypt
+              - kms:Decrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+              - kms:DescribeKey
+            Resource: "*"
+            Condition:
+              ArnLike:
+                kms:EncryptionContext:aws:dynamodb:table/arn: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/*
+  #endregion
+
+  #region UserPermissions DynamoDB Table
   UserPermissionsTableEncryptionKey:
     Type: AWS::KMS::Key
     DeletionPolicy: Retain
@@ -72,3 +134,4 @@ Resources:
       Tags:
         - Key: Name
           Value: UserPermissionsTable
+  #endregion
