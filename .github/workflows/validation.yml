@@ -8,6 +8,8 @@ on:
 
 jobs:
   validation-checks:
+    permissions:
+      contents: read
     name: Validation checks
     runs-on: ubuntu-22.04
     timeout-minutes: 5
@@ -34,4 +36,12 @@ jobs:
       - name: Lint Terraform
         run: npm run tflint
 
-      # TODO: add cfnlint, and SAM validate
+      - name: Setup SAM
+        if: github.actor != 'dependabot[bot]'
+        uses: aws-actions/setup-sam@89ddb14d60e682855e3fea4be85b3c56485de310 # v3
+        with:
+          use-installer: true
+
+      - name: Run SAM validate + cfnlint
+        if: github.actor != 'dependabot[bot]'
+        run: sam validate -t template.yaml --region eu-west-2 --lint
