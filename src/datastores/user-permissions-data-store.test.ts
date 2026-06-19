@@ -36,7 +36,7 @@ describe("user permissions store tests", () => {
 
     const result = await getUser("test-user-id");
 
-    expect(result).toEqual(TEST_USER);
+    expect(result).toStrictEqual(TEST_USER);
   });
 
   it("should get no user if user does not exist with ID", async () => {

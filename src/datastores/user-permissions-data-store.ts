@@ -8,7 +8,7 @@ const dynamoClient = DynamoDBDocument.from(
     ...(process.env.DYNAMO_ENDPOINT && {
       endpoint: process.env.DYNAMO_ENDPOINT,
     }),
-  }),
+  })
 );
 export const tableName = `${process.env.ENVIRONMENT ?? "test"}-user-permissions`;
 
