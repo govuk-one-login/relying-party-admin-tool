@@ -43,6 +43,7 @@
     "dotenv": "^17.4.2",
     "eslint-plugin-playwright": "^2.10.4",
     "express": "~5.2.1",
+    "express-validator": "^7.3.2",
     "govuk-frontend": "^6.1.0",
     "jiti": "^2.7.0",
     "nunjucks": "^3.2.4",
