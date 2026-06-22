@@ -31,7 +31,7 @@ npm run dynamodblocal:up
 ./scripts/create-local-tables.sh
 ```
 
-Then you can run `npm run dev` and go to localhost:6001.
+Then you can run `npm run dev` and go to localhost:6001. You may need to run `npm run build` befoer to get new frontend changes.
 
 ## Running the application against a deployed environment
 
