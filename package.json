@@ -21,6 +21,7 @@
     "lint:fix": "prettier . --write \"*/**/*.{ts,json,njk}\" ; eslint . --fix",
     "start": "node dist/server.js",
     "test:unit": "vitest run",
+    "test:integration": "vitest run --config vitest.config.integration.ts",
     "tflint": "tflint --init && tflint --recursive --format compact --chdir infra",
     "tflint:fix": "tflint --init && tflint --recursive --format compact --chdir infra --fix",
     "watch-node": "nodemon -r dotenv/config --inspect=0.0.0.0:3000 dist/server.js",
@@ -30,6 +31,8 @@
     "dynamodblocal:down": "docker compose -f dynamodb.local.yml down"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1068.0",
+    "@aws-sdk/lib-dynamodb": "^3.1068.0",
     "@eslint/compat": "^2.0.5",
     "@eslint/js": "^10.0.1",
     "@govuk-one-login/frontend-vital-signs": "^0.1.4",
@@ -56,6 +59,8 @@
     "@types/nunjucks": "^3.2.6",
     "@types/overload-protection": "^1.2.4",
     "@vitest/coverage-v8": "^4.1.8",
+    "aws-sdk-client-mock": "^4.1.0",
+    "aws-sdk-client-mock-vitest": "^7.1.0",
     "eslint": "^10.4.0",
     "nodemon": "^3.1.14",
     "prettier": "^3.8.4",

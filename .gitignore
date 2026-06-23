@@ -22,6 +22,9 @@ tests/ui-tests/playwright/.auth/
 tests/ui-tests/.features-gen/
 tests/ui-tests/.DS_Store/
 
+# DynamoDBLocal
+**/docker/dynamodb
+
 # TypeScript cache
 *.tsbuildinfo
 

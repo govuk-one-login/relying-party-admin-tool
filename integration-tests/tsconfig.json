@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "nodenext",
+    "target": "ESNext",
+    "moduleResolution": "nodenext",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "types": ["vitest/globals"],
+    "rootDir": "../"
+  },
+  "include": ["./*.ts", "../src/**/*.ts"],
+  "exclude": ["../src/**/*.test.ts"]
+}
