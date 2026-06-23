@@ -3,15 +3,20 @@ import { ClientEnvironment } from "../types.js";
 import { mockPermissionsService } from "./mock-permissions-service.js";
 
 export interface PermissionsService {
-  check(user: string, permission: UserPermission, service: string): boolean;
-
-  checkUserHasReaderPermissions(user: string, service: string): boolean;
-
-  checkUserHasWriterPermissions(
+  check: (
+    user: string,
+    permission: UserPermission,
+    service: string
+  ) => Promise<boolean>;
+  checkUserHasReaderPermissions: (
+    user: string,
+    service: string
+  ) => Promise<boolean>;
+  checkUserHasWriterPermissions: (
     user: string,
     service: string,
     clientEnvironment: ClientEnvironment
-  ): boolean;
+  ) => Promise<boolean>;
 }
 
 export const permissionsService: PermissionsService = mockPermissionsService;

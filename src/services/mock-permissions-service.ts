@@ -4,19 +4,26 @@ import { ClientEnvironment } from "../types.js";
 import { PermissionsService } from "./permissions-service.js";
 
 export const mockPermissionsService: PermissionsService = {
-  check(user: string, permission: UserPermission, service: string): boolean {
-    return true;
+  check: async (
+    user: string,
+    permission: UserPermission,
+    service: string
+  ): Promise<boolean> => {
+    return Promise.resolve(true);
   },
-  checkUserHasReaderPermissions(user: string, service: string): boolean {
+  checkUserHasReaderPermissions: async (
+    user: string,
+    service: string
+  ): Promise<boolean> => {
     // should check READER, WRITER_INT, WRITER_PROD, and MANAGER
-    return true;
+    return Promise.resolve(true);
   },
-  checkUserHasWriterPermissions(
+  checkUserHasWriterPermissions: async (
     user: string,
     service: string,
     clientEnvironment: ClientEnvironment
-  ): boolean {
+  ): Promise<boolean> => {
     // should check WRITER_INT/WRITER_PROD (dependant on ClientEnvironment) and MANAGER
-    return true;
+    return Promise.resolve(true);
   },
 };
