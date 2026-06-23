@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { permissionsService } from "../../services/permissions-service.js";
-import { ExpressRouteFunc } from "../../types.js";
+import { ClientEnvironment, ExpressRouteFunc } from "../../types.js";
 import { PATH_NAMES } from "../../app.constants.js";
 
 export const serviceGet = (): ExpressRouteFunc => {
@@ -8,7 +8,22 @@ export const serviceGet = (): ExpressRouteFunc => {
     if (
       await permissionsService.checkUserHasReaderPermissions("user", "service")
     ) {
-      res.render("service/index.njk");
+      const hasIntegrationWriterPermissions: boolean =
+        await permissionsService.checkUserHasWriterPermissions(
+          "user",
+          "service",
+          ClientEnvironment.INTEGRATION
+        );
+      const hasProductionWriterPermissions: boolean =
+        await permissionsService.checkUserHasWriterPermissions(
+          "user",
+          "service",
+          ClientEnvironment.PRODUCTION
+        );
+      return res.render("service/index.njk", {
+        hasIntegrationWriterPermissions,
+        hasProductionWriterPermissions,
+      });
     } else {
       return res.redirect(PATH_NAMES.ROOT);
     }

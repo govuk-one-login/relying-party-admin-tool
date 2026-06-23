@@ -49,4 +49,14 @@
       })
     }}
   {% endif %}
+
+  {% if hasIntegrationWriterPermissions %}
+    {{
+      govukButton({
+        text: "Create a new integration client",
+        href: "/services/serviceId/create/integration",
+        classes: "govuk-button--secondary"
+      })
+    }}
+  {% endif %}
 {% endblock %}
