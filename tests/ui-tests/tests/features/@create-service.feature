@@ -8,7 +8,7 @@ Feature: Create a new service page
     And the header shows
     And the navigation bar shows
     And the footer shows
-    Then the page contains the text: "What is the name of your service?"
+    Then the page has the heading: "What is the name of your service?"
 
   Scenario: Create a new service page validates the service name
     Given I go to the "create service" page

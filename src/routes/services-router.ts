@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-
 import express from "express";
 import { PATH_NAMES } from "../app.constants.js";
+import { serviceGet } from "../components/service/service-controller.js";
 import { validateServiceRequest } from "../components/create-service/create-service-validation.js";
 import { createServicePost } from "../components/create-service/create-service-controller.js";
 
 const router = express.Router();
 
-router.get(PATH_NAMES.SERVICES, function (req, res, next) {
+router.get(PATH_NAMES.SERVICES, (req, res, next) => {
   res.render("services/index.njk");
 });
 
-router.get(PATH_NAMES.CREATE_SERVICE, function (req, res, next) {
+router.get(PATH_NAMES.CREATE_SERVICE, (req, res, next) => {
   res.render("create-service/index.njk");
 });
 
@@ -20,5 +20,7 @@ router.post(
   validateServiceRequest(),
   createServicePost()
 );
+
+router.get(PATH_NAMES.SERVICE, serviceGet());
 
 export { router as servicesRouter };

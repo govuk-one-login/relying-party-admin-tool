@@ -1,0 +1,52 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
+
+{% set pageTitleName = 'View service name' %}
+
+{% block beforeContent %}
+  {{
+    govukBreadcrumbs({
+      items: [
+        { text: "Your services", href: "/services" },
+        { text: "Service name"}
+      ]
+    })
+  }}
+{% endblock %}
+
+{% block pageContent %}
+  <h1 class="govuk-heading-l">Service name</h1>
+  <p class="govuk-body">Service description</p>
+  <h2 class="govuk-heading-m">Production Client</h2>
+
+  {% if not productionClient %}
+    {{
+      govukSummaryList({
+        rows: [
+          {
+            key: { text: "Status" },
+            value: { html: '<strong class="govuk-tag govuk-tag--grey">Not yet created</strong>' }
+          }
+        ]
+      })
+    }}
+    {{
+      govukInsetText({
+        text: "You do not have a production client yet. When you have completed testing with an integration client you can request to go live."
+      })
+    }}
+  {% endif %}
+
+  <h2 class="govuk-heading-m">Integration Clients</h2>
+  {% if not integrationClients %}
+    {{
+      govukInsetText({
+        text: "You do not have any integration clients yet."
+      })
+    }}
+  {% endif %}
+{% endblock %}
