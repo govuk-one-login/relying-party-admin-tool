@@ -1,6 +1,7 @@
 {% extends "common/layout/base-layout.njk" %}
-{% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 
 {% set pageTitleName = 'Create a new service' %}
 
@@ -16,8 +17,25 @@
         id: "name",
         name: "name",
         errorMessage: {
-          text: errors['name'].text
-        } if (errors['name'])
+          text: errors["name"].text
+        } if (errors["name"])
+      })
+    }}
+
+    {{
+      govukTextarea({
+        label: {
+          text: "Describe your service",
+          classes: "govuk-label--m"
+        },
+        hint: {
+          text: "Describe what users can do when they access this service (optional)"
+        },
+        id: "description",
+        name: "description",
+        errorMessage: {
+          text: errors["description"].text
+        } if (errors["description"])
       })
     }}
 
