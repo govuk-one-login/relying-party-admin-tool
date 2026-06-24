@@ -5,7 +5,7 @@ Feature: Test page
     And the page has finished loading
     Then the page meets our accessibility standards
     And the page title is "Home - Admin Tool"
-    And the page contains the text: "Hello World!"
+    And the page has the exact text: "Hello World!"
 
   Scenario: Header shows
     Given I go to the "home" page

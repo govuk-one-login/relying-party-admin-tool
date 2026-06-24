@@ -9,6 +9,7 @@ const pageNameToPath: Record<string, string> = {
   home: "/",
   services: "/services",
   "create service": "/services/create",
+  service: "/services/test-id",
 };
 
 Then("the page meets our accessibility standards", async ({ page }) => {
@@ -36,6 +37,17 @@ Then("the page contains the text: {string}", async ({ page }, text: string) => {
   await expect(page.getByText(text)).toBeVisible();
 });
 
+Then(
+  "the page has the exact text: {string}",
+  async ({ page }, text: string) => {
+    await expect(page.getByText(text, { exact: true })).toBeVisible();
+  }
+);
+
+Then("the page has the heading: {string}", async ({ page }, text: string) => {
+  await expect(page.getByRole("heading", { name: text })).toBeVisible();
+});
+
 Then("the page looks as expected", async ({ page }) => {
   expect(
     await page.screenshot({
@@ -58,7 +70,8 @@ Then("the header shows", async ({ page }) => {
 });
 
 Then("the navigation bar shows", async ({ page }) => {
-  await expect(page.getByRole("navigation")).toBeVisible();
+  const elements = page.locator('[aria-label="Menu"]');
+  await expect(elements).toBeVisible();
 });
 
 Then("the footer shows", async ({ page }) => {
@@ -100,3 +113,15 @@ Then("I am taken to the {string} page", async ({ page }, pageName: string) => {
   assert.ok(pageNameToPath[pageName]);
   await expect(page).toHaveURL(pageNameToPath[pageName]);
 });
+
+Then(
+  "the page contains the breadcrumbs: {string}",
+  async ({ page }, breadcrumbsString: string) => {
+    const breadcrumbsList = breadcrumbsString.split(",");
+    breadcrumbsList.map(async (breadcrumb) => {
+      await expect(
+        page.getByRole("listitem").filter({ hasText: breadcrumb })
+      ).toBeVisible();
+    });
+  }
+);

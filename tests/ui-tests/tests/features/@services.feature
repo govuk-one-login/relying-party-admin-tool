@@ -8,7 +8,7 @@ Feature: View all services page
     And the header shows
     And the navigation bar shows
     And the footer shows
-    And the page contains the text: "Your services"
+    And the page has the heading: "Your services"
 
   Scenario: View all services page loads with the first service card
     Given I go to the "services" page

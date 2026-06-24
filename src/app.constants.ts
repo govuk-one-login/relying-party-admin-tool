@@ -3,6 +3,7 @@ export const PATH_NAMES = {
   HEALTHCHECK: "/healthcheck",
   SERVICES: "/services",
   CREATE_SERVICE: "/services/create",
+  SERVICE: "/services/:serviceId",
 };
 
 export const HTTP_STATUS_CODES = {
