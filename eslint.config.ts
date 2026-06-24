@@ -72,6 +72,10 @@ export default defineConfig(
     rules: {
       ...playwrightEslint.configs["flat/recommended"].rules,
       "playwright/no-standalone-expect": "off",
+      "@typescript-eslint/no-empty-object-type": [
+        "error",
+        { allowInterfaces: "with-single-extends" },
+      ],
     },
   },
   {

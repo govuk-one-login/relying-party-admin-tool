@@ -82,3 +82,21 @@ Then(
     );
   }
 );
+
+Then(
+  "I enter {string} into the field {string}",
+  async ({ page }, text: string, label: string) => {
+    await page.getByLabel(label).fill(text);
+  }
+);
+
+Given("I click the {string} button", async ({ page }, name: string) => {
+  await page.getByRole("button", { name, exact: true }).click();
+});
+
+Then("I am taken to the {string} page", async ({ page }, pageName: string) => {
+  // eslint-disable-next-line playwright/no-networkidle
+  await page.waitForLoadState("networkidle");
+  assert.ok(pageNameToPath[pageName]);
+  await expect(page).toHaveURL(pageNameToPath[pageName]);
+});

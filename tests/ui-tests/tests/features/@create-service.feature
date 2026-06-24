@@ -8,4 +8,19 @@ Feature: Create a new service page
     And the header shows
     And the navigation bar shows
     And the footer shows
-    Then the page contains the text: "Test heading"
+    Then the page contains the text: "What is the name of your service?"
+
+  Scenario: Create a new service page validates the service name
+    Given I go to the "create service" page
+    And the page has finished loading
+    And I click the "Continue" button
+    Then the page contains the text: "Enter your service name"
+    And I enter " " into the field "What is the name of your service?"
+    And I click the "Continue" button
+    Then the page contains the text: "Enter your service name"
+    And I enter "🆕 service" into the field "What is the name of your service?"
+    And I click the "Continue" button
+    Then the page contains the text: "Your service name must only use ASCII characters"
+    And I enter "My service" into the field "What is the name of your service?"
+    And I click the "Continue" button
+    Then I am taken to the "home" page

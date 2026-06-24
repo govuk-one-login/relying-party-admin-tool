@@ -4,58 +4,58 @@ import { mockPermissionsService } from "./mock-permissions-service.js";
 
 describe("mockPermissionsService", () => {
   describe("check", () => {
-    it("check should return true for READER permissions", () => {
-      expect(mockPermissionsService.check("", UserPermission.READER, "")).toBe(
-        true
-      );
+    it("check should return true for READER permissions", async () => {
+      await expect(
+        mockPermissionsService.check("", UserPermission.READER, "")
+      ).resolves.toBe(true);
     });
 
-    it("check should return true for WRITER_INT permissions", () => {
-      expect(
+    it("check should return true for WRITER_INT permissions", async () => {
+      await expect(
         mockPermissionsService.check("", UserPermission.WRITER_INT, "")
-      ).toBe(true);
+      ).resolves.toBe(true);
     });
 
-    it("check should return true for WRITER_PROD permissions", () => {
-      expect(
+    it("check should return true for WRITER_PROD permissions", async () => {
+      await expect(
         mockPermissionsService.check("", UserPermission.WRITER_PROD, "")
-      ).toBe(true);
+      ).resolves.toBe(true);
     });
 
-    it("check should return true for MANAGER permissions", () => {
-      expect(mockPermissionsService.check("", UserPermission.MANAGER, "")).toBe(
-        true
-      );
+    it("check should return true for MANAGER permissions", async () => {
+      await expect(
+        mockPermissionsService.check("", UserPermission.MANAGER, "")
+      ).resolves.toBe(true);
     });
   });
 
   describe("checkUserHasReaderPermissions", () => {
-    it("check should return true for any user", () => {
-      expect(mockPermissionsService.checkUserHasReaderPermissions("", "")).toBe(
-        true
-      );
+    it("check should return true for any user", async () => {
+      await expect(
+        mockPermissionsService.checkUserHasReaderPermissions("", "")
+      ).resolves.toBe(true);
     });
   });
 
   describe("checkUserHasWriterPermissions", () => {
-    it("check should return true for any user in integration", () => {
-      expect(
+    it("check should return true for any user in integration", async () => {
+      await expect(
         mockPermissionsService.checkUserHasWriterPermissions(
           "",
           "",
           ClientEnvironment.INTEGRATION
         )
-      ).toBe(true);
+      ).resolves.toBe(true);
     });
 
-    it("check should return true for any user in production", () => {
-      expect(
+    it("check should return true for any user in production", async () => {
+      await expect(
         mockPermissionsService.checkUserHasWriterPermissions(
           "",
           "",
           ClientEnvironment.PRODUCTION
         )
-      ).toBe(true);
+      ).resolves.toBe(true);
     });
   });
 });
