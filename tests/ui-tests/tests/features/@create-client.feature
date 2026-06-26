@@ -9,3 +9,4 @@ Feature: Create a new client page
     And the navigation bar shows
     And the footer shows
     Then the page has the heading: "Create a new integration client"
+    And the page contains the button: "Start now" with the href: "enter-client-name"
