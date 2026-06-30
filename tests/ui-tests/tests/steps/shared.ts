@@ -10,6 +10,7 @@ const pageNameToPath: Record<string, string> = {
   services: "/services",
   "create service": "/services/create",
   service: "/services/test-id",
+  "create client": "/services/test-id/client/create",
 };
 
 Then("the page meets our accessibility standards", async ({ page }) => {
