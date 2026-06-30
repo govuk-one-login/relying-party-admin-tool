@@ -5,6 +5,10 @@ export const PATH_NAMES = {
   CREATE_SERVICE: "/services/create",
   SERVICE: "/services/:serviceId",
   CREATE_CLIENT: "/services/:serviceId/clients/create",
+  CREATE_CLIENT_ENTER_CLIENT_NAME:
+    "/services/:serviceId/clients/create/enter-client-name",
+  CREATE_CLIENT_SELECT_CLIENT_AUTHENTICATION:
+    "/services/:serviceId/clients/create/select-client-authentication",
 };
 
 export const HTTP_STATUS_CODES = {
