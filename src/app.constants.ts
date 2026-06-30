@@ -4,7 +4,7 @@ export const PATH_NAMES = {
   SERVICES: "/services",
   CREATE_SERVICE: "/services/create",
   SERVICE: "/services/:serviceId",
-  CREATE_CLIENT: "/services/:serviceId/client/create",
+  CREATE_CLIENT: "/services/:serviceId/clients/create",
 };
 
 export const HTTP_STATUS_CODES = {
