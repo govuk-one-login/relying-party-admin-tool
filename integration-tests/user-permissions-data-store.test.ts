@@ -1,8 +1,9 @@
-import { integrationTest } from "./base.js";
+import { integrationTest, setupUserPermissionsTable } from "./base.js";
 import { User } from "../src/models/user.js";
 import { getUser } from "../src/datastores/user-permissions-data-store.js";
 
 describe("user permissions data store tests", () => {
+  setupUserPermissionsTable();
   integrationTest(
     "should get user from table by ID if user exists",
     async ({ addUsersToDynamo }) => {
