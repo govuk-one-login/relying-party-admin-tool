@@ -10,3 +10,4 @@ Feature: Create a new client page
     And the footer shows
     And the page contains the breadcrumbs: "Your services, Service Name, Create a client"
     Then the page has the heading: "Create a new integration client"
+    And the page contains the button: "Start now" with the href: "enter-client-name"

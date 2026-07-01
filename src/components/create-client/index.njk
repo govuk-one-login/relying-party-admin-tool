@@ -1,5 +1,6 @@
 {% extends "common/layout/base-layout.njk" %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set pageTitleName = 'Create a new integration client' %}
 {% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
@@ -63,4 +64,12 @@
     </a>
     , provided by GOV.UK One Login.
   </p>
+
+  {{
+    govukButton({
+    text: "Start now",
+    href: "enter-client-name",
+    isStartButton: true
+    })
+  }}
 {% endblock %}
