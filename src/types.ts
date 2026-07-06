@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { ValidationChain } from "express-validator";
 
 export enum ClientEnvironment {
-  INTEGRATION,
-  PRODUCTION,
+  INTEGRATION = "integration",
+  PRODUCTION = "production",
 }
 
 export type ExpressRouteFunc = (
