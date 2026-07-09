@@ -15,6 +15,10 @@ const pageNameToPath: Record<string, string> = {
     "/services/serviceId/clients/create/enter-client-name",
   "create client - select client authentication":
     "/services/serviceId/clients/create/select-client-authentication",
+  "create client - enter redirect urls":
+    "/services/serviceId/clients/create/enter-redirect-urls",
+  "create client - select scopes":
+    "/services/serviceId/clients/create/select-scopes",
 };
 
 Then("the page meets our accessibility standards", async ({ page }) => {
@@ -126,5 +130,14 @@ Then(
         page.getByRole("listitem").filter({ hasText: breadcrumb })
       ).toBeVisible();
     });
+  }
+);
+
+Then(
+  "the table contains the text: {string}",
+  async ({ page }, text: string) => {
+    await expect(
+      page.getByRole("cell", { name: text, exact: true })
+    ).toBeVisible();
   }
 );

@@ -1,4 +1,4 @@
-Feature: Create a new client page
+Feature: Create a new client - enter client name page
 
   Scenario: Create a new client - enter client name page loads with expected layout
     Given I go to the "create client - enter client name" page

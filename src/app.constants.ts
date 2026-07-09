@@ -9,6 +9,10 @@ export const PATH_NAMES = {
     "/services/:serviceId/clients/create/enter-client-name",
   CREATE_CLIENT_SELECT_CLIENT_AUTHENTICATION:
     "/services/:serviceId/clients/create/select-client-authentication",
+  CREATE_CLIENT_ENTER_REDIRECT_URLS:
+    "/services/:serviceId/clients/create/enter-redirect-urls",
+  CREATE_CLIENT_SELECT_SCOPES:
+    "/services/:serviceId/clients/create/select-scopes",
 };
 
 export const HTTP_STATUS_CODES = {
@@ -30,3 +34,15 @@ export const PRODUCT_PAGE_BASE_URL: Record<string, string> = {
   integration: "https://integration.sign-in.service.gov.uk",
   production: "https://sign-in.service.gov.uk",
 };
+
+export const PROHIBITED_REDIRECT_URI_SCHEMES: string[] = [
+  "data",
+  "javascript",
+  "vbscript",
+];
+
+export const PROHIBITED_REDIRECT_URI_QUERY_PARAMETER_NAMES: string[] = [
+  "code",
+  "state",
+  "response",
+];
