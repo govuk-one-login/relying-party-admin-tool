@@ -21,7 +21,7 @@ export function renderBadRequest(
   req: Request,
   template: string,
   errors: Record<string, Error>,
-  options?: object
+  postValidationLocals?: Record<string, unknown>
 ): void {
   res.status(HTTP_STATUS_CODES.BAD_REQUEST);
 
@@ -29,6 +29,6 @@ export function renderBadRequest(
     errors,
     errorList: generateErrorList(errors),
     ...req.body,
-    ...options,
+    ...postValidationLocals,
   });
 }
