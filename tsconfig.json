@@ -8,10 +8,11 @@
     "strict": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "types": ["vitest/globals"],
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "typeRoots": ["./@types", "./node_modules/@types", "./node_modules"],
+    "types": ["vitest/globals"]
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "@types/**/*"],
   "exclude": ["tests/ui-tests, src/**/*.test.ts"]
 }
