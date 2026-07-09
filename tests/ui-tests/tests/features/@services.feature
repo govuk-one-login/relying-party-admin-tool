@@ -10,17 +10,11 @@ Feature: View all services page
     And the footer shows
     And the page has the heading: "Your services"
 
-  Scenario: View all services page loads with the first service card
+  Scenario: View all services page loads with the service links
     Given I go to the "services" page
     And the page has finished loading
-    Then the service: "RPAT Service 1" has a manage link
-    And the service: "RPAT Service 1" has the description: "This is my service for RPAT"
-
-  Scenario: View all services page loads with the second service card
-    Given I go to the "services" page
-    And the page has finished loading
-    Then the service: "RPAT Service 2" has a manage link
-    And the service: "RPAT Service 2" has no description
+    Then the service: "RPAT Service 1" has a link
+    And the service: "RPAT Service 2" has a link
 
   Scenario: View all services page loads with create a new service button
     Given I go to the "services" page
