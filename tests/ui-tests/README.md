@@ -26,7 +26,7 @@ When running tests locally they are run against `http://localhost:6001` by defau
 
 ### Steps to run the tests:
 
-Copy the file `ui-tests/.env.sample` to `ui-tests/.env`.
+Copy the file `ui-tests/.env.example` to `ui-tests/.env`.
 
 To run the tests:
 
@@ -65,7 +65,7 @@ npm run test:ui:watch
 To test one specific file, use `npx playwright test path_to_file`.
 To test the last failed tests, use `npx playwright test --last-failed`.
 To view the ui tests in the browser as they run, use `npm run test:ui:run`.
-To debug tests, use either the ui command above or `npx playwright test --debug`.
+To debug tests, use either the ui command above or `npm run test:ui`.
 
 ## Test tagging
 

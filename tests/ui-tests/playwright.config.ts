@@ -1,4 +1,6 @@
-import path from "node:path";
+import path, { dirname } from "node:path";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
 import { defineConfig, devices } from "@playwright/test";
 import { cucumberReporter, defineBddConfig } from "playwright-bdd";
 import { env } from "./env";
@@ -8,6 +10,10 @@ const testDir = defineBddConfig({
   features: "tests/features/**/*.feature",
   steps: "tests/steps/**/*.ts",
 });
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 export default defineConfig({
   testDir,
@@ -43,16 +49,7 @@ export default defineConfig({
             gracefulShutdown: { signal: "SIGTERM", timeout: 30000 },
           },
         ]
-      : [
-          {
-            command: "npm run run-app",
-            url: "http://localhost:6001/healthcheck",
-            reuseExistingServer: true,
-            timeout: 300000,
-            name: "app-server",
-            gracefulShutdown: { signal: "SIGTERM", timeout: 30000 },
-          },
-        ],
+      : undefined,
   use: {
     baseURL: getBaseUrl(),
     video: "retain-on-failure",

@@ -41,9 +41,10 @@ jobs:
         run: npm run test:integration
 
       - name: Run UI tests
-        run: |
+        run: | #pragma: allowlist secret
           cd tests/ui-tests
           touch .env
           echo "PRE_OR_POST_DEPLOY=pre" >> .env
           echo "PW_TEST_CONNECT_WS_ENDPOINT=ws://127.0.0.1:3000/" >> .env
+          echo "SESSION_SECRET=secret" >> .env
           npm run test

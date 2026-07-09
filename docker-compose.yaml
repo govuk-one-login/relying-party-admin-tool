@@ -10,8 +10,8 @@ services:
       - "9229:9229"
     volumes:
       - ./:/app
-      - ./tmp/keys:/tmp/keys
     environment:
       - DEBUG=express-session
       - ENVIRONMENT=${ENVIRONMENT}
+      - SESSION_SECRET=${SESSION_SECRET}
     restart: on-failure
