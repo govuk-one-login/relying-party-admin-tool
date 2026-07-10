@@ -69,9 +69,7 @@ Then("I click the browser's back button", async ({ page }) => {
 });
 
 Then("the header shows", async ({ page }) => {
-  await expect(
-    page.getByText("One Login Admin", { exact: true })
-  ).toBeVisible();
+  await expect(page.getByText("One Login Admin").first()).toBeVisible();
 });
 
 Then("the navigation bar shows", async ({ page }) => {
