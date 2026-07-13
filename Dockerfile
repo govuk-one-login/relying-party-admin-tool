@@ -1,23 +1,28 @@
-FROM node:24.15.0-alpine3.22@sha256:b689d4005875ae167178471a7a622ec2909459a3bbb32277260be1971af7a99f as builder
+FROM node:24.15.0-alpine3.22@sha256:b689d4005875ae167178471a7a622ec2909459a3bbb32277260be1971af7a99f AS builder
+
+WORKDIR /build
+
+COPY tsconfig.json tsconfig.json
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+COPY src src
+
+WORKDIR /build/src
+RUN npm ci && npm run build && npm ci --omit=dev
+
+FROM node:24.15.0-alpine3.22@sha256:b689d4005875ae167178471a7a622ec2909459a3bbb32277260be1971af7a99f AS final
 
 WORKDIR /app
 
-COPY . .
-
-RUN apk add --no-cache git && npm run install-all && npm run build && npm ci
-
-FROM node:24.15.0-alpine3.22@sha256:b689d4005875ae167178471a7a622ec2909459a3bbb32277260be1971af7a99f as final
+COPY --chown=node:node --from=builder /build/package*.json ./
+COPY --chown=node:node --from=builder /build/node_modules/ node_modules
+COPY --chown=node:node --from=builder /build/dist/ dist
 
 RUN apk add --no-cache tini
 RUN apk add --no-cache curl
 
-WORKDIR /app
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules/ node_modules
-COPY --from=builder /app/dist/ dist
-
-ENV NODE_ENV "production"
-ENV PORT 6001
+ENV NODE_ENV="production"
+ENV PORT=6001
 EXPOSE $PORT
 
 HEALTHCHECK CMD curl --fail http://localhost:6001/healthcheck || exit 1

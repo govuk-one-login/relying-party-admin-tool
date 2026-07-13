@@ -66,3 +66,15 @@ repos:
         language: system
         pass_filenames: false
         files: ^.*\.ts$
+  - repo: local
+    hooks:
+      - id: npm-ci
+        name: npm-ci
+        entry: bash
+        args:
+          - -c
+          - 'printf "%s\n" "$@" | xargs -I{} dirname {} | sort -u | while read -r dir; do (cd "$dir" && npm ci); done'
+          - -- # The above loops through all package-lock.json or package.json changes, dedupes the directories, and runs npm ci in each directory
+        language: system
+        pass_filenames: true
+        files: ^(.*/)?package(-lock)?\.json$

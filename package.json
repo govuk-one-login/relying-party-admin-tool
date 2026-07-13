@@ -7,8 +7,6 @@
     "node": ">=24.11.1 <25"
   },
   "scripts": {
-    "install-all": "npm ci && npm run install-submodules",
-    "install-submodules": "git submodule update --init --recursive",
     "build-docker": "docker build -t relying-party-admin-tool-frontend .",
     "build-ts": "tsc",
     "build": "npm run build-sass && npm run build-ts && npm run copy-assets",
@@ -54,7 +52,6 @@
     "vitest": "^4.1.8"
   },
   "devDependencies": {
-    "@playwright/test": "^1.59.1",
     "@types/express": "^5.0.6",
     "@types/node": "^25.2.2",
     "@types/nunjucks": "^3.2.6",

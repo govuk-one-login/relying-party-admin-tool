@@ -7,7 +7,7 @@
     "run-app": "cd ../../ && npm ci && npm run build && npm run start",
     "build": "docker build -t di-relying-party-admin-tool-frontend-ui-tests .",
     "install-browsers": "playwright install --with-deps chromium",
-    "start-test-server": "npm run build && docker run --network=host --rm --init di-relying-party-admin-tool-frontend-ui-tests run-server",
+    "start-test-server": "./run-tests.sh run-server",
     "watch": "nodemon -w ./tests -w ./utils -w ./.env.ts -w ./.env -e \"*\" --exec \"bddgen\"",
     "test": "npm ci && bddgen && playwright test",
     "test:ui": "npm ci && run-p test:ui:*",
@@ -16,9 +16,9 @@
     "test:report": "playwright show-report"
   },
   "devDependencies": {
-    "@playwright/test": "^1.58.2",
+    "@playwright/test": "~1.59.1",
     "@types/node": "^25.2.3",
-    "playwright": "^1.58.2",
+    "playwright": "~1.59.1",
     "playwright-bdd": "^9.0.0"
   },
   "dependencies": {
