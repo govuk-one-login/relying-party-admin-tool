@@ -13,6 +13,7 @@ declare module "express-session" {
   interface SessionData {
     newClientData?: {
       redirectUrls?: string[];
+      clientAuthenticationMethod?: "JWKS" | "STATIC" | "CLIENT_SECRET";
     };
   }
 }
