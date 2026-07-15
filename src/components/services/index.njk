@@ -9,47 +9,25 @@
 
   <ul class="govuk-list">
     <li>
-      {{
-        govukSummaryList({
-          card: {
-            title: { text: "RPAT Service 1" },
-            actions: {
-              items: [
-                {
-                  href: "#",
-                  text: "Manage",
-                  visuallyHiddenText: "RPAT Service 1"
-                }
-              ]
-            }
-          },
-          rows: [
-            {
-              key: { text: "Description" },
-              value: { text: "This is my service for RPAT" }
-            }
-          ]
-        })
-      }}
+      <a
+        class="govuk-body-l govuk-!-font-weight-bold govuk-link--no-visited-state"
+        href="#"
+        >RPAT Service 1</a
+      >
     </li>
+    <hr
+      class="govuk-section-break govuk-section-break--visible govuk-section-break--l"
+    />
     <li>
-      {{
-        govukSummaryList({
-          card: {
-            title: { text: "RPAT Service 2" },
-            actions: {
-              items: [
-                {
-                  href: "#",
-                  text: "Manage",
-                  visuallyHiddenText: "RPAT Service 2"
-                }
-              ]
-            }
-          }
-        })
-      }}
+      <a
+        class="govuk-body-l govuk-!-font-weight-bold govuk-link--no-visited-state"
+        href="#"
+        >RPAT Service 2</a
+      >
     </li>
+    <hr
+      class="govuk-section-break govuk-section-break--visible govuk-section-break--l"
+    />
   </ul>
 
   {{
