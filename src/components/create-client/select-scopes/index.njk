@@ -1,0 +1,62 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% set pageTitleName = "Select scopes" %}
+{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
+{% set serviceName %}{{ serviceName }}{% endset %}
+
+{% block beforeContent %}
+  {{
+    govukBreadcrumbs({
+    items: [
+      { text: "Your services", href: "/services" },
+      { text: serviceName, href: viewServiceUrl },
+      { text: "Create a client" } ] })
+  }}
+{% endblock %}
+
+{% block pageContent %}
+  <form class="form" action="select-scopes" method="post">
+    <h1 class="govuk-heading-l">Select your scopes</h1>
+    {% call govukInsetText() %}
+      OpenID will be automatically added to your scopes as it is required to sign in users
+    {% endcall %}
+    {{
+      govukCheckboxes({
+        name: "selected-scopes",
+        fieldset: {
+          legend: {
+            text: "What user information do you need?",
+            classes: "govuk-fieldset__legend--m"
+          }
+        },
+        hint: {
+          text: "Select all that apply."
+        },
+        items: [
+          {
+            value: "email",
+            text: "Email address"
+          },
+          {
+            value: "phone",
+            text: "Phone number"
+          },
+          {
+            value: "wallet_subject_id",
+            text: "Wallet subject ID"
+          }
+        ]
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Continue"
+      })
+    }}
+  </form>
+{% endblock %}

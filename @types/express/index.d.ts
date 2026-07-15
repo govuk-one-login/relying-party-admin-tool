@@ -15,6 +15,7 @@ declare module "express-session" {
       name?: string;
       redirectUrls?: string[];
       clientAuthenticationMethod?: "JWKS" | "STATIC" | "CLIENT_SECRET";
+      scopes?: string[];
     };
   }
 }
