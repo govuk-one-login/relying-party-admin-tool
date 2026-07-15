@@ -29,3 +29,9 @@ Feature: Create a new service page
     And I enter "My description" into the field "Describe your service"
     And I click the "Continue" button
     Then I am taken to the "service" page
+
+  Scenario: Create a new service page cancel button goes back to services page
+    Given I go to the "create service" page
+    And the page has finished loading
+    And I click the "Cancel" link
+    Then I am taken to the "services" page
