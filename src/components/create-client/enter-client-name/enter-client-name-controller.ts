@@ -15,7 +15,7 @@ export const createClientEnterClientNameGet = (): ExpressRouteFunc => {
     ) {
       res.render("create-client/enter-client-name/index.njk", {
         serviceName: "Service Name",
-        serviceId: "serviceId",
+        serviceId: req.params.serviceId as string,
       });
     } else {
       return res.redirect(PATH_NAMES.ROOT);

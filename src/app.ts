@@ -8,6 +8,7 @@ import { logger, loggerMiddleware } from "./utils/logger.js";
 import { frontendVitalSignsInit } from "@govuk-one-login/frontend-vital-signs";
 import {
   getProductPagesBaseUrl,
+  getSessionSecret,
   getVitalSignsIntervalSeconds,
   isLocalEnv,
 } from "./config.js";
@@ -16,6 +17,7 @@ import { applyOverloadProtection } from "./middleware/overload-protection-middle
 import { healthcheckRouter } from "./components/healthcheck/healthcheck-routes.js";
 import { servicesRouter } from "./routes/services-router.js";
 import { clientsRouter } from "./routes/client-router.js";
+import session from "express-session";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -41,7 +43,7 @@ async function createApp(): Promise<express.Application> {
   }
 
   app.use(express.json());
-  app.use(express.urlencoded({ extended: false }));
+  app.use(express.urlencoded({ extended: true }));
 
   app.use(healthcheckRouter);
 
@@ -57,6 +59,13 @@ async function createApp(): Promise<express.Application> {
     "/public",
     express.static(path.join(__dirname, "public"), {
       maxAge: isLocalEnv() ? "0" : "1y",
+    })
+  );
+
+  app.use(
+    session({
+      name: "rpat",
+      secret: getSessionSecret(),
     })
   );
 

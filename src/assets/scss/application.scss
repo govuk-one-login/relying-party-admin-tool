@@ -17,10 +17,20 @@
 @import "components/service-navigation";
 @import "components/skip-link";
 @import "components/summary-list";
+@import "components/table";
 @import "components/tag";
 @import "components/textarea";
 // end Design System component imports
 
 .govuk-service-navigation__item:last-child {
   margin-left: auto;
+}
+
+.button-as-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  display: inline;
 }

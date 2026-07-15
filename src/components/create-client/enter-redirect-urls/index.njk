@@ -1,0 +1,101 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% set pageTitleName = "Enter redirect urls" %}
+{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
+{% set serviceName %}{{ serviceName }}{% endset %}
+{% set redirectError = errors["redirect-url-input"] or errors["redirect-urls"] %}
+{% set rowItems = [] %}
+{% for redirectUrl in redirectUrls %}
+  {% set actionCellHtml %}
+    <input
+      type="hidden"
+      name="redirect-urls"
+      id="redirect-urls-{{ loop.index0 }}"
+      value="{{ redirectUrl }}"
+    />
+
+    <button
+      class="govuk-link button-as-link"
+      type="submit"
+      name="action"
+      value="delete-{{ loop.index0 }}"
+    >
+      Remove
+      <span class="govuk-visually-hidden">Remove {{ redirectUrl }}</span>
+    </button>
+  {% endset %}
+  {%
+    set _ = rowItems.push([
+      {
+        text: redirectUrl
+      },
+      {
+        html: actionCellHtml
+      }
+    ])
+  %}
+{% endfor %}
+
+{% block beforeContent %}
+  {{
+    govukBreadcrumbs({
+    items: [
+      { text: "Your services", href: "/services" },
+      { text: serviceName, href: viewServiceUrl },
+      { text: "Create a client" } ] })
+  }}
+{% endblock %}
+
+{% block pageContent %}
+  <form class="form" action="enter-redirect-urls" method="post">
+    {{
+      govukInput({
+        label: {
+          text: "Add a redirect URL",
+          classes: "govuk-label--l",
+          isPageHeading: true
+        },
+        hint:{
+          text: "You need at least one redirect URL for your client to work"
+        },
+        id: "redirect-url-input",
+        name: "redirect-url-input",
+        errorMessage: {
+          text: redirectError.text
+        } if (redirectError)
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Add",
+        classes: "govuk-button--secondary",
+        type: "Submit",
+        name: "action",
+        value: "add"
+      })
+    }}
+
+    {{
+      govukTable({
+        caption: "Redirect URLs",
+        captionClasses: "govuk-table__caption--m",
+        head: [],
+        rows:  rowItems
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Continue",
+        type: "Submit",
+        name: "action",
+        value: "continue"
+      })
+    }}
+  </form>
+{% endblock %}
