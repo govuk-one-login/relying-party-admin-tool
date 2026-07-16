@@ -25,6 +25,10 @@ export const createClientEnterClientNameGet = (): ExpressRouteFunc => {
 
 export const createClientEnterClientNamePost = (): ExpressRouteFunc => {
   return async function (req: Request, res: Response) {
+    req.session.newClientData = {
+      ...req.session.newClientData,
+      name: req.body.name,
+    };
     return res.redirect(
       populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SELECT_CLIENT_AUTHENTICATION, [
         req.params.serviceId as string,

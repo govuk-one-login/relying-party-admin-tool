@@ -65,11 +65,12 @@
     , provided by GOV.UK One Login.
   </p>
 
-  {{
-    govukButton({
-    text: "Start now",
-    href: "enter-client-name",
-    isStartButton: true
-    })
-  }}
+  <form class="form" method="post">
+    {{
+      govukButton({
+      text: "Start now",
+      isStartButton: true
+      })
+    }}
+  </form>
 {% endblock %}

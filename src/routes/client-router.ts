@@ -1,6 +1,9 @@
 import express from "express";
 import { PATH_NAMES } from "../app.constants.js";
-import { createClientStartGet } from "../components/create-client/create-client-controller.js";
+import {
+  createClientStartGet,
+  createClientStartPost,
+} from "../components/create-client/create-client-controller.js";
 import {
   createClientEnterClientNameGet,
   createClientEnterClientNamePost,
@@ -15,6 +18,8 @@ import { validateEnterRedirectUrlsRequest } from "../components/create-client/en
 const router = express.Router();
 
 router.get(PATH_NAMES.CREATE_CLIENT, createClientStartGet());
+
+router.post(PATH_NAMES.CREATE_CLIENT, createClientStartPost());
 
 router.get(
   PATH_NAMES.CREATE_CLIENT_ENTER_CLIENT_NAME,
