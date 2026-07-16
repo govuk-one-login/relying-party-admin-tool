@@ -19,6 +19,10 @@ import {
   createClientEnterRedirectUrlsPost,
 } from "../components/create-client/enter-redirect-urls/enter-redirect-urls-controller.js";
 import { validateEnterRedirectUrlsRequest } from "../components/create-client/enter-redirect-urls/enter-redirect-urls-validation.js";
+import {
+  createClientSelectScopesGet,
+  createClientSelectScopesPost,
+} from "../components/create-client/select-scopes/select-scopes-controller.js";
 
 const router = express.Router();
 
@@ -57,6 +61,16 @@ router.post(
   PATH_NAMES.CREATE_CLIENT_ENTER_REDIRECT_URLS,
   validateEnterRedirectUrlsRequest(),
   createClientEnterRedirectUrlsPost()
+);
+
+router.get(
+  PATH_NAMES.CREATE_CLIENT_SELECT_SCOPES,
+  createClientSelectScopesGet()
+);
+
+router.post(
+  PATH_NAMES.CREATE_CLIENT_SELECT_SCOPES,
+  createClientSelectScopesPost()
 );
 
 export { router as clientsRouter };

@@ -19,6 +19,8 @@ const pageNameToPath: Record<string, string> = {
     "/services/serviceId/clients/create/enter-redirect-urls",
   "create client - select scopes":
     "/services/serviceId/clients/create/select-scopes",
+  "create client - is identity verification supported":
+    "/services/serviceId/clients/create/identity-verification-support",
 };
 
 Then("the page meets our accessibility standards", async ({ page }) => {
@@ -151,5 +153,15 @@ Then(
   async ({ page }, radioButtonLabel: string) => {
     await expect(page.getByLabel(radioButtonLabel)).toBeVisible();
     await page.getByLabel(radioButtonLabel).check();
+    await expect(page.getByLabel(radioButtonLabel)).toBeChecked();
+  }
+);
+
+Then(
+  "I check the checkbox: {string}",
+  async ({ page }, checkboxLabel: string) => {
+    await expect(page.getByLabel(checkboxLabel)).toBeVisible();
+    await page.getByLabel(checkboxLabel).check();
+    await expect(page.getByLabel(checkboxLabel)).toBeChecked();
   }
 );
