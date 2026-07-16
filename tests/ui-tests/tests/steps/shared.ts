@@ -114,6 +114,10 @@ Given("I click the {string} button", async ({ page }, name: string) => {
   await page.getByRole("button", { name, exact: true }).click();
 });
 
+Given("I click the {string} link", async ({ page }, name: string) => {
+  await page.getByRole("link", { name, exact: true }).click();
+});
+
 Then("I am taken to the {string} page", async ({ page }, pageName: string) => {
   // eslint-disable-next-line playwright/no-networkidle
   await page.waitForLoadState("networkidle");
