@@ -145,3 +145,11 @@ Then(
     ).toBeVisible();
   }
 );
+
+Then(
+  "I check the radio button: {string}",
+  async ({ page }, radioButtonLabel: string) => {
+    await expect(page.getByLabel(radioButtonLabel)).toBeVisible();
+    await page.getByLabel(radioButtonLabel).check();
+  }
+);
