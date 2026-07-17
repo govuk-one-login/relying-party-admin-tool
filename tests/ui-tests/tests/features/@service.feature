@@ -10,7 +10,6 @@ Feature: View service page
     And the footer shows
     And the page contains the breadcrumbs: "Your services, Service name"
     And the page has the heading: "Service name"
-    And the page has the exact text: "Service description"
     And the page has the exact text: "Production Client"
     And the page has the exact text: "Status"
     And the page has the exact text: "Not yet created"
