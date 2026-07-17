@@ -9,9 +9,6 @@ export function validateServiceRequest(): ValidationChainFunc {
       asciiOnly: "Your service name must only use ASCII characters",
       maxLength: "Your service name must be less than 256 characters long",
     }),
-    validateServiceDescription({
-      asciiOnly: "Your service description must only use ASCII characters",
-    }),
     validateBodyMiddleware("create-service/index.njk"),
   ];
 }
@@ -29,13 +26,4 @@ function validateServiceName(validationMessages: {
     .withMessage(validationMessages.asciiOnly)
     .isLength({ max: 256 })
     .withMessage(validationMessages.maxLength);
-}
-
-function validateServiceDescription(validationMessages: {
-  asciiOnly: string;
-}): ValidationChain {
-  return body("description")
-    .if(body("description").notEmpty())
-    .isAscii()
-    .withMessage(validationMessages.asciiOnly);
 }
