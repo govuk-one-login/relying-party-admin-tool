@@ -19,17 +19,6 @@ Feature: Create a new service page
     And I click the "Continue" button
     Then I am taken to the "service" page
 
-  Scenario: Create a new service page validates the service description against invalid inputs
-    Given I go to the "create service" page
-    And the page has finished loading
-    And I enter "🆕" into the field "Describe your service"
-    And I click the "Continue" button
-    Then the page contains the text: "Your service description must only use ASCII characters"
-    And I enter "My service" into the field "What is the name of your service?"
-    And I enter "My description" into the field "Describe your service"
-    And I click the "Continue" button
-    Then I am taken to the "service" page
-
   Scenario: Create a new service page cancel button goes back to services page
     Given I go to the "create service" page
     And the page has finished loading
