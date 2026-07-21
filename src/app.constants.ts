@@ -1,5 +1,6 @@
 export const PATH_NAMES = {
   ROOT: "/",
+  "500_ERROR": "/error",
   HEALTHCHECK: "/healthcheck",
   SERVICES: "/services",
   CREATE_SERVICE: "/services/create",
