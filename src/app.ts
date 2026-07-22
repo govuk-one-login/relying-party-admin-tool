@@ -18,6 +18,7 @@ import { healthcheckRouter } from "./components/healthcheck/healthcheck-routes.j
 import { servicesRouter } from "./routes/services-router.js";
 import { clientsRouter } from "./routes/client-router.js";
 import session from "express-session";
+import { pageNotFoundRouter } from "./routes/error-router.js";
 import { setLocalVarsMiddleware } from "./middleware/set-local-vars-middleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -92,6 +93,10 @@ async function createApp(): Promise<express.Application> {
   app.use(indexRouter);
   app.use(servicesRouter);
   app.use(clientsRouter);
+
+  // Router for all previously used URLs, that we want to redirect on
+  // No URL left behind policy
+  app.use(pageNotFoundRouter);
 
   return app;
 }
