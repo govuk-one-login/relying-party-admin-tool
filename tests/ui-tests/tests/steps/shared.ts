@@ -7,6 +7,7 @@ const { Then, Given } = bdd;
 
 const pageNameToPath: Record<string, string> = {
   home: "/",
+  "404 error": "/random-page",
   "500 error": "/error",
   services: "/services",
   "create service": "/services/create",
