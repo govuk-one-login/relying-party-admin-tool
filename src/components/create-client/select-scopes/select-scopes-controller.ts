@@ -3,6 +3,7 @@ import { PATH_NAMES } from "../../../app.constants.js";
 import { ClientEnvironment, ExpressRouteFunc } from "../../../types.js";
 import { permissionsService } from "../../../services/permissions-service.js";
 import { populateUrlRoute } from "../../../utils/populate-url-route.js";
+import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
 
 export const createClientSelectScopesGet = (): ExpressRouteFunc => {
   return async function (req: Request, res: Response) {
@@ -38,7 +39,9 @@ export const createClientSelectScopesPost = (): ExpressRouteFunc => {
       scopes,
     };
     console.log(req.session.newClientData);
-    return res.redirect(
+    return saveSessionAndRedirect(
+      req,
+      res,
       populateUrlRoute(PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT, [
         req.params.serviceId as string,
       ])
