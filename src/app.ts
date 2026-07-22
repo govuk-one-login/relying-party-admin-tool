@@ -18,6 +18,7 @@ import { healthcheckRouter } from "./components/healthcheck/healthcheck-routes.j
 import { servicesRouter } from "./routes/services-router.js";
 import { clientsRouter } from "./routes/client-router.js";
 import session from "express-session";
+import { setLocalVarsMiddleware } from "./middleware/set-local-vars-middleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -70,6 +71,8 @@ async function createApp(): Promise<express.Application> {
   );
 
   app.locals.productPagesBaseUrl = getProductPagesBaseUrl();
+
+  app.use(setLocalVarsMiddleware);
 
   app.use((req, res, next) => {
     req.log = req.log.child({
