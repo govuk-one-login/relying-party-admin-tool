@@ -26,3 +26,16 @@ aws dynamodb create-table \
       AttributeName=sk,KeyType=RANGE \
    --provisioned-throughput \
       ReadCapacityUnits=5,WriteCapacityUnits=5
+
+aws dynamodb create-table \
+   --table-name local-frontend-sessions \
+   --attribute-definitions \
+      AttributeName=id,AttributeType=S \
+   --key-schema \
+      AttributeName=id,KeyType=HASH \
+   --provisioned-throughput \
+      ReadCapacityUnits=5,WriteCapacityUnits=5
+
+aws dynamodb update-time-to-live \
+    --table-name local-frontend-sessions \
+    --time-to-live-specification Enabled=true,AttributeName=expires
