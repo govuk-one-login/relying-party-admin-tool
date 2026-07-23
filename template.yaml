@@ -2,6 +2,12 @@ AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: Relying Party Admin Tool
 
+Metadata:
+  cfn-lint:
+    config:
+      ignore_checks:
+        - W8001 # Ignore unused conditions for now
+
 Parameters:
   Environment:
     Type: String
@@ -12,7 +18,24 @@ Parameters:
       - staging
       - integration
       - production
+  PermissionsBoundary:
+    Description: >
+      The ARN of the permissions boundary to apply when creating IAM roles.
+    Type: String
+    Default: none
+  VpcStackName:
+    Description: >
+      The name of the stack that defines the VPC in which this container will run.
+    Type: String
+  CodeSigningConfigArn:
+    Type: String
+    Description: >
+      The ARN of the Code Signing Config to use, provided by the deployment pipeline.
+    Default: "none"
 
+Conditions:
+  UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, "none"]]
+  UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, "none"]]
 Resources:
   #region Services DynamoDB Table
   ServicesTable:
