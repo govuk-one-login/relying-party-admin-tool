@@ -15,11 +15,11 @@ resource "aws_cloudformation_stack" "spoke_vpc_stack" {
     VpcLinkEnabled           = "Yes"
     ECRApiEnabled            = "Yes"
     CloudWatchLogsApiEnabled = "Yes"
+    SecretsManagerApiEnabled = "Yes" # pragma: allowlist secret
 
     # Disabled services
     DynamoDBApiEnabled            = "No"
     S3ApiEnabled                  = "No"
-    SecretsManagerApiEnabled      = "No"
     KMSApiEnabled                 = "No"
     SQSApiEnabled                 = "No"
     LambdaApiEnabled              = "No"
