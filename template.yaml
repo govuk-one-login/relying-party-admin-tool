@@ -33,6 +33,24 @@ Parameters:
       The ARN of the Code Signing Config to use, provided by the deployment pipeline.
     Default: "none"
 
+# region Tag Parameters
+  ProductTagValue:
+    Description: Value for the Product Tag
+    Type: String
+    Default: GOV.UK One Login
+  OwnerTagValue:
+    Description: Value for the Owner Tag
+    Type: String
+    Default: di-orchestration@digital.cabinet-office.gov.uk
+  SourceTagValue:
+    Description: Value for the Source Tag
+    Type: String
+    Default: govuk-one-login/relying-party-admin-tool/template.yaml
+  SystemTagValue:
+    Description: Value for the System Tag
+    Type: String
+    Default: RP Service Management
+ # endregion
 Conditions:
   UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, "none"]]
   UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, "none"]]
