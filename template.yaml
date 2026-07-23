@@ -32,6 +32,10 @@ Parameters:
     Description: >
       The ARN of the Code Signing Config to use, provided by the deployment pipeline.
     Default: "none"
+  ContainerPort:
+    Description: The port on which the container is running
+    Type: Number
+    Default: 6001
 
 # region Tag Parameters
   ProductTagValue:
@@ -105,7 +109,7 @@ Resources:
       HealthCheckGracePeriodSeconds: 5
       LoadBalancers:
         - ContainerName: !Sub "${AWS::StackName}-TaskDefinition"
-          ContainerPort: 6001
+          ContainerPort: !Ref ContainerPort
           TargetGroupArn: !Ref ApplicationLoadBalancerTargetGroup
       TaskDefinition: !Ref TaskDefinition
       NetworkConfiguration:
@@ -150,11 +154,11 @@ Resources:
                           - "/"
                           - Ref: AWS::StackId
       SecurityGroupIngress:
-        - Description: !Sub "Allow traffic from the load balancer on port 6001"
+        - Description: !Sub "Allow traffic from the load balancer on port ${ContainerPort}"
           SourceSecurityGroupId: !GetAtt ApplicationLoadBalancerSecurityGroup.GroupId
           IpProtocol: tcp
-          FromPort: 6001
-          ToPort: 6001
+          FromPort: !Ref ContainerPort
+          ToPort: !Ref ContainerPort
       VpcId:
         Fn::ImportValue: !Sub "${VpcStackName}-VpcId"
       Tags:
@@ -184,7 +188,7 @@ Resources:
         - Name: !Sub "${AWS::StackName}-TaskDefinition"
           Image: "CONTAINER-IMAGE-PLACEHOLDER"
           PortMappings:
-            - ContainerPort: 6001
+            - ContainerPort: !Ref ContainerPort
               Protocol: tcp
           Essential: true
           ReadonlyRootFilesystem: true
@@ -198,7 +202,7 @@ Resources:
           HealthCheck:
             Command:
               - "CMD-SHELL"
-              - "curl -f http://localhost:6001/healthcheck || exit 1"
+              - !Sub "curl -f http://localhost:${ContainerPort}/healthcheck || exit 1"
             Interval: 5
           Environment:
             - Name: "NODE_ENV"
@@ -355,8 +359,8 @@ Resources:
       HealthCheckTimeoutSeconds: 2
       HealthCheckIntervalSeconds: 5
       HealthyThresholdCount: 2
-      HealthCheckPort: 6001
-      Port: 6001
+      HealthCheckPort: !Ref ContainerPort
+      Port: !Ref ContainerPort
       Protocol: HTTP
       ProtocolVersion: HTTP1
       Matcher:
@@ -474,10 +478,10 @@ Resources:
     Properties:
       GroupId: !GetAtt ApplicationLoadBalancerSecurityGroup.GroupId
       DestinationSecurityGroupId: !GetAtt ContainerServiceSecurityGroup.GroupId
-      Description: !Sub "Allow traffic to Container Service on port 6001"
+      Description: !Sub "Allow traffic to Container Service on port ${ContainerPort}"
       IpProtocol: tcp
-      FromPort: 6001
-      ToPort: 6001
+      FromPort: !Ref ContainerPort
+      ToPort: !Ref ContainerPort
 
   ApplicationLoadBalancerListenerRuleRobots:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
