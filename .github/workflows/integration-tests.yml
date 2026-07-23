@@ -47,6 +47,7 @@ jobs:
           echo "PRE_OR_POST_DEPLOY=pre" >> .env
           echo "PW_TEST_CONNECT_WS_ENDPOINT=ws://127.0.0.1:3000/" >> .env
           echo "SESSION_SECRET=secret" >> .env
+          echo "SESSION_EXPIRY=1800000" >> .env
           echo "DYNAMO_ENDPOINT=http://127.0.0.1:8001" >> .env
           echo "AWS_ACCESS_KEY_ID=DUMMYIDEXAMPLE" >> .env
           echo "AWS_SECRET_ACCESS_KEY=DUMMYEXAMPLEKEY" >> .env

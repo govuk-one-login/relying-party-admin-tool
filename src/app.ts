@@ -8,6 +8,7 @@ import { logger, loggerMiddleware } from "./utils/logger.js";
 import { frontendVitalSignsInit } from "@govuk-one-login/frontend-vital-signs";
 import {
   getProductPagesBaseUrl,
+  getSessionExpiry,
   getSessionSecret,
   getVitalSignsIntervalSeconds,
   isLocalEnv,
@@ -20,6 +21,8 @@ import { clientsRouter } from "./routes/client-router.js";
 import session from "express-session";
 import { pageNotFoundRouter } from "./routes/error-router.js";
 import { setLocalVarsMiddleware } from "./middleware/set-local-vars-middleware.js";
+import { getSessionStore } from "./datastores/session-data-store.js";
+import { getSessionCookieOptions } from "./config/cookie.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -64,13 +67,26 @@ async function createApp(): Promise<express.Application> {
     })
   );
 
+  // Use in-memory sessions when running locally
+  const sessionStore = isLocalEnv() ? undefined : getSessionStore();
+
   app.use(
     session({
       name: "rpat",
+      store: sessionStore,
+      saveUninitialized: false,
       secret: getSessionSecret(),
+      resave: false,
+      unset: "destroy",
+      cookie: getSessionCookieOptions(
+        isDeployedEnvironment,
+        getSessionExpiry(),
+        getSessionSecret()
+      ),
     })
   );
 
+  app.locals.sessionStore = sessionStore;
   app.locals.productPagesBaseUrl = getProductPagesBaseUrl();
 
   app.use(setLocalVarsMiddleware);

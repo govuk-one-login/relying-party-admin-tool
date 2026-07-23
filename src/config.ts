@@ -20,6 +20,10 @@ export function getSessionSecret(): string {
   return process.env.SESSION_SECRET || "";
 }
 
+export function getSessionExpiry(): number {
+  return Number(process.env.SESSION_EXPIRY);
+}
+
 export function getProductPagesBaseUrl(): string {
   return PRODUCT_PAGE_BASE_URL[getAppEnv()] ?? PRODUCT_PAGE_BASE_URL.local;
 }
