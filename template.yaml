@@ -321,10 +321,10 @@ Resources:
       Type: application
       SecurityGroups:
         - !GetAtt ApplicationLoadBalancerSecurityGroup.GroupId
-      Subnets: # TODO: Right subnet?
-        - Fn::ImportValue: !Sub "${VpcStackName}-ProtectedSubnetIdA"
-        - Fn::ImportValue: !Sub "${VpcStackName}-ProtectedSubnetIdB"
-        - Fn::ImportValue: !Sub "${VpcStackName}-ProtectedSubnetIdC"
+      Subnets:
+        - Fn::ImportValue: !Sub "${VpcStackName}-PrivateSubnetIdA"
+        - Fn::ImportValue: !Sub "${VpcStackName}-PrivateSubnetIdB"
+        - Fn::ImportValue: !Sub "${VpcStackName}-PrivateSubnetIdC"
       LoadBalancerAttributes:
         - Key: access_logs.s3.enabled
           Value: "true"
