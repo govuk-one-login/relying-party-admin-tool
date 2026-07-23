@@ -6,3 +6,7 @@ transit_gateway_hub_account_id = "796973488515"
 transit_gateway_id             = "tgw-037ccd82182b7d1da"
 transit_gateway_ipam_pool      = "Development"
 allowed_promotion_accounts     = []
+domain_name                    = "manage.development.sign-in.service.gov.uk"
+additional_cloudfront_tags = {
+  FMSGlobalCustomPolicy = "true"
+}
