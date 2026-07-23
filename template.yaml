@@ -51,9 +51,24 @@ Parameters:
     Type: String
     Default: RP Service Management
  # endregion
+
 Conditions:
   UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, "none"]]
   UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, "none"]]
+
+Mappings:
+  EnvironmentConfiguration:
+    dev:
+      serviceDomain: "development.sign-in.service.gov.uk"
+    build:
+      serviceDomain: "build.sign-in.service.gov.uk"
+    staging:
+      serviceDomain: "staging.sign-in.service.gov.uk"
+    integration:
+      serviceDomain: "integration.sign-in.service.gov.uk"
+    production:
+      serviceDomain: "sign-in.service.gov.uk"
+
 Resources:
   #region Fargate Cluster
   ECSCluster:
@@ -134,6 +149,12 @@ Resources:
                       - Fn::Split:
                           - "/"
                           - Ref: AWS::StackId
+      SecurityGroupIngress:
+        - Description: !Sub "Allow traffic from the load balancer on port 6001"
+          SourceSecurityGroupId: !GetAtt ApplicationLoadBalancerSecurityGroup.GroupId
+          IpProtocol: tcp
+          FromPort: 6001
+          ToPort: 6001
       VpcId:
         Fn::ImportValue: !Sub "${VpcStackName}-VpcId"
       Tags:
@@ -476,6 +497,26 @@ Resources:
               - "/robots.txt"
       ListenerArn: !Ref ApplicationLoadBalancerListenerHTTPS
       Priority: 10
+
+  #endregion
+
+
+  # region DNS
+  ManageServiceSignInRootAliasRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: !Sub
+        - "manage.${ServiceDomain}"
+        - ServiceDomain: !FindInMap [EnvironmentConfiguration, !Ref Environment, serviceDomain]
+      Type: A
+      HostedZoneId:
+        Fn::ImportValue: hosted-zone-HostedZoneID
+      AliasTarget:
+        DNSName:
+          Fn::ImportValue: cloudfront-distribution-DistributionDomain
+        HostedZoneId: "Z2FDTNDATAQYW2" # Cloudfront Hosted Zone ID: https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-route53-recordset-aliastarget.html#:~:text=vpc%2Dendpoints.-,CloudFront%20distribution,-Specify%20Z2FDTNDATAQYW2.%20This
+        EvaluateTargetHealth: false
+  #endregion
 
   # region Logging
 
