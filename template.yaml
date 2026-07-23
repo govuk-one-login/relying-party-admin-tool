@@ -425,6 +425,28 @@ Resources:
         - Key: Owner
           Value: !Ref OwnerTagValue
 
+  ApplicationLoadBalancerSecurityGroupIngressHTTP:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !GetAtt ApplicationLoadBalancerSecurityGroup.GroupId
+      Description: !Sub "Allow HTTP traffic from Cloudfront VPC origin SG"
+      SourceSecurityGroupId:
+        Fn::ImportValue: cloudfront-distribution-VpcOriginSgId
+      IpProtocol: tcp
+      FromPort: 80
+      ToPort: 80
+
+  ApplicationLoadBalancerSecurityGroupIngressHTTPS:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !GetAtt ApplicationLoadBalancerSecurityGroup.GroupId
+      Description: !Sub "Allow HTTPs traffic from Cloudfront VPC origin SG"
+      SourceSecurityGroupId:
+        Fn::ImportValue: cloudfront-distribution-VpcOriginSgId
+      IpProtocol: tcp
+      FromPort: 443
+      ToPort: 443
+
 
   ApplicationLoadBalancerSecurityGroupEgress:
     Type: AWS::EC2::SecurityGroupEgress
