@@ -86,6 +86,7 @@ Resources:
       Cluster: !Ref ECSCluster
       PropagateTags: SERVICE
       LaunchType: FARGATE
+      TaskDefinition: !Ref TaskDefinition
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: DISABLED
@@ -145,6 +146,140 @@ Resources:
         - Key: Owner
           Value: !Ref OwnerTagValue
   # endregion
+
+
+  # region Task Definition
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      ContainerDefinitions:
+        - Name: !Sub "${AWS::StackName}-TaskDefinition"
+          Image: "CONTAINER-IMAGE-PLACEHOLDER"
+          PortMappings:
+            - ContainerPort: 6001
+              Protocol: tcp
+          Essential: true
+          ReadonlyRootFilesystem: true
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref TaskLogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-create-group: "true"
+              awslogs-stream-prefix: "ecs"
+          HealthCheck:
+            Command:
+              - "CMD-SHELL"
+              - "curl -f http://localhost:6001/healthcheck || exit 1"
+            Interval: 5
+          Environment:
+            - Name: "NODE_ENV"
+              Value: "production"
+            - Name: "ENVIRONMENT"
+              Value: !Sub "${Environment}"
+      Cpu: 512 # TODO: Review
+      Memory: 2048 # TODO: Review
+      ExecutionRoleArn: !GetAtt TaskExecutionRole.Arn
+      TaskRoleArn: !GetAtt TaskRole.Arn
+      Family: !Sub "${AWS::StackName}-server"
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-TaskDefinition"
+        - Key: Service
+          Value: ci/cd
+        - Key: Source
+          Value: !Ref SourceTagValue
+        - Key: Product
+          Value: !Ref ProductTagValue
+        - Key: System
+          Value: !Ref SystemTagValue
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Owner
+          Value: !Ref OwnerTagValue
+
+  TaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${AWS::StackName}-TaskExecutionRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+      Policies:
+        - PolicyName: CreateLogGroup
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource:
+                  - !GetAtt TaskLogGroup.Arn
+                  - !Sub "${TaskLogGroup.Arn}:*"
+      PermissionsBoundary: !If
+        - UsePermissionsBoundary
+        - !Ref PermissionsBoundary
+        - !Ref AWS::NoValue
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-TaskExecutionRole"
+        - Key: Service
+          Value: ci/cd
+        - Key: Source
+          Value: SourceTagValue
+        - Key: Product
+          Value: !Ref ProductTagValue
+        - Key: System
+          Value: !Ref SystemTagValue
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Owner
+          Value: !Ref OwnerTagValue
+
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${AWS::StackName}-TaskRole"
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies: [] # TODO: Will probably need some policies
+      PermissionsBoundary: !If
+        - UsePermissionsBoundary
+        - !Ref PermissionsBoundary
+        - !Ref AWS::NoValue
+      Tags:
+        - Key: Product
+          Value: !Ref ProductTagValue
+        - Key: System
+          Value: !Ref SystemTagValue
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-TaskRole"
+        - Key: Owner
+          Value: !Ref OwnerTagValue
+        - Key: Source
+          Value: !Ref SourceTagValue
+
+  #endregion
+
 
   # region Logging
 
