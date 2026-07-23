@@ -82,6 +82,7 @@ Resources:
 
   ContainerService:
     Type: AWS::ECS::Service
+    DependsOn: ApplicationLoadBalancerListenerHTTPS
     Properties:
       Cluster: !Ref ECSCluster
       PropagateTags: SERVICE
