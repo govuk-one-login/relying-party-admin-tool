@@ -18,6 +18,8 @@ resource "aws_cloudformation_stack" "main_pipeline_stack" {
     TestImageRepositoryUri          = contains(["build"], var.environment) ? aws_cloudformation_stack.test_image_ecr_stack.outputs["TestRunnerImageEcrRepositoryUri"] : "none"
     IncludePromotion                = contains(["build", "staging"], var.environment) ? "Yes" : "No"
     AllowedAccounts                 = join(",", var.allowed_promotion_accounts)
+    AllowedServiceOne               = "DynamoDB"
+    AllowedServiceTwo               = "ECR & ECS"
   }
 
   capabilities = ["CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
