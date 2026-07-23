@@ -6,7 +6,7 @@ resource "aws_cloudformation_stack" "main_pipeline_stack" {
   parameters = {
     SAMStackName                    = "${var.environment}-rpat-deploy"
     Environment                     = var.environment
-    VpcStackName                    = "vpc"
+    VpcStackName                    = "spoke-vpc"
     SigningProfileArn               = "none"
     SigningProfileVersionArn        = "none"
     ContainerSignerKmsKeyArn        = var.container_signer_kms_key_arn
