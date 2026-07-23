@@ -38,7 +38,6 @@ export const createClientSelectScopesPost = (): ExpressRouteFunc => {
       ...req.session.newClientData,
       scopes,
     };
-    console.log(req.session.newClientData);
     return saveSessionAndRedirect(
       req,
       res,
