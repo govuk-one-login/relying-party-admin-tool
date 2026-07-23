@@ -55,6 +55,31 @@ Conditions:
   UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, "none"]]
   UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, "none"]]
 Resources:
+  #region Fargate Cluster
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Sub "${AWS::StackName}-ECSCluster"
+      ClusterSettings:
+        - Name: containerInsights
+          Value: enabled
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-ECSCluster"
+        - Key: Source
+          Value: !Ref SourceTagValue
+        - Key: Service
+          Value: ci/cd
+        - Key: Product
+          Value: !Ref ProductTagValue
+        - Key: System
+          Value: !Ref SystemTagValue
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Owner
+          Value: !Ref OwnerTagValue
+
+
   #region Services DynamoDB Table
   ServicesTable:
     Type: AWS::DynamoDB::Table
