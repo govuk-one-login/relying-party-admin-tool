@@ -86,6 +86,11 @@ Resources:
       Cluster: !Ref ECSCluster
       PropagateTags: SERVICE
       LaunchType: FARGATE
+      HealthCheckGracePeriodSeconds: 5
+      LoadBalancers:
+        - ContainerName: !Sub "${AWS::StackName}-TaskDefinition"
+          ContainerPort: 6001
+          TargetGroupArn: !Ref ApplicationLoadBalancerTargetGroup
       TaskDefinition: !Ref TaskDefinition
       NetworkConfiguration:
         AwsvpcConfiguration:
