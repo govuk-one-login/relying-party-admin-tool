@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 
 Description: >
   devplatform-deploy cloudfront-distribution template version: VERSION_PLACEHOLDER
@@ -22,7 +22,8 @@ Parameters:
   FraudHeadersFunctionName:
     Description: Name of the TICF Fraud Headers Function. It will only be applied if FraudHeaderEnabled is set to 'true'.
     Type: String
-    AllowedValues: ["TICFFraudHeadersFunction", "TICFFraudHeadersCloudFrontFunction"]
+    AllowedValues:
+      ["TICFFraudHeadersFunction", "TICFFraudHeadersCloudFrontFunction"]
     Default: "TICFFraudHeadersFunction"
   EnableCustomErrorPages:
     Description: Adds custom error page response to CloudFront distribution
@@ -83,7 +84,12 @@ Parameters:
   LogDestination:
     Type: String
     Description: "The suffix of the CSLS Kinesis Data Stream for CloudWatch logs. Default: csls_cw_logs_destination_prodpython-2"
-    AllowedValues: ["csls_cw_logs_destination_prodpython", "csls_cw_logs_destination_prodpython-2", "none"]
+    AllowedValues:
+      [
+        "csls_cw_logs_destination_prodpython",
+        "csls_cw_logs_destination_prodpython-2",
+        "none",
+      ]
     Default: "csls_cw_logs_destination_prodpython-2"
   LoadbalancerDnsName:
     Type: String
@@ -114,7 +120,6 @@ Conditions:
   AddWafACLLogging: !Not [!Equals [!Ref LogDestination, "none"]]
 
 Resources:
-
   OriginRequestPolicy:
     Type: AWS::CloudFront::OriginRequestPolicy
     Properties:
@@ -143,7 +148,11 @@ Resources:
         Comment: !Sub "${AWS::StackName}"
         Aliases:
           - !Ref DistributionAlias
-          - !If [CreateWWWPrefix, !Sub "www.${DistributionAlias}", !Ref "AWS::NoValue"]
+          - !If [
+              CreateWWWPrefix,
+              !Sub "www.${DistributionAlias}",
+              !Ref "AWS::NoValue",
+            ]
           - !If [CreateAliasOne, !Ref DistAliasOne, !Ref "AWS::NoValue"]
           - !If [CreateAliasTwo, !Ref DistAliasTwo, !Ref "AWS::NoValue"]
           - !If [CreateAliasThree, !Ref DistAliasThree, !Ref "AWS::NoValue"]
@@ -176,9 +185,9 @@ Resources:
             Id: Error-Bucket
             OriginAccessControlId: !GetAtt ErrorBucketOAC.Id
             S3OriginConfig:
-              OriginAccessIdentity: ''
+              OriginAccessIdentity: ""
         HttpVersion: "http2"
-        Enabled: 'true'
+        Enabled: "true"
         PriceClass: PriceClass_100 #eu/us
         DefaultCacheBehavior:
           AllowedMethods:
@@ -216,7 +225,8 @@ Resources:
           - Bucket: "log-archive-cloudfront-logs-523017967436-eu-west-2.s3.amazonaws.com"
             Prefix: !Sub "${AWS::AccountId}/${AWS::StackName}/"
           - !Ref "AWS::NoValue"
-        WebACLId: !If [ApplyCloudfrontWaf, !Ref CloudFrontWafACL, !Ref "AWS::NoValue"]
+        WebACLId:
+          !If [ApplyCloudfrontWaf, !Ref CloudFrontWafACL, !Ref "AWS::NoValue"]
       Tags:
         - Key: "Name"
           Value: !Sub "${AWS::StackName}-CloudfrontDistribution"
@@ -235,7 +245,6 @@ Resources:
         OriginAccessControlOriginType: s3
         SigningBehavior: always
         SigningProtocol: sigv4
-
 
 Outputs:
   DistributionId:

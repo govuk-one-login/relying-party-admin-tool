@@ -23,6 +23,11 @@ import {
   createClientSelectScopesGet,
   createClientSelectScopesPost,
 } from "../components/create-client/select-scopes/select-scopes-controller.js";
+import {
+  createClientIsIdentityVerificationSupportedGet,
+  createClientIsIdentityVerificationSupportedPost,
+} from "../components/create-client/support-identity-verification/support-identity-verification-controller.js";
+import { validateIsIdentityVerificationSupportedRequest } from "../components/create-client/support-identity-verification/support-identity-verification-validation.js";
 
 const router = express.Router();
 
@@ -71,6 +76,17 @@ router.get(
 router.post(
   PATH_NAMES.CREATE_CLIENT_SELECT_SCOPES,
   createClientSelectScopesPost()
+);
+
+router.get(
+  PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT,
+  createClientIsIdentityVerificationSupportedGet()
+);
+
+router.post(
+  PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT,
+  validateIsIdentityVerificationSupportedRequest(),
+  createClientIsIdentityVerificationSupportedPost()
 );
 
 export { router as clientsRouter };

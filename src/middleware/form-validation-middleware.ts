@@ -33,7 +33,7 @@ export function validateBodyMiddleware(
         ? postValidationLocals(req)
         : undefined;
 
-    if (!isObjectEmpty(errors)) {
+    if (!isObjectEmpty(errors) || locals?.errors !== undefined) {
       return renderBadRequest(res, req, template, errors, locals);
     }
     next();

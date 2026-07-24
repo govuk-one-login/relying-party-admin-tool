@@ -1,0 +1,60 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitleName = "Select token authentication method" %}
+{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
+{% set serviceName %}{{ serviceName }}{% endset %}
+
+{% block beforeContent %}
+  {{
+    govukBreadcrumbs({
+    items: [
+      { text: "Your services", href: "/services" },
+      { text: serviceName, href: viewServiceUrl },
+      { text: "Create a client" } ] })
+  }}
+{% endblock %}
+
+{% block pageContent %}
+  <form class="form" action="support-identity-verification" method="post">
+    <h1 class="govuk-heading-l">Is your client using identity verification?</h1>
+
+    <p class="govuk-body">This will require:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>claims your client requires</li>
+      <li>required levels of confidence</li>
+      <li>landing page url</li>
+    </ul>
+    <p class="govuk-body">
+      This can be added/changed after your client is created. This cannot be
+      used injuction with client secret.
+    </p>
+
+    {{
+      govukRadios({
+        name: "support-identity-verification",
+        items: [
+          {
+            value: "true",
+            text: "Yes"
+          },
+          {
+            value: "false",
+            text: "No"
+          }
+        ],
+        errorMessage: {
+        text: errors["support-identity-verification"].text
+      } if (errors["support-identity-verification"])
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Continue"
+      })
+    }}
+  </form>
+{% endblock %}
