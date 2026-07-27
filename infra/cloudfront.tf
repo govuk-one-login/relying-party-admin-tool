@@ -11,7 +11,7 @@ resource "aws_cloudformation_stack" "cloudfront_distribution" {
     DeployVpcOrign                        = true
     VpcId                                 = aws_cloudformation_stack.spoke_vpc_stack.outputs["VpcId"]
   }
-  template_body = file("./templates/cloudfront-template.yaml")
+  template_body = file("./templates/cloudfront-template.yaml") # TODO: Swap this back to the dev-platform template when VPC origins are supported: https://github.com/govuk-one-login/devplatform-deploy/tree/main/cloudfront-distribution
   capabilities  = ["CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
   depends_on    = [aws_cloudformation_stack.certificate_stack_virginia]
 
