@@ -291,7 +291,30 @@ Resources:
               Service: ecs-tasks.amazonaws.com
             Action:
               - sts:AssumeRole
-      Policies: [] # TODO: Will probably need some policies
+      Policies:
+        - PolicyName: "SessionTableCRUD"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "dynamodb:DescribeTable"
+                  - "dynamodb:PutItem"
+                  - "dynamodb:DeleteItem"
+                  - "dynamodb:GetItem"
+                  - "dynamodb:Scan"
+                  - "dynamodb:UpdateItem"
+                Resource:
+                  - !GetAtt SessionsTable.Arn
+        - PolicyName: "SessionTableKmsEncryptDecrypt"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - kms:Decrypt
+                  - kms:Encrypt
+                Resource: !GetAtt SessionsTableEncryptionKey.Arn
       PermissionsBoundary: !If
         - UsePermissionsBoundary
         - !Ref PermissionsBoundary
