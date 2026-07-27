@@ -26,7 +26,7 @@ When running tests locally they are run against `http://localhost:6001` by defau
 
 ### Steps to run the tests:
 
-Copy the file `ui-tests/.env.example` to `ui-tests/.env`.
+Copy the file `ui-tests/.env.example` to `ui-tests/.env`. Ensure `scripts/create-local-tables.sh` has been ran at least once to update to latest tables.
 
 To run the tests:
 
