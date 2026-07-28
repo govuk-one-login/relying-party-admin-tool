@@ -90,3 +90,14 @@ variable "transit_gateway_ipam_pool" {
     error_message = "Valid values for the IPAM pool are: (Development, Build, Staging, Integration, Production)"
   }
 }
+variable "domain_name" {
+  type        = string
+  description = "Domain of the application"
+}
+
+
+variable "additional_cloudfront_tags" {
+  type        = map(string)
+  description = "A map of additional tags to apply to the Cloudfront stack"
+  default     = {}
+}

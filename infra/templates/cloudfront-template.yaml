@@ -1,0 +1,338 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: >
+  devplatform-deploy cloudfront-distribution template version: VERSION_PLACEHOLDER
+Parameters:
+  DistributionAlias:
+    Description: The DNS name to be used by cloudfront distribution, e.g. your frontend domain
+    Type: String
+  CloudFrontCertArn:
+    Description: The ARN for the CloudFront certificate
+    Type: String
+  AddWWWPrefix:
+    Description: Add a 'www' subdomain to the CloudFront distribution
+    Type: String
+    AllowedValues: ["true", "false"]
+    Default: "false"
+  FraudHeaderEnabled:
+    Description: Adds the fraud header to viewer-requests
+    Type: String
+    AllowedValues: ["true", "false"]
+    Default: "false"
+  FraudHeadersFunctionName:
+    Description: Name of the TICF Fraud Headers Function. It will only be applied if FraudHeaderEnabled is set to 'true'.
+    Type: String
+    AllowedValues: ["TICFFraudHeadersFunction", "TICFFraudHeadersCloudFrontFunction"]
+    Default: "TICFFraudHeadersFunction"
+  EnableCustomErrorPages:
+    Description: Adds custom error page response to CloudFront distribution
+    Type: String
+    AllowedValues: ["true", "false"]
+    Default: "true"
+  CloudFrontWafACL:
+    Type: String
+    Description: The ARN of the External Global Cloudfront Web ACL.
+    AllowedPattern: "(arn:aws:wafv2:.*:.*:global.*)|(none)"
+    ConstraintDescription: The service protection ACL must be Global to apply to an Cloudfront, or 'none'
+    Default: "none"
+  StandardLoggingEnabled:
+    Description: Adds standard logging to an S3 bucket
+    Type: String
+    AllowedValues: ["true", "false"]
+    Default: "false"
+  DistAliasOne:
+    Description: An alias domain for the distribution
+    Type: String
+    Default: ""
+  DistAliasTwo:
+    Description: An alias domain for the distribution
+    Type: String
+    Default: ""
+  DistAliasThree:
+    Description: An alias domain for the distribution
+    Type: String
+    Default: ""
+  DistAliasFour:
+    Description: An alias domain for the distribution
+    Type: String
+    Default: ""
+  DistAliasFive:
+    Description: An alias domain for the distribution
+    Type: String
+    Default: ""
+  DistAliasSix:
+    Description: An alias domain for the distribution
+    Type: String
+    Default: ""
+  DistAliasSeven:
+    Description: An alias domain for the distribution
+    Type: String
+    Default: ""
+  DistAliasEight:
+    Description: An alias domain for the distribution
+    Type: String
+    Default: ""
+  DistAliasNine:
+    Description: An alias domain for the distribution
+    Type: String
+    Default: ""
+  DistAliasTen:
+    Description: An alias domain for the distribution
+    Type: String
+    Default: ""
+  LogDestination:
+    Type: String
+    Description: "The suffix of the CSLS Kinesis Data Stream for CloudWatch logs. Default: csls_cw_logs_destination_prodpython-2"
+    AllowedValues: ["csls_cw_logs_destination_prodpython", "csls_cw_logs_destination_prodpython-2", "none"]
+    Default: "csls_cw_logs_destination_prodpython-2"
+  DeployVpcOrign:
+    Type: String
+    AllowedValues: ["true", "false"]
+    Default: "false"
+  PrivateLoadApplicationLoadBalancerArn:
+    Type: String
+    Default: "none"
+  LoadbalancerDnsName:
+    Type: String
+    Default: "none"
+  VpcId:
+    Type: String
+    Default: "none"
+
+Transform:
+  - AWS::Serverless-2016-10-31
+
+Conditions:
+  UseCustomErrorPages: !Equals [true, !Ref EnableCustomErrorPages]
+  CreateWWWPrefix: !Equals [true, !Ref AddWWWPrefix]
+  AddFraudHeader: !Equals [true, !Ref FraudHeaderEnabled]
+  ApplyCloudfrontWaf: !Not [!Equals [!Ref CloudFrontWafACL, "none"]]
+  AddStandardLogging: !Equals [true, !Ref StandardLoggingEnabled]
+  CreateAliasOne: !Not [!Equals ["", !Ref DistAliasOne]]
+  CreateAliasTwo: !Not [!Equals ["", !Ref DistAliasTwo]]
+  CreateAliasThree: !Not [!Equals ["", !Ref DistAliasThree]]
+  CreateAliasFour: !Not [!Equals ["", !Ref DistAliasFour]]
+  CreateAliasFive: !Not [!Equals ["", !Ref DistAliasFive]]
+  CreateAliasSix: !Not [!Equals ["", !Ref DistAliasSix]]
+  CreateAliasSeven: !Not [!Equals ["", !Ref DistAliasSeven]]
+  CreateAliasEight: !Not [!Equals ["", !Ref DistAliasEight]]
+  CreateAliasNine: !Not [!Equals ["", !Ref DistAliasNine]]
+  CreateAliasTen: !Not [!Equals ["", !Ref DistAliasTen]]
+  AddWafACLLogging: !Not [!Equals [!Ref LogDestination, "none"]]
+  CreateVpcOrigin: !Equals [true, !Ref DeployVpcOrign]
+
+Resources:
+
+  CloudFrontVpcOrigin:
+    Type: AWS::CloudFront::VpcOrigin
+    Condition: CreateVpcOrigin
+    Properties:
+      VpcOriginEndpointConfig:
+          Arn: !Ref PrivateLoadApplicationLoadBalancerArn
+          Name: !Sub ${AWS::StackName}-vpc-origin
+          OriginProtocolPolicy: https-only
+          OriginSSLProtocols:
+          - TLSv1.2
+
+  OriginRequestPolicy:
+    Type: AWS::CloudFront::OriginRequestPolicy
+    Properties:
+      OriginRequestPolicyConfig:
+        Name: !Sub "${AWS::StackName}-AllViewerAndNeededCloudFrontHeaders"
+        Comment: "Policy that includes all viewer headers, and needed Cloudfront headers for the fraud function"
+        CookiesConfig:
+          CookieBehavior: "all"
+        HeadersConfig:
+          HeaderBehavior: "allViewerAndWhitelistCloudFront"
+          Headers:
+            - "CloudFront-Viewer-JA3-Fingerprint"
+            - "CloudFront-Viewer-Country"
+            - "CloudFront-Viewer-Address"
+            - "CloudFront-Forwarded-Proto"
+        QueryStringsConfig:
+          QueryStringBehavior: "all"
+
+  # CloudFront Distribution
+  CloudfrontDistribution:
+    #checkov:skip=CKV_AWS_86: No Access Logs setup is required
+    #checkov:skip=CKV_AWS_68: No WAF is required
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Comment: !Sub "${AWS::StackName}"
+        Aliases:
+          - !Ref DistributionAlias
+          - !If [CreateWWWPrefix, !Sub "www.${DistributionAlias}", !Ref "AWS::NoValue"]
+          - !If [CreateAliasOne, !Ref DistAliasOne, !Ref "AWS::NoValue"]
+          - !If [CreateAliasTwo, !Ref DistAliasTwo, !Ref "AWS::NoValue"]
+          - !If [CreateAliasThree, !Ref DistAliasThree, !Ref "AWS::NoValue"]
+          - !If [CreateAliasFour, !Ref DistAliasFour, !Ref "AWS::NoValue"]
+          - !If [CreateAliasFive, !Ref DistAliasFive, !Ref "AWS::NoValue"]
+          - !If [CreateAliasSix, !Ref DistAliasSix, !Ref "AWS::NoValue"]
+          - !If [CreateAliasSeven, !Ref DistAliasSeven, !Ref "AWS::NoValue"]
+          - !If [CreateAliasEight, !Ref DistAliasEight, !Ref "AWS::NoValue"]
+          - !If [CreateAliasNine, !Ref DistAliasNine, !Ref "AWS::NoValue"]
+          - !If [CreateAliasTen, !Ref DistAliasTen, !Ref "AWS::NoValue"]
+        CustomErrorResponses: !If
+          - UseCustomErrorPages
+          - - ErrorCode: 502
+              ResponseCode: 502
+              ResponsePagePath: /cloudfront-error/502.html
+            - ErrorCode: 503
+              ResponseCode: 503
+              ResponsePagePath: /cloudfront-error/503.html
+            - ErrorCode: 504
+              ResponseCode: 504
+              ResponsePagePath: /cloudfront-error/504.html
+          - !Ref AWS::NoValue
+        Origins:
+          - DomainName: !Ref LoadbalancerDnsName
+            Id: Origin
+            VpcOriginConfig:
+              OriginReadTimeout: 60 # TODO figure out if this aligns with an ALB/Express container?
+              VpcOriginId: !GetAtt CloudFrontVpcOrigin.Id
+          - DomainName: error-page-pipeline-cferrorpagebucket-pu7snxsncu6d.s3.eu-west-2.amazonaws.com
+            Id: Error-Bucket
+            OriginAccessControlId: !GetAtt ErrorBucketOAC.Id
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+        HttpVersion: "http2"
+        Enabled: 'true'
+        PriceClass: PriceClass_100 #eu/us
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+            - PUT
+            - PATCH
+            - POST
+            - DELETE
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad #Managed-CachingDisabled
+          TargetOriginId: Origin
+          OriginRequestPolicyId: !Ref OriginRequestPolicy
+          ViewerProtocolPolicy: redirect-to-https
+          FunctionAssociations:
+            - !If
+              - AddFraudHeader
+              - EventType: viewer-request
+                FunctionARN: !Sub "arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:function/${FraudHeadersFunctionName}" #Placed in every account that hosts a frontend
+              - !Ref "AWS::NoValue"
+        CacheBehaviors:
+          - PathPattern: /cloudfront-error/*
+            TargetOriginId: Error-Bucket
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 #Managed-CachingOptimised
+        ViewerCertificate:
+          MinimumProtocolVersion: TLSv1.2_2018
+          SslSupportMethod: sni-only
+          AcmCertificateArn: !Ref CloudFrontCertArn
+        Logging: !If
+          - AddStandardLogging
+          - Bucket: "log-archive-cloudfront-logs-523017967436-eu-west-2.s3.amazonaws.com"
+            Prefix: !Sub "${AWS::AccountId}/${AWS::StackName}/"
+          - !Ref "AWS::NoValue"
+        WebACLId: !If [ApplyCloudfrontWaf, !Ref CloudFrontWafACL, !Ref "AWS::NoValue"]
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${AWS::StackName}-CloudfrontDistribution"
+        - Key: "Service"
+          Value: "ci/cd"
+        - Key: "Source"
+          Value: "govuk-one-login/devplatform-deploy/cloudfront-distribution/template.yaml"
+
+  # Unable to retrieve Id attribute for AWS::CloudFront::OriginAccessControl, with error message Access denied for operation 'AWS::CloudFront::OriginAccessControl'.
+  ErrorBucketOAC:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub "${AWS::StackName}-ErrorBucketOAC"
+        Description: Allow CFN Distribution access to the error pages S3 bucket
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+
+  VpcOriginDescribeSgPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: "Allows the Custom Resource Lambda to describe EC2 security groups"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - ec2:DescribeSecurityGroups
+            Resource: "*" # No resource level policies
+            Condition:
+              StringEquals:
+                aws:RequestedRegion: !Ref AWS::Region
+
+  VpcOriginSgLookupFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.lambda_handler
+      Runtime: python3.12
+      Timeout: 30
+      Policies:
+        - !Ref VpcOriginDescribeSgPolicy
+      InlineCode: |
+        import boto3
+        import cfnresponse
+
+        def lambda_handler(event, context):
+            # Always return SUCCESS on delete to prevent stack deletion failures
+            if event['RequestType'] == 'Delete':
+                cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
+                return
+
+            try:
+                ec2 = boto3.client('ec2')
+                vpc_id = event['ResourceProperties']['VpcId']
+
+                # Query EC2 for the specific CloudFront managed security group in your VPC
+                response = ec2.describe_security_groups(
+                    Filters=[
+                        {'Name': 'group-name', 'Values': ['CloudFront-VPCOrigins-Service-SG']},
+                        {'Name': 'vpc-id', 'Values': [vpc_id]}
+                    ]
+                )
+
+                if response['SecurityGroups']:
+                    sg_id = response['SecurityGroups'][0]['GroupId']
+                    # Return the Security Group ID to CloudFormation
+                    cfnresponse.send(event, context, cfnresponse.SUCCESS, {'SecurityGroupId': sg_id})
+                else:
+                    cfnresponse.send(event, context, cfnresponse.FAILED, {}, reason="CloudFront VPC Origin SG not found in the specified VPC.")
+            except Exception as e:
+                print(f"Error: {str(e)}")
+                cfnresponse.send(event, context, cfnresponse.FAILED, {}, reason=str(e))
+
+  GetVpcOriginSgId:
+    Type: Custom::VpcOriginSgLookup
+    DependsOn: CloudFrontVpcOrigin
+    Properties:
+      ServiceToken: !GetAtt VpcOriginSgLookupFunction.Arn
+      VpcId: !Ref VpcId
+
+Outputs:
+  DistributionId:
+    Description: The ID of the distribution.
+    Value: !Ref CloudfrontDistribution
+    Export:
+      Name: !Sub "${AWS::StackName}-DistributionId"
+
+  VpcOriginSecurityGroupId:
+    Description: The ID of vpc origin security group
+    Value: !GetAtt GetVpcOriginSgId.SecurityGroupId
+    Export:
+      Name: !Sub "${AWS::StackName}-VpcOriginSgId"
+
+  DistributionDomain:
+    Description: AWS assigned domain for the distribution
+    Value: !GetAtt CloudfrontDistribution.DomainName
+    Export:
+      Name: !Sub "${AWS::StackName}-DistributionDomain"
