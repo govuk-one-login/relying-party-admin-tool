@@ -1,6 +1,6 @@
 export enum UserPermission {
-  READER,
-  WRITER_INT,
-  WRITER_PROD,
-  MANAGER,
+  READER = "reader",
+  WRITER_INT = "writer_int",
+  WRITER_PROD = "writer_prod",
+  MANAGER = "manager",
 }
