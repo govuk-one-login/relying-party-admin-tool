@@ -85,17 +85,10 @@ Parameters:
     Description: "The suffix of the CSLS Kinesis Data Stream for CloudWatch logs. Default: csls_cw_logs_destination_prodpython-2"
     AllowedValues: ["csls_cw_logs_destination_prodpython", "csls_cw_logs_destination_prodpython-2", "none"]
     Default: "csls_cw_logs_destination_prodpython-2"
-  DeployVpcOrign:
-    Type: String
-    AllowedValues: ["true", "false"]
-    Default: "false"
-  PrivateLoadApplicationLoadBalancerArn:
-    Type: String
-    Default: "none"
   LoadbalancerDnsName:
     Type: String
     Default: "none"
-  VpcId:
+  VpcOriginId:
     Type: String
     Default: "none"
 
@@ -119,20 +112,8 @@ Conditions:
   CreateAliasNine: !Not [!Equals ["", !Ref DistAliasNine]]
   CreateAliasTen: !Not [!Equals ["", !Ref DistAliasTen]]
   AddWafACLLogging: !Not [!Equals [!Ref LogDestination, "none"]]
-  CreateVpcOrigin: !Equals [true, !Ref DeployVpcOrign]
 
 Resources:
-
-  CloudFrontVpcOrigin:
-    Type: AWS::CloudFront::VpcOrigin
-    Condition: CreateVpcOrigin
-    Properties:
-      VpcOriginEndpointConfig:
-          Arn: !Ref PrivateLoadApplicationLoadBalancerArn
-          Name: !Sub ${AWS::StackName}-vpc-origin
-          OriginProtocolPolicy: https-only
-          OriginSSLProtocols:
-          - TLSv1.2
 
   OriginRequestPolicy:
     Type: AWS::CloudFront::OriginRequestPolicy
@@ -190,7 +171,7 @@ Resources:
             Id: Origin
             VpcOriginConfig:
               OriginReadTimeout: 60 # TODO figure out if this aligns with an ALB/Express container?
-              VpcOriginId: !GetAtt CloudFrontVpcOrigin.Id
+              VpcOriginId: !Ref VpcOriginId
           - DomainName: error-page-pipeline-cferrorpagebucket-pu7snxsncu6d.s3.eu-west-2.amazonaws.com
             Id: Error-Bucket
             OriginAccessControlId: !GetAtt ErrorBucketOAC.Id
@@ -256,80 +237,12 @@ Resources:
         SigningProtocol: sigv4
 
 
-  VpcOriginDescribeSgPolicy:
-    Type: AWS::IAM::ManagedPolicy
-    Properties:
-      Description: "Allows the Custom Resource Lambda to describe EC2 security groups"
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Action:
-              - ec2:DescribeSecurityGroups
-            Resource: "*" # No resource level policies
-            Condition:
-              StringEquals:
-                aws:RequestedRegion: !Ref AWS::Region
-
-  VpcOriginSgLookupFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: index.lambda_handler
-      Runtime: python3.12
-      Timeout: 30
-      Policies:
-        - !Ref VpcOriginDescribeSgPolicy
-      InlineCode: |
-        import boto3
-        import cfnresponse
-
-        def lambda_handler(event, context):
-            # Always return SUCCESS on delete to prevent stack deletion failures
-            if event['RequestType'] == 'Delete':
-                cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
-                return
-
-            try:
-                ec2 = boto3.client('ec2')
-                vpc_id = event['ResourceProperties']['VpcId']
-
-                # Query EC2 for the specific CloudFront managed security group in your VPC
-                response = ec2.describe_security_groups(
-                    Filters=[
-                        {'Name': 'group-name', 'Values': ['CloudFront-VPCOrigins-Service-SG']},
-                        {'Name': 'vpc-id', 'Values': [vpc_id]}
-                    ]
-                )
-
-                if response['SecurityGroups']:
-                    sg_id = response['SecurityGroups'][0]['GroupId']
-                    # Return the Security Group ID to CloudFormation
-                    cfnresponse.send(event, context, cfnresponse.SUCCESS, {'SecurityGroupId': sg_id})
-                else:
-                    cfnresponse.send(event, context, cfnresponse.FAILED, {}, reason="CloudFront VPC Origin SG not found in the specified VPC.")
-            except Exception as e:
-                print(f"Error: {str(e)}")
-                cfnresponse.send(event, context, cfnresponse.FAILED, {}, reason=str(e))
-
-  GetVpcOriginSgId:
-    Type: Custom::VpcOriginSgLookup
-    DependsOn: CloudFrontVpcOrigin
-    Properties:
-      ServiceToken: !GetAtt VpcOriginSgLookupFunction.Arn
-      VpcId: !Ref VpcId
-
 Outputs:
   DistributionId:
     Description: The ID of the distribution.
     Value: !Ref CloudfrontDistribution
     Export:
       Name: !Sub "${AWS::StackName}-DistributionId"
-
-  VpcOriginSecurityGroupId:
-    Description: The ID of vpc origin security group
-    Value: !GetAtt GetVpcOriginSgId.SecurityGroupId
-    Export:
-      Name: !Sub "${AWS::StackName}-VpcOriginSgId"
 
   DistributionDomain:
     Description: AWS assigned domain for the distribution
