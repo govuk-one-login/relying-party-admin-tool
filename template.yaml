@@ -61,6 +61,7 @@ Conditions:
   UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, "none"]]
   IsDev: !Equals [!Ref Environment, "dev"]
   DeployVpcOriginLoadBalancerRules: !Equals [!Ref Environment, "dev"]
+  DeployCloudfrontDnsRecord: !Equals [!Ref Environment, "dev"]
 
 Mappings:
   EnvironmentConfiguration:
@@ -538,6 +539,7 @@ Resources:
   # region DNS
   ManageServiceSignInRootAliasRecord:
     Type: AWS::Route53::RecordSet
+    Condition: DeployCloudfrontDnsRecord
     Properties:
       Name: !Sub
         - "manage.${ServiceDomain}"
