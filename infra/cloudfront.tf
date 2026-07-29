@@ -7,7 +7,7 @@ resource "aws_cloudformation_stack" "cloudfront_distribution" {
     FraudHeaderEnabled                    = true  # TODO: Consider this?
     EnableCustomErrorPages                = false # TODO: and this?
     PrivateLoadApplicationLoadBalancerArn = "arn:aws:elasticloadbalancing:eu-west-2:092201263203:loadbalancer/app/dev-rp-Appli-cXHRMY70iGmY/7abab270636ace03"
-    LoadbalancerDnsName                   = "internal-dev-rp-Appli-cXHRMY70iGmY-367905448.eu-west-2.elb.amazonaws.com"
+    LoadbalancerDnsName                   = var.load_balancer_dns_name
     DeployVpcOrign                        = true
     VpcId                                 = aws_cloudformation_stack.spoke_vpc_stack.outputs["VpcId"]
   }

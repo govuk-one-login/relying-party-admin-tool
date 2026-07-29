@@ -103,3 +103,7 @@ variable "load_balancer_arn" {
   type        = string
   description = "ARN of the private application load balancer to use to create a VPC origin"
 }
+variable "load_balancer_dns_name" {
+  type        = string
+  description = "DNS name of private application load balancer to target as Cloudfront origin"
+}
