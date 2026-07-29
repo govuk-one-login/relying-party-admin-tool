@@ -60,6 +60,7 @@ Conditions:
   UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, "none"]]
   UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, "none"]]
   IsDev: !Equals [!Ref Environment, "dev"]
+  DeployVpcOriginLoadBalancerRules: !Equals [!Ref Environment, "dev"]
 
 Mappings:
   EnvironmentConfiguration:
@@ -479,6 +480,7 @@ Resources:
 
   ApplicationLoadBalancerSecurityGroupIngressHTTP:
     Type: AWS::EC2::SecurityGroupIngress
+    Condition: DeployVpcOriginLoadBalancerRules
     Properties:
       GroupId: !GetAtt ApplicationLoadBalancerSecurityGroup.GroupId
       Description: !Sub "Allow HTTP traffic from Cloudfront VPC origin SG"
@@ -490,6 +492,7 @@ Resources:
 
   ApplicationLoadBalancerSecurityGroupIngressHTTPS:
     Type: AWS::EC2::SecurityGroupIngress
+    Condition: DeployVpcOriginLoadBalancerRules
     Properties:
       GroupId: !GetAtt ApplicationLoadBalancerSecurityGroup.GroupId
       Description: !Sub "Allow HTTPs traffic from Cloudfront VPC origin SG"
