@@ -212,6 +212,9 @@ Resources:
               Value: "production"
             - Name: "ENVIRONMENT"
               Value: !Sub "${Environment}"
+          Secrets:
+            - Name: "SESSION_SECRET"
+              ValueFrom: !Ref SessionSecret
       Cpu: 512 # TODO: Review
       Memory: 2048 # TODO: Review
       ExecutionRoleArn: !GetAtt TaskExecutionRole.Arn
@@ -262,6 +265,20 @@ Resources:
                 Resource:
                   - !GetAtt TaskLogGroup.Arn
                   - !Sub "${TaskLogGroup.Arn}:*"
+        - PolicyName: AllowSessionSecretAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue # pragma: allowlist secret`
+                Resource:
+                  - !Ref SessionSecret
+              - Effect: Allow
+                Action:
+                  - kms:Decrypt
+                Resource:
+                  - !GetAtt SecretsKmsKey.Arn
       PermissionsBoundary: !If
         - UsePermissionsBoundary
         - !Ref PermissionsBoundary
