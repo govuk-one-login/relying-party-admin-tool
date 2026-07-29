@@ -94,10 +94,12 @@ variable "domain_name" {
   type        = string
   description = "Domain of the application"
 }
-
-
 variable "additional_cloudfront_tags" {
   type        = map(string)
   description = "A map of additional tags to apply to the Cloudfront stack"
   default     = {}
+}
+variable "load_balancer_arn" {
+  type        = string
+  description = "ARN of the private application load balancer to use to create a VPC origin"
 }
