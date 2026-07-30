@@ -9,3 +9,7 @@ allowed_promotion_accounts     = ["605893375401"]
 domain_name                    = "manage.build.sign-in.service.gov.uk"
 load_balancer_arn              = "arn:aws:elasticloadbalancing:eu-west-2:717728193008:loadbalancer/app/build--Appli-hEJhsMyfS3fy/e95e3fa2fa000b18"
 load_balancer_dns_name         = "internal-build--Appli-hEJhsMyfS3fy-2080051235.eu-west-2.elb.amazonaws.com"
+
+additional_cloudfront_tags = {
+  FMSGlobalCustomPolicy = "true"
+}
