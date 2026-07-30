@@ -81,6 +81,7 @@ Resources:
 
   GetVpcOriginSgId:
     Type: Custom::VpcOriginSgLookup
+    DependsOn: CloudFrontVpcOrigin
     Properties:
       ServiceToken: !GetAtt VpcOriginSgLookupFunction.Arn
       VpcId: !Ref VpcId
