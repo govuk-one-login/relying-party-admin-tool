@@ -60,8 +60,8 @@ Conditions:
   UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, "none"]]
   UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, "none"]]
   IsDev: !Equals [!Ref Environment, "dev"]
-  DeployVpcOriginLoadBalancerRules: !Equals [!Ref Environment, "dev"]
-  DeployCloudfrontDnsRecord: !Equals [!Ref Environment, "dev"]
+  DeployVpcOriginLoadBalancerRules: !Or [!Equals [!Ref Environment, "dev"], !Equals [!Ref Environment, "build"]]
+  DeployCloudfrontDnsRecord: !Or [!Equals [!Ref Environment, "dev"], !Equals [!Ref Environment, "build"]]
 
 Mappings:
   EnvironmentConfiguration:
