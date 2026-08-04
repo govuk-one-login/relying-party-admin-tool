@@ -37,7 +37,7 @@ Parameters:
     Type: Number
     Default: 6001
 
-# region Tag Parameters
+  # region Tag Parameters
   ProductTagValue:
     Description: Value for the Product Tag
     Type: String
@@ -54,14 +54,16 @@ Parameters:
     Description: Value for the System Tag
     Type: String
     Default: RP Service Management
- # endregion
+  # endregion
 
 Conditions:
   UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, "none"]]
   UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, "none"]]
   IsDev: !Equals [!Ref Environment, "dev"]
-  DeployVpcOriginLoadBalancerRules: !Or [!Equals [!Ref Environment, "dev"], !Equals [!Ref Environment, "build"]]
-  DeployCloudfrontDnsRecord: !Or [!Equals [!Ref Environment, "dev"], !Equals [!Ref Environment, "build"]]
+  DeployVpcOriginLoadBalancerRules:
+    !Or [!Equals [!Ref Environment, "dev"], !Equals [!Ref Environment, "build"]]
+  DeployCloudfrontDnsRecord:
+    !Or [!Equals [!Ref Environment, "dev"], !Equals [!Ref Environment, "build"]]
 
 Mappings:
   EnvironmentConfiguration:
@@ -101,7 +103,6 @@ Resources:
         - Key: Owner
           Value: !Ref OwnerTagValue
 
-
   ContainerService:
     Type: AWS::ECS::Service
     DependsOn: ApplicationLoadBalancerListenerHTTPS
@@ -137,7 +138,6 @@ Resources:
           Value: !Ref OwnerTagValue
         - Key: Source
           Value: !Ref SourceTagValue
-
 
   ContainerServiceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -180,7 +180,6 @@ Resources:
         - Key: Owner
           Value: !Ref OwnerTagValue
   # endregion
-
 
   # region Task Definition
 
@@ -354,7 +353,6 @@ Resources:
 
   #endregion
 
-
   #region Load Balancing
 
   ApplicationLoadBalancer:
@@ -460,7 +458,6 @@ Resources:
         - CertificateArn: !ImportValue certificate-CertificateARN
       SslPolicy: "ELBSecurityPolicy-TLS13-1-2-Res-PQ-2025-09"
 
-
   ApplicationLoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -520,7 +517,6 @@ Resources:
       FromPort: 443
       ToPort: 443
 
-
   ApplicationLoadBalancerSecurityGroupEgress:
     Type: AWS::EC2::SecurityGroupEgress
     Properties:
@@ -539,8 +535,8 @@ Resources:
           FixedResponseConfig:
             ContentType: text/plain
             MessageBody: |
-                User-agent: *
-                Disallow:
+              User-agent: *
+              Disallow:
             StatusCode: 200
       Conditions:
         - Field: path-pattern
@@ -552,7 +548,6 @@ Resources:
 
   #endregion
 
-
   # region DNS
   ManageServiceSignInRootAliasRecord:
     Type: AWS::Route53::RecordSet
@@ -560,7 +555,12 @@ Resources:
     Properties:
       Name: !Sub
         - "manage.${ServiceDomain}"
-        - ServiceDomain: !FindInMap [EnvironmentConfiguration, !Ref Environment, serviceDomain]
+        - ServiceDomain:
+            !FindInMap [
+              EnvironmentConfiguration,
+              !Ref Environment,
+              serviceDomain,
+            ]
       Type: A
       HostedZoneId:
         Fn::ImportValue: hosted-zone-HostedZoneID

@@ -15,7 +15,10 @@ export const PATH_NAMES = {
   CREATE_CLIENT_SELECT_SCOPES:
     "/services/:serviceId/clients/create/select-scopes",
   CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT:
-    "/services/:serviceId/clients/create/identity-verification-support",
+    "/services/:serviceId/clients/create/support-identity-verification",
+  CREATE_CLIENT_SELECT_CLAIMS:
+    "/services/:serviceId/clients/create/select-claims",
+  CREATE_CLIENT_SUMMARY: "/services/:serviceId/clients/create/summary",
 };
 
 export const HTTP_STATUS_CODES = {

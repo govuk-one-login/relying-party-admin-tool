@@ -21,8 +21,11 @@ const pageNameToPath: Record<string, string> = {
     "/services/serviceId/clients/create/enter-redirect-urls",
   "create client - select scopes":
     "/services/serviceId/clients/create/select-scopes",
-  "create client - is identity verification supported":
-    "/services/serviceId/clients/create/identity-verification-support",
+  "create client - support identity verification":
+    "/services/serviceId/clients/create/support-identity-verification",
+  "create client - select claims":
+    "/services/serviceId/clients/create/select-claims",
+  "create client - summary": "/services/serviceId/clients/create/summary",
 };
 
 Then("the page meets our accessibility standards", async ({ page }) => {
@@ -110,7 +113,8 @@ Then(
 Then(
   "I enter {string} into the field {string}",
   async ({ page }, text: string, label: string) => {
-    await page.getByLabel(label).fill(text);
+    await expect(page.getByRole("textbox", { name: label })).toBeVisible();
+    await page.getByRole("textbox", { name: label }).fill(text);
   }
 );
 
@@ -153,17 +157,25 @@ Then(
 Then(
   "I check the radio button: {string}",
   async ({ page }, radioButtonLabel: string) => {
-    await expect(page.getByLabel(radioButtonLabel)).toBeVisible();
-    await page.getByLabel(radioButtonLabel).check();
-    await expect(page.getByLabel(radioButtonLabel)).toBeChecked();
+    await expect(
+      page.getByRole("radio", { name: radioButtonLabel })
+    ).toBeVisible();
+    await page.getByRole("radio", { name: radioButtonLabel }).check();
+    await expect(
+      page.getByRole("radio", { name: radioButtonLabel })
+    ).toBeChecked();
   }
 );
 
 Then(
   "I check the checkbox: {string}",
   async ({ page }, checkboxLabel: string) => {
-    await expect(page.getByLabel(checkboxLabel)).toBeVisible();
-    await page.getByLabel(checkboxLabel).check();
-    await expect(page.getByLabel(checkboxLabel)).toBeChecked();
+    await expect(
+      page.getByRole("checkbox", { name: checkboxLabel })
+    ).toBeVisible();
+    await page.getByRole("checkbox", { name: checkboxLabel }).check();
+    await expect(
+      page.getByRole("checkbox", { name: checkboxLabel })
+    ).toBeChecked();
   }
 );

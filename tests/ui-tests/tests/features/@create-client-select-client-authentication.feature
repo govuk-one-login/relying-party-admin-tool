@@ -13,7 +13,7 @@ Feature: Create a new client - select client authentication page
     And the page contains the text: "If client secret is selected, you will be unable to request identity verification"
     And the page contains the text: "How do you want to authenticate?"
 
-  Scenario: Create a new client - select client authentication page validates the client name
+  Scenario: Create a new client - select client authentication page validates client authentication
     Given I go to the "create client - select client authentication" page
     And the page has finished loading
     And I click the "Continue" button
