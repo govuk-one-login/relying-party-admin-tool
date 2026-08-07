@@ -17,6 +17,7 @@ declare module "express-session" {
       clientAuthenticationMethod?: "JWKS" | "STATIC" | "CLIENT_SECRET";
       scopes?: string[];
       isIdentityVerificationSupported?: boolean;
+      claims?: string[];
     };
   }
 }

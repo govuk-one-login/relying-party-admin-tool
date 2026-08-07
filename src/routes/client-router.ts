@@ -28,6 +28,10 @@ import {
   createClientIsIdentityVerificationSupportedPost,
 } from "../components/create-client/support-identity-verification/support-identity-verification-controller.js";
 import { validateIsIdentityVerificationSupportedRequest } from "../components/create-client/support-identity-verification/support-identity-verification-validation.js";
+import {
+  createClientSelectClaimsGet,
+  createClientSelectClaimsPost,
+} from "../components/create-client/select-claims/select-claims-controller.js";
 
 const router = express.Router();
 
@@ -87,6 +91,16 @@ router.post(
   PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT,
   validateIsIdentityVerificationSupportedRequest(),
   createClientIsIdentityVerificationSupportedPost()
+);
+
+router.get(
+  PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS,
+  createClientSelectClaimsGet()
+);
+
+router.post(
+  PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS,
+  createClientSelectClaimsPost()
 );
 
 export { router as clientsRouter };
