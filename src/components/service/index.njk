@@ -19,8 +19,10 @@
 {% endblock %}
 
 {% block sideNavigation %}
-  {% set ariaLabel = "Service menu" %}
-  {% include 'common/layout/side-navigation.njk' %}
+  {% if sideNavItems %}
+    {% set ariaLabel = "Service menu" %}
+    {% include 'common/layout/side-navigation.njk' %}
+  {% endif %}
 {% endblock %}
 
 {% block pageContent %}

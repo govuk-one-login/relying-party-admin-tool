@@ -21,6 +21,11 @@ export const serviceGet = (): ExpressRouteFunc => {
           "service",
           ClientEnvironment.PRODUCTION
         );
+      const hasManagerPermissions =
+        await permissionsService.checkUserHasManagerPermissions(
+          "user",
+          "service"
+        );
       const sideNavItems = [
         {
           active: true,
@@ -33,10 +38,11 @@ export const serviceGet = (): ExpressRouteFunc => {
           href: path.posix.join(req.path, "team-members"),
         },
       ];
+
       return res.render("service/index.njk", {
         hasIntegrationWriterPermissions,
         hasProductionWriterPermissions,
-        sideNavItems,
+        ...(hasManagerPermissions && { sideNavItems }),
       });
     } else {
       return res.redirect(PATH_NAMES.ROOT);

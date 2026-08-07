@@ -17,6 +17,10 @@ export interface PermissionsService {
     service: string,
     clientEnvironment: ClientEnvironment
   ) => Promise<boolean>;
+  checkUserHasManagerPermissions: (
+    user: string,
+    service: string
+  ) => Promise<boolean>;
 }
 
 export const permissionsService: PermissionsService = mockPermissionsService;
