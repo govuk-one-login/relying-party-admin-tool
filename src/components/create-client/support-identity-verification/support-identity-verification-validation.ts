@@ -36,6 +36,12 @@ const postValidationLocals = function locals(
           text: "Identity verification cannot be supported if client secret is used as authentication method",
         },
       },
+      errorList: [
+        {
+          text: "Identity verification cannot be supported if client secret is used as authentication method",
+          href: "#support-identity-verification",
+        },
+      ],
     };
   }
   return {};
