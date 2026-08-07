@@ -25,8 +25,10 @@ const pageNameToPath: Record<string, string> = {
     "/services/serviceId/clients/create/support-identity-verification",
   "create client - select claims":
     "/services/serviceId/clients/create/select-claims",
-  "create client - landing page url":
+  "create client - enter landing page url":
     "/services/serviceId/clients/create/enter-landing-page-url",
+  "create client - select levels of confidence":
+    "/services/serviceId/clients/create/select-levels-of-confidence",
   "create client - summary": "/services/serviceId/clients/create/summary",
 };
 

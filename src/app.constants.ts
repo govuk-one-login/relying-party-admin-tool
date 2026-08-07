@@ -20,6 +20,8 @@ export const PATH_NAMES = {
     "/services/:serviceId/clients/create/select-claims",
   CREATE_CLIENT_ENTER_LANDING_PAGE_URL:
     "/services/:serviceId/clients/create/enter-landing-page-url",
+  CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE:
+    "/services/:serviceId/clients/create/select-levels-of-confidence",
   CREATE_CLIENT_SUMMARY: "/services/:serviceId/clients/create/summary",
 };
 

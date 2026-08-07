@@ -18,4 +18,4 @@ Feature: Create a new client - select claims page
     And the page has finished loading
     And I check the checkbox: "https://vocab.account.gov.uk/v1/passport"
     And I click the "Continue" button
-    Then I am taken to the "create client - landing page url" page
+    Then I am taken to the "create client - enter landing page url" page

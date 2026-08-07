@@ -32,6 +32,11 @@ import {
   createClientSelectClaimsGet,
   createClientSelectClaimsPost,
 } from "../components/create-client/select-claims/select-claims-controller.js";
+import {
+  createClientEnterLandingPageUrlGet,
+  createClientEnterLandingPageUrlPost,
+} from "../components/create-client/enter-landing-page-url/enter-landing-page-url-controller.js";
+import { validateEnterLandingPageUrlRequest } from "../components/create-client/enter-landing-page-url/enter-landing-page-url-validation.js";
 
 const router = express.Router();
 
@@ -101,6 +106,17 @@ router.get(
 router.post(
   PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS,
   createClientSelectClaimsPost()
+);
+
+router.get(
+  PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL,
+  createClientEnterLandingPageUrlGet()
+);
+
+router.post(
+  PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL,
+  validateEnterLandingPageUrlRequest(),
+  createClientEnterLandingPageUrlPost()
 );
 
 export { router as clientsRouter };
