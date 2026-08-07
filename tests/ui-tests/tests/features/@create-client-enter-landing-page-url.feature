@@ -16,6 +16,6 @@ Feature: Create a new client - enter landing page url page
     And the page has finished loading
     And I enter "Not a url" into the field "Enter landing page URL for your client"
     And I click the "Continue" button
-    Then the page contains the text: "Your landing page URL must be a valid URL"
+    Then the error message: "Your landing page URL must be a valid URL" shows
     And I click the "Continue" button
     Then I am taken to the "create client - select levels of confidence" page

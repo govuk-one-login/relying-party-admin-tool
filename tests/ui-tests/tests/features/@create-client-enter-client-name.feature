@@ -15,7 +15,7 @@ Feature: Create a new client - enter client name page
     Given I go to the "create client - enter client name" page
     And the page has finished loading
     And I click the "Continue" button
-    Then the page contains the text: "Enter your client name"
+    Then the error message: "Enter your client name" shows
     And I enter "My client" into the field "What is the name of your client?"
     And I click the "Continue" button
     Then I am taken to the "create client - select client authentication" page

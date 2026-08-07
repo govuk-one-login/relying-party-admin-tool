@@ -17,7 +17,7 @@ Feature: Create a new client - enter redirect urls page
     Given I go to the "create client - enter redirect urls" page
     And the page has finished loading
     And I click the "Add" button
-    Then the page contains the text: "Enter a redirect URL"
+    Then the error message: "Enter a redirect URL" shows
     And I enter "http://url.com" into the field "Add a redirect URL"
     And I click the "Add" button
     And the page has finished loading
@@ -35,7 +35,7 @@ Feature: Create a new client - enter redirect urls page
     Given I go to the "create client - enter redirect urls" page
     And the page has finished loading
     And I click the "Continue" button
-    Then the page contains the text: "You must have at least one redirect URL"
+    Then the error message: "You must have at least one redirect URL" shows
     And I enter "http://url.com" into the field "Add a redirect URL"
     And I click the "Add" button
     And the page has finished loading
@@ -45,4 +45,4 @@ Feature: Create a new client - enter redirect urls page
     And I click on the remove button for: "http://url.com"
     And I click on the remove button for: "http://url2.com"
     And I click the "Continue" button
-    Then the page contains the text: "You must have at least one redirect URL"
+    Then the error message: "You must have at least one redirect URL" shows
