@@ -2,6 +2,7 @@
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
@@ -38,7 +39,6 @@
           name: "jwks-endpoint",
           autocomplete: "url",
           spellcheck: false,
-          classes: "govuk-!-width-one-third",
           label: {
             text: "JWKS endpoint URL"
           },
@@ -52,13 +52,12 @@
 
     {% set publicKeyHtml %}
       {{
-        govukInput({
+        govukTextarea({
           id: "public-key",
           name: "public-key",
           type: "key",
           autocomplete: "key",
           spellcheck: false,
-          classes: "govuk-!-width-one-third",
           label: {
             text: "Public key"
           },
@@ -78,7 +77,6 @@
           type: "secret",
           autocomplete: "secret",
           spellcheck: false,
-          classes: "govuk-!-width-one-third",
           label: {
             text: "Client secret"
           },
