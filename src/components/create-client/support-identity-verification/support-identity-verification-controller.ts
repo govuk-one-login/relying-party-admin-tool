@@ -3,6 +3,7 @@ import { PATH_NAMES } from "../../../app.constants.js";
 import { ClientEnvironment, ExpressRouteFunc } from "../../../types.js";
 import { permissionsService } from "../../../services/permissions-service.js";
 import { populateUrlRoute } from "../../../utils/populate-url-route.js";
+import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
 
 export const createClientIsIdentityVerificationSupportedGet =
   (): ExpressRouteFunc => {
@@ -33,13 +34,17 @@ export const createClientIsIdentityVerificationSupportedPost =
           req.body["support-identity-verification"] === "true",
       };
       if (req.body["support-identity-verification"] === "true") {
-        return res.redirect(
+        return saveSessionAndRedirect(
+          req,
+          res,
           populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS, [
             req.params.serviceId as string,
           ])
         );
       } else {
-        return res.redirect(
+        return saveSessionAndRedirect(
+          req,
+          res,
           populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUMMARY, [
             req.params.serviceId as string,
           ])
