@@ -1,0 +1,16 @@
+<nav class="side-navigation" aria-label="{{ ariaLabel }}" role="navigation">
+  <ul class="side-navigation__list">
+    {% for sideNavItem in sideNavItems %}
+      <li
+        class="side-navigation__list-item {% if sideNavItem.active %}side-navigation__list-item--current{% endif %}"
+      >
+        <a
+          class="govuk-link side-navigation__link"
+          href="{{ sideNavItem.href }}"
+          {% if sideNavItem.active %}aria-current="true"{% endif %}
+          >{{ sideNavItem.text }}</a
+        >
+      </li>
+    {% endfor %}
+  </ul>
+</nav>
