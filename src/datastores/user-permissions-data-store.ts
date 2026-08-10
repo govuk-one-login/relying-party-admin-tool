@@ -26,3 +26,27 @@ export const getUser = async (id: string): Promise<User | undefined> => {
     email: result.Item.email,
   } as User;
 };
+
+export const getServicesWithRelationForUser = async (
+  id: string,
+  relation: string
+): Promise<string[]> => {
+  const result = await dynamoClient.query({
+    TableName: tableName,
+    KeyConditionExpression: "subject = :pk AND begins_with(sk, :prefix)",
+    FilterExpression: "relation = :relation",
+    ExpressionAttributeValues: {
+      ":pk": `user:${id}`,
+      ":relation": relation,
+      ":prefix": "relation#service:",
+    },
+    ExpressionAttributeNames: { "#object": "object" },
+    ProjectionExpression: "#object",
+  });
+  if (!result.Items) {
+    return [];
+  }
+  return result.Items.map((item) => item["object"]).map(
+    (service) => service.split(":")[1]
+  );
+};

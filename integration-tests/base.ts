@@ -8,6 +8,7 @@ import { test } from "vitest";
 import { User } from "../src/models/user.js";
 import { logger } from "../src/utils/logger.js";
 import { Service } from "../src/models/service.js";
+import { Relation } from "../src/models/relation.js";
 
 export enum Table {
   // eslint-disable-next-line no-unused-vars
@@ -51,6 +52,21 @@ export const integrationTest = test
             email: user.email,
             name: user.name,
             sk: "user",
+          },
+        });
+      }
+    };
+  })
+  .extend("addUserRelationsToDynamo", ({ dynamoDocClient }) => {
+    return async (...relations: Relation[]) => {
+      for (const relation of relations) {
+        await dynamoDocClient.put({
+          TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
+          Item: {
+            subject: `user:${relation.userId}`,
+            sk: `relation#${relation.object}#${relation.relation}`,
+            object: `${relation.object}`,
+            relation: `${relation.relation}`,
           },
         });
       }
