@@ -6,7 +6,7 @@ import { populateUrlRoute } from "../../../utils/populate-url-route.js";
 import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
 
 export const createClientSelectClaimsGet = (): ExpressRouteFunc => {
-  return async function (req: Request, res: Response) {
+  return async (req: Request, res: Response) => {
     if (
       await permissionsService.checkUserHasWriterPermissions(
         "user",
@@ -25,7 +25,7 @@ export const createClientSelectClaimsGet = (): ExpressRouteFunc => {
 };
 
 export const createClientSelectClaimsPost = (): ExpressRouteFunc => {
-  return async function (req: Request, res: Response) {
+  return async (req: Request, res: Response) => {
     const claims: string[] = [
       "https://vocab.account.gov.uk/v1/coreIdentityJWT",
     ];

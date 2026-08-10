@@ -18,10 +18,10 @@ export const validationErrorFormatter: ErrorFormatter = (
   throw new Error(`Unsupported express-validator error type: ${error.type}`);
 };
 
-export function validateBodyMiddleware(
+export const validateBodyMiddleware = (
   template: string,
   postValidationLocals?: (req: Request) => Record<string, unknown>
-) {
+) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (req: Request, res: Response, next: NextFunction): any => {
     const errors = validationResult(req)
@@ -38,4 +38,4 @@ export function validateBodyMiddleware(
     }
     next();
   };
-}
+};

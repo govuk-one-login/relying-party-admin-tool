@@ -2,7 +2,7 @@ import { body, ValidationChain } from "express-validator";
 import { ValidationChainFunc } from "../../../types.js";
 import { validateBodyMiddleware } from "../../../middleware/form-validation-middleware.js";
 
-export function validateEnterClientNameRequest(): ValidationChainFunc {
+export const validateEnterClientNameRequest = (): ValidationChainFunc => {
   return [
     validateClientName({
       required: "Enter your client name",
@@ -12,14 +12,14 @@ export function validateEnterClientNameRequest(): ValidationChainFunc {
     }),
     validateBodyMiddleware("create-client/enter-client-name/index.njk"),
   ];
-}
+};
 
-function validateClientName(validationMessages: {
+const validateClientName = (validationMessages: {
   required: string;
   maxLength: string;
   asciiOnly: string;
   startsWithColon: string;
-}): ValidationChain {
+}): ValidationChain => {
   return body("name")
     .trim()
     .notEmpty()
@@ -34,4 +34,4 @@ function validateClientName(validationMessages: {
       }
       return true;
     });
-}
+};

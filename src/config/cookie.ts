@@ -1,8 +1,8 @@
-export function getSessionCookieOptions(
+export const getSessionCookieOptions = (
   isProdEnv: boolean,
   expiry: number,
   secret: string
-): Record<string, unknown> {
+): Record<string, unknown> => {
   return {
     name: "rpat",
     secret: secret,
@@ -10,4 +10,4 @@ export function getSessionCookieOptions(
     signed: true,
     secure: isProdEnv,
   };
-}
+};

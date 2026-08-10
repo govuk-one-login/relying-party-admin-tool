@@ -14,7 +14,7 @@ const client = new DynamoDBClient({
   },
 });
 
-async function createTableIfNotExists(params: any) {
+const createTableIfNotExists = async (params: any) => {
   try {
     await client.send(new CreateTableCommand(params));
   } catch (err: any) {
@@ -22,9 +22,9 @@ async function createTableIfNotExists(params: any) {
       throw err;
     }
   }
-}
+};
 
-export default async function globalSetup(config: FullConfig) {
+const globalSetup = async (config: FullConfig) => {
   await createTableIfNotExists({
     TableName: `${process.env.ENVIRONMENT}-user-permissions`,
     AttributeDefinitions: [
@@ -69,4 +69,6 @@ export default async function globalSetup(config: FullConfig) {
       })
     );
   } catch (err) {}
-}
+};
+
+export default globalSetup;

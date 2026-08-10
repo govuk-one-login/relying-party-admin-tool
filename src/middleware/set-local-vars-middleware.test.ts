@@ -14,7 +14,7 @@ describe("set-local-vars-middleware", () => {
       headers: {
         host: "example.com",
       },
-      get: function (headerName: string) {
+      get: (headerName: string) => {
         if (headerName === "host") {
           return "example.com";
         }

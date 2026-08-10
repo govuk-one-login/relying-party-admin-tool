@@ -1,29 +1,29 @@
 import { PRODUCT_PAGE_BASE_URL } from "./app.constants.js";
 
-export function getAppEnv(): string {
+export const getAppEnv = (): string => {
   return process.env.APP_ENV || "local";
-}
+};
 
-export function isLocalEnv(): boolean {
+export const isLocalEnv = (): boolean => {
   return getAppEnv() === "local";
-}
+};
 
-export function getLogLevel(): string {
+export const getLogLevel = (): string => {
   return process.env.LOGS_LEVEL || "debug";
-}
+};
 
-export function getVitalSignsIntervalSeconds(): number {
+export const getVitalSignsIntervalSeconds = (): number => {
   return Number(process.env.VITAL_SIGNS_INTERVAL_SECONDS) || 10;
-}
+};
 
-export function getSessionSecret(): string {
+export const getSessionSecret = (): string => {
   return process.env.SESSION_SECRET || "";
-}
+};
 
-export function getSessionExpiry(): number {
+export const getSessionExpiry = (): number => {
   return Number(process.env.SESSION_EXPIRY);
-}
+};
 
-export function getProductPagesBaseUrl(): string {
+export const getProductPagesBaseUrl = (): string => {
   return PRODUCT_PAGE_BASE_URL[getAppEnv()] ?? PRODUCT_PAGE_BASE_URL.local;
-}
+};

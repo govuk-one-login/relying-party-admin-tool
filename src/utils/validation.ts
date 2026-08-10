@@ -7,22 +7,22 @@ export const isObjectEmpty = (obj: Record<string, unknown>): boolean => {
   return Object.keys(obj).length === 0;
 };
 
-export function generateErrorList(errors: Record<string, Error>): Error[] {
+export const generateErrorList = (errors: Record<string, Error>): Error[] => {
   if (!errors) return [];
   const errorValues = Object.values(errors);
   const uniqueErrorList = [
     ...new Map(errorValues.map((error) => [error.text, error])).values(),
   ];
   return uniqueErrorList;
-}
+};
 
-export function renderBadRequest(
+export const renderBadRequest = (
   res: Response,
   req: Request,
   template: string,
   errors: Record<string, Error>,
   postValidationLocals?: Record<string, unknown>
-): void {
+): void => {
   res.status(HTTP_STATUS_CODES.BAD_REQUEST);
 
   res.render(template, {
@@ -31,4 +31,4 @@ export function renderBadRequest(
     ...req.body,
     ...postValidationLocals,
   });
-}
+};

@@ -3,6 +3,6 @@ import { randomBytes } from "crypto";
 
 const asyncRandomBytes = promisify(randomBytes);
 
-export async function generateNonce(): Promise<string> {
+export const generateNonce = async (): Promise<string> => {
   return (await asyncRandomBytes(16)).toString("hex");
-}
+};

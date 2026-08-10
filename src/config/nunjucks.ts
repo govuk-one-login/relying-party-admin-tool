@@ -1,10 +1,10 @@
 import type express from "express";
 import nunjucks from "nunjucks";
 
-export function configureNunjucks(
+export const configureNunjucks = (
   app: express.Application,
   viewsPath: string[]
-): nunjucks.Environment {
+): nunjucks.Environment => {
   const nunjucksEnv: nunjucks.Environment = nunjucks.configure(viewsPath, {
     autoescape: true,
     express: app,
@@ -13,4 +13,4 @@ export function configureNunjucks(
   nunjucksEnv.addGlobal("govukRebrand", true);
 
   return nunjucksEnv;
-}
+};

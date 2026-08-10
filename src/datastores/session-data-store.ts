@@ -14,7 +14,7 @@ const dynamoDBCientSessions = new DynamoDBClient({
 
 export const tableName = `${process.env.ENVIRONMENT ?? "test"}-frontend-sessions`;
 
-export function getSessionStore(): Store {
+export const getSessionStore = (): Store => {
   return new DynamoDBStore({
     table: tableName,
     hashKey: "id",
@@ -22,4 +22,4 @@ export function getSessionStore(): Store {
     client: new DynamoDBClient(dynamoDBCientSessions),
     initialized: true,
   });
-}
+};
