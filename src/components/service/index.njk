@@ -18,6 +18,13 @@
   }}
 {% endblock %}
 
+{% block sideNavigation %}
+  {% if sideNavItems %}
+    {% set ariaLabel = "Service menu" %}
+    {% include 'common/layout/side-navigation.njk' %}
+  {% endif %}
+{% endblock %}
+
 {% block pageContent %}
   <h1 class="govuk-heading-l">Service name</h1>
   <h2 class="govuk-heading-m">Production Client</h2>

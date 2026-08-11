@@ -17,3 +17,8 @@ Feature: View service page
     And the page has the exact text: "Integration Clients"
     And the page has the exact text: "You do not have any integration clients yet."
     Then the page contains the button: "Create a new integration client" with the href: "/services/serviceId/clients/create"
+
+  Scenario: View service page side navigation
+    Given I go to the "service" page
+    And the page has finished loading
+    And the side navigation shows with correct urls

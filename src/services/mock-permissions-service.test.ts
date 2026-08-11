@@ -58,4 +58,12 @@ describe("mockPermissionsService", () => {
       ).resolves.toBe(true);
     });
   });
+
+  describe("checkUserHasManagerPermissions", () => {
+    it("check should return true for any user", async () => {
+      await expect(
+        mockPermissionsService.checkUserHasManagerPermissions("", "")
+      ).resolves.toBe(true);
+    });
+  });
 });

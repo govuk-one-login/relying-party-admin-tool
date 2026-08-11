@@ -90,6 +90,11 @@ Then("the navigation bar shows", async ({ page }) => {
   await expect(elements).toBeVisible();
 });
 
+Then("the side navigation shows", async ({ page }) => {
+  const elements = page.locator('[aria-label="Service menu"]');
+  await expect(elements).toBeVisible();
+});
+
 Then("the footer shows", async ({ page }) => {
   await expect(
     page.getByRole("list").filter({
