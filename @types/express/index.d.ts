@@ -18,6 +18,7 @@ declare module "express-session" {
       scopes?: string[];
       isIdentityVerificationSupported?: boolean;
       claims?: string[];
+      landingPageUrl?: string;
     };
   }
 }

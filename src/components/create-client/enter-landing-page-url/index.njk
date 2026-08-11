@@ -1,0 +1,44 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% set pageTitleName = "Enter landing page URL" %}
+{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
+{% set serviceName %}{{ serviceName }}{% endset %}
+
+{% block beforeContent %}
+  {{
+    govukBreadcrumbs({
+    items: [
+      { text: "Your services", href: "/services" },
+      { text: serviceName, href: viewServiceUrl },
+      { text: "Create a client" } ] })
+  }}
+{% endblock %}
+
+{% block pageContent %}
+  <form class="form" action="enter-landing-page-url" method="post">
+    {{
+      govukInput({
+        label: {
+          text: "Enter landing page URL for your client",
+          classes: "govuk-label--l",
+          isPageHeading: true
+        },
+        id: "landing-page-url",
+      name: "landing-page-url",
+      value: data['landing-page-url'],
+      errorMessage: {
+        text: errors["landing-page-url"].text
+      } if (errors["landing-page-url"])
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Continue"
+      })
+    }}
+  </form>
+{% endblock %}

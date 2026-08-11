@@ -22,10 +22,8 @@
   <form class="form" action="select-scopes" method="post">
     <h1 class="govuk-heading-l">Select your scopes</h1>
     {% call govukInsetText() %}
-      <code class="red-code"
-        >openid</code
-      > will be automatically added to your scopes configuration as it is required to
-      sign in users
+      <code class="red-code">openid</code> will be automatically added to your
+      scopes configuration as it is required to sign in users
     {% endcall %}
     {{
       govukCheckboxes({
