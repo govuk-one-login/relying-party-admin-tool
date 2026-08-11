@@ -3,12 +3,11 @@ import { PATH_NAMES } from "../app.constants.js";
 import { serviceGet } from "../components/service/service-controller.js";
 import { validateServiceRequest } from "../components/create-service/create-service-validation.js";
 import { createServicePost } from "../components/create-service/create-service-controller.js";
+import { servicesGet } from "../components/services/services-controller.js";
 
 const router = express.Router();
 
-router.get(PATH_NAMES.SERVICES, (_req, res) => {
-  res.render("services/index.njk");
-});
+router.get(PATH_NAMES.SERVICES, servicesGet());
 
 router.get(PATH_NAMES.CREATE_SERVICE, (_req, res) => {
   res.render("create-service/index.njk");
