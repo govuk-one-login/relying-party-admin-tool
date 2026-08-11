@@ -109,6 +109,17 @@ Then("the footer shows", async ({ page }) => {
 });
 
 Then(
+  "the error message: {string} shows",
+  async ({ page }, errorMessage: string) => {
+    await expect(page.getByRole("alert")).toBeVisible();
+    await expect(page.getByText("There is a problem")).toBeVisible();
+    const alert = page.getByRole("alert");
+    await expect(alert.getByText(errorMessage)).toBeVisible();
+    await expect(page.getByText(errorMessage).last()).toBeVisible();
+  }
+);
+
+Then(
   "the page contains the button: {string} with the href: {string}",
   async ({ page }, text: string, href: string) => {
     await expect(page.getByRole("button", { name: text })).toBeVisible();

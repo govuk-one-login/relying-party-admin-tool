@@ -14,7 +14,7 @@ Feature: Create a new service page
     Given I go to the "create service" page
     And the page has finished loading
     And I click the "Continue" button
-    Then the page contains the text: "Enter your service name"
+    Then the error message: "Enter your service name" shows
     And I enter "My service" into the field "What is the name of your service?"
     And I click the "Continue" button
     Then I am taken to the "service" page

@@ -17,7 +17,7 @@ Feature: Create a new client - support identity verification page
     Given I go to the "create client - support identity verification" page
     And the page has finished loading
     And I click the "Continue" button
-    Then the page contains the text: "Choose an option to support identity verification or not"
+    Then the error message: "Choose an option to support identity verification or not" shows
     And I check the radio button: "Yes"
     And I click the "Continue" button
     Then I am taken to the "create client - select claims" page
@@ -40,7 +40,7 @@ Feature: Create a new client - support identity verification page
     Then I am taken to the "create client - support identity verification" page
     And I check the radio button: "Yes"
     And I click the "Continue" button
-    Then the page contains the text: "Identity verification cannot be supported if client secret is used as authentication method"
+    Then the error message: "Identity verification cannot be supported if client secret is used as authentication method" shows
     And I check the radio button: "No"
     And I click the "Continue" button
     Then I am taken to the "create client - summary" page
