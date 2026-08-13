@@ -27,3 +27,17 @@ export const getServiceByServiceId = async (
     name: result.Item.name,
   } as Service;
 };
+
+export const createService = async (
+  service: Service
+): Promise<void> => {
+  await dynamoClient.put({
+    TableName: tableName,
+    Item: {
+      serviceId: service.serviceId,
+      sk: "service",
+      name: service.name
+    },
+    ConditionExpression: "attribute_not_exists(serviceId)",
+  });
+}
