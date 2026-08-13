@@ -4,7 +4,12 @@ import {
   type ErrorFormatter,
   type ValidationError,
 } from "express-validator";
-import { isObjectEmpty, renderBadRequest } from "../utils/validation.js";
+import {
+  isObjectEmpty,
+  renderBadRequest,
+  renderBadRequestFields,
+} from "../utils/validation.js";
+import { FieldValidator } from "../helpers/validator.js";
 
 export const validationErrorFormatter: ErrorFormatter = (
   error: ValidationError
@@ -35,6 +40,25 @@ export const validateBodyMiddleware = (
 
     if (!isObjectEmpty(errors) || locals?.errors !== undefined) {
       return renderBadRequest(res, req, template, errors, locals);
+    }
+    next();
+  };
+};
+
+export const validateFieldsMiddleware = (
+  template: string,
+  validator: FieldValidator<Request>
+) => {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ): Promise<any> => {
+    const result = await validator.validate(req);
+
+    if (!result.isValid) {
+      return renderBadRequestFields(res, req, template, result.errors);
     }
     next();
   };
