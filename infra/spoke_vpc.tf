@@ -19,13 +19,11 @@ resource "aws_cloudformation_stack" "spoke_vpc_stack" {
 
     # Disabled services
     DynamoDBApiEnabled            = "No"
-    S3ApiEnabled                  = "No"
     KMSApiEnabled                 = "No"
     SQSApiEnabled                 = "No"
     LambdaApiEnabled              = "No"
     CloudWatchApiEnabled          = "No"
     STSApiEnabled                 = "No"
-    SSMApiEnabled                 = "No"
     CodeBuildApiEnabled           = "No"
     CodeDeployApiEnabled          = "No"
     BatchApiEnabled               = "No"
@@ -39,7 +37,6 @@ resource "aws_cloudformation_stack" "spoke_vpc_stack" {
     StatesApiEnabled              = "No"
     ExecuteApiGatewayEnabled      = "No"
     TextractApiEnabled            = "No"
-    CloudFormationEndpointEnabled = "No"
     SESSmtpEnabled                = "No"
     SSMParametersStoreEnabled     = "No"
     DynatraceApiEnabled           = "No"
@@ -48,6 +45,10 @@ resource "aws_cloudformation_stack" "spoke_vpc_stack" {
     AppConfigDataApiEnabled       = "No"
     CloudTrailApiEnabled          = "No"
     IdentityStoreApiEnabled       = "No"
+    CloudFormationEndpointEnabled = contains(["build"], var.environment) ? "Yes" : "No"                    # Required for acceptance tests to run when inside the VPC
+    SSMApiEnabled                 = contains(["build"], var.environment) ? "Yes" : "No"                    # Required for acceptance tests to run when inside the VPC
+    S3ApiEnabled                  = contains(["build"], var.environment) ? "Yes" : "No"                    # Required for acceptance tests to run when inside the VPC
+    AllowedDomains                = contains(["build"], var.environment) ? "*.sign-in.service.gov.uk" : "" # Required for acceptance tests to run when inside the VPC
     }, var.environment == "production" ? {
     # Disaster Recovery
     // Only set this value in production environments.

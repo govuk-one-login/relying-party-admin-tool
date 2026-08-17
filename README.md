@@ -52,6 +52,17 @@ To test pipeline tests, you can run them against dev. This requires a few small 
 ```
 TestImageRepositoryNames        = contains(["dev", "build"], var.environment) ? var.repository_name : ""
 TestImageRepositoryUri          = contains(["dev", "build"], var.environment) ? aws_cloudformation_stack.test_image_ecr_stack.outputs["TestRunnerImageEcrRepositoryUri"] : "none"
+RunTestContainerInVPC           = contains(["dev", "build"], var.environment) ? "True" : "False"
+```
+
+- Add "dev" to the list of environments of these properties in the `spoke_vpc.tf` file.
+
+```
+CloudFormationEndpointEnabled = contains(["dev", "build"], var.environment) ? "Yes" : "No" # Required for acceptance tests to run when inside the VPC
+CloudWatchLogsApiEnabled      = contains(["dev", "build"], var.environment) ? "Yes" : "No" # Required for acceptance tests to run when inside the VPC
+SSMApiEnabled                 = contains(["dev", "build"], var.environment) ? "Yes" : "No" # Required for acceptance tests to run when inside the VPC
+S3ApiEnabled                  = contains(["dev", "build"], var.environment) ? "Yes" : "No" # Required for acceptance tests to run when inside the VPC
+AllowedDomains                = contains(["dev", "build"], var.environment) ? "*.sign-in.service.gov.uk" : "" # Required for acceptance tests to run when inside the VPC
 ```
 
 - Follow the infra README to deploy these changes to dev.
