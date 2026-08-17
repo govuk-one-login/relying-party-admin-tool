@@ -1,4 +1,4 @@
-import { clientNameValidator } from "./shared-client-validator.js";
+import { clientNameValidator } from "./shared-client-validators.js";
 
 describe("shared client validator tests", () => {
   describe("client name validator", () => {

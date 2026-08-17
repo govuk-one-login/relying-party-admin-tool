@@ -1,27 +1,26 @@
 import { Request } from "express";
-import * as validation from "../../../utils/validation.js";
-import { enterClientNameFieldValidator } from "./enter-client-name-validation.js";
-import { InvalidField } from "../../../utils/types.js";
+import { enterClientNameFieldValidator } from "./create-client-field-validators.js";
+import { InvalidField } from "../utils/types.js";
+import { RequestBuilder } from "../utils/test-utils/builders.js";
 
-describe("enter client name validation", () => {
+describe("create client field validators", () => {
   let req: Partial<Request>;
 
   beforeEach(() => {
-    req = {};
-
-    const stub = vi.spyOn(validation, "renderBadRequestFields");
-    stub.mockReturnValue();
+    req = new RequestBuilder().withSessionNewClientData({}).build();
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  describe("validateEnterClientNameRequest", () => {
+  describe("enterClientNameFieldValidator", () => {
     it("should pass validation with valid client name", async () => {
-      req.body = {
-        name: "my client",
-      };
+      req = new RequestBuilder()
+        .withBody({
+          name: "my client",
+        })
+        .build();
 
       const result = await enterClientNameFieldValidator.validate(
         req as Request
@@ -31,9 +30,11 @@ describe("enter client name validation", () => {
     });
 
     it("should fail validation when name is empty", async () => {
-      req.body = {
-        name: "",
-      };
+      req = new RequestBuilder()
+        .withBody({
+          name: "",
+        })
+        .build();
 
       const result = await enterClientNameFieldValidator.validate(
         req as Request
@@ -49,10 +50,12 @@ describe("enter client name validation", () => {
     });
 
     it("should fail validation when name exceeds 255 characters", async () => {
-      const longPassword = "a".repeat(256);
-      req.body = {
-        name: longPassword,
-      };
+      const longName = "a".repeat(256);
+      req = new RequestBuilder()
+        .withBody({
+          name: longName,
+        })
+        .build();
 
       const result = await enterClientNameFieldValidator.validate(
         req as Request
@@ -70,9 +73,11 @@ describe("enter client name validation", () => {
     });
 
     it("should fail validation when name has non-ascii characters", async () => {
-      req.body = {
-        name: "🆕 client",
-      };
+      req = new RequestBuilder()
+        .withBody({
+          name: "🆕 client",
+        })
+        .build();
 
       const result = await enterClientNameFieldValidator.validate(
         req as Request
@@ -90,9 +95,11 @@ describe("enter client name validation", () => {
     });
 
     it("should fail validation when name begins with a colon", async () => {
-      req.body = {
-        name: ":my client",
-      };
+      req = new RequestBuilder()
+        .withBody({
+          name: ":my client",
+        })
+        .build();
 
       const result = await enterClientNameFieldValidator.validate(
         req as Request

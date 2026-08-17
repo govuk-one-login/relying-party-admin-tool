@@ -4,7 +4,7 @@ import {
   validateFieldsMiddleware,
   validationErrorFormatter,
 } from "./form-validation-middleware.js";
-import { FieldValidator, rule } from "../helpers/validator.js";
+import { FieldValidator, rule } from "../validation/validator.js";
 
 describe("form validation middleware", () => {
   let req: Partial<Request>;
