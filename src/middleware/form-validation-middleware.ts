@@ -4,7 +4,12 @@ import {
   type ErrorFormatter,
   type ValidationError,
 } from "express-validator";
-import { isObjectEmpty, renderBadRequest } from "../utils/validation.js";
+import {
+  isObjectEmpty,
+  renderBadRequest,
+  renderBadRequestFields,
+} from "../utils/validation.js";
+import { FieldValidator } from "../helpers/validator.js";
 
 export const validationErrorFormatter: ErrorFormatter = (
   error: ValidationError
@@ -18,10 +23,10 @@ export const validationErrorFormatter: ErrorFormatter = (
   throw new Error(`Unsupported express-validator error type: ${error.type}`);
 };
 
-export function validateBodyMiddleware(
+export const validateBodyMiddleware = (
   template: string,
   postValidationLocals?: (req: Request) => Record<string, unknown>
-) {
+) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (req: Request, res: Response, next: NextFunction): any => {
     const errors = validationResult(req)
@@ -38,4 +43,23 @@ export function validateBodyMiddleware(
     }
     next();
   };
-}
+};
+
+export const validateFieldsMiddleware = (
+  template: string,
+  validator: FieldValidator<Request>
+) => {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ): Promise<any> => {
+    const result = await validator.validate(req);
+
+    if (!result.isValid) {
+      return renderBadRequestFields(res, req, template, result.errors);
+    }
+    next();
+  };
+};

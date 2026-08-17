@@ -7,7 +7,7 @@ import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect
 
 export const createClientIsIdentityVerificationSupportedGet =
   (): ExpressRouteFunc => {
-    return async function (req: Request, res: Response) {
+    return async (req: Request, res: Response) => {
       if (
         await permissionsService.checkUserHasWriterPermissions(
           "user",
@@ -27,7 +27,7 @@ export const createClientIsIdentityVerificationSupportedGet =
 
 export const createClientIsIdentityVerificationSupportedPost =
   (): ExpressRouteFunc => {
-    return async function (req: Request, res: Response) {
+    return async (req: Request, res: Response) => {
       req.session.newClientData = {
         ...req.session.newClientData,
         isIdentityVerificationSupported:

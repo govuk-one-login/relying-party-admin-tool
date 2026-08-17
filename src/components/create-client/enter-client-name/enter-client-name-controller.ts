@@ -6,7 +6,7 @@ import { populateUrlRoute } from "../../../utils/populate-url-route.js";
 import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
 
 export const createClientEnterClientNameGet = (): ExpressRouteFunc => {
-  return async function (req: Request, res: Response) {
+  return async (req: Request, res: Response) => {
     if (
       await permissionsService.checkUserHasWriterPermissions(
         "user",
@@ -25,7 +25,7 @@ export const createClientEnterClientNameGet = (): ExpressRouteFunc => {
 };
 
 export const createClientEnterClientNamePost = (): ExpressRouteFunc => {
-  return async function (req: Request, res: Response) {
+  return async (req: Request, res: Response) => {
     req.session.newClientData = {
       ...req.session.newClientData,
       name: req.body.name,

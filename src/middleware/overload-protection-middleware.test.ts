@@ -36,7 +36,7 @@ describe("applyOverloadProtection", () => {
   });
 });
 
-function expectedOverloadProtectionConfig(isProduction: boolean) {
+const expectedOverloadProtectionConfig = (isProduction: boolean) => {
   return {
     production: isProduction,
     clientRetrySecs: 3,
@@ -48,4 +48,4 @@ function expectedOverloadProtectionConfig(isProduction: boolean) {
     logging: "warn",
     logStatsOnReq: false,
   };
-}
+};

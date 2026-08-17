@@ -1,21 +1,16 @@
 import { Request } from "express";
-import { validationResult } from "express-validator";
-import * as formValidationMiddleware from "../../../middleware/form-validation-middleware.js";
-import { ValidationChainFunc } from "../../../types.js";
-import { RequestBuilder } from "../../../utils/test-utils/builders.js";
-import { validateEnterClientNameRequest } from "./enter-client-name-validation.js";
+import * as validation from "../../../utils/validation.js";
+import { enterClientNameFieldValidator } from "./enter-client-name-validation.js";
+import { InvalidField } from "../../../utils/types.js";
 
 describe("enter client name validation", () => {
   let req: Partial<Request>;
-  let validators: ValidationChainFunc;
 
   beforeEach(() => {
-    req = new RequestBuilder().build();
+    req = {};
 
-    const stub = vi.spyOn(formValidationMiddleware, "validateBodyMiddleware");
-    stub.mockReturnValue(() => {});
-
-    validators = validateEnterClientNameRequest();
+    const stub = vi.spyOn(validation, "renderBadRequestFields");
+    stub.mockReturnValue();
   });
 
   afterEach(() => {
@@ -28,13 +23,11 @@ describe("enter client name validation", () => {
         name: "my client",
       };
 
-      for (const validator of validators) {
-        await validator(req as Request, {} as any, () => {});
-      }
+      const result = await enterClientNameFieldValidator.validate(
+        req as Request
+      );
 
-      const errors = validationResult(req as Request);
-
-      expect(errors.isEmpty()).toBe(true);
+      expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when name is empty", async () => {
@@ -42,18 +35,17 @@ describe("enter client name validation", () => {
         name: "",
       };
 
-      for (const validator of validators) {
-        await validator(req as Request, {} as any, () => {});
-      }
+      const result = await enterClientNameFieldValidator.validate(
+        req as Request
+      );
 
-      const errors = validationResult(req as Request);
+      expect(result.isValid).toBe(false);
 
-      expect(errors.isEmpty()).toBe(false);
+      const errorsArray = (result as InvalidField).errors;
 
-      const errorsArray = errors.array();
-
-      expect(errorsArray).length(2); // fails ASCII validation too
-      expect(errorsArray[0].msg).toBe("Enter your client name");
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(2);
+      expect(errorsArray[0].text[0]).toBe("Enter your client name");
     });
 
     it("should fail validation when name exceeds 255 characters", async () => {
@@ -62,18 +54,17 @@ describe("enter client name validation", () => {
         name: longPassword,
       };
 
-      for (const validator of validators) {
-        await validator(req as Request, {} as any, () => {});
-      }
+      const result = await enterClientNameFieldValidator.validate(
+        req as Request
+      );
 
-      const errors = validationResult(req as Request);
+      expect(result.isValid).toBe(false);
 
-      expect(errors.isEmpty()).toBe(false);
-
-      const errorsArray = errors.array();
+      const errorsArray = (result as InvalidField).errors;
 
       expect(errorsArray).length(1);
-      expect(errorsArray[0].msg).toBe(
+      expect(errorsArray[0].text).length(2); // because ascii regex also has 255 limit
+      expect(errorsArray[0].text[0]).toBe(
         "Your client name must be less than 255 characters long"
       );
     });
@@ -83,18 +74,17 @@ describe("enter client name validation", () => {
         name: "🆕 client",
       };
 
-      for (const validator of validators) {
-        await validator(req as Request, {} as any, () => {});
-      }
+      const result = await enterClientNameFieldValidator.validate(
+        req as Request
+      );
 
-      const errors = validationResult(req as Request);
+      expect(result.isValid).toBe(false);
 
-      expect(errors.isEmpty()).toBe(false);
-
-      const errorsArray = errors.array();
+      const errorsArray = (result as InvalidField).errors;
 
       expect(errorsArray).length(1);
-      expect(errorsArray[0].msg).toBe(
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
         "Your client name must only use ASCII characters"
       );
     });
@@ -104,18 +94,19 @@ describe("enter client name validation", () => {
         name: ":my client",
       };
 
-      for (const validator of validators) {
-        await validator(req as Request, {} as any, () => {});
-      }
+      const result = await enterClientNameFieldValidator.validate(
+        req as Request
+      );
 
-      const errors = validationResult(req as Request);
+      expect(result.isValid).toBe(false);
 
-      expect(errors.isEmpty()).toBe(false);
-
-      const errorsArray = errors.array();
+      const errorsArray = (result as InvalidField).errors;
 
       expect(errorsArray).length(1);
-      expect(errorsArray[0].msg).toBe("Your client name cannot start with ':'");
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Your client name cannot start with ':'"
+      );
     });
   });
 });

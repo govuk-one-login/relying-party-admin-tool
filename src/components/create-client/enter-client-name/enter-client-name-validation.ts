@@ -1,37 +1,19 @@
-import { body, ValidationChain } from "express-validator";
+import type { Request } from "express";
 import { ValidationChainFunc } from "../../../types.js";
-import { validateBodyMiddleware } from "../../../middleware/form-validation-middleware.js";
+import { validateFieldsMiddleware } from "../../../middleware/form-validation-middleware.js";
+import { clientNameValidator } from "../../../helpers/shared-client-validator.js";
+import { FieldValidator } from "../../../helpers/validator.js";
 
-export function validateEnterClientNameRequest(): ValidationChainFunc {
+export const validateEnterClientNameRequest = (): ValidationChainFunc => {
   return [
-    validateClientName({
-      required: "Enter your client name",
-      maxLength: "Your client name must be less than 255 characters long",
-      asciiOnly: "Your client name must only use ASCII characters",
-      startsWithColon: "Your client name cannot start with ':'",
-    }),
-    validateBodyMiddleware("create-client/enter-client-name/index.njk"),
+    validateFieldsMiddleware(
+      "create-client/enter-client-name/index.njk",
+      enterClientNameFieldValidator
+    ),
   ];
-}
+};
 
-function validateClientName(validationMessages: {
-  required: string;
-  maxLength: string;
-  asciiOnly: string;
-  startsWithColon: string;
-}): ValidationChain {
-  return body("name")
-    .trim()
-    .notEmpty()
-    .withMessage(validationMessages.required)
-    .isLength({ max: 254 })
-    .withMessage(validationMessages.maxLength)
-    .isAscii()
-    .withMessage(validationMessages.asciiOnly)
-    .custom((value) => {
-      if (value.startsWith(":")) {
-        throw new Error(validationMessages.startsWithColon);
-      }
-      return true;
-    });
-}
+export const enterClientNameFieldValidator = new FieldValidator(
+  clientNameValidator.adaptedFrom((req: Request) => req.body.name as string),
+  "name"
+);

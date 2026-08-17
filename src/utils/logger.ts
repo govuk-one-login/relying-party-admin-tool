@@ -51,10 +51,10 @@ const loggerMiddleware = pinoHttp({
   logger: logger,
   wrapSerializers: false,
   autoLogging: { ignore: (req: Request) => ignorePaths.includes(req.url) },
-  customErrorMessage: function (_error, res) {
+  customErrorMessage: (_error, res) => {
     return `request errored with status code: ${res.statusCode}`;
   },
-  customSuccessMessage: function (req, res) {
+  customSuccessMessage: (req, res) => {
     if (res.statusCode === 404) {
       return "resource not found";
     }

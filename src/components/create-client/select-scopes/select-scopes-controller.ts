@@ -6,7 +6,7 @@ import { populateUrlRoute } from "../../../utils/populate-url-route.js";
 import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
 
 export const createClientSelectScopesGet = (): ExpressRouteFunc => {
-  return async function (req: Request, res: Response) {
+  return async (req: Request, res: Response) => {
     if (
       await permissionsService.checkUserHasWriterPermissions(
         "user",
@@ -25,7 +25,7 @@ export const createClientSelectScopesGet = (): ExpressRouteFunc => {
 };
 
 export const createClientSelectScopesPost = (): ExpressRouteFunc => {
-  return async function (req: Request, res: Response) {
+  return async (req: Request, res: Response) => {
     const scopes: string[] = ["openid"];
     if (req.body["selected-scopes"]) {
       if (Array.isArray(req.body["selected-scopes"])) {

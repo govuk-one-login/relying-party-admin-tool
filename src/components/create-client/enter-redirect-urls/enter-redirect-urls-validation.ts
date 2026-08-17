@@ -7,7 +7,7 @@ import {
   PROHIBITED_REDIRECT_URI_SCHEMES,
 } from "../../../app.constants.js";
 
-export function validateEnterRedirectUrlsRequest(): ValidationChainFunc {
+export const validateEnterRedirectUrlsRequest = (): ValidationChainFunc => {
   return [
     validateNewRedirectUrl({
       required: "Enter a redirect URL",
@@ -25,15 +25,15 @@ export function validateEnterRedirectUrlsRequest(): ValidationChainFunc {
       postValidationLocals
     ),
   ];
-}
+};
 
-function validateNewRedirectUrl(validationMessages: {
+const validateNewRedirectUrl = (validationMessages: {
   required: string;
   invalidUrl: string;
   alreadyExists: string;
   invalidQueryParameter: string;
   invalidScheme: string;
-}): ValidationChain {
+}): ValidationChain => {
   return body("redirect-url-input")
     .if(body("action").equals("add"))
     .trim()
@@ -80,22 +80,20 @@ function validateNewRedirectUrl(validationMessages: {
       }
       return true;
     });
-}
+};
 
-function validationRedirectUrlsList(validationMessages: {
+const validationRedirectUrlsList = (validationMessages: {
   required: string;
-}): ValidationChain {
+}): ValidationChain => {
   // due to how request body works, this will either be a string with the single entry or an array
   // therefore no need to test if it is an empty list as it will fail
   return body("redirect-urls")
     .if(body("action").equals("continue"))
     .notEmpty()
     .withMessage(validationMessages.required);
-}
+};
 
-const postValidationLocals = function locals(
-  req: Request
-): Record<string, unknown> {
+const postValidationLocals = (req: Request): Record<string, unknown> => {
   let redirectUrls: string[] = [];
   if (req.body && req.body["redirect-urls"]) {
     redirectUrls = Array.isArray(req.body["redirect-urls"])

@@ -2,7 +2,7 @@ import { body, ValidationChain } from "express-validator";
 import { ValidationChainFunc } from "../../types.js";
 import { validateBodyMiddleware } from "../../middleware/form-validation-middleware.js";
 
-export function validateServiceRequest(): ValidationChainFunc {
+export const validateServiceRequest = (): ValidationChainFunc => {
   return [
     validateServiceName({
       required: "Enter your service name",
@@ -11,13 +11,13 @@ export function validateServiceRequest(): ValidationChainFunc {
     }),
     validateBodyMiddleware("create-service/index.njk"),
   ];
-}
+};
 
-function validateServiceName(validationMessages: {
+const validateServiceName = (validationMessages: {
   required: string;
   asciiOnly: string;
   maxLength: string;
-}): ValidationChain {
+}): ValidationChain => {
   return body("name")
     .trim()
     .notEmpty()
@@ -26,4 +26,4 @@ function validateServiceName(validationMessages: {
     .withMessage(validationMessages.asciiOnly)
     .isLength({ max: 256 })
     .withMessage(validationMessages.maxLength);
-}
+};

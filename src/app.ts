@@ -34,7 +34,7 @@ const APP_VIEWS = [
   path.resolve("node_modules/@govuk-one-login/"),
 ];
 
-async function createApp(): Promise<express.Application> {
+const createApp = async (): Promise<express.Application> => {
   const app: express.Application = express();
   const isDeployedEnvironment = !isLocalEnv();
 
@@ -115,12 +115,14 @@ async function createApp(): Promise<express.Application> {
   app.use(pageNotFoundRouter);
 
   return app;
-}
+};
 
-async function startServer(app: Application): Promise<{
+const startServer = async (
+  app: Application
+): Promise<{
   server: Server;
   closeServer: (callback?: (err?: Error) => void) => Promise<void>;
-}> {
+}> => {
   const port: number | string = process.env.PORT || 6001;
 
   const server = await new Promise<Server>((resolve) => {
@@ -154,7 +156,7 @@ async function startServer(app: Application): Promise<{
   };
 
   return { server, closeServer };
-}
+};
 
 const shutdownProcess =
   (closeServer: () => Promise<void>) => async (): Promise<void> => {
