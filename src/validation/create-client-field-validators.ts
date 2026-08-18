@@ -4,8 +4,11 @@ import {
   validClaimsValidator,
   validScopesValidator,
 } from "./shared-client-validators.js";
-import { FieldValidator, when } from "./validator.js";
-import { notEmptyListValidator } from "./shared-validators.js";
+import { FieldValidator, rule, when } from "./validator.js";
+import {
+  notEmptyListValidator,
+  requiredValidator,
+} from "./shared-validators.js";
 import { getListFromRequestBody } from "../helpers/request-helpers.js";
 
 export const enterClientNameFieldValidator = new FieldValidator(
@@ -30,6 +33,25 @@ export const selectClaimsFieldValidator = new FieldValidator(
       )
     ),
   "selected-claims"
+);
+
+export const supportIdentityVerificationFieldValidator = new FieldValidator(
+  requiredValidator("Choose an option to support identity verification or not")
+    .adaptedFrom((req: Request) => req.body["support-identity-verification"])
+    .and(
+      when(
+        (req: Request) =>
+          req.session.newClientData?.clientAuthenticationMethod ===
+          "CLIENT_SECRET",
+        rule(
+          (input: string) => input !== "true",
+          "Identity verification cannot be supported if client secret is used as authentication method"
+        ).adaptedFrom(
+          (req: Request) => req.body["support-identity-verification"]
+        )
+      )
+    ),
+  "support-identity-verification"
 );
 
 export const selectScopesFieldValidator = new FieldValidator(
