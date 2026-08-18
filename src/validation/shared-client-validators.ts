@@ -1,4 +1,4 @@
-import { VALID_CLAIMS } from "../app.constants.js";
+import { VALID_CLAIMS, VALID_SCOPES } from "../app.constants.js";
 import { listFieldValidator } from "./shared-validators.js";
 import { rule } from "./validator.js";
 
@@ -27,3 +27,5 @@ export const clientNameValidator = rule(
   );
 
 export const validClaimsValidator = listFieldValidator(VALID_CLAIMS, "claim");
+
+export const validScopesValidator = listFieldValidator(VALID_SCOPES, "scope");
