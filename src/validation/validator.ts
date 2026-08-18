@@ -114,4 +114,34 @@ export class FieldValidator<T> {
     }
     return validField();
   }
+
+  and(other: FieldValidator<T>): FieldValidatorChain<T> {
+    return new FieldValidatorChain([this, other]);
+  }
+}
+
+export class FieldValidatorChain<T> {
+  fieldValidators: FieldValidator<T>[];
+  constructor(fieldValidators: FieldValidator<T>[]) {
+    this.fieldValidators = fieldValidators;
+  }
+
+  async validate(value: T): Promise<FieldValidationResult> {
+    const results = await Promise.all(
+      this.fieldValidators.map((fieldValidator) =>
+        fieldValidator.validate(value)
+      )
+    );
+    if (results.find((result) => !result.isValid)) {
+      const errors = results
+        .filter((result) => !result.isValid)
+        .flatMap((error) => error.errors);
+      return invalidField(errors);
+    }
+    return validField();
+  }
+
+  and(other: FieldValidator<T>): FieldValidatorChain<T> {
+    return new FieldValidatorChain([...this.fieldValidators, other]);
+  }
 }
