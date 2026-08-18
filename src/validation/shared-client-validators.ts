@@ -1,6 +1,12 @@
-import { VALID_CLAIMS, VALID_SCOPES } from "../app.constants.js";
+import {
+  PROHIBITED_REDIRECT_URI_QUERY_PARAMETER_NAMES,
+  PROHIBITED_REDIRECT_URI_SCHEMES,
+  VALID_CLAIMS,
+  VALID_SCOPES,
+} from "../app.constants.js";
+import { isValidUrl } from "./shared-validation-rules.js";
 import { listFieldValidator, requiredValidator } from "./shared-validators.js";
-import { rule } from "./validator.js";
+import { rule, Validator, when } from "./validator.js";
 
 export const clientNameValidator = requiredValidator("Enter your client name")
   .and(
@@ -24,5 +30,37 @@ export const clientNameValidator = requiredValidator("Enter your client name")
   );
 
 export const validClaimsValidator = listFieldValidator(VALID_CLAIMS, "claim");
+
+export const validRedirectURLQueryParamsValidator = (
+  errorMessage: string
+): Validator<string> =>
+  when(
+    isValidUrl,
+    rule((urlString: string) => {
+      const url = new URL(urlString);
+
+      let valid = true;
+      url.searchParams.forEach((_value, key) => {
+        if (PROHIBITED_REDIRECT_URI_QUERY_PARAMETER_NAMES.includes(key)) {
+          valid = false;
+        }
+      });
+      return valid;
+    }, errorMessage)
+  );
+
+export const validRedirectURLURISchemeValidator = (
+  errorMessage: string
+): Validator<string> =>
+  when(
+    isValidUrl,
+    rule((urlString: string) => {
+      const url = new URL(urlString);
+
+      const urlScheme = url.protocol.replace(":", "");
+
+      return !PROHIBITED_REDIRECT_URI_SCHEMES.includes(urlScheme);
+    }, errorMessage)
+  );
 
 export const validScopesValidator = listFieldValidator(VALID_SCOPES, "scope");
