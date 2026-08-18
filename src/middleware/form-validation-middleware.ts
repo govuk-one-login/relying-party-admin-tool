@@ -9,7 +9,10 @@ import {
   renderBadRequest,
   renderBadRequestFields,
 } from "../utils/validation.js";
-import { FieldValidator } from "../validation/validator.js";
+import {
+  FieldValidator,
+  FieldValidatorChain,
+} from "../validation/validator.js";
 
 export const validationErrorFormatter: ErrorFormatter = (
   error: ValidationError
@@ -47,7 +50,7 @@ export const validateBodyMiddleware = (
 
 export const validateFieldsMiddleware = (
   template: string,
-  validator: FieldValidator<Request>,
+  validator: FieldValidator<Request> | FieldValidatorChain<Request>,
   postValidationLocals?: (req: Request) => Record<string, unknown>
 ) => {
   return async (

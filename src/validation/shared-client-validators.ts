@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import {
   PROHIBITED_REDIRECT_URI_QUERY_PARAMETER_NAMES,
   PROHIBITED_REDIRECT_URI_SCHEMES,
@@ -5,8 +6,15 @@ import {
   VALID_SCOPES,
 } from "../app.constants.js";
 import { isValidUrl } from "./shared-validation-rules.js";
-import { listFieldValidator, requiredValidator } from "./shared-validators.js";
+import {
+  listFieldValidator,
+  notHttpValidator,
+  notLocalhostValidator,
+  requiredValidator,
+  validUrlValidator,
+} from "./shared-validators.js";
 import { rule, Validator, when } from "./validator.js";
+import { isProductionEnv } from "../config.js";
 
 export const clientNameValidator = requiredValidator("Enter your client name")
   .and(
@@ -30,6 +38,22 @@ export const clientNameValidator = requiredValidator("Enter your client name")
   );
 
 export const validClaimsValidator = listFieldValidator(VALID_CLAIMS, "claim");
+
+export const jwksUrlValidator = validUrlValidator("JWKS URL").and(
+  when(
+    isProductionEnv,
+    notHttpValidator("JWKS URL").and(notLocalhostValidator("JWKS URL"))
+  )
+);
+
+export const publicKeyValidator = rule((jwks: string) => {
+  try {
+    crypto.createPublicKey(jwks);
+    return true;
+  } catch {
+    return false;
+  }
+}, "Please enter a valid PEM key");
 
 export const validRedirectURLQueryParamsValidator = (
   errorMessage: string
