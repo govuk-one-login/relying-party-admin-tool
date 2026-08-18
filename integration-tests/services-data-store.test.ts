@@ -1,6 +1,7 @@
 import { Service } from "../src/models/service.js";
 import { integrationTest, setupServicesTable } from "./base.js";
-import { getServiceByServiceId } from "../src/datastores/services-data-store.js";
+import { createService, getServiceByServiceId } from "../src/datastores/services-data-store.js";
+import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
 
 describe("Services data store tests", () => {
   setupServicesTable();
@@ -28,4 +29,31 @@ describe("Services data store tests", () => {
       expect(user).toBeUndefined();
     }
   );
+
+  integrationTest(
+    "should create service if services does not already exist",
+    async () => {
+      const serviceToStore: Service = {
+        serviceId: "test-service",
+        name: "My test service"
+      }
+      await createService(serviceToStore);
+
+      const actualService = await getServiceByServiceId("test-service");
+
+      expect(actualService).toStrictEqual(serviceToStore);
+    }
+  )
+  integrationTest(
+    "should fail to create service if service already exists",
+    async ({addServicesToDynamo}) => {
+      const existingService: Service = {
+        serviceId: "test-service",
+        name: "My test service"
+      }
+      await addServicesToDynamo(existingService);
+
+      await expect(createService(existingService)).rejects.toThrow(ConditionalCheckFailedException);
+    }
+  )
 });
