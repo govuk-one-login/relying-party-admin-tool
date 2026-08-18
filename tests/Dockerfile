@@ -11,15 +11,6 @@ COPY ui-tests/.nvmrc /tests/ui-tests/.nvmrc
 
 RUN cd /tests/ui-tests && npm ci && npm run install-browsers && cd /
 
-# TODO: Remove this once we have an ECS task running with a domain we can point to
-# This is for building and running the application locally so tests in the pipeline pass for now.
-COPY app/src /src
-COPY app/package.json /package.json
-COPY app/package-lock.json /package-lock.json
-COPY app/.npmrc /.npmrc
-COPY app/.nvmrc /.nvmrc
-COPY app/tsconfig.json /tsconfig.json
-
 COPY . .
 
 ENTRYPOINT [ "./run-tests.sh" ]

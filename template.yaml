@@ -69,14 +69,19 @@ Mappings:
   EnvironmentConfiguration:
     dev:
       serviceDomain: "development.sign-in.service.gov.uk"
+      sessionExpiry: "7200000"
     build:
       serviceDomain: "build.sign-in.service.gov.uk"
+      sessionExpiry: "7200000"
     staging:
       serviceDomain: "staging.sign-in.service.gov.uk"
+      sessionExpiry: "7200000"
     integration:
       serviceDomain: "integration.sign-in.service.gov.uk"
+      sessionExpiry: "7200000"
     production:
       serviceDomain: "sign-in.service.gov.uk"
+      sessionExpiry: "7200000"
 
 Resources:
   #region Fargate Cluster
@@ -211,6 +216,13 @@ Resources:
               Value: "production"
             - Name: "ENVIRONMENT"
               Value: !Sub "${Environment}"
+            - Name: "SESSION_EXPIRY"
+              Value:
+                !FindInMap [
+                  EnvironmentConfiguration,
+                  !Ref Environment,
+                  sessionExpiry,
+                ]
           Secrets:
             - Name: "SESSION_SECRET"
               ValueFrom: !Ref SessionSecret
@@ -333,6 +345,52 @@ Resources:
                   - kms:Decrypt
                   - kms:Encrypt
                 Resource: !GetAtt SessionsTableEncryptionKey.Arn
+        - PolicyName: "ServicesTableCRUD"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "dynamodb:DescribeTable"
+                  - "dynamodb:PutItem"
+                  - "dynamodb:DeleteItem"
+                  - "dynamodb:GetItem"
+                  - "dynamodb:Scan"
+                  - "dynamodb:UpdateItem"
+                Resource:
+                  - !GetAtt ServicesTable.Arn
+        - PolicyName: "ServicesTableKmsEncryptDecrypt"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - kms:Decrypt
+                  - kms:Encrypt
+                Resource: !GetAtt ServicesTableEncryptionKey.Arn
+        - PolicyName: "UserPermissionsTableCRUD"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "dynamodb:DescribeTable"
+                  - "dynamodb:PutItem"
+                  - "dynamodb:DeleteItem"
+                  - "dynamodb:GetItem"
+                  - "dynamodb:Scan"
+                  - "dynamodb:UpdateItem"
+                Resource:
+                  - !GetAtt UserPermissionsTable.Arn
+        - PolicyName: "UserPermissionsTableKmsEncryptDecrypt"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - kms:Decrypt
+                  - kms:Encrypt
+                Resource: !GetAtt UserPermissionsTableEncryptionKey.Arn
       PermissionsBoundary: !If
         - UsePermissionsBoundary
         - !Ref PermissionsBoundary
