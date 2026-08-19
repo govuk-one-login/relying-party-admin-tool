@@ -56,3 +56,11 @@ export const PROHIBITED_REDIRECT_URI_QUERY_PARAMETER_NAMES: string[] = [
   "state",
   "response",
 ];
+
+export const VALID_CLAIMS = Object.freeze([
+  "https://vocab.account.gov.uk/v1/passport",
+  "https://vocab.account.gov.uk/v1/drivingPermit",
+  "https://vocab.account.gov.uk/v1/coreIdentityJWT",
+  "https://vocab.account.gov.uk/v1/address",
+  "https://vocab.account.gov.uk/v1/returnCode",
+] as const);

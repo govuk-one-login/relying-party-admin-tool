@@ -4,6 +4,7 @@ import { ClientEnvironment, ExpressRouteFunc } from "../../../types.js";
 import { permissionsService } from "../../../services/permissions-service.js";
 import { populateUrlRoute } from "../../../utils/populate-url-route.js";
 import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
+import { getListFromRequestBody } from "../../../helpers/request-helpers.js";
 
 export const createClientSelectScopesGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
@@ -26,14 +27,8 @@ export const createClientSelectScopesGet = (): ExpressRouteFunc => {
 
 export const createClientSelectScopesPost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    const scopes: string[] = ["openid"];
-    if (req.body["selected-scopes"]) {
-      if (Array.isArray(req.body["selected-scopes"])) {
-        scopes.concat(req.body["selected-scopes"]);
-      } else {
-        scopes.push(req.body["selected-scopes"]);
-      }
-    }
+    let scopes = getListFromRequestBody(req, "selected-scopes");
+    scopes = scopes.concat("openid");
     req.session.newClientData = {
       ...req.session.newClientData,
       scopes,
