@@ -9,7 +9,7 @@ import {
   renderBadRequest,
   renderBadRequestFields,
 } from "../utils/validation.js";
-import { FieldValidator } from "../helpers/validator.js";
+import { FieldValidator } from "../validation/validator.js";
 
 export const validationErrorFormatter: ErrorFormatter = (
   error: ValidationError

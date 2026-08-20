@@ -37,6 +37,7 @@ import {
   createClientEnterLandingPageUrlPost,
 } from "../components/create-client/enter-landing-page-url/enter-landing-page-url-controller.js";
 import { validateEnterLandingPageUrlRequest } from "../components/create-client/enter-landing-page-url/enter-landing-page-url-validation.js";
+import { validateSelectClaimsRequest } from "../components/create-client/select-claims/select-claims-validation.js";
 
 const router = express.Router();
 
@@ -105,6 +106,7 @@ router.get(
 
 router.post(
   PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS,
+  validateSelectClaimsRequest(),
   createClientSelectClaimsPost()
 );
 

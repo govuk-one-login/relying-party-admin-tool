@@ -4,6 +4,7 @@ import { ClientEnvironment, ExpressRouteFunc } from "../../../types.js";
 import { permissionsService } from "../../../services/permissions-service.js";
 import { populateUrlRoute } from "../../../utils/populate-url-route.js";
 import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
+import { getListFromRequestBody } from "../../../helpers/request-helpers.js";
 
 export const createClientSelectClaimsGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
@@ -26,16 +27,7 @@ export const createClientSelectClaimsGet = (): ExpressRouteFunc => {
 
 export const createClientSelectClaimsPost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    const claims: string[] = [
-      "https://vocab.account.gov.uk/v1/coreIdentityJWT",
-    ];
-    if (req.body["selected-claims"]) {
-      if (Array.isArray(req.body["selected-claims"])) {
-        claims.concat(req.body["selected-claims"]);
-      } else {
-        claims.push(req.body["selected-claims"]);
-      }
-    }
+    const claims = getListFromRequestBody(req, "selected-claims");
     req.session.newClientData = {
       ...req.session.newClientData,
       claims,

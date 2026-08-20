@@ -1,3 +1,5 @@
+import { VALID_CLAIMS } from "../app.constants.js";
+import { listFieldValidator } from "./shared-validators.js";
 import { rule } from "./validator.js";
 
 export const clientNameValidator = rule(
@@ -23,3 +25,5 @@ export const clientNameValidator = rule(
       "Your client name cannot start with ':'"
     )
   );
+
+export const validClaimsValidator = listFieldValidator(VALID_CLAIMS, "claim");
