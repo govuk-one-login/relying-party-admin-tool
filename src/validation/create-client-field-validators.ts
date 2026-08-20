@@ -2,6 +2,7 @@ import type { Request } from "express";
 import {
   clientNameValidator,
   validClaimsValidator,
+  validScopesValidator,
 } from "./shared-client-validators.js";
 import { FieldValidator, when } from "./validator.js";
 import { notEmptyListValidator } from "./shared-validators.js";
@@ -29,4 +30,11 @@ export const selectClaimsFieldValidator = new FieldValidator(
       )
     ),
   "selected-claims"
+);
+
+export const selectScopesFieldValidator = new FieldValidator(
+  validScopesValidator.adaptedFrom((req: Request) =>
+    getListFromRequestBody(req, "selected-scopes")
+  ),
+  "selected-scopes"
 );

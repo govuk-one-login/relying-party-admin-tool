@@ -64,3 +64,10 @@ export const VALID_CLAIMS = Object.freeze([
   "https://vocab.account.gov.uk/v1/address",
   "https://vocab.account.gov.uk/v1/returnCode",
 ] as const);
+
+export const VALID_SCOPES = Object.freeze([
+  "openid",
+  "phone",
+  "email",
+  "wallet_subject_id",
+] as const);
