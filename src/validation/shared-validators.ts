@@ -1,4 +1,18 @@
-import { Validator, invalid, valid, rule } from "./validator.js";
+import {
+  isValidUrl,
+  protocolNotHttp,
+  isNotLocalhost,
+} from "./shared-validation-rules.js";
+import { invalid, rule, valid, Validator } from "./validator.js";
+
+export const validUrlValidator = (fieldName: string): Validator<string> =>
+  rule(isValidUrl, `Your ${fieldName} must be a valid URL`);
+
+export const notHttpValidator = (fieldName: string): Validator<string> =>
+  rule(protocolNotHttp, `Your ${fieldName} does not have a valid URL protocol`);
+
+export const notLocalhostValidator = (fieldName: string): Validator<string> =>
+  rule(isNotLocalhost, `Your ${fieldName} must not use a local hostname`);
 
 const listValidator = <T>(validator: Validator<T>): Validator<T[]> => {
   return new Validator(async (values: T[]) => {
@@ -37,6 +51,9 @@ export const notEmptyListValidator = (
   }, errorMessage);
 
 export const requiredValidator = (errorMessage: string): Validator<string> =>
-  rule((input: string) => {
-    return input !== undefined && input.trim() !== "";
+  rule((input: string | string[]) => {
+    return (
+      input !== undefined &&
+      (Array.isArray(input) ? input.length > 0 : input.trim() !== "")
+    );
   }, errorMessage);

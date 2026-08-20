@@ -52,7 +52,8 @@ export const renderBadRequestFields = (
   res: Response,
   req: Request,
   template: string,
-  errors: FieldError[]
+  errors: FieldError[],
+  postValidationLocals?: Record<string, unknown>
 ): void => {
   res.status(HTTP_STATUS_CODES.BAD_REQUEST);
 
@@ -62,5 +63,6 @@ export const renderBadRequestFields = (
     errors: formattedErrors,
     errorList: generateErrorList(formattedErrors),
     ...req.body,
+    ...postValidationLocals,
   });
 };

@@ -47,7 +47,8 @@ export const validateBodyMiddleware = (
 
 export const validateFieldsMiddleware = (
   template: string,
-  validator: FieldValidator<Request>
+  validator: FieldValidator<Request>,
+  postValidationLocals?: (req: Request) => Record<string, unknown>
 ) => {
   return async (
     req: Request,
@@ -57,8 +58,13 @@ export const validateFieldsMiddleware = (
   ): Promise<any> => {
     const result = await validator.validate(req);
 
+    const locals =
+      typeof postValidationLocals !== "undefined"
+        ? postValidationLocals(req)
+        : undefined;
+
     if (!result.isValid) {
-      return renderBadRequestFields(res, req, template, result.errors);
+      return renderBadRequestFields(res, req, template, result.errors, locals);
     }
     next();
   };

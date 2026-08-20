@@ -8,6 +8,10 @@ export const isLocalEnv = (): boolean => {
   return getAppEnv() === "local";
 };
 
+export const isProductionEnv = (): boolean => {
+  return process.env.ENVIRONMENT === "production";
+};
+
 export const getLogLevel = (): string => {
   return process.env.LOGS_LEVEL || "debug";
 };
