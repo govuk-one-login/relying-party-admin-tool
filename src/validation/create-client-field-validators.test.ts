@@ -2,6 +2,7 @@ import { Request } from "express";
 import {
   enterClientNameFieldValidator,
   enterRedirectUrlsFieldValidator,
+  enterLandingPageUrlFieldValidator,
   selectClaimsFieldValidator,
   selectScopesFieldValidator,
   supportIdentityVerificationFieldValidator,
@@ -314,6 +315,162 @@ describe("create client field validators", () => {
       );
 
       expect(result.isValid).toBe(true);
+    });
+  });
+
+  describe("validateEnterLandingPageUrlRequest", () => {
+    it("should pass validation with valid URL", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "landing-page-url": "http://url.com",
+        })
+        .build();
+
+      const result = await enterLandingPageUrlFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should pass validation when empty", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder().withBody({}).build();
+
+      const result = await enterLandingPageUrlFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when URL is invalid", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "landing-page-url": "not-a-url",
+        })
+        .build();
+
+      const result = await enterLandingPageUrlFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Your landing page URL must be a valid URL"
+      );
+    });
+
+    describe("production environment", () => {
+      beforeAll(() => {
+        process.env.ENVIRONMENT = "production";
+      });
+
+      afterAll(() => {
+        process.env.ENVIRONMENT = "";
+      });
+
+      it("should pass validation with valid https URL", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            "landing-page-url": "https://url.com",
+          })
+          .build();
+
+        const result = await enterLandingPageUrlFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(true);
+      });
+
+      it("should pass validation when empty", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder().withBody({}).build();
+
+        const result = await enterLandingPageUrlFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(true);
+      });
+
+      it("should fail validation when URL is invalid", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            "landing-page-url": "not-a-url",
+          })
+          .build();
+
+        const result = await enterLandingPageUrlFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(false);
+
+        const errorsArray = (result as InvalidField).errors;
+
+        expect(errorsArray).length(1);
+        expect(errorsArray[0].text).length(1);
+        expect(errorsArray[0].text[0]).toBe(
+          "Your landing page URL must be a valid URL"
+        );
+      });
+
+      it("should fail validation when URL is http", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            "landing-page-url": "http://url.com",
+          })
+          .build();
+
+        const result = await enterLandingPageUrlFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(false);
+
+        const errorsArray = (result as InvalidField).errors;
+
+        expect(errorsArray).length(1);
+        expect(errorsArray[0].text).length(1);
+        expect(errorsArray[0].text[0]).toBe(
+          "Your landing page URL does not have a valid URL protocol"
+        );
+      });
+
+      it("should fail validation when URL is localhost", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            "landing-page-url": "https://localhost:3000",
+          })
+          .build();
+
+        const result = await enterLandingPageUrlFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(false);
+
+        const errorsArray = (result as InvalidField).errors;
+
+        expect(errorsArray).length(1);
+        expect(errorsArray[0].text).length(1);
+        expect(errorsArray[0].text[0]).toBe(
+          "Your landing page URL must not use a local hostname"
+        );
+      });
     });
   });
 
