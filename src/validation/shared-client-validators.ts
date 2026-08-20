@@ -1,11 +1,8 @@
 import { VALID_CLAIMS, VALID_SCOPES } from "../app.constants.js";
-import { listFieldValidator } from "./shared-validators.js";
+import { listFieldValidator, requiredValidator } from "./shared-validators.js";
 import { rule } from "./validator.js";
 
-export const clientNameValidator = rule(
-  (clientName: string) => clientName.trim() !== "",
-  "Enter your client name"
-)
+export const clientNameValidator = requiredValidator("Enter your client name")
   .and(
     rule(
       (clientName: string) => clientName.trim().length < 255,

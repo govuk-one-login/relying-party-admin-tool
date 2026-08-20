@@ -35,3 +35,8 @@ export const notEmptyListValidator = (
   rule((input: string[]) => {
     return input.length > 0;
   }, errorMessage);
+
+export const requiredValidator = (errorMessage: string): Validator<string> =>
+  rule((input: string) => {
+    return input !== undefined && input.trim() !== "";
+  }, errorMessage);
