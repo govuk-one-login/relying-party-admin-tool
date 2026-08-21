@@ -123,7 +123,7 @@
     {
       key: { text: "Redirect URLs" },
       value: {
-        html: client.redirectUrls | join("<br>") if client.redirectUrls else "Not set"
+        html: '<div id="redirect-urls">' + (client.redirectUrls | join("<br>") if client.redirectUrls else "Not set") + '</div>'
       },
       actions: {
         items: [{ href: "/", text: "Change", visuallyHiddenText: "redirect urls" }]

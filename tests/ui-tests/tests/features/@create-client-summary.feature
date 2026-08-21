@@ -11,6 +11,7 @@ Feature: Create a new client - summary page
     And the page contains the breadcrumbs: "Your services, Service Name, Create a client"
     Then the page has the heading: "Check these details before creating your client"
     And the field: "name" has the value: "Not set"
+    And the field: "redirect-urls" has the value: "Not set"
 
   Scenario: Create a new client - summary page validates empty client config
     Given I go to the "create client - summary" page
@@ -39,5 +40,8 @@ Feature: Create a new client - summary page
     And I check the radio button: "No"
     And I click the "Continue" button
     Then I am taken to the "create client - summary" page
+    And the page has finished loading
+    And the field: "name" has the value: "My client"
+    And the field: "redirect-urls" has the value: "http://url.com"
     And I click the "Create client" button
     Then I am taken to the "create client - success" page
