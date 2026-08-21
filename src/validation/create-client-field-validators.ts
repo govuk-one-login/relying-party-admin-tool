@@ -6,7 +6,7 @@ import {
   validRedirectURLQueryParamsValidator,
   validRedirectURLURISchemeValidator,
 } from "./shared-client-validators.js";
-import { FieldValidator, rule, when } from "./validator.js";
+import { FieldValidator, optional, rule, when } from "./validator.js";
 import {
   notEmptyListValidator,
   notHttpValidator,
@@ -58,6 +58,20 @@ export const supportIdentityVerificationFieldValidator = new FieldValidator(
       )
     ),
   "support-identity-verification"
+);
+
+export const enterLandingPageUrlFieldValidator = new FieldValidator(
+  optional(
+    validUrlValidator("landing page URL").and(
+      when(
+        isProductionEnv,
+        notHttpValidator("landing page URL").and(
+          notLocalhostValidator("landing page URL")
+        )
+      )
+    )
+  ).adaptedFrom((req: Request) => req.body["landing-page-url"] as string),
+  "landing-page-url"
 );
 
 const enterRedirectUrlInputValidator = when(
