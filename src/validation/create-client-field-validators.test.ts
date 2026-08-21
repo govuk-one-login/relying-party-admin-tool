@@ -6,11 +6,265 @@ import {
   selectClaimsFieldValidator,
   selectScopesFieldValidator,
   supportIdentityVerificationFieldValidator,
+  selectClientAuthenticationValidator,
 } from "./create-client-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
 
 describe("create client field validators", () => {
+  describe("selectClientAuthenticationValidator", () => {
+    it("should fail validation when client authentication method is empty", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "client-authentication-method": "",
+        })
+        .build();
+
+      const result = await selectClientAuthenticationValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Choose a client authentication method"
+      );
+    });
+
+    it("should pass validation when client authentication method is JWKS and valid url", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "client-authentication-method": "JWKS",
+          "jwks-endpoint": "https://url.com",
+        })
+        .build();
+
+      const result = await selectClientAuthenticationValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when client authentication method is JWKS and invalid url", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "client-authentication-method": "JWKS",
+          "jwks-endpoint": "not-a-url",
+        })
+        .build();
+
+      const result = await selectClientAuthenticationValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe("Your JWKS URL must be a valid URL");
+    });
+
+    it("should fail validation when client authentication method is JWKS and empty jwks endpoint", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "client-authentication-method": "JWKS",
+          "jwks-endpoint": "",
+        })
+        .build();
+
+      const result = await selectClientAuthenticationValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(2);
+      expect(errorsArray[0].text[0]).toBe("Enter a JWKS endpoint URL");
+    });
+
+    it("should fail validation when client authentication method is not JWKS and valid url", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "client-authentication-method": "STATIC",
+          "jwks-endpoint": "https://url.com",
+        })
+        .build();
+
+      const result = await selectClientAuthenticationValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(2);
+      expect(errorsArray[0].text[0]).toBe("Enter a public key");
+    });
+
+    it("should pass validation when client authentication method is STATIC and valid pem key", async () => {
+      let req: Partial<Request>;
+      const validPublicKey =
+        "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYWLbZirhZ9Vn9HYOFKK9LKKug+/S\nNMRVsji1V7qruuB594ffFuQnoVDh8ahfwji90zMwQUWrJjMUhoMxQDIWcw==\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
+      req = new RequestBuilder()
+        .withBody({
+          "client-authentication-method": "STATIC",
+          "public-key": validPublicKey,
+        })
+        .build();
+
+      const result = await selectClientAuthenticationValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when client authentication method is STATIC and invalid pem key", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "client-authentication-method": "STATIC",
+          "public-key": "not-a-key",
+        })
+        .build();
+
+      const result = await selectClientAuthenticationValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe("Please enter a valid PEM key");
+    });
+
+    it("should fail validation when client authentication method is STATIC and empty public key", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "client-authentication-method": "STATIC",
+          "public-key": "",
+        })
+        .build();
+
+      const result = await selectClientAuthenticationValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(2);
+      expect(errorsArray[0].text[0]).toBe("Enter a public key");
+    });
+
+    it("should fail validation when client authentication method is not STATIC and valid pem key", async () => {
+      let req: Partial<Request>;
+      const validPublicKey =
+        "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYWLbZirhZ9Vn9HYOFKK9LKKug+/S\nNMRVsji1V7qruuB594ffFuQnoVDh8ahfwji90zMwQUWrJjMUhoMxQDIWcw==\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
+      req = new RequestBuilder()
+        .withBody({
+          "client-authentication-method": "CLIENT_SECRET",
+          "public-key": validPublicKey,
+        })
+        .build();
+
+      const result = await selectClientAuthenticationValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe("Enter a client secret");
+    });
+
+    it("should pass validation when client authentication method is CLIENT_SECRET and valid client secret", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "client-authentication-method": "CLIENT_SECRET",
+          "client-secret": "client-secret", // pragma: allowlist secret
+        })
+        .build();
+
+      const result = await selectClientAuthenticationValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when client authentication method is CLIENT_SECRET and empty client secret", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "client-authentication-method": "CLIENT_SECRET",
+          "client-secret": "",
+        })
+        .build();
+
+      const result = await selectClientAuthenticationValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe("Enter a client secret");
+    });
+
+    it("should fail validation when client authentication method is not CLIENT_SECRET and valid client secret", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "client-authentication-method": "JWKS",
+          "client-secret": "client-secret", // pragma: allowlist secret
+        })
+        .build();
+
+      const result = await selectClientAuthenticationValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(2);
+      expect(errorsArray[0].text[0]).toBe("Enter a JWKS endpoint URL");
+    });
+  });
+
   describe("enterClientNameFieldValidator", () => {
     it("should pass validation with valid client name", async () => {
       let req: Partial<Request>;

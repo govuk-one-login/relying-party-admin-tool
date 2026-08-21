@@ -1,6 +1,8 @@
 import type { Request } from "express";
 import {
   clientNameValidator,
+  jwksUrlValidator,
+  publicKeyValidator,
   validClaimsValidator,
   validScopesValidator,
   validRedirectURLQueryParamsValidator,
@@ -16,6 +18,57 @@ import {
 } from "./shared-validators.js";
 import { getListFromRequestBody } from "../helpers/request-helpers.js";
 import { isProductionEnv } from "../config.js";
+
+const selectClientAuthenticationMethodValidator = new FieldValidator(
+  requiredValidator("Choose a client authentication method").adaptedFrom(
+    (req: Request) => req.body["client-authentication-method"]
+  ),
+  "client-authentication-method"
+);
+
+const selectClientAuthenticationJwksUrlValidator = new FieldValidator(
+  when(
+    (req: Request) => req.body["client-authentication-method"] === "JWKS",
+    requiredValidator("Enter a JWKS endpoint URL")
+      .adaptedFrom((req: Request) => req.body["jwks-endpoint"])
+      .and(
+        jwksUrlValidator.adaptedFrom(
+          (req: Request) => req.body["jwks-endpoint"]
+        )
+      )
+  ),
+  "jwks-endpoint"
+);
+
+const selectClientAuthenticationPublicKeyValidator = new FieldValidator(
+  when(
+    (req: Request) => req.body["client-authentication-method"] === "STATIC",
+    requiredValidator("Enter a public key")
+      .adaptedFrom((req: Request) => req.body["public-key"])
+      .and(
+        publicKeyValidator.adaptedFrom((req: Request) => req.body["public-key"])
+      )
+  ),
+  "public-key"
+);
+
+// TODO: add more validation for client secret
+const selectClientAuthenticationClientSecretValidator = new FieldValidator(
+  when(
+    (req: Request) =>
+      req.body["client-authentication-method"] === "CLIENT_SECRET",
+    requiredValidator("Enter a client secret").adaptedFrom(
+      (req: Request) => req.body["client-secret"]
+    )
+  ),
+  "client-secret"
+);
+
+export const selectClientAuthenticationValidator =
+  selectClientAuthenticationMethodValidator
+    .and(selectClientAuthenticationJwksUrlValidator)
+    .and(selectClientAuthenticationPublicKeyValidator)
+    .and(selectClientAuthenticationClientSecretValidator);
 
 export const enterClientNameFieldValidator = new FieldValidator(
   clientNameValidator.adaptedFrom((req: Request) => req.body.name as string),

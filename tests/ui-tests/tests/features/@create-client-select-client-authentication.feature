@@ -17,11 +17,11 @@ Feature: Create a new client - select client authentication page
     Given I go to the "create client - select client authentication" page
     And the page has finished loading
     And I click the "Continue" button
-    Then the error message: "Choose a token authentication method" shows
+    Then the error message: "Choose a client authentication method" shows
     And I check the radio button: "Public key URL (JWKS)"
     And I enter "not-a-url" into the field "JWKS endpoint URL"
     And I click the "Continue" button
-    Then the error message: "Please enter a valid URL" shows
+    Then the error message: "Your JWKS URL must be a valid URL" shows
     And I enter "http://url.com" into the field "JWKS endpoint URL"
     And I click the "Continue" button
     Then I am taken to the "create client - enter redirect urls" page
