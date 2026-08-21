@@ -3,6 +3,8 @@ import {
   jwksUrlValidator,
   publicKeyValidator,
   validClaimsValidator,
+  productionUrlValidator,
+  redirectUrlValidator,
 } from "./shared-client-validators.js";
 
 describe("shared client validator tests", () => {
@@ -138,6 +140,101 @@ describe("shared client validator tests", () => {
 
       expect(result).toBeInvalid();
       expect(result).toHaveInvalidErrors(["Please enter a valid PEM key"]);
+    });
+  });
+
+  describe("production valid url validator", () => {
+    beforeAll(() => {
+      process.env.ENVIRONMENT = "production";
+    });
+
+    afterAll(() => {
+      process.env.ENVIRONMENT = "";
+    });
+
+    it("should pass validation with valid https URL", async () => {
+      const testUrl = "https://url.com";
+
+      const result = await productionUrlValidator("test URL").validate(testUrl);
+
+      expect(result).toBeValid();
+    });
+
+    it("should fail validation when URL is http", async () => {
+      const testUrl = "http://url.com";
+
+      const result = await productionUrlValidator("test URL").validate(testUrl);
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        "Your test URL does not have a valid URL protocol",
+      ]);
+    });
+
+    it("should fail validation when URL is localhost", async () => {
+      const testUrl = "https://localhost:3000";
+
+      const result = await productionUrlValidator("test URL").validate(testUrl);
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        "Your test URL must not use a local hostname",
+      ]);
+    });
+  });
+
+  describe("redirect url validator", () => {
+    describe("redirect url input", () => {
+      it("should pass validation with valid redirect url", async () => {
+        const redirectUrl = "http://url.com";
+
+        const result = await redirectUrlValidator.validate(redirectUrl);
+
+        expect(result).toBeValid();
+      });
+
+      it("should fail validation when redirect url input is empty", async () => {
+        const result = await redirectUrlValidator.validate("");
+
+        expect(result).toBeInvalid();
+        expect(result).toHaveInvalidErrors([
+          "Enter a redirect URL",
+          "Your redirect URL must be a valid URL",
+        ]);
+      });
+
+      it("should fail validation when redirect url input is not a URL", async () => {
+        const redirectUrl = "not-a-url";
+
+        const result = await redirectUrlValidator.validate(redirectUrl);
+
+        expect(result).toBeInvalid();
+        expect(result).toHaveInvalidErrors([
+          "Your redirect URL must be a valid URL",
+        ]);
+      });
+
+      it("should fail validation when redirect url contains an invalid query parameter", async () => {
+        const redirectUrl = "http://url.com?response";
+
+        const result = await redirectUrlValidator.validate(redirectUrl);
+
+        expect(result).toBeInvalid();
+        expect(result).toHaveInvalidErrors([
+          "You have entered a redirect URL with an invalid query parameter name",
+        ]);
+      });
+
+      it("should fail validation when redirect url contains an invalid scheme", async () => {
+        const redirectUrl = "javascript://url.com";
+
+        const result = await redirectUrlValidator.validate(redirectUrl);
+
+        expect(result).toBeInvalid();
+        expect(result).toHaveInvalidErrors([
+          "You have entered a redirect URL with an invalid scheme",
+        ]);
+      });
     });
   });
 });

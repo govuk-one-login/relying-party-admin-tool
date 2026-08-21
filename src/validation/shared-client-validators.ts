@@ -5,6 +5,7 @@ import {
   VALID_CLAIMS,
   VALID_SCOPES,
 } from "../app.constants.js";
+import { isProductionEnv } from "../config.js";
 import { isValidUrl } from "./shared-validation-rules.js";
 import {
   listFieldValidator,
@@ -14,7 +15,14 @@ import {
   validUrlValidator,
 } from "./shared-validators.js";
 import { rule, Validator, when } from "./validator.js";
-import { isProductionEnv } from "../config.js";
+
+export const productionUrlValidator = (
+  urlFieldName: string
+): Validator<string> =>
+  when(
+    isProductionEnv,
+    notHttpValidator(urlFieldName).and(notLocalhostValidator(urlFieldName))
+  );
 
 export const clientNameValidator = requiredValidator("Enter your client name")
   .and(
@@ -55,7 +63,7 @@ export const publicKeyValidator = rule((jwks: string) => {
   }
 }, "Please enter a valid PEM key");
 
-export const validRedirectURLQueryParamsValidator = (
+const validRedirectUrlQueryParamsValidator = (
   errorMessage: string
 ): Validator<string> =>
   when(
@@ -73,7 +81,7 @@ export const validRedirectURLQueryParamsValidator = (
     }, errorMessage)
   );
 
-export const validRedirectURLURISchemeValidator = (
+const validRedirectUrlSchemeValidator = (
   errorMessage: string
 ): Validator<string> =>
   when(
@@ -85,6 +93,20 @@ export const validRedirectURLURISchemeValidator = (
 
       return !PROHIBITED_REDIRECT_URI_SCHEMES.includes(urlScheme);
     }, errorMessage)
+  );
+
+export const redirectUrlValidator = requiredValidator("Enter a redirect URL")
+  .and(validUrlValidator("redirect URL"))
+  .and(productionUrlValidator("redirect URL"))
+  .and(
+    validRedirectUrlQueryParamsValidator(
+      "You have entered a redirect URL with an invalid query parameter name"
+    )
+  )
+  .and(
+    validRedirectUrlSchemeValidator(
+      "You have entered a redirect URL with an invalid scheme"
+    )
   );
 
 export const validScopesValidator = listFieldValidator(VALID_SCOPES, "scope");
