@@ -1,0 +1,178 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitleName = "Create client summary" %}
+{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
+{% set serviceName %}{{ serviceName }}{% endset %}
+
+{% set coreFieldsRowItems = [] %}
+
+{%
+  set coreFieldsRowItems = coreFieldsRowItems.concat([
+    {
+      key: { text: "Client Name" },
+      value: { html: '<div id="name">'+client.name | default("Not set")+'</div>' },
+      actions: {
+        items: [{ href: "/", text: "Change", visuallyHiddenText: "client name" }]
+      }
+    }
+  ])
+%}
+{% if client.clientAuthenticationMethod == "JWKS" %}
+  {%
+    set coreFieldsRowItems = coreFieldsRowItems.concat([
+      {
+        key: { text: "Client authentication method" },
+        value: { text: "Public key URL (JWKS)" },
+        actions: {
+          items: [{ href: "/", text: "Change", visuallyHiddenText: "client authentication method" }]
+        }
+      },
+      {
+        key: { text: "JWKS URL" },
+        value: { text: client.jwksUrl },
+        actions: {
+          items: [{ href: "/", text: "Change", visuallyHiddenText: "jwks url" }]
+        }
+      },
+      {
+        key: { text: "Token Authentication Method" },
+        value: { text: "Private key JWT" },
+        actions: {
+          items: [{ href: "/", text: "Change", visuallyHiddenText: "token auth method" }]
+        }
+      }
+    ])
+  %}
+{% elif client.clientAuthenticationMethod == "STATIC" %}
+  {%
+    set coreFieldsRowItems = coreFieldsRowItems.concat([
+      {
+        key: { text: "Client Authentication Method" },
+        value: { text: "Fixed public key" },
+        actions: {
+          items: [{ href: "/", text: "Change", visuallyHiddenText: "client authentication method" }]
+        }
+      },
+      {
+        key: { text: "Public key" },
+        value: { text: client.staticJWKS },
+        actions: {
+          items: [{ href: "/", text: "Change", visuallyHiddenText: "public key" }]
+        }
+      },
+      {
+        key: { text: "Token Authentication Method" },
+        value: { text: "Private key JWT" },
+        actions: {
+          items: [{ href: "/", text: "Change", visuallyHiddenText: "token auth method" }]
+        }
+      }
+    ])
+  %}
+{% elif client.clientAuthenticationMethod == "CLIENT_SECRET" %}
+  {%
+    set coreFieldsRowItems = coreFieldsRowItems.concat([
+      {
+        key: { text: "Client Authentication Method" },
+        value: { text: "Client secret" },
+        actions: {
+          items: [{ href: "/", text: "Change", visuallyHiddenText: "client authentication method" }]
+        }
+      },
+      {
+        key: { text: "Client secret" },
+        value: { text: client.clientSecret },
+        actions: {
+          items: [{ href: "/", text: "Change", visuallyHiddenText: "client secret" }]
+        }
+      },
+      {
+        key: { text: "Token Authentication Method" },
+        value: { text: "Client secret post" },
+        actions: {
+          items: [{ href: "/", text: "Change", visuallyHiddenText: "token auth method" }]
+        }
+      }
+    ])
+  %}
+{% else %}
+  {%
+    set coreFieldsRowItems = coreFieldsRowItems.concat([
+      {
+        key: { text: "Client Authentication Method" },
+        value: { text: "Not set" },
+        actions: {
+          items: [{ href: "/", text: "Change", visuallyHiddenText: "client authentication method" }]
+        }
+      },
+      {
+        key: { text: "Token Authentication Method" },
+        value: { text: "Not set" },
+        actions: {
+          items: [{ href: "/", text: "Change", visuallyHiddenText: "token auth method" }]
+        }
+      }
+    ])
+  %}
+{% endif %}
+{%
+  set coreFieldsRowItems = coreFieldsRowItems.concat([
+    {
+      key: { text: "Redirect URLs" },
+      value: {
+        html: client.redirectUrls | join("<br>") if client.redirectUrls else "Not set"
+      },
+      actions: {
+        items: [{ href: "/", text: "Change", visuallyHiddenText: "redirect urls" }]
+      }
+    },
+    {
+      key: { text: "Scopes" },
+      value: {
+        html: client.scopes | join("<br>") if client.scopes else "Not set"
+      },
+      actions: {
+        items: [{ href: "/", text: "Change", visuallyHiddenText: "scopes" }]
+      }
+    }
+  ])
+%}
+
+{% block beforeContent %}
+  {{
+    govukBreadcrumbs({
+    items: [
+      { text: "Your services", href: "/services" },
+      { text: serviceName, href: viewServiceUrl },
+      { text: "Create a client" } ] })
+  }}
+{% endblock %}
+
+{% block pageContent %}
+  <form class="form" action="summary" method="post">
+    <h1 class="govuk-heading-xl">
+      Check these details before creating your client
+    </h1>
+
+    {{
+      govukSummaryList({
+        card: {
+          title: {
+            text: "Core fields"
+          }
+        },
+        rows: coreFieldsRowItems
+      })
+    }}
+
+    <h2 class="govuk-heading-m">Now create your client</h2>
+    {{
+      govukButton({
+        text: "Create client"
+      })
+    }}
+  </form>
+{% endblock %}

@@ -30,6 +30,7 @@ const pageNameToPath: Record<string, string> = {
   "create client - select levels of confidence":
     "/services/serviceId/clients/create/select-levels-of-confidence",
   "create client - summary": "/services/serviceId/clients/create/summary",
+  "create client - success": "/services/serviceId/clients/create/success",
 };
 
 Then("the page meets our accessibility standards", async ({ page }) => {
