@@ -926,3 +926,30 @@ Resources:
         - Key: Name
           Value: UserPermissionsTable
   #endregion
+
+  #region OIDC signing key pair
+
+  OidcSigningKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub "alias/${Environment}-oidc-signing-key-alias"
+      TargetKeyId: !Ref OidcSigningKey
+
+  OidcSigningKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: KMS signing key for OIDC requests
+      PendingWindowInDays: 30
+      KeyUsage: SIGN_VERIFY
+      KeySpec: ECC_NIST_P256
+      KeyPolicy:
+        Version: 2012-10-17
+        Statement:
+          - Sid: AllowIamManagement
+            Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action: kms:*
+            Resource: "*"
+
+  #endregion
