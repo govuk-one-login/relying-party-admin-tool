@@ -27,12 +27,8 @@ const selectClientAuthenticationJwksUrlValidator = new FieldValidator(
   when(
     (req: Request) => req.body["client-authentication-method"] === "JWKS",
     requiredValidator("Enter a JWKS endpoint URL")
+      .and(jwksUrlValidator)
       .adaptedFrom((req: Request) => req.body["jwks-endpoint"])
-      .and(
-        jwksUrlValidator.adaptedFrom(
-          (req: Request) => req.body["jwks-endpoint"]
-        )
-      )
   ),
   "jwks-endpoint"
 );
@@ -41,10 +37,8 @@ const selectClientAuthenticationPublicKeyValidator = new FieldValidator(
   when(
     (req: Request) => req.body["client-authentication-method"] === "STATIC",
     requiredValidator("Enter a public key")
+      .and(publicKeyValidator)
       .adaptedFrom((req: Request) => req.body["public-key"])
-      .and(
-        publicKeyValidator.adaptedFrom((req: Request) => req.body["public-key"])
-      )
   ),
   "public-key"
 );

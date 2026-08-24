@@ -11,6 +11,8 @@ Feature: Create a new client - summary page
     And the page contains the breadcrumbs: "Your services, Service Name, Create a client"
     Then the page has the heading: "Check these details before creating your client"
     And the field: "name" has the value: "Not set"
+    And the field: "client-authentication-method" has the value: "Not set"
+    And the field: "token-authentication-method" has the value: "Not set"
     And the field: "redirect-urls" has the value: "Not set"
 
   Scenario: Create a new client - summary page validates empty client config
@@ -18,8 +20,10 @@ Feature: Create a new client - summary page
     And the page has finished loading
     And I click the "Create client" button
     Then the error message: "Enter your client name" shows
+    Then the error message: "You must set a client authentication method" shows
+    Then the error message: "You must have at least one redirect URL" shows
 
-  Scenario: Create a new client - summary page validates filled auth only client config //todo go through all pages
+  Scenario: Create a new client - summary page validates filled auth only client config
     Given I go to the "create client - enter client name" page
     And the page has finished loading
     And I enter "My client" into the field "What is the name of your client?"
@@ -42,6 +46,9 @@ Feature: Create a new client - summary page
     Then I am taken to the "create client - summary" page
     And the page has finished loading
     And the field: "name" has the value: "My client"
+    And the field: "client-authentication-method" has the value: "Client secret"
+    And the field: "client-secret" has the value: "client-secret"
+    And the field: "token-authentication-method" has the value: "Client secret post"
     And the field: "redirect-urls" has the value: "http://url.com"
     And I click the "Create client" button
     Then I am taken to the "create client - success" page

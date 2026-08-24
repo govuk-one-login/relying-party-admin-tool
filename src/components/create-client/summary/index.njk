@@ -25,21 +25,21 @@
     set coreFieldsRowItems = coreFieldsRowItems.concat([
       {
         key: { text: "Client authentication method" },
-        value: { text: "Public key URL (JWKS)" },
+        value: { html: '<div id="client-authentication-method">Public key URL (JWKS)</div>' },
         actions: {
           items: [{ href: "/", text: "Change", visuallyHiddenText: "client authentication method" }]
         }
       },
       {
         key: { text: "JWKS URL" },
-        value: { text: client.jwksUrl },
+        value: { html: '<div id="jwks-endpoint">'+client.jwksUrl+'</div>' },
         actions: {
           items: [{ href: "/", text: "Change", visuallyHiddenText: "jwks url" }]
         }
       },
       {
         key: { text: "Token Authentication Method" },
-        value: { text: "Private key JWT" },
+        value: { html: '<div id="token-authentication-method">Private key JWT</div>' },
         actions: {
           items: [{ href: "/", text: "Change", visuallyHiddenText: "token auth method" }]
         }
@@ -51,21 +51,21 @@
     set coreFieldsRowItems = coreFieldsRowItems.concat([
       {
         key: { text: "Client Authentication Method" },
-        value: { text: "Fixed public key" },
+        value: { html: '<div id="client-authentication-method">Fixed public key</div>' },
         actions: {
           items: [{ href: "/", text: "Change", visuallyHiddenText: "client authentication method" }]
         }
       },
       {
         key: { text: "Public key" },
-        value: { text: client.staticJWKS },
+        value: { html: '<div id="public-key">'+client.staticJWKS+'</div>' },
         actions: {
           items: [{ href: "/", text: "Change", visuallyHiddenText: "public key" }]
         }
       },
       {
         key: { text: "Token Authentication Method" },
-        value: { text: "Private key JWT" },
+        value: { html: '<div id="token-authentication-method">Private key JWT</div>' },
         actions: {
           items: [{ href: "/", text: "Change", visuallyHiddenText: "token auth method" }]
         }
@@ -77,21 +77,21 @@
     set coreFieldsRowItems = coreFieldsRowItems.concat([
       {
         key: { text: "Client Authentication Method" },
-        value: { text: "Client secret" },
+        value: { html: '<div id="client-authentication-method">Client secret</div>' },
         actions: {
           items: [{ href: "/", text: "Change", visuallyHiddenText: "client authentication method" }]
         }
       },
       {
         key: { text: "Client secret" },
-        value: { text: client.clientSecret },
+        value: { html: '<div id="client-secret">'+client.clientSecret+'</div>' },
         actions: {
           items: [{ href: "/", text: "Change", visuallyHiddenText: "client secret" }]
         }
       },
       {
         key: { text: "Token Authentication Method" },
-        value: { text: "Client secret post" },
+        value: { html: '<div id="token-authentication-method">Client secret post</div>' },
         actions: {
           items: [{ href: "/", text: "Change", visuallyHiddenText: "token auth method" }]
         }
@@ -103,14 +103,14 @@
     set coreFieldsRowItems = coreFieldsRowItems.concat([
       {
         key: { text: "Client Authentication Method" },
-        value: { text: "Not set" },
+        value: { html: '<div id="client-authentication-method">Not set</div>' },
         actions: {
           items: [{ href: "/", text: "Change", visuallyHiddenText: "client authentication method" }]
         }
       },
       {
         key: { text: "Token Authentication Method" },
-        value: { text: "Not set" },
+        value: { html: '<div id="token-authentication-method">Not set</div>' },
         actions: {
           items: [{ href: "/", text: "Change", visuallyHiddenText: "token auth method" }]
         }

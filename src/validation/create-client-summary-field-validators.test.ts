@@ -2,11 +2,338 @@ import { Request } from "express";
 import {
   clientNameSummaryFieldValidator,
   redirectUrlsSummaryFieldValidator,
+  clientAuthenticationMethodSummaryFieldValidator,
+  jwksUrlSummaryFieldValidator,
+  publicKeySummaryFieldValidator,
+  clientSecretSummaryFieldValidator,
 } from "./create-client-summary-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
 
 describe("create client summary field validators", () => {
+  describe("clientAuthenticationMethodSummaryFieldValidator", () => {
+    it("should fail validation when client authentication method is empty", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          clientAuthenticationMethod: "",
+        })
+        .build();
+
+      const result =
+        await clientAuthenticationMethodSummaryFieldValidator.validate(
+          req as Request
+        );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(2);
+      expect(errorsArray[0].text[0]).toBe(
+        "You must set a client authentication method"
+      );
+    });
+
+    it("should fail validation when client authentication method is invalid method", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          clientAuthenticationMethod: "invalid-method",
+        })
+        .build();
+
+      const result =
+        await clientAuthenticationMethodSummaryFieldValidator.validate(
+          req as Request
+        );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        'Invalid client authentication method provided: "invalid-method"'
+      );
+    });
+  });
+
+  describe("jwksUrlSummaryFieldValidator", () => {
+    it("should pass validation when client authentication method is JWKS and valid url", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          clientAuthenticationMethod: "JWKS",
+          jwksURL: "https://url.com",
+        })
+        .build();
+
+      const result = await jwksUrlSummaryFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when client authentication method is JWKS and invalid url", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          clientAuthenticationMethod: "JWKS",
+          jwksURL: "not-a-url",
+        })
+        .build();
+
+      const result = await jwksUrlSummaryFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe("Your JWKS URL must be a valid URL");
+    });
+
+    it("should fail validation when client authentication method is JWKS and empty jwks url", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          clientAuthenticationMethod: "JWKS",
+          jwksURL: "",
+        })
+        .build();
+
+      const result = await jwksUrlSummaryFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(2);
+      expect(errorsArray[0].text[0]).toBe("Enter a JWKS endpoint URL");
+    });
+  });
+
+  describe("publicKeySummaryFieldValidator", () => {
+    it("should pass validation when client authentication method is STATIC and valid pem key", async () => {
+      let req: Partial<Request>;
+      const validPublicKey =
+        "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYWLbZirhZ9Vn9HYOFKK9LKKug+/S\nNMRVsji1V7qruuB594ffFuQnoVDh8ahfwji90zMwQUWrJjMUhoMxQDIWcw==\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          clientAuthenticationMethod: "STATIC",
+          publicKey: validPublicKey,
+          clientTokenAuthenticationMethod: "private_key_jwt",
+        })
+        .build();
+
+      const result = await publicKeySummaryFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when client authentication method is STATIC and invalid pem key", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          clientAuthenticationMethod: "STATIC",
+          publicKey: "not-a-key",
+          clientTokenAuthenticationMethod: "private_key_jwt",
+        })
+        .build();
+
+      const result = await publicKeySummaryFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe("Please enter a valid PEM key");
+    });
+
+    it("should fail validation when client authentication method is STATIC and empty public key", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          clientAuthenticationMethod: "STATIC",
+          publicKey: "",
+          clientTokenAuthenticationMethod: "private_key_jwt",
+        })
+        .build();
+
+      const result = await publicKeySummaryFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(2);
+      expect(errorsArray[0].text[0]).toBe("Enter a public key");
+    });
+
+    it("should fail validation when client token authentication method is not private_key_jwt", async () => {
+      let req: Partial<Request>;
+      const validPublicKey =
+        "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYWLbZirhZ9Vn9HYOFKK9LKKug+/S\nNMRVsji1V7qruuB594ffFuQnoVDh8ahfwji90zMwQUWrJjMUhoMxQDIWcw==\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          clientAuthenticationMethod: "STATIC",
+          publicKey: validPublicKey,
+          clientTokenAuthenticationMethod: "client_secret_post",
+        })
+        .build();
+
+      const result = await publicKeySummaryFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Token authentication method must be private_key_jwt if client authentication method is a public key"
+      );
+    });
+
+    it("should fail validation when client token authentication method is empty", async () => {
+      let req: Partial<Request>;
+      const validPublicKey =
+        "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYWLbZirhZ9Vn9HYOFKK9LKKug+/S\nNMRVsji1V7qruuB594ffFuQnoVDh8ahfwji90zMwQUWrJjMUhoMxQDIWcw==\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          clientAuthenticationMethod: "STATIC",
+          publicKey: validPublicKey,
+        })
+        .build();
+
+      const result = await publicKeySummaryFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Token authentication method must be private_key_jwt if client authentication method is a public key"
+      );
+    });
+  });
+
+  describe("clientSecretSummaryFieldValidator", () => {
+    it("should pass validation when client authentication method is CLIENT_SECRET and valid client secret", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          clientAuthenticationMethod: "CLIENT_SECRET",
+          clientSecret: "client-secret", // pragma: allowlist secret
+          clientTokenAuthenticationMethod: "client_secret_post",
+        })
+        .build();
+
+      const result = await clientSecretSummaryFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when client authentication method is CLIENT_SECRET and empty client secret", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          clientAuthenticationMethod: "CLIENT_SECRET",
+          clientSecret: "",
+          clientTokenAuthenticationMethod: "client_secret_post",
+        })
+        .build();
+
+      const result = await clientSecretSummaryFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe("Enter a client secret");
+    });
+
+    it("should fail validation when client token authentication method is not client_secret_post", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          clientAuthenticationMethod: "CLIENT_SECRET",
+          clientSecret: "client-secret", // pragma: allowlist secret
+          clientTokenAuthenticationMethod: "private_key_jwt",
+        })
+        .build();
+
+      const result = await clientSecretSummaryFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Token authentication method must be client_secret_post if client authentication method is client secret"
+      );
+    });
+
+    it("should fail validation when client token authentication method is empty", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          clientAuthenticationMethod: "CLIENT_SECRET",
+          clientSecret: "client-secret", // pragma: allowlist secret
+        })
+        .build();
+
+      const result = await clientSecretSummaryFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Token authentication method must be client_secret_post if client authentication method is client secret"
+      );
+    });
+  });
+
   describe("clientNameSummaryFieldValidator", () => {
     it("should pass validation with valid client name", async () => {
       let req: Partial<Request>;

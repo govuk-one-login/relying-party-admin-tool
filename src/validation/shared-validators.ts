@@ -29,7 +29,7 @@ export const listValidator = <T>(validator: Validator<T>): Validator<T[]> => {
   });
 };
 
-const fieldValidator = (
+export const fieldValidator = (
   validValues: readonly string[],
   fieldName: string
 ): Validator<string> =>
