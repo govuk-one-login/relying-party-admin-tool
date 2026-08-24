@@ -223,6 +223,8 @@ Resources:
                   !Ref Environment,
                   sessionExpiry,
                 ]
+            - Name: "OIDC_SIGNING_KEY_ALIAS"
+              Value: !Sub "alias/${Environment}-oidc-signing-key-alias"
           Secrets:
             - Name: "SESSION_SECRET"
               ValueFrom: !Ref SessionSecret
@@ -391,6 +393,15 @@ Resources:
                   - kms:Decrypt
                   - kms:Encrypt
                 Resource: !GetAtt UserPermissionsTableEncryptionKey.Arn
+        - PolicyName: AllowOidcSigningKeyAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - kms:GetPublicKey
+                Resource:
+                  - !GetAtt OidcSigningKey.Arn
       PermissionsBoundary: !If
         - UsePermissionsBoundary
         - !Ref PermissionsBoundary
