@@ -8,6 +8,7 @@ import {
   jwksUrlSummaryFieldValidator,
   publicKeySummaryFieldValidator,
   redirectUrlsSummaryFieldValidator,
+  tokenAuthenticationMethodSummaryFieldValidator,
 } from "../../../validation/create-client-summary-field-validators.js";
 
 export function validateCreateClientRequest(): ValidationChainFunc {
@@ -25,6 +26,7 @@ const summaryFieldValidators = clientNameSummaryFieldValidator
   .and(jwksUrlSummaryFieldValidator)
   .and(publicKeySummaryFieldValidator)
   .and(clientSecretSummaryFieldValidator)
+  .and(tokenAuthenticationMethodSummaryFieldValidator)
   .and(redirectUrlsSummaryFieldValidator);
 
 const postValidationLocals = (req: Request): Record<string, unknown> => {

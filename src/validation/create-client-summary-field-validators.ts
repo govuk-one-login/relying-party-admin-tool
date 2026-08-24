@@ -5,7 +5,7 @@ import {
   publicKeyValidator,
   redirectUrlValidator,
 } from "./shared-client-validators.js";
-import { FieldValidator, when } from "./validator.js";
+import { FieldValidator, rule, when } from "./validator.js";
 import {
   fieldValidator,
   listValidator,
@@ -36,6 +36,17 @@ export const jwksUrlSummaryFieldValidator = new FieldValidator(
     requiredValidator("Enter a JWKS endpoint URL")
       .and(jwksUrlValidator)
       .adaptedFrom((req: Request) => req.session.newClientData?.jwksURL ?? "")
+      .and(
+        rule((req: Request) => {
+          if (
+            req.session.newClientData?.clientTokenAuthenticationMethod !==
+            "private_key_jwt"
+          ) {
+            return false;
+          }
+          return true;
+        }, "Token authentication method must be private_key_jwt if client authentication method is a JWKS URL")
+      )
   ),
   "jwks-endpoint"
 );
@@ -47,6 +58,17 @@ export const publicKeySummaryFieldValidator = new FieldValidator(
     requiredValidator("Enter a public key")
       .and(publicKeyValidator)
       .adaptedFrom((req: Request) => req.session.newClientData?.publicKey ?? "")
+      .and(
+        rule((req: Request) => {
+          if (
+            req.session.newClientData?.clientTokenAuthenticationMethod !==
+            "private_key_jwt"
+          ) {
+            return false;
+          }
+          return true;
+        }, "Token authentication method must be private_key_jwt if client authentication method is a public key")
+      )
   ),
   "public-key"
 );
@@ -56,9 +78,21 @@ export const clientSecretSummaryFieldValidator = new FieldValidator(
   when(
     (req: Request) =>
       req.session.newClientData?.clientAuthenticationMethod === "CLIENT_SECRET",
-    requiredValidator("Enter a client secret").adaptedFrom(
-      (req: Request) => req.session.newClientData?.clientSecret ?? ""
-    )
+    requiredValidator("Enter a client secret")
+      .adaptedFrom(
+        (req: Request) => req.session.newClientData?.clientSecret ?? ""
+      )
+      .and(
+        rule((req: Request) => {
+          if (
+            req.session.newClientData?.clientTokenAuthenticationMethod !==
+            "client_secret_post"
+          ) {
+            return false;
+          }
+          return true;
+        }, "Token authentication method must be client_secret_post if client authentication method is client secret")
+      )
   ),
   "client-secret"
 );
@@ -78,3 +112,30 @@ export const redirectUrlsSummaryFieldValidator = new FieldValidator(
     ),
   "redirect-urls"
 );
+
+export const tokenAuthenticationMethodSummaryFieldValidator =
+  new FieldValidator(
+    rule((req: Request) => {
+      if (
+        req.session.newClientData?.clientAuthenticationMethod === "STATIC" &&
+        req.session.newClientData?.clientTokenAuthenticationMethod !==
+          "private_key_jwt"
+      ) {
+        return false;
+      }
+      return true;
+    }, "Token authentication method must be private_key_jwt if client authentication method is a public key").and(
+      rule((req: Request) => {
+        if (
+          req.session.newClientData?.clientAuthenticationMethod ===
+            "CLIENT_SECRET" &&
+          req.session.newClientData?.clientTokenAuthenticationMethod !==
+            "client_secret_post"
+        ) {
+          return false;
+        }
+        return true;
+      }, "Token authentication method must be client_secret_post if client authentication method is client secret")
+    ),
+    "token-authentication-method"
+  );
