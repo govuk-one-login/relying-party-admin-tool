@@ -23,6 +23,7 @@ import { pageNotFoundRouter } from "./routes/error-router.js";
 import { setLocalVarsMiddleware } from "./middleware/set-local-vars-middleware.js";
 import { getSessionStore } from "./datastores/session-data-store.js";
 import { getSessionCookieOptions } from "./config/cookie.js";
+import { jwksRouter } from "./routes/jwks-router.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -109,6 +110,7 @@ const createApp = async (): Promise<express.Application> => {
   app.use(indexRouter);
   app.use(servicesRouter);
   app.use(clientsRouter);
+  app.use(jwksRouter);
 
   // Router for all previously used URLs, that we want to redirect on
   // No URL left behind policy
