@@ -15,6 +15,12 @@ declare module "express-session" {
       name?: string;
       redirectUrls?: string[];
       clientAuthenticationMethod?: "JWKS" | "STATIC" | "CLIENT_SECRET";
+      clientTokenAuthenticationMethod?:
+        | "private_key_jwt"
+        | "client_secret_post";
+      clientSecret?: string;
+      jwksURL?: string;
+      publicKey?: string;
       scopes?: string[];
       isIdentityVerificationSupported?: boolean;
       claims?: string[];
