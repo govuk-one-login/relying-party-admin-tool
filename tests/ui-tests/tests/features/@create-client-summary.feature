@@ -22,6 +22,7 @@ Feature: Create a new client - summary page
     Then the error message: "Enter your client name" shows
     And the error message: "You must set a client authentication method" shows
     And the error message: "You must have at least one redirect URL" shows
+    And the error message: 'Scopes must contain "openid"' shows
 
   Scenario: Create a new client - summary page validates filled auth only client config
     Given I go to the "create client - enter client name" page

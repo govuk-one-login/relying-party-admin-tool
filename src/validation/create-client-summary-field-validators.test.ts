@@ -7,6 +7,7 @@ import {
   publicKeySummaryFieldValidator,
   clientSecretSummaryFieldValidator,
   tokenAuthenticationMethodSummaryFieldValidator,
+  scopesSummaryFieldValidator,
 } from "./create-client-summary-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
@@ -615,6 +616,80 @@ describe("create client summary field validators", () => {
       expect(errorsArray[0].text).length(1);
       expect(errorsArray[0].text[0]).toBe(
         "You have entered a redirect URL with an invalid scheme"
+      );
+    });
+  });
+
+  describe("scopesSummaryFieldValidator", () => {
+    it("should pass validation with valid scope", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          scopes: ["openid"],
+        })
+        .build();
+
+      const result = await scopesSummaryFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation without openid scopes", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          scopes: ["email", "phone"],
+        })
+        .build();
+
+      const result = await scopesSummaryFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe('Scopes must contain "openid"');
+    });
+
+    it("should fail validation with empty scopes", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          scopes: [],
+        })
+        .build();
+
+      const result = await scopesSummaryFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe('Scopes must contain "openid"');
+    });
+
+    it("should fail validation with an invalid scope", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withSessionNewClientData({
+          scopes: ["openid", "email", "invalid-scope"],
+        })
+        .build();
+
+      const result = await scopesSummaryFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        'Invalid scope provided: "invalid-scope"'
       );
     });
   });

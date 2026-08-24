@@ -4,6 +4,7 @@ import {
   jwksUrlValidator,
   publicKeyValidator,
   redirectUrlValidator,
+  validScopesValidator,
 } from "./shared-client-validators.js";
 import { FieldValidator, rule, when } from "./validator.js";
 import {
@@ -111,6 +112,18 @@ export const redirectUrlsSummaryFieldValidator = new FieldValidator(
       (req: Request) => req.session.newClientData?.redirectUrls ?? []
     ),
   "redirect-urls"
+);
+
+export const scopesSummaryFieldValidator = new FieldValidator(
+  validScopesValidator
+    .and(
+      rule(
+        (scopes: string[]) => scopes.includes("openid"),
+        'Scopes must contain "openid"'
+      )
+    )
+    .adaptedFrom((req: Request) => req.session.newClientData?.scopes ?? []),
+  "scopes"
 );
 
 export const tokenAuthenticationMethodSummaryFieldValidator =

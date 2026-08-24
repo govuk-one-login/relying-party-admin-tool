@@ -132,7 +132,7 @@
     {
       key: { text: "Scopes" },
       value: {
-        html: client.scopes | join("<br>") if client.scopes else "Not set"
+        html: '<div id="scopes">'+(client.scopes | join("<br>") if client.scopes else "Not set")+'</div>'
       },
       actions: {
         items: [{ href: "/", text: "Change", visuallyHiddenText: "scopes" }]

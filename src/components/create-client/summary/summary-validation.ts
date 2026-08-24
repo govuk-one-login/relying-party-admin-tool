@@ -8,6 +8,7 @@ import {
   jwksUrlSummaryFieldValidator,
   publicKeySummaryFieldValidator,
   redirectUrlsSummaryFieldValidator,
+  scopesSummaryFieldValidator,
   tokenAuthenticationMethodSummaryFieldValidator,
 } from "../../../validation/create-client-summary-field-validators.js";
 
@@ -27,7 +28,8 @@ const summaryFieldValidators = clientNameSummaryFieldValidator
   .and(publicKeySummaryFieldValidator)
   .and(clientSecretSummaryFieldValidator)
   .and(tokenAuthenticationMethodSummaryFieldValidator)
-  .and(redirectUrlsSummaryFieldValidator);
+  .and(redirectUrlsSummaryFieldValidator)
+  .and(scopesSummaryFieldValidator);
 
 const postValidationLocals = (req: Request): Record<string, unknown> => {
   return { client: req.session.newClientData };
