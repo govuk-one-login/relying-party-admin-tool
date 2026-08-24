@@ -118,7 +118,9 @@ describe("Services data store tests", () => {
       };
       await addServicesToDynamo(existingService);
 
-      await expect(createService(existingService)).rejects.toThrow(ConditionalCheckFailedException);
+      await expect(createService(existingService)).rejects.toThrow(
+        ConditionalCheckFailedException
+      );
     }
   );
 });

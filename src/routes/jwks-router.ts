@@ -45,4 +45,4 @@ router.get(PATH_NAMES.OIDC_JWKS, async (req, res, next) => {
   }
 });
 
-export { router as indexRouter };
+export { router as jwksRouter };
