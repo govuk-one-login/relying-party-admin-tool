@@ -3,22 +3,12 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
-{% set pageTitleName = "Enter client name" %}
+
 {% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
 {% set serviceName %}{{ serviceName }}{% endset %}
 
-{% block beforeContent %}
-  {{
-    govukBreadcrumbs({
-    items: [
-      { text: "Your services", href: "/services" },
-      { text: serviceName, href: viewServiceUrl },
-      { text: "Create a client" } ] })
-  }}
-{% endblock %}
-
 {% block pageContent %}
-  <form class="form" action="enter-client-name" method="post">
+  <form class="form" action="{{ formAction }}" method="post">
     {{
       govukInput({
         label: {
@@ -31,7 +21,7 @@
         },
         id: "name",
         name: "name",
-        value: data['name'],
+        value: clientName,
         errorMessage: {
           text: errors["name"].text
         } if (errors["name"])

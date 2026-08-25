@@ -7,8 +7,8 @@ import {
 import {
   createClientEnterClientNameGet,
   createClientEnterClientNamePost,
-} from "../components/create-client/enter-client-name/enter-client-name-controller.js";
-import { validateEnterClientNameRequest } from "../components/create-client/enter-client-name/enter-client-name-validation.js";
+} from "../components/create-client/client-name/enter-client-name/enter-client-name-controller.js";
+import { validateEnterClientNameRequest } from "../components/create-client/client-name/validation.js";
 import {
   createClientSelectClientAuthenticationGet,
   createClientSelectClientAuthenticationPost,
