@@ -61,7 +61,7 @@ export const selectClientAuthenticationValidator =
     .and(selectClientAuthenticationPublicKeyValidator)
     .and(selectClientAuthenticationClientSecretValidator);
 
-export const enterClientNameFieldValidator = new FieldValidator(
+export const clientNameInputFieldValidator = new FieldValidator(
   clientNameValidator.adaptedFrom((req: Request) => req.body.name as string),
   "name"
 );
