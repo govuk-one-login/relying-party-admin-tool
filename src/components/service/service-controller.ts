@@ -43,6 +43,7 @@ export const serviceGet = (): ExpressRouteFunc => {
         hasIntegrationWriterPermissions,
         hasProductionWriterPermissions,
         ...(hasManagerPermissions && { sideNavItems }),
+        baseUrl: req.path.replace(/\/$/, ""),
       });
     } else {
       return res.redirect(PATH_NAMES.ROOT);
