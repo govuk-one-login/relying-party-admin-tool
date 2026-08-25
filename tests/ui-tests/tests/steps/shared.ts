@@ -15,6 +15,8 @@ const pageNameToPath: Record<string, string> = {
   "create client": "/services/serviceId/clients/create",
   "create client - enter client name":
     "/services/serviceId/clients/create/enter-client-name",
+  "create client - edit client name":
+    "/services/serviceId/clients/create/edit-client-name",
   "create client - select client authentication":
     "/services/serviceId/clients/create/select-client-authentication",
   "create client - enter redirect urls":
@@ -198,5 +200,32 @@ Then(
     await expect(
       page.getByRole("checkbox", { name: checkboxLabel })
     ).toBeChecked();
+  }
+);
+
+Then(
+  "the field: {string} has the value: {string}",
+  async ({ page }, fieldName: string, value: string) => {
+    await expect(page.locator(`#${fieldName}`)).toBeVisible();
+    await expect(
+      page.locator(`#${fieldName}`, { hasText: value })
+    ).toBeVisible();
+  }
+);
+
+Then(
+  "I click the change button for: {string} in the {string} section on the summary page",
+  async ({ page }, fieldName: string, section: string) => {
+    page
+      .getByRole("link", { name: `Change   ${fieldName} (${section})` })
+      .click();
+  }
+);
+
+Then(
+  "the field input: {string} has the value: {string}",
+  async ({ page }, fieldName: string, value: string) => {
+    await expect(page.locator(`input#${fieldName}.govuk-input`)).toBeVisible();
+    await expect(page.locator(`input#${fieldName}`)).toHaveValue(value);
   }
 );

@@ -8,7 +8,10 @@ import {
   createClientEnterClientNameGet,
   createClientEnterClientNamePost,
 } from "../components/create-client/client-name/enter-client-name/enter-client-name-controller.js";
-import { validateEnterClientNameRequest } from "../components/create-client/client-name/validation.js";
+import {
+  validateEditClientNameRequest,
+  validateEnterClientNameRequest,
+} from "../components/create-client/client-name/validation.js";
 import {
   createClientSelectClientAuthenticationGet,
   createClientSelectClientAuthenticationPost,
@@ -44,6 +47,10 @@ import {
   createClientSummaryPost,
 } from "../components/create-client/summary/summary-controller.js";
 import { validateCreateClientRequest } from "../components/create-client/summary/summary-validation.js";
+import {
+  createClientEditClientNameGet,
+  createClientEditClientNamePost,
+} from "../components/create-client/client-name/edit-client-name/edit-client-name-controller.js";
 
 const router = express.Router();
 
@@ -60,6 +67,17 @@ router.post(
   PATH_NAMES.CREATE_CLIENT_ENTER_CLIENT_NAME,
   validateEnterClientNameRequest(),
   createClientEnterClientNamePost()
+);
+
+router.get(
+  PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME,
+  createClientEditClientNameGet()
+);
+
+router.post(
+  PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME,
+  validateEditClientNameRequest(),
+  createClientEditClientNamePost()
 );
 
 router.get(

@@ -18,6 +18,9 @@ export const createClientSummaryGet = (): ExpressRouteFunc => {
         serviceName: "Service Name",
         serviceId: req.params.serviceId as string,
         client: req.session.newClientData,
+        baseUrl: populateUrlRoute(PATH_NAMES.CREATE_CLIENT, [
+          req.params.serviceId as string,
+        ]),
       });
     } else {
       return res.redirect(PATH_NAMES.ROOT);

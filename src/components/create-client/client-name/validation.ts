@@ -10,3 +10,12 @@ export const validateEnterClientNameRequest = (): ValidationChainFunc => {
     ),
   ];
 };
+
+export const validateEditClientNameRequest = (): ValidationChainFunc => {
+  return [
+    validateFieldsMiddleware(
+      "create-client/client-name/edit-client-name/index.njk",
+      clientNameInputFieldValidator
+    ),
+  ];
+};
