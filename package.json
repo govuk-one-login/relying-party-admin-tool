@@ -34,7 +34,7 @@
     "@aws-sdk/client-dynamodb": "^3.1075.0",
     "@aws-sdk/client-kms": "^3.1115.0",
     "@aws-sdk/lib-dynamodb": "^3.1075.0",
-    "@eslint/compat": "^2.0.5",
+    "@eslint/compat": "^2.1.0",
     "@eslint/js": "^10.0.1",
     "@govuk-one-login/frontend-vital-signs": "^0.1.4",
     "@types/express-session": "^1.19.0",
