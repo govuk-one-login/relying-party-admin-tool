@@ -23,6 +23,7 @@ import {
   createClientSelectScopesGet,
   createClientSelectScopesPost,
 } from "../components/create-client/select-scopes/select-scopes-controller.js";
+import { validateSelectScopesRequest } from "../components/create-client/select-scopes/select-scopes-validation.js";
 import {
   createClientIsIdentityVerificationSupportedGet,
   createClientIsIdentityVerificationSupportedPost,
@@ -32,13 +33,17 @@ import {
   createClientSelectClaimsGet,
   createClientSelectClaimsPost,
 } from "../components/create-client/select-claims/select-claims-controller.js";
+import { validateSelectClaimsRequest } from "../components/create-client/select-claims/select-claims-validation.js";
 import {
   createClientEnterLandingPageUrlGet,
   createClientEnterLandingPageUrlPost,
 } from "../components/create-client/enter-landing-page-url/enter-landing-page-url-controller.js";
 import { validateEnterLandingPageUrlRequest } from "../components/create-client/enter-landing-page-url/enter-landing-page-url-validation.js";
-import { validateSelectClaimsRequest } from "../components/create-client/select-claims/select-claims-validation.js";
-import { validateSelectScopesRequest } from "../components/create-client/select-scopes/select-scopes-validation.js";
+import {
+  createClientSummaryGet,
+  createClientSummaryPost,
+} from "../components/create-client/summary/summary-controller.js";
+import { validateCreateClientRequest } from "../components/create-client/summary/summary-validation.js";
 
 const router = express.Router();
 
@@ -121,6 +126,14 @@ router.post(
   PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL,
   validateEnterLandingPageUrlRequest(),
   createClientEnterLandingPageUrlPost()
+);
+
+router.get(PATH_NAMES.CREATE_CLIENT_SUMMARY, createClientSummaryGet());
+
+router.post(
+  PATH_NAMES.CREATE_CLIENT_SUMMARY,
+  validateCreateClientRequest(),
+  createClientSummaryPost()
 );
 
 export { router as clientsRouter };

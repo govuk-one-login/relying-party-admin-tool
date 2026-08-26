@@ -23,6 +23,7 @@ export const PATH_NAMES = {
   CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE:
     "/services/:serviceId/clients/create/select-levels-of-confidence",
   CREATE_CLIENT_SUMMARY: "/services/:serviceId/clients/create/summary",
+  CREATE_CLIENT_SUCCESS: "/services/:serviceId/clients/create/success",
   OIDC_JWKS: "/.well-known/jwks.json",
 };
 

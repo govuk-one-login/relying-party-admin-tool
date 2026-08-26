@@ -5,19 +5,16 @@ import {
   publicKeyValidator,
   validClaimsValidator,
   validScopesValidator,
-  validRedirectURLQueryParamsValidator,
-  validRedirectURLURISchemeValidator,
+  productionUrlValidator,
+  redirectUrlValidator,
 } from "./shared-client-validators.js";
 import { FieldValidator, optional, rule, when } from "./validator.js";
 import {
   notEmptyListValidator,
-  notHttpValidator,
-  notLocalhostValidator,
   requiredValidator,
   validUrlValidator,
 } from "./shared-validators.js";
 import { getListFromRequestBody } from "../helpers/request-helpers.js";
-import { isProductionEnv } from "../config.js";
 
 const selectClientAuthenticationMethodValidator = new FieldValidator(
   requiredValidator("Choose a client authentication method").adaptedFrom(
@@ -30,12 +27,8 @@ const selectClientAuthenticationJwksUrlValidator = new FieldValidator(
   when(
     (req: Request) => req.body["client-authentication-method"] === "JWKS",
     requiredValidator("Enter a JWKS endpoint URL")
+      .and(jwksUrlValidator)
       .adaptedFrom((req: Request) => req.body["jwks-endpoint"])
-      .and(
-        jwksUrlValidator.adaptedFrom(
-          (req: Request) => req.body["jwks-endpoint"]
-        )
-      )
   ),
   "jwks-endpoint"
 );
@@ -44,10 +37,8 @@ const selectClientAuthenticationPublicKeyValidator = new FieldValidator(
   when(
     (req: Request) => req.body["client-authentication-method"] === "STATIC",
     requiredValidator("Enter a public key")
+      .and(publicKeyValidator)
       .adaptedFrom((req: Request) => req.body["public-key"])
-      .and(
-        publicKeyValidator.adaptedFrom((req: Request) => req.body["public-key"])
-      )
   ),
   "public-key"
 );
@@ -116,12 +107,7 @@ export const supportIdentityVerificationFieldValidator = new FieldValidator(
 export const enterLandingPageUrlFieldValidator = new FieldValidator(
   optional(
     validUrlValidator("landing page URL").and(
-      when(
-        isProductionEnv,
-        notHttpValidator("landing page URL").and(
-          notLocalhostValidator("landing page URL")
-        )
-      )
+      productionUrlValidator("landing page URL")
     )
   ).adaptedFrom((req: Request) => req.body["landing-page-url"] as string),
   "landing-page-url"
@@ -129,25 +115,8 @@ export const enterLandingPageUrlFieldValidator = new FieldValidator(
 
 const enterRedirectUrlInputValidator = when(
   (req: Request) => req.body.action === "add",
-  requiredValidator("Enter a redirect URL")
+  redirectUrlValidator
     .adaptedFrom((req: Request) => req.body["redirect-url-input"])
-    .and(
-      validUrlValidator("redirect URL").adaptedFrom(
-        (req: Request) => req.body["redirect-url-input"]
-      )
-    )
-    .and(
-      when(
-        isProductionEnv,
-        notHttpValidator("redirect URL")
-          .adaptedFrom((req: Request) => req.body["redirect-url-input"])
-          .and(
-            notLocalhostValidator("redirect URL").adaptedFrom(
-              (req: Request) => req.body["redirect-url-input"]
-            )
-          )
-      )
-    )
     .and(
       rule((req: Request) => {
         if (
@@ -158,16 +127,6 @@ const enterRedirectUrlInputValidator = when(
         }
         return true;
       }, "You have already added this redirect URL")
-    )
-    .and(
-      validRedirectURLQueryParamsValidator(
-        "You have entered a redirect URL with an invalid query parameter name"
-      ).adaptedFrom((req: Request) => req.body["redirect-url-input"])
-    )
-    .and(
-      validRedirectURLURISchemeValidator(
-        "You have entered a redirect URL with an invalid scheme"
-      ).adaptedFrom((req: Request) => req.body["redirect-url-input"])
     )
 );
 

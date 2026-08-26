@@ -14,7 +14,7 @@ export const notHttpValidator = (fieldName: string): Validator<string> =>
 export const notLocalhostValidator = (fieldName: string): Validator<string> =>
   rule(isNotLocalhost, `Your ${fieldName} must not use a local hostname`);
 
-const listValidator = <T>(validator: Validator<T>): Validator<T[]> => {
+export const listValidator = <T>(validator: Validator<T>): Validator<T[]> => {
   return new Validator(async (values: T[]) => {
     const results = await Promise.all(
       values.map((value) => validator.validate(value))
@@ -29,7 +29,7 @@ const listValidator = <T>(validator: Validator<T>): Validator<T[]> => {
   });
 };
 
-const fieldValidator = (
+export const fieldValidator = (
   validValues: readonly string[],
   fieldName: string
 ): Validator<string> =>
