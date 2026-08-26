@@ -15,8 +15,8 @@ import {
 import {
   createClientSelectClientAuthenticationGet,
   createClientSelectClientAuthenticationPost,
-} from "../components/create-client/select-client-authentication/select-client-authentication-controller.js";
-import { validateSelectClientAuthenticationRequest } from "../components/create-client/select-client-authentication/select-client-authentication-validation.js";
+} from "../components/create-client/client-authentication-method/select-client-authentication-method/select-client-authentication-method-controller.js";
+import { validateSelectClientAuthenticationRequest } from "../components/create-client/client-authentication-method/validation.js";
 import {
   createClientEnterRedirectUrlsGet,
   createClientEnterRedirectUrlsPost,

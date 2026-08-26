@@ -7,7 +7,7 @@ export const validateSelectClientAuthenticationRequest =
   (): ValidationChainFunc => {
     return [
       validateFieldsMiddleware(
-        "create-client/select-client-authentication/index.njk",
+        "create-client/client-authentication-method/select-client-authentication-method/index.njk",
         selectClientAuthenticationValidator,
         postValidationLocals
       ),

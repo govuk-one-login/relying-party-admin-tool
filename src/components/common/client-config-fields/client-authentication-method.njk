@@ -6,22 +6,11 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
-{% set pageTitleName = "Select client authentication method" %}
 {% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
 {% set serviceName %}{{ serviceName }}{% endset %}
 
-{% block beforeContent %}
-  {{
-    govukBreadcrumbs({
-    items: [
-      { text: "Your services", href: "/services" },
-      { text: serviceName, href: viewServiceUrl },
-      { text: "Create a client" } ] })
-  }}
-{% endblock %}
-
 {% block pageContent %}
-  <form class="form" action="select-client-authentication" method="post">
+  <form class="form" action="{{ formAction }}" method="post">
     <h1 class="govuk-heading-l">Client authentication method</h1>
 
     {{
@@ -30,7 +19,6 @@
         iconFallbackText: "Warning"
       })
     }}
-
 
     {% set jwksEndpointHtml %}
       {{
@@ -49,7 +37,6 @@
       }}
     {% endset -%}
 
-
     {% set publicKeyHtml %}
       {{
         govukTextarea({
@@ -67,7 +54,6 @@
         })
       }}
     {% endset -%}
-
 
     {% set clientSecretHtml %}
       {{
