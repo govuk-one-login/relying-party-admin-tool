@@ -1,6 +1,6 @@
 import { Request } from "express";
 import {
-  enterClientNameFieldValidator,
+  clientNameInputFieldValidator,
   enterRedirectUrlsFieldValidator,
   enterLandingPageUrlFieldValidator,
   selectClaimsFieldValidator,
@@ -274,7 +274,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await enterClientNameFieldValidator.validate(
+      const result = await clientNameInputFieldValidator.validate(
         req as Request
       );
 
@@ -289,7 +289,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await enterClientNameFieldValidator.validate(
+      const result = await clientNameInputFieldValidator.validate(
         req as Request
       );
 
@@ -311,7 +311,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await enterClientNameFieldValidator.validate(
+      const result = await clientNameInputFieldValidator.validate(
         req as Request
       );
 
@@ -334,7 +334,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await enterClientNameFieldValidator.validate(
+      const result = await clientNameInputFieldValidator.validate(
         req as Request
       );
 
@@ -357,7 +357,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await enterClientNameFieldValidator.validate(
+      const result = await clientNameInputFieldValidator.validate(
         req as Request
       );
 

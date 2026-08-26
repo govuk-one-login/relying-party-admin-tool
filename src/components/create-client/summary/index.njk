@@ -15,7 +15,7 @@
       key: { text: "Client Name" },
       value: { html: '<div id="name">'+client.name | default("Not set")+'</div>' },
       actions: {
-        items: [{ href: "/", text: "Change", visuallyHiddenText: "client name" }]
+        items: [{ href: baseUrl+"/edit-client-name", text: "Change", visuallyHiddenText: "client name" }]
       }
     }
   ])

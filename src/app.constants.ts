@@ -8,6 +8,8 @@ export const PATH_NAMES = {
   CREATE_CLIENT: "/services/:serviceId/clients/create",
   CREATE_CLIENT_ENTER_CLIENT_NAME:
     "/services/:serviceId/clients/create/enter-client-name",
+  CREATE_CLIENT_EDIT_CLIENT_NAME:
+    "/services/:serviceId/clients/create/edit-client-name",
   CREATE_CLIENT_SELECT_CLIENT_AUTHENTICATION:
     "/services/:serviceId/clients/create/select-client-authentication",
   CREATE_CLIENT_ENTER_REDIRECT_URLS:
