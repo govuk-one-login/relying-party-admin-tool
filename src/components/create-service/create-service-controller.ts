@@ -7,7 +7,7 @@ import { createService } from "../../datastores/services-data-store.js";
 
 export const createServicePost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    const serviceId = crypto.randomBytes(20).toString("base64url"); // TODO: override?
+    const serviceId = crypto.randomBytes(20).toString("base64url");
     const serviceName = req.body.name;
     if (!serviceName) {
       return res.redirect(PATH_NAMES["500_ERROR"]);
@@ -17,6 +17,7 @@ export const createServicePost = (): ExpressRouteFunc => {
         serviceId,
         name: serviceName,
       });
+      // TODO: add user to user permissions with manager role
     } catch {
       res.redirect(PATH_NAMES["500_ERROR"]);
     }

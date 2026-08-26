@@ -3,7 +3,9 @@ import {
   UpdateTimeToLiveCommand,
   DynamoDBClient,
 } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { FullConfig } from "@playwright/test";
+import { getTestServiceId } from "./utils/getTestServiceId";
 
 const client = new DynamoDBClient({
   region: "eu-west-2",
@@ -14,11 +16,31 @@ const client = new DynamoDBClient({
   },
 });
 
+const dynamoDBDocument = DynamoDBDocument.from(client);
+
 const createTableIfNotExists = async (params: any) => {
   try {
     await client.send(new CreateTableCommand(params));
   } catch (err: any) {
     if (err.name !== "ResourceInUseException") {
+      throw err;
+    }
+  }
+};
+
+const addServiceToTableIfNotExists = async () => {
+  try {
+    await dynamoDBDocument.put({
+      TableName: `${process.env.ENVIRONMENT}-services`,
+      Item: {
+        serviceId: getTestServiceId(),
+        sk: "service",
+        name: "Test service",
+      },
+      ConditionExpression: "attribute_not_exists(serviceId)",
+    });
+  } catch (err: any) {
+    if (err.name !== "ConditionalCheckFailedException") {
       throw err;
     }
   }
@@ -50,6 +72,8 @@ const globalSetup = async (config: FullConfig) => {
     ],
     ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 },
   });
+
+  await addServiceToTableIfNotExists();
 
   await createTableIfNotExists({
     TableName: `${process.env.ENVIRONMENT}-frontend-sessions`,

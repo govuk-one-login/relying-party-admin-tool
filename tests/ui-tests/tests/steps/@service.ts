@@ -11,7 +11,7 @@ Then("the side navigation shows with correct urls", async ({ page }) => {
   ).toBeVisible();
   await expect(
     locator.getByRole("link", { name: "Clients", exact: true })
-  ).toHaveAttribute("href", "/services/serviceId");
+  ).toHaveAttribute("href", "/services/12345");
   await expect(
     locator.getByRole("link", { name: "Clients", exact: true })
   ).toHaveAttribute("aria-current", "true");
@@ -20,6 +20,6 @@ Then("the side navigation shows with correct urls", async ({ page }) => {
   ).toBeVisible();
   await expect(
     locator.getByRole("link", { name: "Team members", exact: true })
-  ).toHaveAttribute("href", "/services/serviceId/team-members");
+  ).toHaveAttribute("href", "/services/12345/team-members");
   await expect(page.locator('[aria-current="true"]')).toBeVisible();
 });

@@ -2,8 +2,11 @@ import { AxeBuilder } from "@axe-core/playwright";
 import { bdd } from "./fixtures.js";
 import { expect } from "@playwright/test";
 import assert from "node:assert";
+import { getTestServiceId } from "../../utils/getTestServiceId.js";
 
 const { Then, Given } = bdd;
+
+const testServiceId = getTestServiceId();
 
 const pageNameToPath: Record<string, string> = {
   home: "/",
@@ -11,26 +14,18 @@ const pageNameToPath: Record<string, string> = {
   "500 error": "/error",
   services: "/services",
   "create service": "/services/create",
-  service: "/services/serviceId",
-  "create client": "/services/serviceId/clients/create",
-  "create client - enter client name":
-    "/services/serviceId/clients/create/enter-client-name",
-  "create client - select client authentication":
-    "/services/serviceId/clients/create/select-client-authentication",
-  "create client - enter redirect urls":
-    "/services/serviceId/clients/create/enter-redirect-urls",
-  "create client - select scopes":
-    "/services/serviceId/clients/create/select-scopes",
-  "create client - support identity verification":
-    "/services/serviceId/clients/create/support-identity-verification",
-  "create client - select claims":
-    "/services/serviceId/clients/create/select-claims",
-  "create client - enter landing page url":
-    "/services/serviceId/clients/create/enter-landing-page-url",
-  "create client - select levels of confidence":
-    "/services/serviceId/clients/create/select-levels-of-confidence",
-  "create client - summary": "/services/serviceId/clients/create/summary",
-  "create client - success": "/services/serviceId/clients/create/success",
+  service: `/services/${testServiceId}`,
+  "create client": `/services/${testServiceId}/clients/create`,
+  "create client - enter client name": `/services/${testServiceId}/clients/create/enter-client-name`,
+  "create client - select client authentication": `/services/${testServiceId}/clients/create/select-client-authentication`,
+  "create client - enter redirect urls": `/services/${testServiceId}/clients/create/enter-redirect-urls`,
+  "create client - select scopes": `/services/${testServiceId}/clients/create/select-scopes`,
+  "create client - support identity verification": `/services/${testServiceId}/clients/create/support-identity-verification`,
+  "create client - select claims": `/services/${testServiceId}/clients/create/select-claims`,
+  "create client - enter landing page url": `/services/${testServiceId}/clients/create/enter-landing-page-url`,
+  "create client - select levels of confidence": `/services/${testServiceId}/clients/create/select-levels-of-confidence`,
+  "create client - summary": `/services/${testServiceId}/clients/create/summary`,
+  "create client - success": `/services/${testServiceId}/clients/create/success`,
 };
 
 Then("the page meets our accessibility standards", async ({ page }) => {
