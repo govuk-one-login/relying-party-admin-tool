@@ -8,7 +8,6 @@ Feature: Create a new client - select client authentication page
     And the header shows
     And the navigation bar shows
     And the footer shows
-    And the page contains the breadcrumbs: "Your services, Service Name, Create a client"
     Then the page has the heading: "Client authentication method"
     And the page contains the text: "If client secret is selected, you will be unable to request identity verification"
     And the page contains the text: "How do you want to authenticate?"

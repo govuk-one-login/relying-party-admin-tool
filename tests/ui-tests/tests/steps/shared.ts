@@ -19,6 +19,8 @@ const pageNameToPath: Record<string, string> = {
     "/services/serviceId/clients/create/edit-client-name",
   "create client - select client authentication":
     "/services/serviceId/clients/create/select-client-authentication",
+  "create client - edit client authentication":
+    "/services/serviceId/clients/create/edit-client-authentication",
   "create client - enter redirect urls":
     "/services/serviceId/clients/create/enter-redirect-urls",
   "create client - select scopes":
@@ -225,7 +227,7 @@ Then(
 Then(
   "the field input: {string} has the value: {string}",
   async ({ page }, fieldName: string, value: string) => {
-    await expect(page.locator(`input#${fieldName}.govuk-input`)).toBeVisible();
+    await expect(page.locator(`input#${fieldName}`)).toBeVisible();
     await expect(page.locator(`input#${fieldName}`)).toHaveValue(value);
   }
 );

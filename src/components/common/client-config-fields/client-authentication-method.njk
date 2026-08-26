@@ -25,6 +25,7 @@
         govukInput({
           id: "jwks-endpoint",
           name: "jwks-endpoint",
+          value: jwksUrl,
           autocomplete: "url",
           spellcheck: false,
           label: {
@@ -42,6 +43,7 @@
         govukTextarea({
           id: "public-key",
           name: "public-key",
+          value: publicKey,
           type: "key",
           autocomplete: "key",
           spellcheck: false,
@@ -60,6 +62,7 @@
         govukInput({
           id: "client-secret",
           name: "client-secret",
+          value: clientSecret,
           type: "secret",
           autocomplete: "secret",
           spellcheck: false,
