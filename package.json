@@ -4,7 +4,7 @@
   "license": "ISC",
   "type": "module",
   "engines": {
-    "node": ">=24.11.1 <25"
+    "node": ">=24.14.0 <25"
   },
   "scripts": {
     "install-all": "npm ci && npm run install-submodules",
