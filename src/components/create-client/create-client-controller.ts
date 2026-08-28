@@ -28,9 +28,9 @@ export const createClientStartGet = (): ExpressRouteFunc => {
 export const createClientStartPost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
     return res.redirect(
-      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_ENTER_CLIENT_NAME, [
-        req.params.serviceId as string,
-      ])
+      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_ENTER_CLIENT_NAME, {
+        [":serviceId"]: req.params.serviceId as string,
+      })
     );
   };
 };

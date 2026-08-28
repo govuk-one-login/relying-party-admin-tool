@@ -35,9 +35,9 @@ export const createClientEnterClientNamePost = (): ExpressRouteFunc => {
     return saveSessionAndRedirect(
       req,
       res,
-      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SELECT_CLIENT_AUTHENTICATION, [
-        req.params.serviceId as string,
-      ])
+      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SELECT_CLIENT_AUTHENTICATION, {
+        [":serviceId"]: req.params.serviceId as string,
+      })
     );
   };
 };

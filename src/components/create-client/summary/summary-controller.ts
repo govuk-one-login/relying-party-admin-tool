@@ -20,9 +20,9 @@ export const createClientSummaryGet = (): ExpressRouteFunc => {
         serviceName: "Service Name",
         serviceId,
         client: req.session.newClientConfig,
-        baseUrl: populateUrlRoute(PATH_NAMES.CREATE_CLIENT, [
-          req.params.serviceId as string,
-        ]),
+        baseUrl: populateUrlRoute(PATH_NAMES.CREATE_CLIENT, {
+          [":serviceId"]: req.params.serviceId as string,
+        }),
       });
     } else {
       return res.redirect(PATH_NAMES.ROOT);
@@ -45,7 +45,9 @@ export const createClientSummaryPost = (): ExpressRouteFunc => {
       return saveSessionAndRedirect(
         req,
         res,
-        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUCCESS, [serviceId])
+        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUCCESS, {
+          [":serviceId"]: req.params.serviceId as string,
+        })
       );
     } else {
       return res.redirect(PATH_NAMES.ROOT);

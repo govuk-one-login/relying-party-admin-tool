@@ -39,17 +39,17 @@ export const createClientIsIdentityVerificationSupportedPost =
         return saveSessionAndRedirect(
           req,
           res,
-          populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS, [
-            req.params.serviceId as string,
-          ])
+          populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS, {
+            [":serviceId"]: req.params.serviceId as string,
+          })
         );
       } else {
         return saveSessionAndRedirect(
           req,
           res,
-          populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUMMARY, [
-            req.params.serviceId as string,
-          ])
+          populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUMMARY, {
+            [":serviceId"]: req.params.serviceId as string,
+          })
         );
       }
     };

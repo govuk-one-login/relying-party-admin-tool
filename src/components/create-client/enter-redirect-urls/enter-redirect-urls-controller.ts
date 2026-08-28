@@ -66,9 +66,9 @@ export const createClientEnterRedirectUrlsPost = (): ExpressRouteFunc => {
       return saveSessionAndRedirect(
         req,
         res,
-        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SELECT_SCOPES, [
-          req.params.serviceId as string,
-        ])
+        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SELECT_SCOPES, {
+          [":serviceId"]: req.params.serviceId as string,
+        })
       );
     }
   };

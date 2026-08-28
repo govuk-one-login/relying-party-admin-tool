@@ -59,9 +59,9 @@ export const createClientSelectClientAuthenticationPost =
       return saveSessionAndRedirect(
         req,
         res,
-        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_ENTER_REDIRECT_URLS, [
-          req.params.serviceId as string,
-        ])
+        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_ENTER_REDIRECT_URLS, {
+          [":serviceId"]: req.params.serviceId as string,
+        })
       );
     };
   };

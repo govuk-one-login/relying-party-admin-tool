@@ -38,9 +38,9 @@ export const createClientSelectScopesPost = (): ExpressRouteFunc => {
     return saveSessionAndRedirect(
       req,
       res,
-      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT, [
-        req.params.serviceId as string,
-      ])
+      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT, {
+        [":serviceId"]: req.params.serviceId as string,
+      })
     );
   };
 };

@@ -35,9 +35,9 @@ export const createClientEnterLandingPageUrlPost = (): ExpressRouteFunc => {
     return saveSessionAndRedirect(
       req,
       res,
-      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE, [
-        req.params.serviceId as string,
-      ])
+      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE, {
+        [":serviceId"]: req.params.serviceId as string,
+      })
     );
   };
 };
