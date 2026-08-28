@@ -15,6 +15,8 @@ const pageNameToPath: Record<string, string> = {
   client: "/services/serviceId/clients/clientId",
   "client - edit id token signing algorithm":
     "/services/serviceId/clients/clientId/edit-id-token-signing-algorithm",
+  "client - edit is active":
+    "/services/serviceId/clients/clientId/edit-is-active",
   "create client": "/services/serviceId/clients/create",
   "create client - enter client name":
     "/services/serviceId/clients/create/enter-client-name",

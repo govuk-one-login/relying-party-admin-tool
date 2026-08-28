@@ -34,4 +34,5 @@ type CoreClientConfig = {
 
 type AdditionalClientConfig = {
   idTokenSigningAlgorithm?: "ES256" | "RS256";
+  isActive?: boolean;
 };

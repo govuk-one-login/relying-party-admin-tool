@@ -8,6 +8,7 @@ import {
   supportIdentityVerificationFieldValidator,
   clientAuthenticationInputFieldValidatorChain,
   idTokenSigningAlgorithmFieldValidator,
+  isActiveFieldValidator,
 } from "./client-question-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
@@ -641,6 +642,36 @@ describe("create client field validators", () => {
       expect(errorsArray[0].text[0]).toBe(
         'Invalid ID token signing algorithm provided: "invalid-algorithm"'
       );
+    });
+  });
+
+  describe("isActiveFieldValidator", () => {
+    it("should pass validation when an option is selected", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "is-active": "true",
+        })
+        .build();
+
+      const result = await isActiveFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when is active is empty", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder().withBody({}).build();
+
+      const result = await isActiveFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe("Select an option");
     });
   });
 
