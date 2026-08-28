@@ -29,7 +29,7 @@ export const listValidator = <T>(validator: Validator<T>): Validator<T[]> => {
   });
 };
 
-export const fieldValidator = (
+export const limitedValidValuesValidator = (
   validValues: readonly string[],
   fieldName: string
 ): Validator<string> =>
@@ -38,10 +38,11 @@ export const fieldValidator = (
     (value: string) => `Invalid ${fieldName} provided: "${value}"`
   );
 
-export const listFieldValidator = (
+export const listLimitedValidValuesValidator = (
   validValues: readonly string[],
   fieldName: string
-): Validator<string[]> => listValidator(fieldValidator(validValues, fieldName));
+): Validator<string[]> =>
+  listValidator(limitedValidValuesValidator(validValues, fieldName));
 
 export const notEmptyListValidator = (
   errorMessage: string

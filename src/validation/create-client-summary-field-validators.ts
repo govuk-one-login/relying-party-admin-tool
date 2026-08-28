@@ -8,7 +8,7 @@ import {
 } from "./shared-client-validators.js";
 import { FieldValidator, rule, when } from "./validator.js";
 import {
-  fieldValidator,
+  limitedValidValuesValidator,
   listValidator,
   notEmptyListValidator,
   requiredValidator,
@@ -18,7 +18,7 @@ export const clientAuthenticationMethodSummaryFieldValidator =
   new FieldValidator(
     requiredValidator("You must set a client authentication method")
       .and(
-        fieldValidator(
+        limitedValidValuesValidator(
           ["JWKS", "STATIC", "CLIENT_SECRET"],
           "client authentication method"
         )
