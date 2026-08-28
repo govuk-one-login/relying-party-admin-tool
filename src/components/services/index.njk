@@ -8,26 +8,18 @@
   <h1 class="govuk-heading-l">Your services</h1>
 
   <ul class="govuk-list">
+    { % for service in services % }
     <li>
       <a
         class="govuk-body-l govuk-!-font-weight-bold govuk-link--no-visited-state"
-        href="#"
-        >RPAT Service 1</a
+        href="/services/{{ service.serviceId }}"
+        >{{ service.name }}</a
       >
     </li>
     <hr
       class="govuk-section-break govuk-section-break--visible govuk-section-break--l"
     />
-    <li>
-      <a
-        class="govuk-body-l govuk-!-font-weight-bold govuk-link--no-visited-state"
-        href="#"
-        >RPAT Service 2</a
-      >
-    </li>
-    <hr
-      class="govuk-section-break govuk-section-break--visible govuk-section-break--l"
-    />
+    {% endfor %}
   </ul>
 
   {{
