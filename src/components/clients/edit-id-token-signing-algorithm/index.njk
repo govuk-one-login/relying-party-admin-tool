@@ -1,0 +1,44 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitleName = "Edit ID token signing algorithm" %}
+{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
+{% set serviceName %}{{ serviceName }}{% endset %}
+
+{% block pageContent %}
+  <form class="form" action="edit-id-token-signing-algorithm" method="post">
+    {{
+      govukRadios({
+        name: "id-token-signing-algorithm",
+        value: idTokenSigningAlgorithm,
+        fieldset: {
+          legend: {
+            text: "Which signing algorithm does your client use?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        items: [
+          {
+            value: "ES256",
+            text: "ES256"
+          },
+          {
+            value: "RS256",
+            text: "RS256"
+          }
+        ],
+        errorMessage: {
+          text: errors["id-token-signing-algorithm"].text
+        } if (errors["id-token-signing-algorithm"])
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Confirm"
+      })
+    }}
+  </form>
+{% endblock %}

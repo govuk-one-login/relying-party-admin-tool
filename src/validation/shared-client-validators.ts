@@ -4,10 +4,12 @@ import {
   PROHIBITED_REDIRECT_URI_SCHEMES,
   VALID_CLAIMS,
   VALID_SCOPES,
+  VALID_TOKEN_SIGNING_ALGS,
 } from "../app.constants.js";
 import { isProductionEnv } from "../config.js";
 import { isValidUrl } from "./shared-validation-rules.js";
 import {
+  limitedValidValuesValidator,
   listLimitedValidValuesValidator,
   notHttpValidator,
   notLocalhostValidator,
@@ -65,6 +67,15 @@ export const publicKeyValidator = rule((jwks: string) => {
     return false;
   }
 }, "Please enter a valid PEM key");
+
+export const idTokenSigningAlgorithmValidator = requiredValidator(
+  "ID token signing algorithm is required"
+).and(
+  limitedValidValuesValidator(
+    VALID_TOKEN_SIGNING_ALGS,
+    "ID token signing algorithm"
+  )
+);
 
 const validRedirectUrlQueryParamsValidator = (
   errorMessage: string

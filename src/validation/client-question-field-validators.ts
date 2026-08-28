@@ -7,6 +7,7 @@ import {
   validScopesValidator,
   productionUrlValidator,
   redirectUrlValidator,
+  idTokenSigningAlgorithmValidator,
 } from "./shared-client-validators.js";
 import { FieldValidator, optional, rule, when } from "./validator.js";
 import {
@@ -102,6 +103,13 @@ export const supportIdentityVerificationFieldValidator = new FieldValidator(
       )
     ),
   "support-identity-verification"
+);
+
+export const idTokenSigningAlgorithmFieldValidator = new FieldValidator(
+  idTokenSigningAlgorithmValidator.adaptedFrom(
+    (req: Request) => req.body["id-token-signing-algorithm"]
+  ),
+  "id-token-signing-algorithm"
 );
 
 export const enterLandingPageUrlFieldValidator = new FieldValidator(

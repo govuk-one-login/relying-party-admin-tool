@@ -172,4 +172,4 @@ router.post(
   createClientSummaryPost()
 );
 
-export { router as clientsRouter };
+export { router as createClientRouter };

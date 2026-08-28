@@ -1,5 +1,6 @@
 import "express";
 import "express-session";
+import { ClientConfig } from "../../src/models/client.ts";
 
 declare global {
   namespace Express {
@@ -12,6 +13,8 @@ declare global {
 declare module "express-session" {
   interface SessionData {
     newClientConfig?: CoreClientConfig;
+    changedClientConfig?: CoreClientConfig & AdditionalClientConfig;
+    currentClientConfig: ClientConfig;
   }
 }
 
@@ -27,4 +30,8 @@ type CoreClientConfig = {
   isIdentityVerificationSupported?: boolean;
   claims?: string[];
   landingPageUrl?: string;
+};
+
+type AdditionalClientConfig = {
+  idTokenSigningAlgorithm?: "ES256" | "RS256";
 };

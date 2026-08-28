@@ -7,6 +7,7 @@ import {
   selectScopesFieldValidator,
   supportIdentityVerificationFieldValidator,
   clientAuthenticationInputFieldValidatorChain,
+  idTokenSigningAlgorithmFieldValidator,
 } from "./client-question-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
@@ -504,7 +505,7 @@ describe("create client field validators", () => {
     });
   });
 
-  describe("validateIsIdentityVerificationSupportedRequest", () => {
+  describe("supportIdentityVerificationFieldValidator", () => {
     it("should pass validation when an option is selected", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
@@ -584,7 +585,66 @@ describe("create client field validators", () => {
     });
   });
 
-  describe("validateEnterLandingPageUrlRequest", () => {
+  describe("idTokenSigningAlgorithmFieldValidator", () => {
+    it("should pass validation when an option is selected", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "id-token-signing-algorithm": "ES256",
+        })
+        .build();
+
+      const result = await idTokenSigningAlgorithmFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when id token signing algorithm is empty", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder().withBody({}).build();
+
+      const result = await idTokenSigningAlgorithmFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(2);
+      expect(errorsArray[0].text[0]).toBe(
+        "ID token signing algorithm is required"
+      );
+    });
+
+    it("should fail validation when invalid id token signing algorithm", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "id-token-signing-algorithm": "invalid-algorithm",
+        })
+        .build();
+
+      const result = await idTokenSigningAlgorithmFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        'Invalid ID token signing algorithm provided: "invalid-algorithm"'
+      );
+    });
+  });
+
+  describe("enterLandingPageUrlFieldValidator", () => {
     it("should pass validation with valid URL", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()

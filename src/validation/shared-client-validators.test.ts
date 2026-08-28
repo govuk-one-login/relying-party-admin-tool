@@ -5,6 +5,7 @@ import {
   validClaimsValidator,
   productionUrlValidator,
   redirectUrlValidator,
+  idTokenSigningAlgorithmValidator,
 } from "./shared-client-validators.js";
 
 describe("shared client validator tests", () => {
@@ -235,6 +236,46 @@ describe("shared client validator tests", () => {
           "You have entered a redirect URL with an invalid scheme",
         ]);
       });
+    });
+  });
+
+  describe("id token signing algorithm validator", () => {
+    it.each(["RS256", "ES256"])(
+      "should pass validation with valid algorithm: %s",
+      async (idTokenSigningAlgorithm) => {
+        const result = await idTokenSigningAlgorithmValidator.validate(
+          idTokenSigningAlgorithm
+        );
+
+        expect(result).toBeValid();
+      }
+    );
+
+    it("should fail validation when algorithm is empty string", async () => {
+      const idTokenSigningAlgorithm = "";
+
+      const result = await idTokenSigningAlgorithmValidator.validate(
+        idTokenSigningAlgorithm
+      );
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        "ID token signing algorithm is required",
+        'Invalid ID token signing algorithm provided: ""',
+      ]);
+    });
+
+    it("should fail validation when invalid claim added", async () => {
+      const idTokenSigningAlgorithm = "invalid-algorithm";
+
+      const result = await idTokenSigningAlgorithmValidator.validate(
+        idTokenSigningAlgorithm
+      );
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        'Invalid ID token signing algorithm provided: "invalid-algorithm"',
+      ]);
     });
   });
 });
