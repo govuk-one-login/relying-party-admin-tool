@@ -1,6 +1,6 @@
 import { ValidationChainFunc } from "../../../types.js";
 import { validateFieldsMiddleware } from "../../../middleware/form-validation-middleware.js";
-import { enterLandingPageUrlFieldValidator } from "../../../validation/create-client-field-validators.js";
+import { enterLandingPageUrlFieldValidator } from "../../../validation/client-question-field-validators.js";
 
 export const validateEnterLandingPageUrlRequest = (): ValidationChainFunc => {
   return [

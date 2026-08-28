@@ -7,7 +7,7 @@ import {
   selectScopesFieldValidator,
   supportIdentityVerificationFieldValidator,
   clientAuthenticationInputFieldValidatorChain,
-} from "./create-client-field-validators.js";
+} from "./client-question-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
 
