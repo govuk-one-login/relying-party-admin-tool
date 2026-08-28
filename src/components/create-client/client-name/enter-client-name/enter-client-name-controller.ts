@@ -27,8 +27,8 @@ export const createClientEnterClientNameGet = (): ExpressRouteFunc => {
 
 export const createClientEnterClientNamePost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    req.session.newClientData = {
-      ...req.session.newClientData,
+    req.session.newClientConfig = {
+      ...req.session.newClientConfig,
       name: req.body.name,
     };
     return saveSessionAndRedirect(

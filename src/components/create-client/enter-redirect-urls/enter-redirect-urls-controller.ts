@@ -15,7 +15,7 @@ export const createClientEnterRedirectUrlsGet = (): ExpressRouteFunc => {
         ClientEnvironment.INTEGRATION
       )
     ) {
-      const redirectUrls = req.session?.newClientData?.redirectUrls || [];
+      const redirectUrls = req.session?.newClientConfig?.redirectUrls || [];
       res.render("create-client/enter-redirect-urls/index.njk", {
         serviceName: "Service Name",
         serviceId: req.params.serviceId as string,
@@ -58,8 +58,8 @@ export const createClientEnterRedirectUrlsPost = (): ExpressRouteFunc => {
     }
 
     if (action === "continue") {
-      req.session.newClientData = {
-        ...req.session.newClientData,
+      req.session.newClientConfig = {
+        ...req.session.newClientConfig,
         redirectUrls,
       };
       return saveSessionAndRedirect(

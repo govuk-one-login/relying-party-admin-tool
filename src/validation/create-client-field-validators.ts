@@ -74,7 +74,7 @@ export const selectClaimsFieldValidator = new FieldValidator(
     .and(
       when(
         (req: Request) =>
-          req.session.newClientData?.isIdentityVerificationSupported ?? false,
+          req.session.newClientConfig?.isIdentityVerificationSupported ?? false,
         notEmptyListValidator(
           "Claims cannot be empty when identity verification is supported"
         ).adaptedFrom((req: Request) =>
@@ -91,7 +91,7 @@ export const supportIdentityVerificationFieldValidator = new FieldValidator(
     .and(
       when(
         (req: Request) =>
-          req.session.newClientData?.clientAuthenticationMethod ===
+          req.session.newClientConfig?.clientAuthenticationMethod ===
           "CLIENT_SECRET",
         rule(
           (input: string) => input !== "true",

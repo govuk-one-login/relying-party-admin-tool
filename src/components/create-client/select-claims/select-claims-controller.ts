@@ -29,8 +29,8 @@ export const createClientSelectClaimsGet = (): ExpressRouteFunc => {
 export const createClientSelectClaimsPost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
     const claims = getListFromRequestBody(req, "selected-claims");
-    req.session.newClientData = {
-      ...req.session.newClientData,
+    req.session.newClientConfig = {
+      ...req.session.newClientConfig,
       claims,
     };
     return saveSessionAndRedirect(

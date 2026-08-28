@@ -18,7 +18,7 @@ export const createClientEditClientNameGet = (): ExpressRouteFunc => {
       res.render("create-client/client-name/edit-client-name/index.njk", {
         serviceName: "Service Name",
         serviceId: req.params.serviceId as string,
-        clientName: req.session.newClientData?.name ?? "",
+        clientName: req.session.newClientConfig?.name ?? "",
       });
     } else {
       return res.redirect(PATH_NAMES.ROOT);
@@ -28,8 +28,8 @@ export const createClientEditClientNameGet = (): ExpressRouteFunc => {
 
 export const createClientEditClientNamePost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    req.session.newClientData = {
-      ...req.session.newClientData,
+    req.session.newClientConfig = {
+      ...req.session.newClientConfig,
       name: req.body.name,
     };
     return saveSessionAndRedirect(

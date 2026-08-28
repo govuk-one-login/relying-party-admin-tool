@@ -33,22 +33,22 @@ export const createClientSelectClientAuthenticationPost =
   (): ExpressRouteFunc => {
     return async (req: Request, res: Response) => {
       if (req.body["client-authentication-method"] === "JWKS") {
-        req.session.newClientData = {
-          ...req.session.newClientData,
+        req.session.newClientConfig = {
+          ...req.session.newClientConfig,
           clientAuthenticationMethod: "JWKS",
           jwksURL: req.body["jwks-endpoint"],
           clientTokenAuthenticationMethod: "private_key_jwt",
         };
       } else if (req.body["client-authentication-method"] === "STATIC") {
-        req.session.newClientData = {
-          ...req.session.newClientData,
+        req.session.newClientConfig = {
+          ...req.session.newClientConfig,
           clientAuthenticationMethod: "STATIC",
           publicKey: req.body["public-key"],
           clientTokenAuthenticationMethod: "private_key_jwt",
         };
       } else if (req.body["client-authentication-method"] === "CLIENT_SECRET") {
-        req.session.newClientData = {
-          ...req.session.newClientData,
+        req.session.newClientConfig = {
+          ...req.session.newClientConfig,
           clientAuthenticationMethod: "CLIENT_SECRET",
           clientTokenAuthenticationMethod: "client_secret_post",
           clientSecret: req.body["client-secret"],

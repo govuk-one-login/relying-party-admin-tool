@@ -21,10 +21,10 @@ export const createClientEditClientAuthenticationGet = (): ExpressRouteFunc => {
           serviceName: "Service Name",
           serviceId: req.params.serviceId as string,
           clientAuthenticationMethod:
-            req.session.newClientData?.clientAuthenticationMethod,
-          jwksUrl: req.session.newClientData?.jwksURL,
-          publicKey: req.session.newClientData?.publicKey,
-          clientSecret: req.session.newClientData?.clientSecret,
+            req.session.newClientConfig?.clientAuthenticationMethod,
+          jwksUrl: req.session.newClientConfig?.jwksURL,
+          publicKey: req.session.newClientConfig?.publicKey,
+          clientSecret: req.session.newClientConfig?.clientSecret,
         }
       );
     } else {
@@ -37,24 +37,24 @@ export const createClientEditClientAuthenticationPost =
   (): ExpressRouteFunc => {
     return async (req: Request, res: Response) => {
       if (req.body["client-authentication-method"] === "JWKS") {
-        req.session.newClientData = {
-          ...req.session.newClientData,
+        req.session.newClientConfig = {
+          ...req.session.newClientConfig,
           clientAuthenticationMethod: "JWKS",
           jwksURL: req.body["jwks-endpoint"],
           publicKey: undefined,
           clientSecret: undefined,
         };
       } else if (req.body["client-authentication-method"] === "STATIC") {
-        req.session.newClientData = {
-          ...req.session.newClientData,
+        req.session.newClientConfig = {
+          ...req.session.newClientConfig,
           clientAuthenticationMethod: "STATIC",
           publicKey: req.body["public-key"],
           jwksURL: undefined,
           clientSecret: undefined,
         };
       } else if (req.body["client-authentication-method"] === "CLIENT_SECRET") {
-        req.session.newClientData = {
-          ...req.session.newClientData,
+        req.session.newClientConfig = {
+          ...req.session.newClientConfig,
           clientAuthenticationMethod: "CLIENT_SECRET",
           clientSecret: req.body["client-secret"],
           publicKey: undefined,

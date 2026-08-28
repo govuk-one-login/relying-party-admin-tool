@@ -30,8 +30,8 @@ export const createClientSelectScopesPost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
     let scopes = getListFromRequestBody(req, "selected-scopes");
     scopes = scopes.concat("openid");
-    req.session.newClientData = {
-      ...req.session.newClientData,
+    req.session.newClientConfig = {
+      ...req.session.newClientConfig,
       scopes,
     };
     return saveSessionAndRedirect(

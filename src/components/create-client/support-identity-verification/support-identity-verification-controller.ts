@@ -29,8 +29,8 @@ export const createClientIsIdentityVerificationSupportedGet =
 export const createClientIsIdentityVerificationSupportedPost =
   (): ExpressRouteFunc => {
     return async (req: Request, res: Response) => {
-      req.session.newClientData = {
-        ...req.session.newClientData,
+      req.session.newClientConfig = {
+        ...req.session.newClientConfig,
         isIdentityVerificationSupported:
           req.body["support-identity-verification"] === "true",
       };

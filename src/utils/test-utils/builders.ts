@@ -4,7 +4,7 @@ import { Session, SessionData } from "express-session";
 export class RequestBuilder {
   private body: object | null = null;
   private session: Partial<Session> & Partial<SessionData> = {
-    newClientData: {},
+    newClientConfig: {},
   };
   private log: object = {};
 
@@ -18,8 +18,8 @@ export class RequestBuilder {
     return this;
   }
 
-  withSessionNewClientData(newClientData: object): this {
-    this.session.newClientData = newClientData;
+  withSessionnewClientConfig(newClientConfig: object): this {
+    this.session.newClientConfig = newClientConfig;
     return this;
   }
 

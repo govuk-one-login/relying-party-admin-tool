@@ -404,7 +404,7 @@ describe("create client field validators", () => {
     it("should pass validation with valid claims and identity verification false", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
-        .withSessionNewClientData({ isIdentityVerificationSupported: false })
+        .withSessionnewClientConfig({ isIdentityVerificationSupported: false })
         .withBody({
           "selected-claims": [
             "https://vocab.account.gov.uk/v1/coreIdentityJWT",
@@ -420,7 +420,7 @@ describe("create client field validators", () => {
     it("should pass validation with valid claims and identity verification true", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
-        .withSessionNewClientData({ isIdentityVerificationSupported: true })
+        .withSessionnewClientConfig({ isIdentityVerificationSupported: true })
         .withBody({
           "selected-claims": [
             "https://vocab.account.gov.uk/v1/coreIdentityJWT",
@@ -449,7 +449,7 @@ describe("create client field validators", () => {
     it("should pass validation when claims are empty and identity verification is false", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
-        .withSessionNewClientData({ isIdentityVerificationSupported: false })
+        .withSessionnewClientConfig({ isIdentityVerificationSupported: false })
         .withBody({
           "selected-claims": [],
         })
@@ -463,7 +463,7 @@ describe("create client field validators", () => {
     it("should fail validation when claims are empty and identity verification is true", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
-        .withSessionNewClientData({ isIdentityVerificationSupported: true })
+        .withSessionnewClientConfig({ isIdentityVerificationSupported: true })
         .withBody({
           "selected-claims": [],
         })
@@ -542,7 +542,7 @@ describe("create client field validators", () => {
     it("should fail validation when support identity verification is true and client secret is set", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
-        .withSessionNewClientData({
+        .withSessionnewClientConfig({
           clientAuthenticationMethod: "CLIENT_SECRET",
         })
         .withBody({
@@ -568,7 +568,7 @@ describe("create client field validators", () => {
     it("should pass validation when support identity verification is false and client secret is set", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
-        .withSessionNewClientData({
+        .withSessionnewClientConfig({
           clientAuthenticationMethod: "CLIENT_SECRET",
         })
         .withBody({

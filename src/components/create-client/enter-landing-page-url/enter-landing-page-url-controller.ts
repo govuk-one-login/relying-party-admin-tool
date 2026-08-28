@@ -27,8 +27,8 @@ export const createClientEnterLandingPageUrlGet = (): ExpressRouteFunc => {
 
 export const createClientEnterLandingPageUrlPost = (): ExpressRouteFunc => {
   return async function (req: Request, res: Response) {
-    req.session.newClientData = {
-      ...req.session.newClientData,
+    req.session.newClientConfig = {
+      ...req.session.newClientConfig,
       landingPageUrl: req.body["landing-page-url"],
     };
     return saveSessionAndRedirect(

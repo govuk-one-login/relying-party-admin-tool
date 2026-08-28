@@ -18,7 +18,7 @@ export const createClientSummaryGet = (): ExpressRouteFunc => {
       res.render("create-client/summary/index.njk", {
         serviceName: "Service Name",
         serviceId: req.params.serviceId as string,
-        client: req.session.newClientData,
+        client: req.session.newClientConfig,
         baseUrl: populateUrlRoute(PATH_NAMES.CREATE_CLIENT, [
           req.params.serviceId as string,
         ]),
@@ -39,7 +39,7 @@ export const createClientSummaryPost = (): ExpressRouteFunc => {
       )
     ) {
       // TODO: write to service/client database and send to client registry api
-      req.session.newClientData = {};
+      req.session.newClientConfig = {};
       return saveSessionAndRedirect(
         req,
         res,
