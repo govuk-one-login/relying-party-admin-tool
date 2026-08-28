@@ -9,10 +9,11 @@ import { ClientEnvironment } from "../../../../models/client-environment.js";
 export const createClientSelectClientAuthenticationGet =
   (): ExpressRouteFunc => {
     return async (req: Request, res: Response) => {
+      const serviceId = req.params.serviceId as string;
       if (
         await permissionsService.checkUserHasWriterPermissions(
           "user",
-          "service",
+          serviceId,
           ClientEnvironment.INTEGRATION
         )
       ) {
@@ -20,7 +21,7 @@ export const createClientSelectClientAuthenticationGet =
           "create-client/client-authentication-method/select-client-authentication-method/index.njk",
           {
             serviceName: "Service Name",
-            serviceId: req.params.serviceId as string,
+            serviceId,
           }
         );
       } else {

@@ -7,25 +7,26 @@ import { ClientEnvironment } from "../../models/client-environment.js";
 
 export const serviceGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response): Promise<void> => {
+    const serviceId = req.params.serviceId as string;
     if (
-      await permissionsService.checkUserHasReaderPermissions("user", "service")
+      await permissionsService.checkUserHasReaderPermissions("user", serviceId)
     ) {
       const hasIntegrationWriterPermissions: boolean =
         await permissionsService.checkUserHasWriterPermissions(
           "user",
-          "service",
+          serviceId,
           ClientEnvironment.INTEGRATION
         );
       const hasProductionWriterPermissions: boolean =
         await permissionsService.checkUserHasWriterPermissions(
           "user",
-          "service",
+          serviceId,
           ClientEnvironment.PRODUCTION
         );
       const hasManagerPermissions =
         await permissionsService.checkUserHasManagerPermissions(
           "user",
-          "service"
+          serviceId
         );
       const sideNavItems = [
         {

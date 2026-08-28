@@ -8,10 +8,11 @@ import { ClientEnvironment } from "../../../../models/client-environment.js";
 
 export const createClientEditClientAuthenticationGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
+    const serviceId = req.params.serviceId as string;
     if (
       await permissionsService.checkUserHasWriterPermissions(
         "user",
-        "service",
+        serviceId,
         ClientEnvironment.INTEGRATION
       )
     ) {
@@ -19,7 +20,7 @@ export const createClientEditClientAuthenticationGet = (): ExpressRouteFunc => {
         "create-client/client-authentication-method/edit-client-authentication-method/index.njk",
         {
           serviceName: "Service Name",
-          serviceId: req.params.serviceId as string,
+          serviceId,
           clientAuthenticationMethod:
             req.session.newClientConfig?.clientAuthenticationMethod,
           jwksUrl: req.session.newClientConfig?.jwksURL,

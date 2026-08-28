@@ -8,16 +8,17 @@ import { ClientEnvironment } from "../../../../models/client-environment.js";
 
 export const createClientEditClientNameGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
+    const serviceId = req.params.serviceId as string;
     if (
       await permissionsService.checkUserHasWriterPermissions(
         "user",
-        "service",
+        serviceId,
         ClientEnvironment.INTEGRATION
       )
     ) {
       res.render("create-client/client-name/edit-client-name/index.njk", {
         serviceName: "Service Name",
-        serviceId: req.params.serviceId as string,
+        serviceId,
         clientName: req.session.newClientConfig?.name ?? "",
       });
     } else {

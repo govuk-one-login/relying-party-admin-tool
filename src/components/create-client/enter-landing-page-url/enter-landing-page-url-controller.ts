@@ -8,16 +8,17 @@ import { ClientEnvironment } from "../../../models/client-environment.js";
 
 export const createClientEnterLandingPageUrlGet = (): ExpressRouteFunc => {
   return async function (req: Request, res: Response) {
+    const serviceId = req.params.serviceId as string;
     if (
       await permissionsService.checkUserHasWriterPermissions(
         "user",
-        "service",
+        serviceId,
         ClientEnvironment.INTEGRATION
       )
     ) {
       res.render("create-client/enter-landing-page-url/index.njk", {
         serviceName: "Service Name",
-        serviceId: req.params.serviceId as string,
+        serviceId,
       });
     } else {
       return res.redirect(PATH_NAMES.ROOT);

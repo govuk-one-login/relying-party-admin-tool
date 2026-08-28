@@ -8,16 +8,17 @@ import { ClientEnvironment } from "../../../models/client-environment.js";
 
 export const createClientSummaryGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
+    const serviceId = req.params.serviceId as string;
     if (
       await permissionsService.checkUserHasWriterPermissions(
         "user",
-        "service",
+        serviceId,
         ClientEnvironment.INTEGRATION
       )
     ) {
       res.render("create-client/summary/index.njk", {
         serviceName: "Service Name",
-        serviceId: req.params.serviceId as string,
+        serviceId,
         client: req.session.newClientConfig,
         baseUrl: populateUrlRoute(PATH_NAMES.CREATE_CLIENT, [
           req.params.serviceId as string,
@@ -31,10 +32,11 @@ export const createClientSummaryGet = (): ExpressRouteFunc => {
 
 export const createClientSummaryPost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
+    const serviceId = req.params.serviceId as string;
     if (
       await permissionsService.checkUserHasWriterPermissions(
         "user",
-        "service",
+        serviceId,
         ClientEnvironment.INTEGRATION
       )
     ) {
@@ -43,9 +45,7 @@ export const createClientSummaryPost = (): ExpressRouteFunc => {
       return saveSessionAndRedirect(
         req,
         res,
-        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUCCESS, [
-          req.params.serviceId as string,
-        ])
+        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUCCESS, [serviceId])
       );
     } else {
       return res.redirect(PATH_NAMES.ROOT);

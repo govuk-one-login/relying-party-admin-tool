@@ -8,17 +8,18 @@ import { ClientEnvironment } from "../../../models/client-environment.js";
 
 export const createClientEnterRedirectUrlsGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
+    const serviceId = req.params.serviceId as string;
     if (
       await permissionsService.checkUserHasWriterPermissions(
         "user",
-        "service",
+        serviceId,
         ClientEnvironment.INTEGRATION
       )
     ) {
       const redirectUrls = req.session?.newClientConfig?.redirectUrls || [];
       res.render("create-client/enter-redirect-urls/index.njk", {
         serviceName: "Service Name",
-        serviceId: req.params.serviceId as string,
+        serviceId,
         redirectUrls,
       });
     } else {
