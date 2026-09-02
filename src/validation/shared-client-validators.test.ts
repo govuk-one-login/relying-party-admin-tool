@@ -6,6 +6,7 @@ import {
   productionUrlValidator,
   redirectUrlValidator,
   idTokenSigningAlgorithmValidator,
+  validScopesValidator,
 } from "./shared-client-validators.js";
 
 describe("shared client validator tests", () => {
@@ -78,7 +79,13 @@ describe("shared client validator tests", () => {
 
   describe("claims validator", () => {
     it("should pass validation with valid claims", async () => {
-      const claims = ["https://vocab.account.gov.uk/v1/coreIdentityJWT"];
+      const claims = [
+        "https://vocab.account.gov.uk/v1/passport",
+        "https://vocab.account.gov.uk/v1/drivingPermit",
+        "https://vocab.account.gov.uk/v1/coreIdentityJWT",
+        "https://vocab.account.gov.uk/v1/address",
+        "https://vocab.account.gov.uk/v1/returnCode",
+      ];
 
       const result = await validClaimsValidator.validate(claims);
 
@@ -275,6 +282,44 @@ describe("shared client validator tests", () => {
       expect(result).toBeInvalid();
       expect(result).toHaveInvalidErrors([
         'Invalid ID token signing algorithm provided: "invalid-algorithm"',
+      ]);
+    });
+  });
+
+  describe("scope validator", () => {
+    it("should pass validation with valid scopes", async () => {
+      const scopes = [
+        "openid",
+        "phone",
+        "email",
+        "wallet-subject-id",
+        "am",
+        "doc-checking-app",
+        "govuk-account",
+        "offline_access",
+      ];
+
+      const result = await validScopesValidator.validate(scopes);
+
+      expect(result).toBeValid();
+    });
+
+    it("should pass validation when scopes are empty", async () => {
+      const scopes: string[] = [];
+
+      const result = await validScopesValidator.validate(scopes);
+
+      expect(result).toBeValid();
+    });
+
+    it("should fail validation when invalid scopes added", async () => {
+      const scopes = ["not-a-scope"];
+
+      const result = await validScopesValidator.validate(scopes);
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        'Invalid scope provided: "not-a-scope"',
       ]);
     });
   });
