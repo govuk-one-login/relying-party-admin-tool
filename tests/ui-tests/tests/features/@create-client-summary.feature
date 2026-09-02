@@ -49,7 +49,7 @@ Feature: Create a new client - summary page
     And the field: "name" has the value: "My client"
     And the field: "client-authentication-method" has the value: "Client secret"
     And the field: "client-secret" has the value: "client-secret"
-    And the field: "token-authentication-method" has the value: "Client secret post"
+    And the field: "token-authentication-method" has the value: "client_secret_post"
     And the field: "redirect-urls" has the value: "http://url.com"
     And I click the "Create client" button
     Then I am taken to the "create client - success" page

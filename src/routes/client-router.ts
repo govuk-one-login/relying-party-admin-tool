@@ -15,8 +15,11 @@ import {
 import {
   createClientSelectClientAuthenticationGet,
   createClientSelectClientAuthenticationPost,
-} from "../components/create-client/select-client-authentication/select-client-authentication-controller.js";
-import { validateSelectClientAuthenticationRequest } from "../components/create-client/select-client-authentication/select-client-authentication-validation.js";
+} from "../components/create-client/client-authentication-method/select-client-authentication-method/select-client-authentication-method-controller.js";
+import {
+  validateEditClientAuthenticationRequest,
+  validateSelectClientAuthenticationRequest,
+} from "../components/create-client/client-authentication-method/validation.js";
 import {
   createClientEnterRedirectUrlsGet,
   createClientEnterRedirectUrlsPost,
@@ -51,6 +54,10 @@ import {
   createClientEditClientNameGet,
   createClientEditClientNamePost,
 } from "../components/create-client/client-name/edit-client-name/edit-client-name-controller.js";
+import {
+  createClientEditClientAuthenticationGet,
+  createClientEditClientAuthenticationPost,
+} from "../components/create-client/client-authentication-method/edit-client-authentication-method/edit-client-authentication-method-controller.js";
 
 const router = express.Router();
 
@@ -89,6 +96,17 @@ router.post(
   PATH_NAMES.CREATE_CLIENT_SELECT_CLIENT_AUTHENTICATION,
   validateSelectClientAuthenticationRequest(),
   createClientSelectClientAuthenticationPost()
+);
+
+router.get(
+  PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_AUTHENTICATION,
+  createClientEditClientAuthenticationGet()
+);
+
+router.post(
+  PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_AUTHENTICATION,
+  validateEditClientAuthenticationRequest(),
+  createClientEditClientAuthenticationPost()
 );
 
 router.get(

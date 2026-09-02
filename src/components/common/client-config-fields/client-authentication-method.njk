@@ -6,22 +6,11 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
-{% set pageTitleName = "Select client authentication method" %}
 {% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
 {% set serviceName %}{{ serviceName }}{% endset %}
 
-{% block beforeContent %}
-  {{
-    govukBreadcrumbs({
-    items: [
-      { text: "Your services", href: "/services" },
-      { text: serviceName, href: viewServiceUrl },
-      { text: "Create a client" } ] })
-  }}
-{% endblock %}
-
 {% block pageContent %}
-  <form class="form" action="select-client-authentication" method="post">
+  <form class="form" action="{{ formAction }}" method="post">
     <h1 class="govuk-heading-l">Client authentication method</h1>
 
     {{
@@ -31,12 +20,12 @@
       })
     }}
 
-
     {% set jwksEndpointHtml %}
       {{
         govukInput({
           id: "jwks-endpoint",
           name: "jwks-endpoint",
+          value: jwksUrl,
           autocomplete: "url",
           spellcheck: false,
           label: {
@@ -49,12 +38,12 @@
       }}
     {% endset -%}
 
-
     {% set publicKeyHtml %}
       {{
         govukTextarea({
           id: "public-key",
           name: "public-key",
+          value: publicKey,
           type: "key",
           autocomplete: "key",
           spellcheck: false,
@@ -68,12 +57,12 @@
       }}
     {% endset -%}
 
-
     {% set clientSecretHtml %}
       {{
         govukInput({
           id: "client-secret",
           name: "client-secret",
+          value: clientSecret,
           type: "secret",
           autocomplete: "secret",
           spellcheck: false,

@@ -27,21 +27,14 @@
         key: { text: "Client authentication method" },
         value: { html: '<div id="client-authentication-method">Public key URL (JWKS)</div>' },
         actions: {
-          items: [{ href: "/", text: "Change", visuallyHiddenText: "client authentication method" }]
+          items: [{ href: baseUrl+"/edit-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
         }
       },
       {
         key: { text: "JWKS URL" },
-        value: { html: '<div id="jwks-endpoint">'+client.jwksUrl+'</div>' },
+        value: { html: '<div id="jwks-endpoint">'+client.jwksURL+'</div>' },
         actions: {
-          items: [{ href: "/", text: "Change", visuallyHiddenText: "jwks url" }]
-        }
-      },
-      {
-        key: { text: "Token Authentication Method" },
-        value: { html: '<div id="token-authentication-method">Private key JWT</div>' },
-        actions: {
-          items: [{ href: "/", text: "Change", visuallyHiddenText: "token auth method" }]
+          items: [{ href: baseUrl+"/edit-client-authentication", text: "Change", visuallyHiddenText: "jwks url" }]
         }
       }
     ])
@@ -53,21 +46,14 @@
         key: { text: "Client Authentication Method" },
         value: { html: '<div id="client-authentication-method">Fixed public key</div>' },
         actions: {
-          items: [{ href: "/", text: "Change", visuallyHiddenText: "client authentication method" }]
+          items: [{ href: baseUrl+"/edit-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
         }
       },
       {
         key: { text: "Public key" },
-        value: { html: '<div id="public-key">'+client.staticJWKS+'</div>' },
+        value: { html: '<div id="public-key">'+client.publicKey+'</div>' },
         actions: {
-          items: [{ href: "/", text: "Change", visuallyHiddenText: "public key" }]
-        }
-      },
-      {
-        key: { text: "Token Authentication Method" },
-        value: { html: '<div id="token-authentication-method">Private key JWT</div>' },
-        actions: {
-          items: [{ href: "/", text: "Change", visuallyHiddenText: "token auth method" }]
+          items: [{ href: baseUrl+"/edit-client-authentication", text: "Change", visuallyHiddenText: "public key" }]
         }
       }
     ])
@@ -79,21 +65,14 @@
         key: { text: "Client Authentication Method" },
         value: { html: '<div id="client-authentication-method">Client secret</div>' },
         actions: {
-          items: [{ href: "/", text: "Change", visuallyHiddenText: "client authentication method" }]
+          items: [{ href: baseUrl+"/edit-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
         }
       },
       {
         key: { text: "Client secret" },
         value: { html: '<div id="client-secret">'+client.clientSecret+'</div>' },
         actions: {
-          items: [{ href: "/", text: "Change", visuallyHiddenText: "client secret" }]
-        }
-      },
-      {
-        key: { text: "Token Authentication Method" },
-        value: { html: '<div id="token-authentication-method">Client secret post</div>' },
-        actions: {
-          items: [{ href: "/", text: "Change", visuallyHiddenText: "token auth method" }]
+          items: [{ href: baseUrl+"/edit-client-authentication", text: "Change", visuallyHiddenText: "client secret" }]
         }
       }
     ])
@@ -105,14 +84,7 @@
         key: { text: "Client Authentication Method" },
         value: { html: '<div id="client-authentication-method">Not set</div>' },
         actions: {
-          items: [{ href: "/", text: "Change", visuallyHiddenText: "client authentication method" }]
-        }
-      },
-      {
-        key: { text: "Token Authentication Method" },
-        value: { html: '<div id="token-authentication-method">Not set</div>' },
-        actions: {
-          items: [{ href: "/", text: "Change", visuallyHiddenText: "token auth method" }]
+          items: [{ href: baseUrl+"/edit-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
         }
       }
     ])
@@ -120,6 +92,13 @@
 {% endif %}
 {%
   set coreFieldsRowItems = coreFieldsRowItems.concat([
+    {
+      key: { text: "Token Authentication Method" },
+      value: { html: '<div id="token-authentication-method">'+client.clientTokenAuthenticationMethod | default("Not set")+'</div>' },
+      actions: {
+        items: [{ href: "/", text: "Change", visuallyHiddenText: "token auth method" }]
+      }
+    },
     {
       key: { text: "Redirect URLs" },
       value: {

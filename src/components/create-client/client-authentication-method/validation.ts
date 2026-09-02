@@ -1,14 +1,25 @@
 import type { Request } from "express";
 import { ValidationChainFunc } from "../../../types.js";
 import { validateFieldsMiddleware } from "../../../middleware/form-validation-middleware.js";
-import { selectClientAuthenticationValidator } from "../../../validation/create-client-field-validators.js";
+import { clientAuthenticationInputFieldValidatorChain } from "../../../validation/create-client-field-validators.js";
 
 export const validateSelectClientAuthenticationRequest =
   (): ValidationChainFunc => {
     return [
       validateFieldsMiddleware(
-        "create-client/select-client-authentication/index.njk",
-        selectClientAuthenticationValidator,
+        "create-client/client-authentication-method/select-client-authentication-method/index.njk",
+        clientAuthenticationInputFieldValidatorChain,
+        postValidationLocals
+      ),
+    ];
+  };
+
+export const validateEditClientAuthenticationRequest =
+  (): ValidationChainFunc => {
+    return [
+      validateFieldsMiddleware(
+        "create-client/client-authentication-method/edit-client-authentication-method/index.njk",
+        clientAuthenticationInputFieldValidatorChain,
         postValidationLocals
       ),
     ];

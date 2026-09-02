@@ -6,13 +6,13 @@ import {
   selectClaimsFieldValidator,
   selectScopesFieldValidator,
   supportIdentityVerificationFieldValidator,
-  selectClientAuthenticationValidator,
+  clientAuthenticationInputFieldValidatorChain,
 } from "./create-client-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
 
 describe("create client field validators", () => {
-  describe("selectClientAuthenticationValidator", () => {
+  describe("clientAuthenticationInputFieldValidatorChain", () => {
     it("should fail validation when client authentication method is empty", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
@@ -21,9 +21,10 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectClientAuthenticationValidator.validate(
-        req as Request
-      );
+      const result =
+        await clientAuthenticationInputFieldValidatorChain.validate(
+          req as Request
+        );
 
       expect(result.isValid).toBe(false);
 
@@ -45,9 +46,10 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectClientAuthenticationValidator.validate(
-        req as Request
-      );
+      const result =
+        await clientAuthenticationInputFieldValidatorChain.validate(
+          req as Request
+        );
 
       expect(result.isValid).toBe(true);
     });
@@ -61,9 +63,10 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectClientAuthenticationValidator.validate(
-        req as Request
-      );
+      const result =
+        await clientAuthenticationInputFieldValidatorChain.validate(
+          req as Request
+        );
 
       expect(result.isValid).toBe(false);
 
@@ -83,9 +86,10 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectClientAuthenticationValidator.validate(
-        req as Request
-      );
+      const result =
+        await clientAuthenticationInputFieldValidatorChain.validate(
+          req as Request
+        );
 
       expect(result.isValid).toBe(false);
 
@@ -105,9 +109,10 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectClientAuthenticationValidator.validate(
-        req as Request
-      );
+      const result =
+        await clientAuthenticationInputFieldValidatorChain.validate(
+          req as Request
+        );
 
       expect(result.isValid).toBe(false);
 
@@ -129,9 +134,10 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectClientAuthenticationValidator.validate(
-        req as Request
-      );
+      const result =
+        await clientAuthenticationInputFieldValidatorChain.validate(
+          req as Request
+        );
 
       expect(result.isValid).toBe(true);
     });
@@ -145,9 +151,10 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectClientAuthenticationValidator.validate(
-        req as Request
-      );
+      const result =
+        await clientAuthenticationInputFieldValidatorChain.validate(
+          req as Request
+        );
 
       expect(result.isValid).toBe(false);
 
@@ -167,9 +174,10 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectClientAuthenticationValidator.validate(
-        req as Request
-      );
+      const result =
+        await clientAuthenticationInputFieldValidatorChain.validate(
+          req as Request
+        );
 
       expect(result.isValid).toBe(false);
 
@@ -191,9 +199,10 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectClientAuthenticationValidator.validate(
-        req as Request
-      );
+      const result =
+        await clientAuthenticationInputFieldValidatorChain.validate(
+          req as Request
+        );
 
       expect(result.isValid).toBe(false);
 
@@ -213,9 +222,10 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectClientAuthenticationValidator.validate(
-        req as Request
-      );
+      const result =
+        await clientAuthenticationInputFieldValidatorChain.validate(
+          req as Request
+        );
 
       expect(result.isValid).toBe(true);
     });
@@ -229,9 +239,10 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectClientAuthenticationValidator.validate(
-        req as Request
-      );
+      const result =
+        await clientAuthenticationInputFieldValidatorChain.validate(
+          req as Request
+        );
 
       expect(result.isValid).toBe(false);
 
@@ -251,9 +262,10 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectClientAuthenticationValidator.validate(
-        req as Request
-      );
+      const result =
+        await clientAuthenticationInputFieldValidatorChain.validate(
+          req as Request
+        );
 
       expect(result.isValid).toBe(false);
 

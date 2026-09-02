@@ -16,14 +16,14 @@ import {
 } from "./shared-validators.js";
 import { getListFromRequestBody } from "../helpers/request-helpers.js";
 
-const selectClientAuthenticationMethodValidator = new FieldValidator(
+const clientAuthenticationMethodInputFieldValidator = new FieldValidator(
   requiredValidator("Choose a client authentication method").adaptedFrom(
     (req: Request) => req.body["client-authentication-method"]
   ),
   "client-authentication-method"
 );
 
-const selectClientAuthenticationJwksUrlValidator = new FieldValidator(
+const clientAuthenticationJwksUrlInputFieldValidator = new FieldValidator(
   when(
     (req: Request) => req.body["client-authentication-method"] === "JWKS",
     requiredValidator("Enter a JWKS endpoint URL")
@@ -33,7 +33,7 @@ const selectClientAuthenticationJwksUrlValidator = new FieldValidator(
   "jwks-endpoint"
 );
 
-const selectClientAuthenticationPublicKeyValidator = new FieldValidator(
+const clientAuthenticationPublicKeyInputFieldValidator = new FieldValidator(
   when(
     (req: Request) => req.body["client-authentication-method"] === "STATIC",
     requiredValidator("Enter a public key")
@@ -44,7 +44,7 @@ const selectClientAuthenticationPublicKeyValidator = new FieldValidator(
 );
 
 // TODO: add more validation for client secret
-const selectClientAuthenticationClientSecretValidator = new FieldValidator(
+const clientAuthenticationClientSecretInputFieldValidator = new FieldValidator(
   when(
     (req: Request) =>
       req.body["client-authentication-method"] === "CLIENT_SECRET",
@@ -55,11 +55,11 @@ const selectClientAuthenticationClientSecretValidator = new FieldValidator(
   "client-secret"
 );
 
-export const selectClientAuthenticationValidator =
-  selectClientAuthenticationMethodValidator
-    .and(selectClientAuthenticationJwksUrlValidator)
-    .and(selectClientAuthenticationPublicKeyValidator)
-    .and(selectClientAuthenticationClientSecretValidator);
+export const clientAuthenticationInputFieldValidatorChain =
+  clientAuthenticationMethodInputFieldValidator
+    .and(clientAuthenticationJwksUrlInputFieldValidator)
+    .and(clientAuthenticationPublicKeyInputFieldValidator)
+    .and(clientAuthenticationClientSecretInputFieldValidator);
 
 export const clientNameInputFieldValidator = new FieldValidator(
   clientNameValidator.adaptedFrom((req: Request) => req.body.name as string),

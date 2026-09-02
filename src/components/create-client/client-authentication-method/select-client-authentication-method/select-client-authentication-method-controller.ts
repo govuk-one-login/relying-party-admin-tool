@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
-import { PATH_NAMES } from "../../../app.constants.js";
-import { ClientEnvironment, ExpressRouteFunc } from "../../../types.js";
-import { permissionsService } from "../../../services/permissions-service.js";
-import { populateUrlRoute } from "../../../utils/populate-url-route.js";
-import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
+import { PATH_NAMES } from "../../../../app.constants.js";
+import { ClientEnvironment, ExpressRouteFunc } from "../../../../types.js";
+import { permissionsService } from "../../../../services/permissions-service.js";
+import { populateUrlRoute } from "../../../../utils/populate-url-route.js";
+import { saveSessionAndRedirect } from "../../../../utils/save-session-and-redirect.js";
 
 export const createClientSelectClientAuthenticationGet =
   (): ExpressRouteFunc => {
@@ -15,10 +15,13 @@ export const createClientSelectClientAuthenticationGet =
           ClientEnvironment.INTEGRATION
         )
       ) {
-        res.render("create-client/select-client-authentication/index.njk", {
-          serviceName: "Service Name",
-          serviceId: req.params.serviceId as string,
-        });
+        res.render(
+          "create-client/client-authentication-method/select-client-authentication-method/index.njk",
+          {
+            serviceName: "Service Name",
+            serviceId: req.params.serviceId as string,
+          }
+        );
       } else {
         return res.redirect(PATH_NAMES.ROOT);
       }
