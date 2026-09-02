@@ -2,8 +2,7 @@ import express from "express";
 
 const router = express.Router();
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-router.all("/{*any}", (req, res, next) => {
+router.all("/{*any}", (_req, res) => {
   res.render("common/errors/404.njk");
 });
 

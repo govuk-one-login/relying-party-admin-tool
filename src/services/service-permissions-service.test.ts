@@ -30,12 +30,12 @@ describe("Service permissions service tests", () => {
       "getServicesWithRelationForUser"
     ).mockResolvedValue([service1.serviceId, service2.serviceId]);
     vi.spyOn(ServiceDataStore, "getServiceByServiceId").mockImplementation(
-      (serviceId: string) => {
+      async (serviceId: string) => {
         const serviceObject: Service = {
           serviceId: serviceId,
           name: `service${serviceId}`,
         };
-        return Promise.resolve(serviceObject);
+        return serviceObject;
       }
     );
     const services = await getServicesUserCanView(userId);
@@ -47,22 +47,22 @@ describe("Service permissions service tests", () => {
     vi.spyOn(
       UserPermissionDataStore,
       "getServicesWithRelationForUser"
-    ).mockImplementation((id: string, relation: string) => {
+    ).mockImplementation(async (id: string, relation: string) => {
       if (relation == UserPermission.WRITER_INT) {
-        return Promise.resolve([service1.serviceId, service2.serviceId]);
+        return [service1.serviceId, service2.serviceId];
       } else if (relation == UserPermission.WRITER_PROD) {
-        return Promise.resolve([service3.serviceId]);
+        return [service3.serviceId];
       } else {
-        return Promise.resolve([]);
+        return [];
       }
     });
     vi.spyOn(ServiceDataStore, "getServiceByServiceId").mockImplementation(
-      (serviceId: string) => {
+      async (serviceId: string) => {
         const serviceObject: Service = {
           serviceId: serviceId,
           name: `service${serviceId}`,
         };
-        return Promise.resolve(serviceObject);
+        return serviceObject;
       }
     );
 

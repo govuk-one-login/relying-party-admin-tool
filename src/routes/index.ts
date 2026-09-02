@@ -3,13 +3,11 @@ import { PATH_NAMES } from "../app.constants.js";
 
 const router = express.Router();
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-router.get(PATH_NAMES.ROOT, (req, res, next) => {
+router.get(PATH_NAMES.ROOT, (_req, res) => {
   res.render("home/index.njk");
 });
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-router.get(PATH_NAMES["500_ERROR"], (req, res, next) => {
+router.get(PATH_NAMES["500_ERROR"], (_req, res) => {
   res.render("common/errors/500.njk");
 });
 

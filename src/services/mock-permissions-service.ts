@@ -1,33 +1,32 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { UserPermission } from "../models/permissions.js";
 import { ClientEnvironment } from "../types.js";
 import { PermissionsService } from "./permissions-service.js";
 
 export const mockPermissionsService: PermissionsService = {
   check: async (
-    user: string,
-    permission: UserPermission,
-    service: string
+    _user: string,
+    _permission: UserPermission,
+    _service: string
   ): Promise<boolean> => {
-    return Promise.resolve(true);
+    return true;
   },
   checkUserHasReaderPermissions: async (
-    user: string,
-    service: string
+    _user: string,
+    _service: string
   ): Promise<boolean> => {
-    return Promise.resolve(true);
+    return true;
   },
   checkUserHasWriterPermissions: async (
-    user: string,
-    service: string,
-    clientEnvironment: ClientEnvironment
+    _user: string,
+    _service: string,
+    _clientEnvironment: ClientEnvironment
   ): Promise<boolean> => {
-    return Promise.resolve(true);
+    return true;
   },
   checkUserHasManagerPermissions: async (
-    user: string,
-    service: string
+    _user: string,
+    _service: string
   ): Promise<boolean> => {
-    return Promise.resolve(true);
+    return true;
   },
 };
