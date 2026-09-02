@@ -1,8 +1,9 @@
 import type { Request, Response } from "express";
 import { permissionsService } from "../../services/permissions-service.js";
-import { ClientEnvironment, ExpressRouteFunc } from "../../types.js";
+import { ExpressRouteFunc } from "../../types.js";
 import { PATH_NAMES } from "../../app.constants.js";
 import path from "path";
+import { ClientEnvironment } from "../../models/client-environment.js";
 
 export const serviceGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response): Promise<void> => {

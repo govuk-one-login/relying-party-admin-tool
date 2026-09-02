@@ -1,5 +1,5 @@
+import { ClientEnvironment } from "../models/client-environment.js";
 import { UserPermission } from "../models/permissions.js";
-import { ClientEnvironment } from "../types.js";
 import { PermissionsService } from "./permissions-service.js";
 
 export const mockPermissionsService: PermissionsService = {

@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request } from "express";
 import { Session, SessionData } from "express-session";
 
 export class RequestBuilder {
   private body: object | null = null;
-  private session: Session & Partial<SessionData> = {
+  private session: Partial<Session> & Partial<SessionData> = {
     newClientData: {},
-  } as any;
+  };
   private log: object = {};
 
   withBody(body: object): this {
@@ -32,7 +31,7 @@ export class RequestBuilder {
   build(): Partial<Request> {
     return {
       body: this.body,
-      session: this.session,
+      session: this.session as Session,
     };
   }
 }

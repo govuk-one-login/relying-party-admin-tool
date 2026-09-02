@@ -6,6 +6,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
+
 {% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
 {% set serviceName %}{{ serviceName }}{% endset %}
 
@@ -19,6 +20,7 @@
         iconFallbackText: "Warning"
       })
     }}
+
 
     {% set jwksEndpointHtml %}
       {{
@@ -38,6 +40,7 @@
       }}
     {% endset -%}
 
+
     {% set publicKeyHtml %}
       {{
         govukTextarea({
@@ -56,6 +59,7 @@
         })
       }}
     {% endset -%}
+
 
     {% set clientSecretHtml %}
       {{
