@@ -1,9 +1,10 @@
 import type { Request, Response } from "express";
 import { PATH_NAMES } from "../../../app.constants.js";
-import { ClientEnvironment, ExpressRouteFunc } from "../../../types.js";
+import { ExpressRouteFunc } from "../../../types.js";
 import { permissionsService } from "../../../services/permissions-service.js";
 import { populateUrlRoute } from "../../../utils/populate-url-route.js";
 import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
+import { ClientEnvironment } from "../../../models/client-environment.js";
 
 export const createClientEnterRedirectUrlsGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {

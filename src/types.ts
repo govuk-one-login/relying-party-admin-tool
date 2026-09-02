@@ -1,10 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 
-export enum ClientEnvironment {
-  INTEGRATION = "integration",
-  PRODUCTION = "production",
-}
-
 export type ExpressRouteFunc = (
   req: Request,
   res: Response,
