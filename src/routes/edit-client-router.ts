@@ -10,8 +10,24 @@ import {
   editIsActivePost,
 } from "../components/clients/edit-is-active/edit-is-active-controller.js";
 import { validateEditIsActiveRequest } from "../components/clients/edit-is-active/edit-is-active-validation.js";
+import {
+  editBackchannelLogoutUrlGet,
+  editBackchannelLogoutUrlPost,
+} from "../components/clients/edit-backchannel-logout-url/edit-backchannel-logout-url-controller.js";
+import { validateEditBackchannelLogoutUrlRequest } from "../components/clients/edit-backchannel-logout-url/edit-backchannel-logout-url-validation.js";
 
 const router = express.Router();
+
+router.get(
+  PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,
+  editBackchannelLogoutUrlGet()
+);
+
+router.post(
+  PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,
+  validateEditBackchannelLogoutUrlRequest(),
+  editBackchannelLogoutUrlPost()
+);
 
 router.get(
   PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM,

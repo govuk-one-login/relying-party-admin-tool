@@ -29,6 +29,8 @@ export const PATH_NAMES = {
     "/services/:serviceId/clients/create/select-levels-of-confidence",
   CREATE_CLIENT_SUMMARY: "/services/:serviceId/clients/create/summary",
   CREATE_CLIENT_SUCCESS: "/services/:serviceId/clients/create/success",
+  CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL:
+    "/services/:serviceId/clients/:clientId/edit-backchannel-logout-url",
   CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM:
     "/services/:serviceId/clients/:clientId/edit-id-token-signing-algorithm",
   CLIENT_EDIT_IS_ACTIVE:

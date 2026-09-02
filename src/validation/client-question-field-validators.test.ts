@@ -9,11 +9,168 @@ import {
   clientAuthenticationInputFieldValidatorChain,
   idTokenSigningAlgorithmFieldValidator,
   isActiveFieldValidator,
+  backchannelLogoutUrlFieldValidator,
 } from "./client-question-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
 
 describe("create client field validators", () => {
+  describe("backchannelLogoutUrlFieldValidator", () => {
+    it("should pass validation with valid URL", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "backchannel-logout-url": "http://url.com",
+        })
+        .build();
+
+      const result = await backchannelLogoutUrlFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should pass validation when empty", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder().withBody({}).build();
+
+      const result = await backchannelLogoutUrlFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when URL is invalid", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "backchannel-logout-url": "not-a-url",
+        })
+        .build();
+
+      const result = await backchannelLogoutUrlFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Your backchannel logout URL must be a valid URL"
+      );
+    });
+
+    describe("production environment", () => {
+      beforeAll(() => {
+        process.env.ENVIRONMENT = "production";
+      });
+
+      afterAll(() => {
+        process.env.ENVIRONMENT = "";
+      });
+
+      it("should pass validation with valid https URL", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            "backchannel-logout-url": "https://url.com",
+          })
+          .build();
+
+        const result = await backchannelLogoutUrlFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(true);
+      });
+
+      it("should pass validation when empty", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder().withBody({}).build();
+
+        const result = await backchannelLogoutUrlFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(true);
+      });
+
+      it("should fail validation when URL is invalid", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            "backchannel-logout-url": "not-a-url",
+          })
+          .build();
+
+        const result = await backchannelLogoutUrlFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(false);
+
+        const errorsArray = (result as InvalidField).errors;
+
+        expect(errorsArray).length(1);
+        expect(errorsArray[0].text).length(1);
+        expect(errorsArray[0].text[0]).toBe(
+          "Your backchannel logout URL must be a valid URL"
+        );
+      });
+
+      it("should fail validation when URL is http", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            "backchannel-logout-url": "http://url.com",
+          })
+          .build();
+
+        const result = await backchannelLogoutUrlFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(false);
+
+        const errorsArray = (result as InvalidField).errors;
+
+        expect(errorsArray).length(1);
+        expect(errorsArray[0].text).length(1);
+        expect(errorsArray[0].text[0]).toBe(
+          "Your backchannel logout URL does not have a valid URL protocol"
+        );
+      });
+
+      it("should fail validation when URL is localhost", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            "backchannel-logout-url": "https://localhost:3000",
+          })
+          .build();
+
+        const result = await backchannelLogoutUrlFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(false);
+
+        const errorsArray = (result as InvalidField).errors;
+
+        expect(errorsArray).length(1);
+        expect(errorsArray[0].text).length(1);
+        expect(errorsArray[0].text[0]).toBe(
+          "Your backchannel logout URL must not use a local hostname"
+        );
+      });
+    });
+  });
+
   describe("clientAuthenticationInputFieldValidatorChain", () => {
     it("should fail validation when client authentication method is empty", async () => {
       let req: Partial<Request>;

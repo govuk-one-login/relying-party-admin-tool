@@ -1,0 +1,33 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% set pageTitleName = "Edit backchannel logout URL" %}
+{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
+{% set serviceName %}{{ serviceName }}{% endset %}
+
+{% block pageContent %}
+  <form class="form" action="edit-backchannel-logout-url" method="post">
+    {{
+      govukInput({
+        id: "backchannel-logout-url",
+        name: "backchannel-logout-url",
+        value: jwksUrl,
+        label: {
+          text: "Add a backchannel logout URL",
+          classes: "govuk-label--l",
+          isPageHeading: true
+        },
+        errorMessage: {
+          text: errors["backchannel-logout-url"].text
+        } if (errors["backchannel-logout-url"])
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Confirm"
+      })
+    }}
+  </form>
+{% endblock %}
