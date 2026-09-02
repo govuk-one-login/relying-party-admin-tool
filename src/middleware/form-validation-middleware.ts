@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { ValidationFunction } from "../types.js";
 import { renderBadRequest } from "../utils/validation.js";
 import {
   FieldValidator,
@@ -9,13 +10,12 @@ export const validateFieldsMiddleware = (
   template: string,
   validator: FieldValidator<Request> | FieldValidatorChain<Request>,
   postValidationLocals?: (req: Request) => Record<string, unknown>
-) => {
+): ValidationFunction => {
   return async (
     req: Request,
     res: Response,
     next: NextFunction
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): Promise<any> => {
+  ): Promise<void> => {
     const result = await validator.validate(req);
 
     const locals =
