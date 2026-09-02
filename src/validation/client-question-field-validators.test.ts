@@ -10,6 +10,7 @@ import {
   idTokenSigningAlgorithmFieldValidator,
   isActiveFieldValidator,
   backchannelLogoutUrlFieldValidator,
+  postLogoutRedirectUrlsFieldValidator,
 } from "./client-question-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
@@ -984,6 +985,167 @@ describe("create client field validators", () => {
         expect(errorsArray[0].text[0]).toBe(
           "Your landing page URL must not use a local hostname"
         );
+      });
+    });
+  });
+
+  describe("postLogoutRedirectUrlsFieldValidator", () => {
+    describe("post logout redirect url input", () => {
+      it("should pass validation with valid redirect url", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            action: "add",
+            "post-logout-redirect-url-input": "http://url.com",
+          })
+          .build();
+
+        const result = await postLogoutRedirectUrlsFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(true);
+      });
+
+      it("should fail validation when redirect url input is empty", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            action: "add",
+          })
+          .build();
+
+        const result = await postLogoutRedirectUrlsFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(false);
+
+        const errorsArray = (result as InvalidField).errors;
+
+        expect(errorsArray).length(1);
+        expect(errorsArray[0].text).length(2);
+        expect(errorsArray[0].text[0]).toBe("Enter a post logout redirect URL");
+      });
+
+      it("should fail validation when redirect url input is empty string", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            action: "add",
+            "post-logout-redirect-url-input": " ",
+          })
+          .build();
+
+        const result = await postLogoutRedirectUrlsFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(false);
+
+        const errorsArray = (result as InvalidField).errors;
+
+        expect(errorsArray).length(1);
+        expect(errorsArray[0].text).length(2);
+        expect(errorsArray[0].text[0]).toBe("Enter a post logout redirect URL");
+      });
+
+      it("should fail validation when redirect url input is not a URL", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            action: "add",
+            "post-logout-redirect-url-input": "not-a-url",
+          })
+          .build();
+
+        const result = await postLogoutRedirectUrlsFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(false);
+
+        const errorsArray = (result as InvalidField).errors;
+
+        expect(errorsArray).length(1);
+        expect(errorsArray[0].text).length(1);
+        expect(errorsArray[0].text[0]).toBe(
+          "Your post logout redirect URL must be a valid URL"
+        );
+      });
+
+      it("should fail validation when redirect url already exists in the table", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            action: "add",
+            "post-logout-redirect-url-input": "http://url.com",
+            "post-logout-redirect-urls": ["http://url.com"],
+          })
+          .build();
+
+        const result = await postLogoutRedirectUrlsFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(false);
+
+        const errorsArray = (result as InvalidField).errors;
+
+        expect(errorsArray).length(1);
+        expect(errorsArray[0].text).length(1);
+        expect(errorsArray[0].text[0]).toBe(
+          "You have already added this redirect URL"
+        );
+      });
+    });
+
+    describe("post logout redirect url table", () => {
+      it("should pass validation with one valid redirect url", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            action: "continue",
+            "post-logout-redirect-urls": "http://url.com",
+          })
+          .build();
+
+        const result = await postLogoutRedirectUrlsFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(true);
+      });
+
+      it("should pass validation with valid redirect urls", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            action: "continue",
+            "post-logout-redirect-urls": ["http://url.com", "http://url2.com"],
+          })
+          .build();
+
+        const result = await postLogoutRedirectUrlsFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(true);
+      });
+
+      it("should pass validation when table is empty", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            action: "continue",
+          })
+          .build();
+
+        const result = await postLogoutRedirectUrlsFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(true);
       });
     });
   });

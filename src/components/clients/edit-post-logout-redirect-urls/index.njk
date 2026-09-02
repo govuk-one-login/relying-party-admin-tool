@@ -1,0 +1,90 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% set pageTitleName = "Edit post logout redirect URLs" %}
+{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
+{% set serviceName %}{{ serviceName }}{% endset %}
+
+{% set postLogoutRedirectError = errors["post-logout-redirect-url-input"] or errors["post-logout-redirect-urls"] %}
+{% set rowItems = [] %}
+{% for postLogoutRedirectUrl in postLogoutRedirectUrls %}
+  {% set actionCellHtml %}
+    <input
+      type="hidden"
+      name="post-logout-redirect-urls"
+      id="post-logout-redirect-urls-{{ loop.index0 }}"
+      value="{{ postLogoutRedirectUrl }}"
+    />
+
+    <button
+      class="govuk-link button-as-link"
+      type="submit"
+      name="action"
+      value="delete-{{ loop.index0 }}"
+    >
+      Remove
+      <span class="govuk-visually-hidden"
+        >Remove {{ postLogoutRedirectUrl }}</span
+      >
+    </button>
+  {% endset %}
+  {%
+    set _ = rowItems.push([
+      {
+        text: postLogoutRedirectUrl
+      },
+      {
+        html: actionCellHtml
+      }
+    ])
+  %}
+{% endfor %}
+
+{% block pageContent %}
+  <form class="form" action="edit-post-logout-redirect-urls" method="post">
+    {{
+      govukInput({
+        label: {
+          text: "Add a post logout redirect URL",
+          classes: "govuk-label--l",
+          isPageHeading: true
+        },
+        id: "post-logout-redirect-url-input",
+        name: "post-logout-redirect-url-input",
+        errorMessage: {
+          text: postLogoutRedirectError.text
+        } if (postLogoutRedirectError)
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Add",
+        classes: "govuk-button--secondary",
+        type: "Submit",
+        name: "action",
+        value: "add"
+      })
+    }}
+
+    {{
+      govukTable({
+        caption: "Post Logout Redirect URLs",
+        captionClasses: "govuk-table__caption--m",
+        head: [],
+        rows:  rowItems
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Continue",
+        type: "Submit",
+        name: "action",
+        value: "continue"
+      })
+    }}
+  </form>
+{% endblock %}

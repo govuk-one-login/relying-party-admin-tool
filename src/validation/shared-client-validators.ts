@@ -77,6 +77,12 @@ export const idTokenSigningAlgorithmValidator = requiredValidator(
   )
 );
 
+export const postLogoutRedirectUrlValidator = requiredValidator(
+  "Enter a post logout redirect URL"
+)
+  .and(validUrlValidator("post logout redirect URL"))
+  .and(productionUrlValidator("post logout redirect URL"));
+
 const validRedirectUrlQueryParamsValidator = (
   errorMessage: string
 ): Validator<string> =>

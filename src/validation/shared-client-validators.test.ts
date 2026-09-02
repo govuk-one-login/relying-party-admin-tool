@@ -7,6 +7,7 @@ import {
   redirectUrlValidator,
   idTokenSigningAlgorithmValidator,
   validScopesValidator,
+  postLogoutRedirectUrlValidator,
 } from "./shared-client-validators.js";
 
 describe("shared client validator tests", () => {
@@ -241,6 +242,41 @@ describe("shared client validator tests", () => {
         expect(result).toBeInvalid();
         expect(result).toHaveInvalidErrors([
           "You have entered a redirect URL with an invalid scheme",
+        ]);
+      });
+    });
+  });
+
+  describe("post logout redirect url validator", () => {
+    describe("post logout redirect url input", () => {
+      it("should pass validation with valid redirect url", async () => {
+        const redirectUrl = "http://url.com";
+
+        const result =
+          await postLogoutRedirectUrlValidator.validate(redirectUrl);
+
+        expect(result).toBeValid();
+      });
+
+      it("should fail validation when redirect url input is empty", async () => {
+        const result = await postLogoutRedirectUrlValidator.validate("");
+
+        expect(result).toBeInvalid();
+        expect(result).toHaveInvalidErrors([
+          "Enter a post logout redirect URL",
+          "Your post logout redirect URL must be a valid URL",
+        ]);
+      });
+
+      it("should fail validation when redirect url input is not a URL", async () => {
+        const redirectUrl = "not-a-url";
+
+        const result =
+          await postLogoutRedirectUrlValidator.validate(redirectUrl);
+
+        expect(result).toBeInvalid();
+        expect(result).toHaveInvalidErrors([
+          "Your post logout redirect URL must be a valid URL",
         ]);
       });
     });

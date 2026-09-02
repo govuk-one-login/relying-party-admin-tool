@@ -12,4 +12,5 @@ export interface ClientConfig {
   backchannelLogoutUrl: string;
   idTokenSigningAlgorithm: IdTokenSigningAlgorithm;
   isActive: boolean;
+  postLogoutRedirectUrls: string[];
 }
