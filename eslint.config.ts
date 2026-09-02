@@ -40,6 +40,14 @@ export default defineConfig(
     rules: {
       "@typescript-eslint/explicit-function-return-type": "error",
       "@typescript-eslint/consistent-indexed-object-style": ["error", "record"],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          varsIgnorePattern: "^_",
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
     },
   },
   {
