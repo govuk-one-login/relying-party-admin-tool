@@ -1,0 +1,46 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% set pageTitleName = "Edit is active" %}
+{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
+{% set serviceName %}{{ serviceName }}{% endset %}
+
+{% block pageContent %}
+  <form class="form" action="edit-is-active" method="post">
+    <h1 class="govuk-heading-l">Is your client active?</h1>
+
+    {{
+      govukWarningText({
+        text: "Disabling this will stop all one login journeys",
+        iconFallbackText: "Warning"
+      })
+    }}
+
+    {{
+      govukRadios({
+        name: "is-active",
+        items: [
+          {
+            value: "true",
+            text: "Yes"
+          },
+          {
+            value: "false",
+            text: "No"
+          }
+        ],
+        errorMessage: {
+          text: errors["is-active"].text
+        } if (errors["is-active"])
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Confirm"
+      })
+    }}
+  </form>
+{% endblock %}

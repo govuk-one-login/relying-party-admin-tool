@@ -31,6 +31,8 @@ export const PATH_NAMES = {
   CREATE_CLIENT_SUCCESS: "/services/:serviceId/clients/create/success",
   CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM:
     "/services/:serviceId/clients/:clientId/edit-id-token-signing-algorithm",
+  CLIENT_EDIT_IS_ACTIVE:
+    "/services/:serviceId/clients/:clientId/edit-is-active",
   OIDC_JWKS: "/.well-known/jwks.json",
 };
 

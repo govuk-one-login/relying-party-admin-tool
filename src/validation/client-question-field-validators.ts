@@ -112,6 +112,13 @@ export const idTokenSigningAlgorithmFieldValidator = new FieldValidator(
   "id-token-signing-algorithm"
 );
 
+export const isActiveFieldValidator = new FieldValidator(
+  requiredValidator("Select an option").adaptedFrom(
+    (req: Request) => req.body["is-active"]
+  ),
+  "is-active"
+);
+
 export const enterLandingPageUrlFieldValidator = new FieldValidator(
   optional(
     validUrlValidator("landing page URL").and(
