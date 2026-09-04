@@ -1,7 +1,7 @@
 import { Request } from "express";
 import {
   clientNameInputFieldValidator,
-  enterRedirectUrlsFieldValidator,
+  redirectUrlsFieldValidator,
   enterLandingPageUrlFieldValidator,
   selectClaimsFieldValidator,
   selectScopesFieldValidator,
@@ -988,7 +988,7 @@ describe("create client field validators", () => {
     });
   });
 
-  describe("enterRedirectUrlsFieldValidator", () => {
+  describe("redirectUrlsFieldValidator", () => {
     describe("redirect url input", () => {
       it("should pass validation with valid redirect url", async () => {
         let req: Partial<Request>;
@@ -999,7 +999,7 @@ describe("create client field validators", () => {
           })
           .build();
 
-        const result = await enterRedirectUrlsFieldValidator.validate(
+        const result = await redirectUrlsFieldValidator.validate(
           req as Request
         );
 
@@ -1014,7 +1014,7 @@ describe("create client field validators", () => {
           })
           .build();
 
-        const result = await enterRedirectUrlsFieldValidator.validate(
+        const result = await redirectUrlsFieldValidator.validate(
           req as Request
         );
 
@@ -1036,7 +1036,7 @@ describe("create client field validators", () => {
           })
           .build();
 
-        const result = await enterRedirectUrlsFieldValidator.validate(
+        const result = await redirectUrlsFieldValidator.validate(
           req as Request
         );
 
@@ -1058,7 +1058,7 @@ describe("create client field validators", () => {
           })
           .build();
 
-        const result = await enterRedirectUrlsFieldValidator.validate(
+        const result = await redirectUrlsFieldValidator.validate(
           req as Request
         );
 
@@ -1083,7 +1083,7 @@ describe("create client field validators", () => {
           })
           .build();
 
-        const result = await enterRedirectUrlsFieldValidator.validate(
+        const result = await redirectUrlsFieldValidator.validate(
           req as Request
         );
 
@@ -1107,7 +1107,7 @@ describe("create client field validators", () => {
           })
           .build();
 
-        const result = await enterRedirectUrlsFieldValidator.validate(
+        const result = await redirectUrlsFieldValidator.validate(
           req as Request
         );
 
@@ -1131,7 +1131,7 @@ describe("create client field validators", () => {
           })
           .build();
 
-        const result = await enterRedirectUrlsFieldValidator.validate(
+        const result = await redirectUrlsFieldValidator.validate(
           req as Request
         );
 
@@ -1157,7 +1157,7 @@ describe("create client field validators", () => {
           })
           .build();
 
-        const result = await enterRedirectUrlsFieldValidator.validate(
+        const result = await redirectUrlsFieldValidator.validate(
           req as Request
         );
 
@@ -1173,7 +1173,7 @@ describe("create client field validators", () => {
           })
           .build();
 
-        const result = await enterRedirectUrlsFieldValidator.validate(
+        const result = await redirectUrlsFieldValidator.validate(
           req as Request
         );
 
@@ -1188,7 +1188,7 @@ describe("create client field validators", () => {
           })
           .build();
 
-        const result = await enterRedirectUrlsFieldValidator.validate(
+        const result = await redirectUrlsFieldValidator.validate(
           req as Request
         );
 

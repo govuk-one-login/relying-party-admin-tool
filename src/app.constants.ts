@@ -17,6 +17,8 @@ export const PATH_NAMES = {
     "/services/:serviceId/clients/create/edit-client-authentication",
   CREATE_CLIENT_ENTER_REDIRECT_URLS:
     "/services/:serviceId/clients/create/enter-redirect-urls",
+  CREATE_CLIENT_EDIT_REDIRECT_URLS:
+    "/services/:serviceId/clients/create/edit-redirect-urls",
   CREATE_CLIENT_SELECT_SCOPES:
     "/services/:serviceId/clients/create/select-scopes",
   CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT:

@@ -137,7 +137,7 @@ export const enterLandingPageUrlFieldValidator = new FieldValidator(
   "landing-page-url"
 );
 
-const enterRedirectUrlInputValidator = when(
+const redirectUrlInputValidator = when(
   (req: Request) => req.body.action === "add",
   redirectUrlValidator
     .adaptedFrom((req: Request) => req.body["redirect-url-input"])
@@ -154,15 +154,15 @@ const enterRedirectUrlInputValidator = when(
     )
 );
 
-const enterRedirectUrlTableValidator = when(
+const redirectUrlTableValidator = when(
   (req: Request) => req.body.action === "continue",
   requiredValidator("You must have at least one redirect URL").adaptedFrom(
     (req: Request) => req.body["redirect-urls"]
   )
 );
 
-export const enterRedirectUrlsFieldValidator = new FieldValidator(
-  enterRedirectUrlInputValidator.and(enterRedirectUrlTableValidator),
+export const redirectUrlsFieldValidator = new FieldValidator(
+  redirectUrlInputValidator.and(redirectUrlTableValidator),
   "redirect-url-input"
 );
 

@@ -1,10 +1,9 @@
 {% extends "common/layout/base-layout.njk" %}
-{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
-{% set pageTitleName = "Enter redirect urls" %}
+
 {% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
 {% set serviceName %}{{ serviceName }}{% endset %}
 {% set redirectError = errors["redirect-url-input"] or errors["redirect-urls"] %}
@@ -40,18 +39,8 @@
   %}
 {% endfor %}
 
-{% block beforeContent %}
-  {{
-    govukBreadcrumbs({
-    items: [
-      { text: "Your services", href: "/services" },
-      { text: serviceName, href: viewServiceUrl },
-      { text: "Create a client" } ] })
-  }}
-{% endblock %}
-
 {% block pageContent %}
-  <form class="form" action="enter-redirect-urls" method="post">
+  <form class="form" action="{{ formAction }}" method="post">
     {{
       govukInput({
         label: {
