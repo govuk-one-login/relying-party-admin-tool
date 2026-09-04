@@ -1,6 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { User } from "../models/user.js";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
+import { Relation } from "../models/relation.js";
 
 const dynamoClient = DynamoDBDocument.from(
   new DynamoDBClient({
@@ -65,5 +66,31 @@ export const createUser = async (user: User): Promise<void> => {
       name: user.name,
     },
     ConditionExpression: "attribute_not_exists(subject)",
+  });
+};
+
+export const addUserPermission = async (relation: Relation): Promise<void> => {
+  await dynamoClient.transactWrite({
+    TransactItems: [
+      {
+        ConditionCheck: {
+          TableName: tableName,
+          Key: { subject: `user:${relation.userId}`, sk: "user" },
+          ConditionExpression: "attribute_exists(subject)",
+        },
+      },
+      {
+        Put: {
+          TableName: tableName,
+          Item: {
+            subject: `user:${relation.userId}`,
+            sk: `relation#${relation.object}#${relation.relation}`,
+            object: relation.object,
+            relation: relation.relation,
+          },
+          ConditionExpression: "attribute_not_exists(sk)",
+        },
+      },
+    ],
   });
 };
