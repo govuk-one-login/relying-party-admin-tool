@@ -7,6 +7,7 @@ import {
   validScopesValidator,
   productionUrlValidator,
   redirectUrlValidator,
+  idTokenSigningAlgorithmValidator,
 } from "./shared-client-validators.js";
 import { FieldValidator, optional, rule, when } from "./validator.js";
 import {
@@ -74,7 +75,7 @@ export const selectClaimsFieldValidator = new FieldValidator(
     .and(
       when(
         (req: Request) =>
-          req.session.newClientData?.isIdentityVerificationSupported ?? false,
+          req.session.newClientConfig?.isIdentityVerificationSupported ?? false,
         notEmptyListValidator(
           "Claims cannot be empty when identity verification is supported"
         ).adaptedFrom((req: Request) =>
@@ -91,7 +92,7 @@ export const supportIdentityVerificationFieldValidator = new FieldValidator(
     .and(
       when(
         (req: Request) =>
-          req.session.newClientData?.clientAuthenticationMethod ===
+          req.session.newClientConfig?.clientAuthenticationMethod ===
           "CLIENT_SECRET",
         rule(
           (input: string) => input !== "true",
@@ -102,6 +103,13 @@ export const supportIdentityVerificationFieldValidator = new FieldValidator(
       )
     ),
   "support-identity-verification"
+);
+
+export const idTokenSigningAlgorithmFieldValidator = new FieldValidator(
+  idTokenSigningAlgorithmValidator.adaptedFrom(
+    (req: Request) => req.body["id-token-signing-algorithm"]
+  ),
+  "id-token-signing-algorithm"
 );
 
 export const enterLandingPageUrlFieldValidator = new FieldValidator(

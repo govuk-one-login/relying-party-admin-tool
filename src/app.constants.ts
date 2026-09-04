@@ -5,6 +5,7 @@ export const PATH_NAMES = {
   SERVICES: "/services",
   CREATE_SERVICE: "/services/create",
   SERVICE: "/services/:serviceId",
+  CLIENT: "/services/:serviceId/clients/:clientId",
   CREATE_CLIENT: "/services/:serviceId/clients/create",
   CREATE_CLIENT_ENTER_CLIENT_NAME:
     "/services/:serviceId/clients/create/enter-client-name",
@@ -28,6 +29,8 @@ export const PATH_NAMES = {
     "/services/:serviceId/clients/create/select-levels-of-confidence",
   CREATE_CLIENT_SUMMARY: "/services/:serviceId/clients/create/summary",
   CREATE_CLIENT_SUCCESS: "/services/:serviceId/clients/create/success",
+  CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM:
+    "/services/:serviceId/clients/:clientId/edit-id-token-signing-algorithm",
   OIDC_JWKS: "/.well-known/jwks.json",
 };
 
@@ -80,4 +83,9 @@ export const VALID_SCOPES = Object.freeze([
   "doc-checking-app",
   "govuk-account",
   "offline_access",
+] as const);
+
+export const VALID_TOKEN_SIGNING_ALGS = Object.freeze([
+  "ES256",
+  "RS256",
 ] as const);

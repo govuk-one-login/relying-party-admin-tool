@@ -8,17 +8,18 @@ import { ClientEnvironment } from "../../../../models/client-environment.js";
 
 export const createClientEditClientNameGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
+    const serviceId = req.params.serviceId as string;
     if (
       await permissionsService.checkUserHasWriterPermissions(
         "user",
-        "service",
+        serviceId,
         ClientEnvironment.INTEGRATION
       )
     ) {
       res.render("create-client/client-name/edit-client-name/index.njk", {
         serviceName: "Service Name",
-        serviceId: req.params.serviceId as string,
-        clientName: req.session.newClientData?.name ?? "",
+        serviceId,
+        clientName: req.session.newClientConfig?.name ?? "",
       });
     } else {
       return res.redirect(PATH_NAMES.ROOT);
@@ -28,16 +29,16 @@ export const createClientEditClientNameGet = (): ExpressRouteFunc => {
 
 export const createClientEditClientNamePost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    req.session.newClientData = {
-      ...req.session.newClientData,
+    req.session.newClientConfig = {
+      ...req.session.newClientConfig,
       name: req.body.name,
     };
     return saveSessionAndRedirect(
       req,
       res,
-      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUMMARY, [
-        req.params.serviceId as string,
-      ])
+      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUMMARY, {
+        [":serviceId"]: req.params.serviceId as string,
+      })
     );
   };
 };

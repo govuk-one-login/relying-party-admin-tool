@@ -17,13 +17,14 @@ import { Server } from "http";
 import { applyOverloadProtection } from "./middleware/overload-protection-middleware.js";
 import { healthcheckRouter } from "./components/healthcheck/healthcheck-routes.js";
 import { servicesRouter } from "./routes/services-router.js";
-import { clientsRouter } from "./routes/client-router.js";
+import { createClientRouter } from "./routes/create-client-router.js";
 import session from "express-session";
 import { pageNotFoundRouter } from "./routes/error-router.js";
 import { setLocalVarsMiddleware } from "./middleware/set-local-vars-middleware.js";
 import { getSessionStore } from "./datastores/session-data-store.js";
 import { getSessionCookieOptions } from "./config/cookie.js";
 import { jwksRouter } from "./routes/jwks-router.js";
+import { editClientRouter } from "./routes/edit-client-router.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -109,7 +110,8 @@ const createApp = async (): Promise<express.Application> => {
 
   app.use(indexRouter);
   app.use(servicesRouter);
-  app.use(clientsRouter);
+  app.use(createClientRouter);
+  app.use(editClientRouter);
   app.use(jwksRouter);
 
   // Router for all previously used URLs, that we want to redirect on

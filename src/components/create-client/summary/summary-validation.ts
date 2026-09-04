@@ -32,5 +32,5 @@ const summaryFieldValidators = clientNameSummaryFieldValidator
   .and(scopesSummaryFieldValidator);
 
 const postValidationLocals = (req: Request): Record<string, unknown> => {
-  return { client: req.session.newClientData };
+  return { client: req.session.newClientConfig };
 };

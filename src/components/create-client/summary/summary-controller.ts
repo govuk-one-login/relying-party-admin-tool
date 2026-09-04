@@ -8,20 +8,21 @@ import { ClientEnvironment } from "../../../models/client-environment.js";
 
 export const createClientSummaryGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
+    const serviceId = req.params.serviceId as string;
     if (
       await permissionsService.checkUserHasWriterPermissions(
         "user",
-        "service",
+        serviceId,
         ClientEnvironment.INTEGRATION
       )
     ) {
       res.render("create-client/summary/index.njk", {
         serviceName: "Service Name",
-        serviceId: req.params.serviceId as string,
-        client: req.session.newClientData,
-        baseUrl: populateUrlRoute(PATH_NAMES.CREATE_CLIENT, [
-          req.params.serviceId as string,
-        ]),
+        serviceId,
+        client: req.session.newClientConfig,
+        baseUrl: populateUrlRoute(PATH_NAMES.CREATE_CLIENT, {
+          [":serviceId"]: req.params.serviceId as string,
+        }),
       });
     } else {
       return res.redirect(PATH_NAMES.ROOT);
@@ -31,21 +32,22 @@ export const createClientSummaryGet = (): ExpressRouteFunc => {
 
 export const createClientSummaryPost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
+    const serviceId = req.params.serviceId as string;
     if (
       await permissionsService.checkUserHasWriterPermissions(
         "user",
-        "service",
+        serviceId,
         ClientEnvironment.INTEGRATION
       )
     ) {
       // TODO: write to service/client database and send to client registry api
-      req.session.newClientData = {};
+      req.session.newClientConfig = {};
       return saveSessionAndRedirect(
         req,
         res,
-        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUCCESS, [
-          req.params.serviceId as string,
-        ])
+        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUCCESS, {
+          [":serviceId"]: req.params.serviceId as string,
+        })
       );
     } else {
       return res.redirect(PATH_NAMES.ROOT);

@@ -9,16 +9,17 @@ import { ClientEnvironment } from "../../../models/client-environment.js";
 
 export const createClientSelectClaimsGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
+    const serviceId = req.params.serviceId as string;
     if (
       await permissionsService.checkUserHasWriterPermissions(
         "user",
-        "service",
+        serviceId,
         ClientEnvironment.INTEGRATION
       )
     ) {
       res.render("create-client/select-claims/index.njk", {
         serviceName: "Service Name",
-        serviceId: req.params.serviceId as string,
+        serviceId,
       });
     } else {
       return res.redirect(PATH_NAMES.ROOT);
@@ -29,16 +30,16 @@ export const createClientSelectClaimsGet = (): ExpressRouteFunc => {
 export const createClientSelectClaimsPost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
     const claims = getListFromRequestBody(req, "selected-claims");
-    req.session.newClientData = {
-      ...req.session.newClientData,
+    req.session.newClientConfig = {
+      ...req.session.newClientConfig,
       claims,
     };
     return saveSessionAndRedirect(
       req,
       res,
-      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL, [
-        req.params.serviceId as string,
-      ])
+      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL, {
+        [":serviceId"]: req.params.serviceId as string,
+      })
     );
   };
 };

@@ -4,11 +4,13 @@ import {
   PROHIBITED_REDIRECT_URI_SCHEMES,
   VALID_CLAIMS,
   VALID_SCOPES,
+  VALID_TOKEN_SIGNING_ALGS,
 } from "../app.constants.js";
 import { isProductionEnv } from "../config.js";
 import { isValidUrl } from "./shared-validation-rules.js";
 import {
-  listFieldValidator,
+  limitedValidValuesValidator,
+  listLimitedValidValuesValidator,
   notHttpValidator,
   notLocalhostValidator,
   requiredValidator,
@@ -45,7 +47,10 @@ export const clientNameValidator = requiredValidator("Enter your client name")
     )
   );
 
-export const validClaimsValidator = listFieldValidator(VALID_CLAIMS, "claim");
+export const validClaimsValidator = listLimitedValidValuesValidator(
+  VALID_CLAIMS,
+  "claim"
+);
 
 export const jwksUrlValidator = validUrlValidator("JWKS URL").and(
   when(
@@ -62,6 +67,15 @@ export const publicKeyValidator = rule((jwks: string) => {
     return false;
   }
 }, "Please enter a valid PEM key");
+
+export const idTokenSigningAlgorithmValidator = requiredValidator(
+  "ID token signing algorithm is required"
+).and(
+  limitedValidValuesValidator(
+    VALID_TOKEN_SIGNING_ALGS,
+    "ID token signing algorithm"
+  )
+);
 
 const validRedirectUrlQueryParamsValidator = (
   errorMessage: string
@@ -109,4 +123,7 @@ export const redirectUrlValidator = requiredValidator("Enter a redirect URL")
     )
   );
 
-export const validScopesValidator = listFieldValidator(VALID_SCOPES, "scope");
+export const validScopesValidator = listLimitedValidValuesValidator(
+  VALID_SCOPES,
+  "scope"
+);

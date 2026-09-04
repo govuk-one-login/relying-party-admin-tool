@@ -7,7 +7,8 @@ import {
   selectScopesFieldValidator,
   supportIdentityVerificationFieldValidator,
   clientAuthenticationInputFieldValidatorChain,
-} from "./create-client-field-validators.js";
+  idTokenSigningAlgorithmFieldValidator,
+} from "./client-question-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
 
@@ -404,7 +405,7 @@ describe("create client field validators", () => {
     it("should pass validation with valid claims and identity verification false", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
-        .withSessionNewClientData({ isIdentityVerificationSupported: false })
+        .withSessionnewClientConfig({ isIdentityVerificationSupported: false })
         .withBody({
           "selected-claims": [
             "https://vocab.account.gov.uk/v1/coreIdentityJWT",
@@ -420,7 +421,7 @@ describe("create client field validators", () => {
     it("should pass validation with valid claims and identity verification true", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
-        .withSessionNewClientData({ isIdentityVerificationSupported: true })
+        .withSessionnewClientConfig({ isIdentityVerificationSupported: true })
         .withBody({
           "selected-claims": [
             "https://vocab.account.gov.uk/v1/coreIdentityJWT",
@@ -449,7 +450,7 @@ describe("create client field validators", () => {
     it("should pass validation when claims are empty and identity verification is false", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
-        .withSessionNewClientData({ isIdentityVerificationSupported: false })
+        .withSessionnewClientConfig({ isIdentityVerificationSupported: false })
         .withBody({
           "selected-claims": [],
         })
@@ -463,7 +464,7 @@ describe("create client field validators", () => {
     it("should fail validation when claims are empty and identity verification is true", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
-        .withSessionNewClientData({ isIdentityVerificationSupported: true })
+        .withSessionnewClientConfig({ isIdentityVerificationSupported: true })
         .withBody({
           "selected-claims": [],
         })
@@ -504,7 +505,7 @@ describe("create client field validators", () => {
     });
   });
 
-  describe("validateIsIdentityVerificationSupportedRequest", () => {
+  describe("supportIdentityVerificationFieldValidator", () => {
     it("should pass validation when an option is selected", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
@@ -542,7 +543,7 @@ describe("create client field validators", () => {
     it("should fail validation when support identity verification is true and client secret is set", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
-        .withSessionNewClientData({
+        .withSessionnewClientConfig({
           clientAuthenticationMethod: "CLIENT_SECRET",
         })
         .withBody({
@@ -568,7 +569,7 @@ describe("create client field validators", () => {
     it("should pass validation when support identity verification is false and client secret is set", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
-        .withSessionNewClientData({
+        .withSessionnewClientConfig({
           clientAuthenticationMethod: "CLIENT_SECRET",
         })
         .withBody({
@@ -584,7 +585,66 @@ describe("create client field validators", () => {
     });
   });
 
-  describe("validateEnterLandingPageUrlRequest", () => {
+  describe("idTokenSigningAlgorithmFieldValidator", () => {
+    it("should pass validation when an option is selected", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "id-token-signing-algorithm": "ES256",
+        })
+        .build();
+
+      const result = await idTokenSigningAlgorithmFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when id token signing algorithm is empty", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder().withBody({}).build();
+
+      const result = await idTokenSigningAlgorithmFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(2);
+      expect(errorsArray[0].text[0]).toBe(
+        "ID token signing algorithm is required"
+      );
+    });
+
+    it("should fail validation when invalid id token signing algorithm", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "id-token-signing-algorithm": "invalid-algorithm",
+        })
+        .build();
+
+      const result = await idTokenSigningAlgorithmFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        'Invalid ID token signing algorithm provided: "invalid-algorithm"'
+      );
+    });
+  });
+
+  describe("enterLandingPageUrlFieldValidator", () => {
     it("should pass validation with valid URL", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()

@@ -8,10 +8,11 @@ import { ClientEnvironment } from "../../../../models/client-environment.js";
 
 export const createClientEditClientAuthenticationGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
+    const serviceId = req.params.serviceId as string;
     if (
       await permissionsService.checkUserHasWriterPermissions(
         "user",
-        "service",
+        serviceId,
         ClientEnvironment.INTEGRATION
       )
     ) {
@@ -19,12 +20,12 @@ export const createClientEditClientAuthenticationGet = (): ExpressRouteFunc => {
         "create-client/client-authentication-method/edit-client-authentication-method/index.njk",
         {
           serviceName: "Service Name",
-          serviceId: req.params.serviceId as string,
+          serviceId,
           clientAuthenticationMethod:
-            req.session.newClientData?.clientAuthenticationMethod,
-          jwksUrl: req.session.newClientData?.jwksURL,
-          publicKey: req.session.newClientData?.publicKey,
-          clientSecret: req.session.newClientData?.clientSecret,
+            req.session.newClientConfig?.clientAuthenticationMethod,
+          jwksUrl: req.session.newClientConfig?.jwksURL,
+          publicKey: req.session.newClientConfig?.publicKey,
+          clientSecret: req.session.newClientConfig?.clientSecret,
         }
       );
     } else {
@@ -37,24 +38,24 @@ export const createClientEditClientAuthenticationPost =
   (): ExpressRouteFunc => {
     return async (req: Request, res: Response) => {
       if (req.body["client-authentication-method"] === "JWKS") {
-        req.session.newClientData = {
-          ...req.session.newClientData,
+        req.session.newClientConfig = {
+          ...req.session.newClientConfig,
           clientAuthenticationMethod: "JWKS",
           jwksURL: req.body["jwks-endpoint"],
           publicKey: undefined,
           clientSecret: undefined,
         };
       } else if (req.body["client-authentication-method"] === "STATIC") {
-        req.session.newClientData = {
-          ...req.session.newClientData,
+        req.session.newClientConfig = {
+          ...req.session.newClientConfig,
           clientAuthenticationMethod: "STATIC",
           publicKey: req.body["public-key"],
           jwksURL: undefined,
           clientSecret: undefined,
         };
       } else if (req.body["client-authentication-method"] === "CLIENT_SECRET") {
-        req.session.newClientData = {
-          ...req.session.newClientData,
+        req.session.newClientConfig = {
+          ...req.session.newClientConfig,
           clientAuthenticationMethod: "CLIENT_SECRET",
           clientSecret: req.body["client-secret"],
           publicKey: undefined,
@@ -65,9 +66,9 @@ export const createClientEditClientAuthenticationPost =
       return saveSessionAndRedirect(
         req,
         res,
-        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUMMARY, [
-          req.params.serviceId as string,
-        ])
+        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUMMARY, {
+          [":serviceId"]: req.params.serviceId as string,
+        })
       );
     };
   };

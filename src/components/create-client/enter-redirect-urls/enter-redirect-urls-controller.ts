@@ -8,17 +8,18 @@ import { ClientEnvironment } from "../../../models/client-environment.js";
 
 export const createClientEnterRedirectUrlsGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
+    const serviceId = req.params.serviceId as string;
     if (
       await permissionsService.checkUserHasWriterPermissions(
         "user",
-        "service",
+        serviceId,
         ClientEnvironment.INTEGRATION
       )
     ) {
-      const redirectUrls = req.session?.newClientData?.redirectUrls || [];
+      const redirectUrls = req.session?.newClientConfig?.redirectUrls || [];
       res.render("create-client/enter-redirect-urls/index.njk", {
         serviceName: "Service Name",
-        serviceId: req.params.serviceId as string,
+        serviceId,
         redirectUrls,
       });
     } else {
@@ -58,16 +59,16 @@ export const createClientEnterRedirectUrlsPost = (): ExpressRouteFunc => {
     }
 
     if (action === "continue") {
-      req.session.newClientData = {
-        ...req.session.newClientData,
+      req.session.newClientConfig = {
+        ...req.session.newClientConfig,
         redirectUrls,
       };
       return saveSessionAndRedirect(
         req,
         res,
-        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SELECT_SCOPES, [
-          req.params.serviceId as string,
-        ])
+        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SELECT_SCOPES, {
+          [":serviceId"]: req.params.serviceId as string,
+        })
       );
     }
   };

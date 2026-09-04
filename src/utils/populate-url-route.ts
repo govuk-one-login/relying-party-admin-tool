@@ -1,11 +1,10 @@
 export const populateUrlRoute = (
   url: string,
-  replacements: string[]
+  replacements: Record<string, string>
 ): string => {
-  const replacementsQueue = [...replacements];
-
-  return url.replace(/:[^/]+/g, (match) => {
-    // Take the first element out of the queue, or keep the original match if the array runs out
-    return replacementsQueue.shift() ?? match;
+  let urlToUpdate = url;
+  Object.entries(replacements).forEach(([key, value]) => {
+    urlToUpdate = urlToUpdate.replaceAll(key, value);
   });
+  return urlToUpdate;
 };

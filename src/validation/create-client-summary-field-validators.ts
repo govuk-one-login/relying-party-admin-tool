@@ -8,7 +8,7 @@ import {
 } from "./shared-client-validators.js";
 import { FieldValidator, rule, when } from "./validator.js";
 import {
-  fieldValidator,
+  limitedValidValuesValidator,
   listValidator,
   notEmptyListValidator,
   requiredValidator,
@@ -18,14 +18,14 @@ export const clientAuthenticationMethodSummaryFieldValidator =
   new FieldValidator(
     requiredValidator("You must set a client authentication method")
       .and(
-        fieldValidator(
+        limitedValidValuesValidator(
           ["JWKS", "STATIC", "CLIENT_SECRET"],
           "client authentication method"
         )
       )
       .adaptedFrom(
         (req: Request) =>
-          req.session.newClientData?.clientAuthenticationMethod ?? ""
+          req.session.newClientConfig?.clientAuthenticationMethod ?? ""
       ),
     "client-authentication-method"
   );
@@ -33,14 +33,14 @@ export const clientAuthenticationMethodSummaryFieldValidator =
 export const jwksUrlSummaryFieldValidator = new FieldValidator(
   when(
     (req: Request) =>
-      req.session.newClientData?.clientAuthenticationMethod === "JWKS",
+      req.session.newClientConfig?.clientAuthenticationMethod === "JWKS",
     requiredValidator("Enter a JWKS endpoint URL")
       .and(jwksUrlValidator)
-      .adaptedFrom((req: Request) => req.session.newClientData?.jwksURL ?? "")
+      .adaptedFrom((req: Request) => req.session.newClientConfig?.jwksURL ?? "")
       .and(
         rule((req: Request) => {
           if (
-            req.session.newClientData?.clientTokenAuthenticationMethod !==
+            req.session.newClientConfig?.clientTokenAuthenticationMethod !==
             "private_key_jwt"
           ) {
             return false;
@@ -55,14 +55,16 @@ export const jwksUrlSummaryFieldValidator = new FieldValidator(
 export const publicKeySummaryFieldValidator = new FieldValidator(
   when(
     (req: Request) =>
-      req.session.newClientData?.clientAuthenticationMethod === "STATIC",
+      req.session.newClientConfig?.clientAuthenticationMethod === "STATIC",
     requiredValidator("Enter a public key")
       .and(publicKeyValidator)
-      .adaptedFrom((req: Request) => req.session.newClientData?.publicKey ?? "")
+      .adaptedFrom(
+        (req: Request) => req.session.newClientConfig?.publicKey ?? ""
+      )
       .and(
         rule((req: Request) => {
           if (
-            req.session.newClientData?.clientTokenAuthenticationMethod !==
+            req.session.newClientConfig?.clientTokenAuthenticationMethod !==
             "private_key_jwt"
           ) {
             return false;
@@ -78,15 +80,16 @@ export const publicKeySummaryFieldValidator = new FieldValidator(
 export const clientSecretSummaryFieldValidator = new FieldValidator(
   when(
     (req: Request) =>
-      req.session.newClientData?.clientAuthenticationMethod === "CLIENT_SECRET",
+      req.session.newClientConfig?.clientAuthenticationMethod ===
+      "CLIENT_SECRET",
     requiredValidator("Enter a client secret")
       .adaptedFrom(
-        (req: Request) => req.session.newClientData?.clientSecret ?? ""
+        (req: Request) => req.session.newClientConfig?.clientSecret ?? ""
       )
       .and(
         rule((req: Request) => {
           if (
-            req.session.newClientData?.clientTokenAuthenticationMethod !==
+            req.session.newClientConfig?.clientTokenAuthenticationMethod !==
             "client_secret_post"
           ) {
             return false;
@@ -100,7 +103,7 @@ export const clientSecretSummaryFieldValidator = new FieldValidator(
 
 export const clientNameSummaryFieldValidator = new FieldValidator(
   clientNameValidator.adaptedFrom(
-    (req: Request) => req.session.newClientData?.name ?? ""
+    (req: Request) => req.session.newClientConfig?.name ?? ""
   ),
   "name"
 );
@@ -109,7 +112,7 @@ export const redirectUrlsSummaryFieldValidator = new FieldValidator(
   notEmptyListValidator("You must have at least one redirect URL")
     .and(listValidator(redirectUrlValidator))
     .adaptedFrom(
-      (req: Request) => req.session.newClientData?.redirectUrls ?? []
+      (req: Request) => req.session.newClientConfig?.redirectUrls ?? []
     ),
   "redirect-urls"
 );
@@ -122,7 +125,7 @@ export const scopesSummaryFieldValidator = new FieldValidator(
         'Scopes must contain "openid"'
       )
     )
-    .adaptedFrom((req: Request) => req.session.newClientData?.scopes ?? []),
+    .adaptedFrom((req: Request) => req.session.newClientConfig?.scopes ?? []),
   "scopes"
 );
 
@@ -130,8 +133,8 @@ export const tokenAuthenticationMethodSummaryFieldValidator =
   new FieldValidator(
     rule((req: Request) => {
       if (
-        req.session.newClientData?.clientAuthenticationMethod === "STATIC" &&
-        req.session.newClientData?.clientTokenAuthenticationMethod !==
+        req.session.newClientConfig?.clientAuthenticationMethod === "STATIC" &&
+        req.session.newClientConfig?.clientTokenAuthenticationMethod !==
           "private_key_jwt"
       ) {
         return false;
@@ -140,9 +143,9 @@ export const tokenAuthenticationMethodSummaryFieldValidator =
     }, "Token authentication method must be private_key_jwt if client authentication method is a public key").and(
       rule((req: Request) => {
         if (
-          req.session.newClientData?.clientAuthenticationMethod ===
+          req.session.newClientConfig?.clientAuthenticationMethod ===
             "CLIENT_SECRET" &&
-          req.session.newClientData?.clientTokenAuthenticationMethod !==
+          req.session.newClientConfig?.clientTokenAuthenticationMethod !==
             "client_secret_post"
         ) {
           return false;

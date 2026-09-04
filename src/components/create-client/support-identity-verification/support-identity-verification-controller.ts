@@ -9,16 +9,17 @@ import { ClientEnvironment } from "../../../models/client-environment.js";
 export const createClientIsIdentityVerificationSupportedGet =
   (): ExpressRouteFunc => {
     return async (req: Request, res: Response) => {
+      const serviceId = req.params.serviceId as string;
       if (
         await permissionsService.checkUserHasWriterPermissions(
           "user",
-          "service",
+          serviceId,
           ClientEnvironment.INTEGRATION
         )
       ) {
         res.render("create-client/support-identity-verification/index.njk", {
           serviceName: "Service Name",
-          serviceId: req.params.serviceId as string,
+          serviceId,
         });
       } else {
         return res.redirect(PATH_NAMES.ROOT);
@@ -29,8 +30,8 @@ export const createClientIsIdentityVerificationSupportedGet =
 export const createClientIsIdentityVerificationSupportedPost =
   (): ExpressRouteFunc => {
     return async (req: Request, res: Response) => {
-      req.session.newClientData = {
-        ...req.session.newClientData,
+      req.session.newClientConfig = {
+        ...req.session.newClientConfig,
         isIdentityVerificationSupported:
           req.body["support-identity-verification"] === "true",
       };
@@ -38,17 +39,17 @@ export const createClientIsIdentityVerificationSupportedPost =
         return saveSessionAndRedirect(
           req,
           res,
-          populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS, [
-            req.params.serviceId as string,
-          ])
+          populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS, {
+            [":serviceId"]: req.params.serviceId as string,
+          })
         );
       } else {
         return saveSessionAndRedirect(
           req,
           res,
-          populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUMMARY, [
-            req.params.serviceId as string,
-          ])
+          populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUMMARY, {
+            [":serviceId"]: req.params.serviceId as string,
+          })
         );
       }
     };
