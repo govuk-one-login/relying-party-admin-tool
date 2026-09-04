@@ -1,13 +1,14 @@
 import { integrationTest, setupUserPermissionsTable } from "./base.js";
 import { User } from "../src/models/user.js";
 import {
+  addUserPermission,
   createUser,
   getServicesWithRelationForUser,
   getUser,
 } from "../src/datastores/user-permissions-data-store.js";
 import { Relation } from "../src/models/relation.js";
 import { UserPermission } from "../src/models/permissions.js";
-import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
+import { ConditionalCheckFailedException, TransactionCanceledException } from "@aws-sdk/client-dynamodb";
 
 describe("user permissions data store tests", () => {
   setupUserPermissionsTable();
@@ -91,6 +92,65 @@ describe("user permissions data store tests", () => {
 
       await expect(createUser(existingUser)).rejects.toThrow(
         ConditionalCheckFailedException
+      );
+    }
+  );
+
+  integrationTest(
+    "should add user permission if user exists",
+    async ({ addUsersToDynamo, userPermissionExistsInDynamo }) => {
+      const existingUser: User = {
+        id: "test-user-id",
+        name: "Test User",
+        email: "test@user.com",
+      };
+      await addUsersToDynamo(existingUser);
+
+      const relation: Relation = {
+        userId: "test-user-id",
+        object: `service:123`,
+        relation: UserPermission.READER,
+      };
+      await addUserPermission(relation);
+
+      await expect(userPermissionExistsInDynamo(relation)).resolves.toBe(true);
+    }
+  );
+
+  integrationTest(
+    "should fail to add user permission if user does not exist",
+    async () => {
+      const relation: Relation = {
+        userId: "user-that-does-not-exist",
+        object: `service:123`,
+        relation: UserPermission.READER,
+      };
+
+      await expect(addUserPermission(relation)).rejects.toThrow(
+        TransactionCanceledException
+      );
+    }
+  );
+
+  integrationTest(
+    "should fail to add user permission if permission already exists",
+    async ({ addUsersToDynamo, addUserRelationsToDynamo }) => {
+      const existingUser: User = {
+        id: "test-user-id",
+        name: "Test User",
+        email: "test@user.com",
+      };
+      await addUsersToDynamo(existingUser);
+
+      const existingRelation: Relation = {
+        userId: "test-user-id",
+        object: `service:123`,
+        relation: UserPermission.READER,
+      };
+      await addUserRelationsToDynamo(existingRelation);
+
+      await expect(addUserPermission(existingRelation)).rejects.toThrow(
+        TransactionCanceledException
       );
     }
   );
