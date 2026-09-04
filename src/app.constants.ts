@@ -37,6 +37,8 @@ export const PATH_NAMES = {
     "/services/:serviceId/clients/:clientId/edit-id-token-signing-algorithm",
   CLIENT_EDIT_IS_ACTIVE:
     "/services/:serviceId/clients/:clientId/edit-is-active",
+  CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS:
+    "/services/:serviceId/clients/:clientId/edit-post-logout-redirect-urls",
   OIDC_JWKS: "/.well-known/jwks.json",
 };
 

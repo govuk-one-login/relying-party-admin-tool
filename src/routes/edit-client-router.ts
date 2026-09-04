@@ -15,6 +15,11 @@ import {
   editBackchannelLogoutUrlPost,
 } from "../components/clients/edit-backchannel-logout-url/edit-backchannel-logout-url-controller.js";
 import { validateEditBackchannelLogoutUrlRequest } from "../components/clients/edit-backchannel-logout-url/edit-backchannel-logout-url-validation.js";
+import {
+  editPostLogoutRedirectUrlsGet,
+  editPostLogoutRedirectUrlsPost,
+} from "../components/clients/edit-post-logout-redirect-urls/edit-post-logout-redirect-urls-controller.js";
+import { validateEditPostLogoutRedirectUrlsRequest } from "../components/clients/edit-post-logout-redirect-urls/edit-post-logout-redirect-urls-validation.js";
 
 const router = express.Router();
 
@@ -46,6 +51,17 @@ router.post(
   PATH_NAMES.CLIENT_EDIT_IS_ACTIVE,
   validateEditIsActiveRequest(),
   editIsActivePost()
+);
+
+router.get(
+  PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
+  editPostLogoutRedirectUrlsGet()
+);
+
+router.post(
+  PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
+  validateEditPostLogoutRedirectUrlsRequest(),
+  editPostLogoutRedirectUrlsPost()
 );
 
 export { router as editClientRouter };
