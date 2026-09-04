@@ -17,6 +17,15 @@ import {
 } from "./shared-validators.js";
 import { getListFromRequestBody } from "../helpers/request-helpers.js";
 
+export const backchannelLogoutUrlFieldValidator = new FieldValidator(
+  optional(
+    validUrlValidator("backchannel logout URL").and(
+      productionUrlValidator("backchannel logout URL")
+    )
+  ).adaptedFrom((req: Request) => req.body["backchannel-logout-url"] as string),
+  "backchannel-logout-url"
+);
+
 const clientAuthenticationMethodInputFieldValidator = new FieldValidator(
   requiredValidator("Choose a client authentication method").adaptedFrom(
     (req: Request) => req.body["client-authentication-method"]

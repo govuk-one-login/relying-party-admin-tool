@@ -9,6 +9,7 @@ export type ClientSummary = {
 export type IdTokenSigningAlgorithm = (typeof VALID_TOKEN_SIGNING_ALGS)[number];
 
 export interface ClientConfig {
+  backchannelLogoutUrl: string;
   idTokenSigningAlgorithm: IdTokenSigningAlgorithm;
   isActive: boolean;
 }
