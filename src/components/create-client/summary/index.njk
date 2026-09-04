@@ -13,9 +13,9 @@
   set coreFieldsRowItems = coreFieldsRowItems.concat([
     {
       key: { text: "Client Name" },
-      value: { html: '<div id="name">'+client.name | default("Not set")+'</div>' },
+      value: { html: '<div id="name">' + client.name | default("Not set") + '</div>' },
       actions: {
-        items: [{ href: baseUrl+"/edit-client-name", text: "Change", visuallyHiddenText: "client name" }]
+        items: [{ href: baseUrl + "/edit-client-name", text: "Change", visuallyHiddenText: "client name" }]
       }
     }
   ])
@@ -24,17 +24,17 @@
   {%
     set coreFieldsRowItems = coreFieldsRowItems.concat([
       {
-        key: { text: "Client authentication method" },
+        key: { text: "Client Authentication Method" },
         value: { html: '<div id="client-authentication-method">Public key URL (JWKS)</div>' },
         actions: {
-          items: [{ href: baseUrl+"/edit-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
+          items: [{ href: baseUrl + "/edit-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
         }
       },
       {
         key: { text: "JWKS URL" },
-        value: { html: '<div id="jwks-endpoint">'+client.jwksURL+'</div>' },
+        value: { html: '<div id="jwks-endpoint">' + client.jwksURL + '</div>' },
         actions: {
-          items: [{ href: baseUrl+"/edit-client-authentication", text: "Change", visuallyHiddenText: "jwks url" }]
+          items: [{ href: baseUrl + "/edit-client-authentication", text: "Change", visuallyHiddenText: "jwks url" }]
         }
       }
     ])
@@ -46,14 +46,14 @@
         key: { text: "Client Authentication Method" },
         value: { html: '<div id="client-authentication-method">Fixed public key</div>' },
         actions: {
-          items: [{ href: baseUrl+"/edit-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
+          items: [{ href: baseUrl + "/edit-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
         }
       },
       {
-        key: { text: "Public key" },
-        value: { html: '<div id="public-key">'+client.publicKey+'</div>' },
+        key: { text: "Public Key" },
+        value: { html: '<div id="public-key">' + client.publicKey + '</div>' },
         actions: {
-          items: [{ href: baseUrl+"/edit-client-authentication", text: "Change", visuallyHiddenText: "public key" }]
+          items: [{ href: baseUrl + "/edit-client-authentication", text: "Change", visuallyHiddenText: "public key" }]
         }
       }
     ])
@@ -65,14 +65,14 @@
         key: { text: "Client Authentication Method" },
         value: { html: '<div id="client-authentication-method">Client secret</div>' },
         actions: {
-          items: [{ href: baseUrl+"/edit-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
+          items: [{ href: baseUrl + "/edit-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
         }
       },
       {
-        key: { text: "Client secret" },
-        value: { html: '<div id="client-secret">'+client.clientSecret+'</div>' },
+        key: { text: "Client Secret" },
+        value: { html: '<div id="client-secret">' + client.clientSecret + '</div>' },
         actions: {
-          items: [{ href: baseUrl+"/edit-client-authentication", text: "Change", visuallyHiddenText: "client secret" }]
+          items: [{ href: baseUrl + "/edit-client-authentication", text: "Change", visuallyHiddenText: "client secret" }]
         }
       }
     ])
@@ -84,7 +84,7 @@
         key: { text: "Client Authentication Method" },
         value: { html: '<div id="client-authentication-method">Not set</div>' },
         actions: {
-          items: [{ href: baseUrl+"/edit-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
+          items: [{ href: baseUrl + "/edit-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
         }
       }
     ])
@@ -94,7 +94,7 @@
   set coreFieldsRowItems = coreFieldsRowItems.concat([
     {
       key: { text: "Token Authentication Method" },
-      value: { html: '<div id="token-authentication-method">'+client.clientTokenAuthenticationMethod | default("Not set")+'</div>' },
+      value: { html: '<div id="token-authentication-method">' + client.clientTokenAuthenticationMethod | default("Not set") + '</div>' },
       actions: {
         items: [{ href: "/", text: "Change", visuallyHiddenText: "token auth method" }]
       }
@@ -105,13 +105,13 @@
         html: '<div id="redirect-urls">' + (client.redirectUrls | join("<br>") if client.redirectUrls else "Not set") + '</div>'
       },
       actions: {
-        items: [{ href: "/", text: "Change", visuallyHiddenText: "redirect urls" }]
+        items: [{ href: baseUrl + "/edit-redirect-urls", text: "Change", visuallyHiddenText: "redirect urls" }]
       }
     },
     {
       key: { text: "Scopes" },
       value: {
-        html: '<div id="scopes">'+(client.scopes | join("<br>") if client.scopes else "Not set")+'</div>'
+        html: '<div id="scopes">' + (client.scopes | join("<br>") if client.scopes else "Not set") + '</div>'
       },
       actions: {
         items: [{ href: "/", text: "Change", visuallyHiddenText: "scopes" }]

@@ -1,13 +1,23 @@
 import type { Request } from "express";
 import { validateFieldsMiddleware } from "../../../middleware/form-validation-middleware.js";
 import { ValidationChainFunc } from "../../../types.js";
-import { enterRedirectUrlsFieldValidator } from "../../../validation/client-question-field-validators.js";
+import { redirectUrlsFieldValidator } from "../../../validation/client-question-field-validators.js";
 
 export const validateEnterRedirectUrlsRequest = (): ValidationChainFunc => {
   return [
     validateFieldsMiddleware(
-      "create-client/enter-redirect-urls/index.njk",
-      enterRedirectUrlsFieldValidator,
+      "create-client/redirect-urls/enter-redirect-urls/index.njk",
+      redirectUrlsFieldValidator,
+      postValidationLocals
+    ),
+  ];
+};
+
+export const validateEditRedirectUrlsRequest = (): ValidationChainFunc => {
+  return [
+    validateFieldsMiddleware(
+      "create-client/redirect-urls/edit-redirect-urls/index.njk",
+      redirectUrlsFieldValidator,
       postValidationLocals
     ),
   ];

@@ -23,8 +23,11 @@ import {
 import {
   createClientEnterRedirectUrlsGet,
   createClientEnterRedirectUrlsPost,
-} from "../components/create-client/enter-redirect-urls/enter-redirect-urls-controller.js";
-import { validateEnterRedirectUrlsRequest } from "../components/create-client/enter-redirect-urls/enter-redirect-urls-validation.js";
+} from "../components/create-client/redirect-urls/enter-redirect-urls/enter-redirect-urls-controller.js";
+import {
+  validateEditRedirectUrlsRequest,
+  validateEnterRedirectUrlsRequest,
+} from "../components/create-client/redirect-urls/validation.js";
 import {
   createClientSelectScopesGet,
   createClientSelectScopesPost,
@@ -58,6 +61,10 @@ import {
   createClientEditClientAuthenticationGet,
   createClientEditClientAuthenticationPost,
 } from "../components/create-client/client-authentication-method/edit-client-authentication-method/edit-client-authentication-method-controller.js";
+import {
+  createClientEditRedirectUrlsGet,
+  createClientEditRedirectUrlsPost,
+} from "../components/create-client/redirect-urls/edit-redirect-urls/edit-redirect-urls-controller.js";
 
 const router = express.Router();
 
@@ -118,6 +125,17 @@ router.post(
   PATH_NAMES.CREATE_CLIENT_ENTER_REDIRECT_URLS,
   validateEnterRedirectUrlsRequest(),
   createClientEnterRedirectUrlsPost()
+);
+
+router.get(
+  PATH_NAMES.CREATE_CLIENT_EDIT_REDIRECT_URLS,
+  createClientEditRedirectUrlsGet()
+);
+
+router.post(
+  PATH_NAMES.CREATE_CLIENT_EDIT_REDIRECT_URLS,
+  validateEditRedirectUrlsRequest(),
+  createClientEditRedirectUrlsPost()
 );
 
 router.get(
