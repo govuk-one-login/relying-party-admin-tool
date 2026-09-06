@@ -1,11 +1,13 @@
 import { integrationTest, setupUserPermissionsTable } from "./base.js";
 import { User } from "../src/models/user.js";
 import {
+  createUser,
   getServicesWithRelationForUser,
   getUser,
 } from "../src/datastores/user-permissions-data-store.js";
 import { Relation } from "../src/models/relation.js";
 import { UserPermission } from "../src/models/permissions.js";
+import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
 
 describe("user permissions data store tests", () => {
   setupUserPermissionsTable();
@@ -58,6 +60,38 @@ describe("user permissions data store tests", () => {
       );
 
       expect(relation).toStrictEqual([relationServiceId1, relationServiceId2]);
+    }
+  );
+
+  integrationTest(
+    "should create user if user does not exist",
+    async ({ getUserFromDynamo }) => {
+      const expectedUser: User = {
+        id: "test-user-id",
+        name: "Test User",
+        email: "test@email.com",
+      };
+      await createUser(expectedUser);
+
+      const actualUser = await getUserFromDynamo(expectedUser.id);
+
+      expect(expectedUser).toStrictEqual(actualUser);
+    }
+  );
+
+  integrationTest(
+    "should fail to create user if user already exists with id",
+    async ({ addUsersToDynamo }) => {
+      const existingUser: User = {
+        id: "test-user-id",
+        name: "Test User",
+        email: "test@email.com",
+      };
+      await addUsersToDynamo(existingUser);
+
+      await expect(createUser(existingUser)).rejects.toThrow(
+        ConditionalCheckFailedException
+      );
     }
   );
 });
