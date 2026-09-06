@@ -83,6 +83,23 @@ export const integrationTest = test
       ).Item;
     };
   })
+  .extend("userPermissionExistsInDynamo", ({ dynamoDocClient }) => {
+    return async (relation: Relation) => {
+      const item = (
+        await dynamoDocClient.get({
+          TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
+          Key: {
+            subject: `user:${relation.userId}`,
+            sk: `relation#${relation.object}#${relation.relation}`,
+          },
+        })
+      ).Item;
+      if (!item) {
+        return false;
+      }
+      return true;
+    };
+  })
   .extend("addServicesToDynamo", ({ dynamoDocClient }) => {
     return async (...services: Service[]) => {
       for (const service of services) {
