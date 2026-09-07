@@ -323,7 +323,23 @@ describe("shared client validator tests", () => {
   });
 
   describe("scope validator", () => {
-    it("should pass validation with valid scopes", async () => {
+    it("should pass validation with valid scopes and no additional valid scopes", async () => {
+      const scopes = ["openid", "phone", "email", "wallet-subject-id"];
+
+      const result = await validScopesValidator.validate(scopes);
+
+      expect(result).toBeValid();
+    });
+
+    it("should pass validation when scopes are empty", async () => {
+      const scopes: string[] = [];
+
+      const result = await validScopesValidator.validate(scopes);
+
+      expect(result).toBeValid();
+    });
+
+    it("should fail validation with valid scopes and additional valid scopes", async () => {
       const scopes = [
         "openid",
         "phone",
@@ -337,15 +353,13 @@ describe("shared client validator tests", () => {
 
       const result = await validScopesValidator.validate(scopes);
 
-      expect(result).toBeValid();
-    });
-
-    it("should pass validation when scopes are empty", async () => {
-      const scopes: string[] = [];
-
-      const result = await validScopesValidator.validate(scopes);
-
-      expect(result).toBeValid();
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        'Invalid scope provided: "am"',
+        'Invalid scope provided: "doc-checking-app"',
+        'Invalid scope provided: "govuk-account"',
+        'Invalid scope provided: "offline_access"',
+      ]);
     });
 
     it("should fail validation when invalid scopes added", async () => {

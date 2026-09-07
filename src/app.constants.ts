@@ -87,6 +87,10 @@ export const VALID_SCOPES = Object.freeze([
   "phone",
   "email",
   "wallet-subject-id",
+] as const);
+
+// Only supported for specific RPs
+export const ADDITIONAL_VALID_SCOPES = Object.freeze([
   "am",
   "doc-checking-app",
   "govuk-account",
