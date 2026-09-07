@@ -19,7 +19,7 @@ export const editIsActiveGet = (): ExpressRouteFunc => {
       res.render("clients/edit-is-active/index.njk", {
         serviceName: "Service Name",
         serviceId,
-        IsActive:
+        isActive:
           req.session.changedClientConfig?.isActive ??
           req.session.currentClientConfig?.isActive,
       });

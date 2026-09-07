@@ -16,13 +16,13 @@ export const editPostLogoutRedirectUrlsGet = (): ExpressRouteFunc => {
         ClientEnvironment.INTEGRATION
       )
     ) {
-      const redirectUrls =
+      const postLogoutRedirectUrls =
         req.session?.changedClientConfig?.postLogoutRedirectUrls ??
         req.session?.currentClientConfig?.postLogoutRedirectUrls;
       res.render("clients/edit-post-logout-redirect-urls/index.njk", {
         serviceName: "Service Name",
         serviceId,
-        redirectUrls,
+        postLogoutRedirectUrls,
       });
     } else {
       return res.redirect(PATH_NAMES.ROOT);
