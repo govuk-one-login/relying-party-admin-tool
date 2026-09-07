@@ -2,6 +2,7 @@ import {
   CreateTableCommand,
   UpdateTimeToLiveCommand,
   DynamoDBClient,
+  PutItemCommand,
 } from "@aws-sdk/client-dynamodb";
 import { FullConfig } from "@playwright/test";
 
@@ -19,6 +20,16 @@ const createTableIfNotExists = async (params: any) => {
     await client.send(new CreateTableCommand(params));
   } catch (err: any) {
     if (err.name !== "ResourceInUseException") {
+      throw err;
+    }
+  }
+};
+
+const addDataToTable = async (params: any) => {
+  try {
+    await client.send(new PutItemCommand(params));
+  } catch (err: any) {
+    if (err.name !== "ConditionalCheckFailedException") {
       throw err;
     }
   }
@@ -56,6 +67,44 @@ const globalSetup = async (config: FullConfig) => {
     AttributeDefinitions: [{ AttributeName: "id", AttributeType: "S" }],
     KeySchema: [{ AttributeName: "id", KeyType: "HASH" }],
     ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 },
+  });
+
+  await addDataToTable({
+    TableName: `${process.env.ENVIRONMENT}-services`,
+    Item: {
+      "serviceId": {"S": "1"},
+      "sk": {"S": "service"},
+      "name": {"S": "Service 1"}
+    },
+  });
+
+  await addDataToTable({
+    TableName: `${process.env.ENVIRONMENT}-services`,
+    Item: {
+      "serviceId": {"S": "2"},
+      "sk": {"S": "service"},
+      "name": {"S": "Service 2"}
+    },
+  });
+
+  await addDataToTable({
+    TableName: `${process.env.ENVIRONMENT}-user-permissions`,
+    Item: {
+      "subject": {"S": "user:userId"},
+      "sk": {"S": "relation#service:1#reader"},
+      "object": {"S": "service:1"},
+      "relation": {"S": "reader"}
+    },
+  });
+
+  await addDataToTable({
+    TableName: `${process.env.ENVIRONMENT}-user-permissions`,
+    Item: {
+      "subject": {"S": "user:userId"},
+      "sk": {"S": "relation#service:2#reader"},
+      "object": {"S": "service:2"},
+      "relation": {"S": "reader"}
+    },
   });
 
   try {
