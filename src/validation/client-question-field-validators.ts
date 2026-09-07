@@ -11,11 +11,7 @@ import {
   postLogoutRedirectUrlValidator,
 } from "./shared-client-validators.js";
 import { FieldValidator, optional, rule, when } from "./validator.js";
-import {
-  notEmptyListValidator,
-  requiredValidator,
-  validUrlValidator,
-} from "./shared-validators.js";
+import { requiredValidator, validUrlValidator } from "./shared-validators.js";
 import { getListFromRequestBody } from "../helpers/request-helpers.js";
 
 export const backchannelLogoutUrlFieldValidator = new FieldValidator(
@@ -78,21 +74,9 @@ export const clientNameInputFieldValidator = new FieldValidator(
 );
 
 export const selectClaimsFieldValidator = new FieldValidator(
-  validClaimsValidator
-    .adaptedFrom((req: Request) =>
-      getListFromRequestBody(req, "selected-claims")
-    )
-    .and(
-      when(
-        (req: Request) =>
-          req.session.newClientConfig?.isIdentityVerificationSupported ?? false,
-        notEmptyListValidator(
-          "Claims cannot be empty when identity verification is supported"
-        ).adaptedFrom((req: Request) =>
-          getListFromRequestBody(req, "selected-claims")
-        )
-      )
-    ),
+  validClaimsValidator.adaptedFrom((req: Request) =>
+    getListFromRequestBody(req, "selected-claims")
+  ),
   "selected-claims"
 );
 
