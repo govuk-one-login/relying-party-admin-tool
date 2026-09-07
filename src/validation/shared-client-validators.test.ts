@@ -8,6 +8,7 @@ import {
   idTokenSigningAlgorithmValidator,
   validScopesValidator,
   postLogoutRedirectUrlValidator,
+  serviceTypeValidator,
 } from "./shared-client-validators.js";
 
 describe("shared client validator tests", () => {
@@ -308,7 +309,7 @@ describe("shared client validator tests", () => {
       ]);
     });
 
-    it("should fail validation when invalid claim added", async () => {
+    it("should fail validation when invalid algorithm added", async () => {
       const idTokenSigningAlgorithm = "invalid-algorithm";
 
       const result = await idTokenSigningAlgorithmValidator.validate(
@@ -356,6 +357,40 @@ describe("shared client validator tests", () => {
       expect(result).toBeInvalid();
       expect(result).toHaveInvalidErrors([
         'Invalid scope provided: "not-a-scope"',
+      ]);
+    });
+  });
+
+  describe("service type validator", () => {
+    it.each(["OPTIONAL", "MANDATORY"])(
+      "should pass validation with valid service type: %s",
+      async (serviceType) => {
+        const result = await serviceTypeValidator.validate(serviceType);
+
+        expect(result).toBeValid();
+      }
+    );
+
+    it("should fail validation when service type is empty string", async () => {
+      const serviceType = "";
+
+      const result = await serviceTypeValidator.validate(serviceType);
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        "Service type is required",
+        'Invalid service type provided: ""',
+      ]);
+    });
+
+    it("should fail validation when invalid service type added", async () => {
+      const serviceType = "invalid-service-type";
+
+      const result = await serviceTypeValidator.validate(serviceType);
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        'Invalid service type provided: "invalid-service-type"',
       ]);
     });
   });

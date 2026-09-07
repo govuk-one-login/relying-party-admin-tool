@@ -11,6 +11,7 @@ import {
   isActiveFieldValidator,
   backchannelLogoutUrlFieldValidator,
   postLogoutRedirectUrlsFieldValidator,
+  serviceTypeFieldValidator,
 } from "./client-question-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
@@ -437,7 +438,7 @@ describe("create client field validators", () => {
     });
   });
 
-  describe("enterClientNameFieldValidator", () => {
+  describe("clientNameFieldValidator", () => {
     it("should pass validation with valid client name", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
@@ -1425,6 +1426,57 @@ describe("create client field validators", () => {
       expect(errorsArray[0].text).length(1);
       expect(errorsArray[0].text[0]).toBe(
         'Invalid scope provided: "invalid-scope"'
+      );
+    });
+  });
+
+  describe("serviceTypeFieldValidator", () => {
+    it("should pass validation when an option is selected", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "service-type": "MANDATORY",
+        })
+        .build();
+
+      const result = await serviceTypeFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when service type is empty", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder().withBody({}).build();
+
+      const result = await serviceTypeFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(2);
+      expect(errorsArray[0].text[0]).toBe("Service type is required");
+    });
+
+    it("should fail validation when invalid service type", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "service-type": "invalid-service-type",
+        })
+        .build();
+
+      const result = await serviceTypeFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        'Invalid service type provided: "invalid-service-type"'
       );
     });
   });

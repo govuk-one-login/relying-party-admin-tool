@@ -39,6 +39,8 @@ export const PATH_NAMES = {
     "/services/:serviceId/clients/:clientId/edit-is-active",
   CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS:
     "/services/:serviceId/clients/:clientId/edit-post-logout-redirect-urls",
+  CLIENT_EDIT_SERVICE_TYPE:
+    "/services/:serviceId/clients/:clientId/edit-service-type",
   OIDC_JWKS: "/.well-known/jwks.json",
 };
 
@@ -96,4 +98,9 @@ export const VALID_SCOPES = Object.freeze([
 export const VALID_TOKEN_SIGNING_ALGS = Object.freeze([
   "ES256",
   "RS256",
+] as const);
+
+export const VALID_SERVICE_TYPES = Object.freeze([
+  "MANDATORY",
+  "OPTIONAL",
 ] as const);

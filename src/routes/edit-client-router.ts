@@ -20,6 +20,11 @@ import {
   editPostLogoutRedirectUrlsPost,
 } from "../components/clients/edit-post-logout-redirect-urls/edit-post-logout-redirect-urls-controller.js";
 import { validateEditPostLogoutRedirectUrlsRequest } from "../components/clients/edit-post-logout-redirect-urls/edit-post-logout-redirect-urls-validation.js";
+import {
+  editServiceTypeGet,
+  editServiceTypePost,
+} from "../components/clients/edit-service-type/edit-service-type-controller.js";
+import { validateEditServiceTypeRequest } from "../components/clients/edit-service-type/edit-service-type-validation.js";
 
 const router = express.Router();
 
@@ -62,6 +67,14 @@ router.post(
   PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
   validateEditPostLogoutRedirectUrlsRequest(),
   editPostLogoutRedirectUrlsPost()
+);
+
+router.get(PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE, editServiceTypeGet());
+
+router.post(
+  PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE,
+  validateEditServiceTypeRequest(),
+  editServiceTypePost()
 );
 
 export { router as editClientRouter };
