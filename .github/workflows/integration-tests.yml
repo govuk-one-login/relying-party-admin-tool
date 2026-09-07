@@ -41,6 +41,7 @@ jobs:
         run: npm run test:integration
 
       - name: Run UI tests
+        # the environment variables set for the UI test is also used and set for the local frontend
         run: | #pragma: allowlist secret
           cd tests/ui-tests
           touch .env
@@ -52,4 +53,5 @@ jobs:
           echo "AWS_ACCESS_KEY_ID=DUMMYIDEXAMPLE" >> .env
           echo "AWS_SECRET_ACCESS_KEY=DUMMYEXAMPLEKEY" >> .env
           echo "AWS_REGION=eu-west-2" >> .env
+          echo "ENVIRONMENT=local" >> .env
           npm run test
