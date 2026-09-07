@@ -10,6 +10,10 @@ const dynamoDBCientSessions = new DynamoDBClient({
   ...(process.env.DYNAMO_ENDPOINT && {
     endpoint: process.env.DYNAMO_ENDPOINT,
   }),
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || "test",
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "test",
+  },
 });
 
 export const tableName = `${process.env.ENVIRONMENT ?? "test"}-frontend-sessions`;
