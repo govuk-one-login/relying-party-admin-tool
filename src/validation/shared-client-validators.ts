@@ -1,7 +1,9 @@
 import crypto from "crypto";
 import {
+  ADDITIONAL_VALID_CHANNELS,
   PROHIBITED_REDIRECT_URI_QUERY_PARAMETER_NAMES,
   PROHIBITED_REDIRECT_URI_SCHEMES,
+  VALID_CHANNELS,
   VALID_CLAIMS,
   VALID_SCOPES,
   VALID_SERVICE_TYPES,
@@ -21,6 +23,18 @@ import { optional, rule, Validator, when } from "./validator.js";
 export const backchannelLogoutUrlValidator = optional(
   validUrlValidator("backchannel logout URL").and(
     productionUrlValidator("backchannel logout URL")
+  )
+);
+
+export const channelValidator = requiredValidator("Channel is required").and(
+  limitedValidValuesValidator(VALID_CHANNELS, "channel")
+);
+
+export const allChannelsValidator = requiredValidator(
+  "Channel is required"
+).and(
+  limitedValidValuesValidator(VALID_CHANNELS, "channel").or(
+    limitedValidValuesValidator(ADDITIONAL_VALID_CHANNELS, "channel")
   )
 );
 

@@ -10,6 +10,8 @@ import {
   serviceTypeValidator,
   sectorIdentifierUriValidator,
   backchannelLogoutUrlValidator,
+  allChannelsValidator,
+  channelValidator,
 } from "./shared-client-validators.js";
 
 describe("shared client validator tests", () => {
@@ -33,6 +35,78 @@ describe("shared client validator tests", () => {
       expect(result).toHaveInvalidErrors([
         "Your backchannel logout URL must be a valid URL",
       ]);
+    });
+  });
+
+  describe("channel validators", () => {
+    describe("channel validator", () => {
+      it.each(["web", "generic_app"])(
+        "should pass validation with valid channel: %s",
+        async (channel) => {
+          const result = await channelValidator.validate(channel);
+
+          expect(result).toBeValid();
+        }
+      );
+
+      it("should fail validation when channel is empty string", async () => {
+        const channel = "";
+
+        const result = await channelValidator.validate(channel);
+
+        expect(result).toBeInvalid();
+        expect(result).toHaveInvalidErrors([
+          "Channel is required",
+          'Invalid channel provided: ""',
+        ]);
+      });
+
+      it("should fail validation when invalid channel added", async () => {
+        const channel = "invalid-channel";
+
+        const result = await channelValidator.validate(channel);
+
+        expect(result).toBeInvalid();
+        expect(result).toHaveInvalidErrors([
+          'Invalid channel provided: "invalid-channel"',
+        ]);
+      });
+    });
+
+    describe("all channels validator", () => {
+      it.each(["web", "generic_app", "strategic_app"])(
+        "should pass validation with valid channel: %s",
+        async (channel) => {
+          const result = await allChannelsValidator.validate(channel);
+
+          expect(result).toBeValid();
+        }
+      );
+
+      it("should fail validation when channel is empty string", async () => {
+        const channel = "";
+
+        const result = await allChannelsValidator.validate(channel);
+
+        expect(result).toBeInvalid();
+        expect(result).toHaveInvalidErrors([
+          "Channel is required",
+          'Invalid channel provided: ""',
+          'Invalid channel provided: ""', // duplicated due to the or validator
+        ]);
+      });
+
+      it("should fail validation when invalid channel added", async () => {
+        const channel = "invalid-channel";
+
+        const result = await allChannelsValidator.validate(channel);
+
+        expect(result).toBeInvalid();
+        expect(result).toHaveInvalidErrors([
+          'Invalid channel provided: "invalid-channel"',
+          'Invalid channel provided: "invalid-channel"', // duplicated due to the or validator
+        ]);
+      });
     });
   });
 
