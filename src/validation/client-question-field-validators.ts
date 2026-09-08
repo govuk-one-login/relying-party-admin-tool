@@ -5,22 +5,24 @@ import {
   publicKeyValidator,
   validClaimsValidator,
   validScopesValidator,
-  productionUrlValidator,
   redirectUrlValidator,
   idTokenSigningAlgorithmValidator,
   postLogoutRedirectUrlValidator,
   serviceTypeValidator,
+  backchannelLogoutUrlValidator,
 } from "./shared-client-validators.js";
 import { FieldValidator, optional, rule, when } from "./validator.js";
-import { requiredValidator, validUrlValidator } from "./shared-validators.js";
+import {
+  productionUrlValidator,
+  requiredValidator,
+  validUrlValidator,
+} from "./shared-validators.js";
 import { getListFromRequestBody } from "../helpers/request-helpers.js";
 
 export const backchannelLogoutUrlFieldValidator = new FieldValidator(
-  optional(
-    validUrlValidator("backchannel logout URL").and(
-      productionUrlValidator("backchannel logout URL")
-    )
-  ).adaptedFrom((req: Request) => req.body["backchannel-logout-url"] as string),
+  backchannelLogoutUrlValidator.adaptedFrom(
+    (req: Request) => req.body["backchannel-logout-url"] as string
+  ),
   "backchannel-logout-url"
 );
 
