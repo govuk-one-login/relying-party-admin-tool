@@ -50,3 +50,16 @@ export const getServicesWithRelationForUser = async (
     (service) => service.split(":")[1]
   );
 };
+
+export const createUser = async (user: User): Promise<void> => {
+  await dynamoClient.put({
+    TableName: tableName,
+    Item: {
+      subject: `user:${user.id}`,
+      sk: "user",
+      email: user.email,
+      name: user.name,
+    },
+    ConditionExpression: "attribute_not_exists(subject)",
+  });
+};

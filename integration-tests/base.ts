@@ -75,12 +75,20 @@ export const integrationTest = test
   })
   .extend("getUserFromDynamo", ({ dynamoDocClient }) => {
     return async (userId: string) => {
-      return (
+      const item = (
         await dynamoDocClient.get({
           TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
-          Key: { subject: `user:${userId}` },
+          Key: { subject: `user:${userId}`, sk: "user" },
         })
       ).Item;
+      if (!item) {
+        return;
+      }
+      return {
+        id: item.subject.substring(5),
+        name: item.name,
+        email: item.email,
+      };
     };
   })
   .extend("addServicesToDynamo", ({ dynamoDocClient }) => {
