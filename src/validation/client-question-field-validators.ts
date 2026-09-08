@@ -9,6 +9,7 @@ import {
   idTokenSigningAlgorithmValidator,
   postLogoutRedirectUrlValidator,
   serviceTypeValidator,
+  sectorIdentifierUriValidator,
   backchannelLogoutUrlValidator,
 } from "./shared-client-validators.js";
 import { FieldValidator, optional, rule, when } from "./validator.js";
@@ -183,6 +184,13 @@ export const selectScopesFieldValidator = new FieldValidator(
     getListFromRequestBody(req, "selected-scopes")
   ),
   "selected-scopes"
+);
+
+export const sectorIdentifierUriFieldValidator = new FieldValidator(
+  sectorIdentifierUriValidator.adaptedFrom(
+    (req: Request) => req.body["sector-identifier-uri"]
+  ),
+  "sector-identifier-uri"
 );
 
 export const serviceTypeFieldValidator = new FieldValidator(

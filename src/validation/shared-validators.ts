@@ -15,6 +15,11 @@ export const notHttpValidator = (fieldName: string): Validator<string> =>
 export const notLocalhostValidator = (fieldName: string): Validator<string> =>
   rule(isNotLocalhost, `Your ${fieldName} must not use a local hostname`);
 
+export const ifProductionClientNotLocalhostValidator = (
+  urlFieldName: string
+): Validator<string> =>
+  when(isProductionEnv, notLocalhostValidator(urlFieldName));
+
 export const productionUrlValidator = (
   urlFieldName: string
 ): Validator<string> =>

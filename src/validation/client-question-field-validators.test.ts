@@ -12,6 +12,7 @@ import {
   backchannelLogoutUrlFieldValidator,
   postLogoutRedirectUrlsFieldValidator,
   serviceTypeFieldValidator,
+  sectorIdentifierUriFieldValidator,
 } from "./client-question-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
@@ -1359,6 +1360,166 @@ describe("create client field validators", () => {
       expect(errorsArray[0].text[0]).toBe(
         'Invalid scope provided: "invalid-scope"'
       );
+    });
+  });
+
+  describe("sectorIdentifierUriFieldValidator", () => {
+    it("should pass validation with valid URI", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "sector-identifier-uri": "http://url.com",
+        })
+        .build();
+
+      const result = await sectorIdentifierUriFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when empty", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder().withBody({}).build();
+
+      const result = await sectorIdentifierUriFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(2);
+      expect(errorsArray[0].text[0]).toBe("Enter a sector identifier URI");
+    });
+
+    it("should fail validation when URI is invalid", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "sector-identifier-uri": "not-a-uri",
+        })
+        .build();
+
+      const result = await sectorIdentifierUriFieldValidator.validate(
+        req as Request
+      );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Your sector identifier URI must be a valid URL"
+      );
+    });
+
+    describe("production environment", () => {
+      beforeAll(() => {
+        process.env.ENVIRONMENT = "production";
+      });
+
+      afterAll(() => {
+        process.env.ENVIRONMENT = "";
+      });
+
+      it("should pass validation with valid https URI", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            "sector-identifier-uri": "https://url.com",
+          })
+          .build();
+
+        const result = await sectorIdentifierUriFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(true);
+      });
+
+      it("should fail validation when empty", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder().withBody({}).build();
+
+        const result = await sectorIdentifierUriFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(false);
+
+        const errorsArray = (result as InvalidField).errors;
+
+        expect(errorsArray).length(1);
+        expect(errorsArray[0].text).length(2);
+        expect(errorsArray[0].text[0]).toBe("Enter a sector identifier URI");
+      });
+
+      it("should fail validation when URI is invalid", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            "sector-identifier-uri": "not-a-uri",
+          })
+          .build();
+
+        const result = await sectorIdentifierUriFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(false);
+
+        const errorsArray = (result as InvalidField).errors;
+
+        expect(errorsArray).length(1);
+        expect(errorsArray[0].text).length(1);
+        expect(errorsArray[0].text[0]).toBe(
+          "Your sector identifier URI must be a valid URL"
+        );
+      });
+
+      it("should pass validation when URI is http", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            "sector-identifier-uri": "http://url.com",
+          })
+          .build();
+
+        const result = await sectorIdentifierUriFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(true);
+      });
+
+      it("should fail validation when URI is localhost", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            "sector-identifier-uri": "https://localhost:3000",
+          })
+          .build();
+
+        const result = await sectorIdentifierUriFieldValidator.validate(
+          req as Request
+        );
+
+        expect(result.isValid).toBe(false);
+
+        const errorsArray = (result as InvalidField).errors;
+
+        expect(errorsArray).length(1);
+        expect(errorsArray[0].text).length(1);
+        expect(errorsArray[0].text[0]).toBe(
+          "Your sector identifier URI must not use a local hostname"
+        );
+      });
     });
   });
 

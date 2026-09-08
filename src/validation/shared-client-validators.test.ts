@@ -8,6 +8,7 @@ import {
   validScopesValidator,
   postLogoutRedirectUrlValidator,
   serviceTypeValidator,
+  sectorIdentifierUriValidator,
   backchannelLogoutUrlValidator,
 } from "./shared-client-validators.js";
 
@@ -354,6 +355,29 @@ describe("shared client validator tests", () => {
       expect(result).toBeInvalid();
       expect(result).toHaveInvalidErrors([
         'Invalid scope provided: "not-a-scope"',
+      ]);
+    });
+  });
+
+  describe("sector identifier uri validator", () => {
+    it("should pass validation when valid uri", async () => {
+      const sectorIdentifierUri = "https://url.com";
+
+      const result =
+        await sectorIdentifierUriValidator.validate(sectorIdentifierUri);
+
+      expect(result).toBeValid();
+    });
+
+    it("should fail validation when invalid uri", async () => {
+      const sectorIdentifierUri = "not-a-uri";
+
+      const result =
+        await sectorIdentifierUriValidator.validate(sectorIdentifierUri);
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        "Your sector identifier URI must be a valid URL",
       ]);
     });
   });

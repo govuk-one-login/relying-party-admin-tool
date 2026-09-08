@@ -39,6 +39,8 @@ export const PATH_NAMES = {
     "/services/:serviceId/clients/:clientId/edit-is-active",
   CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS:
     "/services/:serviceId/clients/:clientId/edit-post-logout-redirect-urls",
+  CLIENT_EDIT_SECTOR_IDENTIFIER_URI:
+    "/services/:serviceId/clients/:clientId/edit-sector-identifier-uri",
   CLIENT_EDIT_SERVICE_TYPE:
     "/services/:serviceId/clients/:clientId/edit-service-type",
   OIDC_JWKS: "/.well-known/jwks.json",

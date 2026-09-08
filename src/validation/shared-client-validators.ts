@@ -9,6 +9,7 @@ import {
 } from "../app.constants.js";
 import { isValidUrl } from "./shared-validation-rules.js";
 import {
+  ifProductionClientNotLocalhostValidator,
   limitedValidValuesValidator,
   listLimitedValidValuesValidator,
   productionUrlValidator,
@@ -127,6 +128,12 @@ export const validScopesValidator = listLimitedValidValuesValidator(
   VALID_SCOPES,
   "scope"
 );
+
+export const sectorIdentifierUriValidator = requiredValidator(
+  "Enter a sector identifier URI"
+)
+  .and(validUrlValidator("sector identifier URI"))
+  .and(ifProductionClientNotLocalhostValidator("sector identifier URI"));
 
 export const serviceTypeValidator = requiredValidator(
   "Service type is required"

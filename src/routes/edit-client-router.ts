@@ -25,6 +25,11 @@ import {
   editServiceTypePost,
 } from "../components/clients/edit-service-type/edit-service-type-controller.js";
 import { validateEditServiceTypeRequest } from "../components/clients/edit-service-type/edit-service-type-validation.js";
+import {
+  editSectorIdentifierUriGet,
+  editSectorIdentifierUriPost,
+} from "../components/clients/edit-sector-identifier-uri/edit-sector-identifier-uri-controller.js";
+import { validateEditSectorIdentifierUriRequest } from "../components/clients/edit-sector-identifier-uri/edit-sector-identifier-uri-validation.js";
 
 const router = express.Router();
 
@@ -67,6 +72,17 @@ router.post(
   PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
   validateEditPostLogoutRedirectUrlsRequest(),
   editPostLogoutRedirectUrlsPost()
+);
+
+router.get(
+  PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI,
+  editSectorIdentifierUriGet()
+);
+
+router.post(
+  PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI,
+  validateEditSectorIdentifierUriRequest(),
+  editSectorIdentifierUriPost()
 );
 
 router.get(PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE, editServiceTypeGet());
