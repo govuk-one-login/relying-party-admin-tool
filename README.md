@@ -26,11 +26,12 @@ npm run test:integration
 
 Copy the file `.env.example` to `.env`.
 
-Note that before you run the application locally you need to create the tables in DynamoDBLocal. There is a script you can use to do this and it only has to be run if a new database has been created since the last time you ran it.
+Note that before you run the application locally you need to create the tables in DynamoDBLocal and add the relevant services and permissions. There are scripts you can use to do this and it only has to be run if a new database has been created since the last time you ran it.
 
 ```bash
 npm run dynamodblocal:up
 ./scripts/create-local-tables.sh
+./scripts/add-data.sh
 ```
 
 Then you can run `npm run dev` and go to localhost:6001. You may need to run `npm run build` befoer to get new frontend changes.

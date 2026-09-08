@@ -13,8 +13,8 @@ Feature: View all services page
   Scenario: View all services page loads with the service links
     Given I go to the "services" page
     And the page has finished loading
-    Then the service: "RPAT Service 1" has a link
-    And the service: "RPAT Service 2" has a link
+    Then the service: "Service 1" has a link with service id "1"
+    And the service: "Service 2" has a link with service id "2"
 
   Scenario: View all services page loads with create a new service button
     Given I go to the "services" page
