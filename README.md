@@ -36,6 +36,8 @@ npm run dynamodblocal:up
 
 Then you can run `npm run dev` and go to localhost:6001. You may need to run `npm run build` befoer to get new frontend changes.
 
+If you wish to delete an item from the database, edit `./scripts/delete-data.sh` to delete the item and then run.
+
 ## Running the application against a deployed environment
 
 Change the url found in tests/ui-tests/utils/getBaseUrl.ts
