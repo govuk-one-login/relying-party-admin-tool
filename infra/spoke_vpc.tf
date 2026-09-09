@@ -19,7 +19,7 @@ resource "aws_cloudformation_stack" "spoke_vpc_stack" {
     KMSApiEnabled            = "Yes"
 
     # Disabled services
-    DynamoDBApiEnabled            = "No"
+    DynamoDBApiEnabled            = "Yes"
     SQSApiEnabled                 = "No"
     LambdaApiEnabled              = "No"
     CloudWatchApiEnabled          = "No"
