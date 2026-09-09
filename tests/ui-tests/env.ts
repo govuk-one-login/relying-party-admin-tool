@@ -24,6 +24,7 @@ const envSchema = v.object({
   ),
   TEST_REPORT_DIR: v.optional(v.string()),
   UPDATE_SNAPSHOTS: v.optional(boolish, false),
+  TEST_SERVICE_ID: v.optional(v.string()),
 });
 
 export const env = v.parse(envSchema, {
@@ -32,4 +33,5 @@ export const env = v.parse(envSchema, {
   TEST_TARGET: process.env.TEST_ENVIRONMENT,
   TEST_REPORT_DIR:
     process.env.TEST_REPORT_ABSOLUTE_DIR ?? process.env.TEST_REPORT_DIR,
+  TEST_SERVICE_ID: process.env.TEST_SERVICE_ID,
 });
