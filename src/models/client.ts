@@ -17,6 +17,7 @@ export interface ClientConfig {
   backchannelLogoutUrl: string;
   idTokenSigningAlgorithm: IdTokenSigningAlgorithm;
   isActive: boolean;
+  jarValidationRequired: boolean;
   postLogoutRedirectUrls: string[];
   serviceType: ServiceType;
 }

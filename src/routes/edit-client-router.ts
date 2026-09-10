@@ -25,6 +25,11 @@ import {
   editServiceTypePost,
 } from "../components/clients/edit-service-type/edit-service-type-controller.js";
 import { validateEditServiceTypeRequest } from "../components/clients/edit-service-type/edit-service-type-validation.js";
+import {
+  editJarValidationRequiredGet,
+  editJarValidationRequiredPost,
+} from "../components/clients/edit-jar-validation-required/edit-jar-validation-required-controller.js";
+import { validateEditJarValidationRequiredRequest } from "../components/clients/edit-jar-validation-required/edit-jar-validation-required-validation.js";
 
 const router = express.Router();
 
@@ -56,6 +61,17 @@ router.post(
   PATH_NAMES.CLIENT_EDIT_IS_ACTIVE,
   validateEditIsActiveRequest(),
   editIsActivePost()
+);
+
+router.get(
+  PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED,
+  editJarValidationRequiredGet()
+);
+
+router.post(
+  PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED,
+  validateEditJarValidationRequiredRequest(),
+  editJarValidationRequiredPost()
 );
 
 router.get(

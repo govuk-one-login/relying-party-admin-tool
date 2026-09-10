@@ -1,0 +1,47 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% set pageTitleName = "Edit JAR validation required" %}
+{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
+{% set serviceName %}{{ serviceName }}{% endset %}
+
+{% block pageContent %}
+  <form class="form" action="edit-jar-validation-required" method="post">
+    <h1 class="govuk-heading-l">Does your client require JAR validation?</h1>
+
+    {{
+      govukWarningText({
+        text: "If set to false, even if you send JAR, malicious party could send query params",
+        iconFallbackText: "Warning"
+      })
+    }}
+
+    {{
+      govukRadios({
+        name: "jar-validation-required",
+        value: jarValidationRequired,
+        items: [
+          {
+            value: "true",
+            text: "Yes"
+          },
+          {
+            value: "false",
+            text: "No"
+          }
+        ],
+        errorMessage: {
+          text: errors["jar-validation-required"].text
+        } if (errors["jar-validation-required"])
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Confirm"
+      })
+    }}
+  </form>
+{% endblock %}

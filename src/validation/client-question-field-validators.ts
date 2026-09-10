@@ -114,6 +114,13 @@ export const isActiveFieldValidator = new FieldValidator(
   "is-active"
 );
 
+export const jarValidationRequiredFieldValidator = new FieldValidator(
+  requiredValidator("Select an option").adaptedFrom(
+    (req: Request) => req.body["jar-validation-required"]
+  ),
+  "jar-validation-required"
+);
+
 export const enterLandingPageUrlFieldValidator = new FieldValidator(
   optional(
     validUrlValidator("landing page URL").and(
