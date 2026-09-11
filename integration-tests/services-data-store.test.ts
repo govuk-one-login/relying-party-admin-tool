@@ -7,7 +7,7 @@ import {
   getServiceByServiceId,
 } from "../src/datastores/services-data-store.js";
 import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
-import { ClientSummary } from "../src/models/client.js";
+import { ClientServiceSummary, ClientSummary } from "../src/models/client.js";
 import { TransactionCanceledException } from "@aws-sdk/client-dynamodb";
 
 describe("Services data store tests", () => {
@@ -89,7 +89,12 @@ describe("Services data store tests", () => {
           name: "Test Client",
         };
 
-        await addClientToService(client, serviceId);
+        const clientServiceSummary: ClientServiceSummary = {
+          ...client,
+          serviceId,
+        };
+
+        await addClientToService(clientServiceSummary);
 
         const actualClient = await getClientFromDynamo(
           serviceId,
@@ -105,13 +110,14 @@ describe("Services data store tests", () => {
       "should fail to add client to service if service does not exist",
       async () => {
         const serviceId = "test-service-id";
-        const client: ClientSummary = {
+        const client: ClientServiceSummary = {
           clientId: "test-client-id",
           env: "integration",
           name: "Test Client",
+          serviceId,
         };
 
-        await expect(addClientToService(client, serviceId)).rejects.toThrow(
+        await expect(addClientToService(client)).rejects.toThrow(
           TransactionCanceledException
         );
       }

@@ -1,7 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { Service } from "../models/service.js";
-import { ClientSummary } from "../models/client.js";
+import { ClientServiceSummary } from "../models/client.js";
 
 const dynamoClient = DynamoDBDocument.from(
   new DynamoDBClient({
@@ -42,15 +42,14 @@ export const createService = async (service: Service): Promise<void> => {
 };
 
 export const addClientToService = async (
-  client: ClientSummary,
-  serviceId: string
+  clientServiceSummary: ClientServiceSummary
 ): Promise<void> => {
   await dynamoClient.transactWrite({
     TransactItems: [
       {
         ConditionCheck: {
           TableName: tableName,
-          Key: { serviceId: serviceId, sk: "service" },
+          Key: { serviceId: clientServiceSummary.serviceId, sk: "service" },
           ConditionExpression: "attribute_exists(serviceId)",
         },
       },
@@ -58,11 +57,11 @@ export const addClientToService = async (
         Put: {
           TableName: tableName,
           Item: {
-            serviceId: serviceId,
-            sk: `client#${client.env}#${client.clientId}`,
-            env: client.env,
-            name: client.name,
-            clientId: client.clientId,
+            serviceId: clientServiceSummary.serviceId,
+            sk: `client#${clientServiceSummary.env}#${clientServiceSummary.clientId}`,
+            env: clientServiceSummary.env,
+            name: clientServiceSummary.name,
+            clientId: clientServiceSummary.clientId,
           },
           ConditionExpression: "attribute_not_exists(sk)",
         },
