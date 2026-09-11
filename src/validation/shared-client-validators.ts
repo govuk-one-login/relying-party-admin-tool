@@ -7,25 +7,22 @@ import {
   VALID_SERVICE_TYPES,
   VALID_TOKEN_SIGNING_ALGS,
 } from "../app.constants.js";
-import { isProductionEnv } from "../config.js";
 import { isValidUrl } from "./shared-validation-rules.js";
 import {
+  ifProductionClientNotLocalhostValidator,
   limitedValidValuesValidator,
   listLimitedValidValuesValidator,
-  notHttpValidator,
-  notLocalhostValidator,
+  productionUrlValidator,
   requiredValidator,
   validUrlValidator,
 } from "./shared-validators.js";
-import { rule, Validator, when } from "./validator.js";
+import { optional, rule, Validator, when } from "./validator.js";
 
-export const productionUrlValidator = (
-  urlFieldName: string
-): Validator<string> =>
-  when(
-    isProductionEnv,
-    notHttpValidator(urlFieldName).and(notLocalhostValidator(urlFieldName))
-  );
+export const backchannelLogoutUrlValidator = optional(
+  validUrlValidator("backchannel logout URL").and(
+    productionUrlValidator("backchannel logout URL")
+  )
+);
 
 export const clientNameValidator = requiredValidator("Enter your client name")
   .and(
@@ -54,10 +51,7 @@ export const validClaimsValidator = listLimitedValidValuesValidator(
 );
 
 export const jwksUrlValidator = validUrlValidator("JWKS URL").and(
-  when(
-    isProductionEnv,
-    notHttpValidator("JWKS URL").and(notLocalhostValidator("JWKS URL"))
-  )
+  productionUrlValidator("JWKS URL")
 );
 
 export const publicKeyValidator = rule((jwks: string) => {
@@ -134,6 +128,12 @@ export const validScopesValidator = listLimitedValidValuesValidator(
   VALID_SCOPES,
   "scope"
 );
+
+export const sectorIdentifierUriValidator = requiredValidator(
+  "Enter a sector identifier URI"
+)
+  .and(validUrlValidator("sector identifier URI"))
+  .and(ifProductionClientNotLocalhostValidator("sector identifier URI"));
 
 export const serviceTypeValidator = requiredValidator(
   "Service type is required"

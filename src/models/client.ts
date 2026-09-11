@@ -18,5 +18,6 @@ export interface ClientConfig {
   idTokenSigningAlgorithm: IdTokenSigningAlgorithm;
   isActive: boolean;
   postLogoutRedirectUrls: string[];
+  sectorIdentifierUri: string;
   serviceType: ServiceType;
 }

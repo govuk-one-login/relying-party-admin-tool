@@ -1,9 +1,10 @@
+import { isProductionEnv } from "../config.js";
 import {
   isValidUrl,
   protocolNotHttp,
   isNotLocalhost,
 } from "./shared-validation-rules.js";
-import { invalid, rule, valid, Validator } from "./validator.js";
+import { invalid, rule, valid, Validator, when } from "./validator.js";
 
 export const validUrlValidator = (fieldName: string): Validator<string> =>
   rule(isValidUrl, `Your ${fieldName} must be a valid URL`);
@@ -13,6 +14,19 @@ export const notHttpValidator = (fieldName: string): Validator<string> =>
 
 export const notLocalhostValidator = (fieldName: string): Validator<string> =>
   rule(isNotLocalhost, `Your ${fieldName} must not use a local hostname`);
+
+export const ifProductionClientNotLocalhostValidator = (
+  urlFieldName: string
+): Validator<string> =>
+  when(isProductionEnv, notLocalhostValidator(urlFieldName));
+
+export const productionUrlValidator = (
+  urlFieldName: string
+): Validator<string> =>
+  when(
+    isProductionEnv,
+    notHttpValidator(urlFieldName).and(notLocalhostValidator(urlFieldName))
+  );
 
 export const listValidator = <T>(validator: Validator<T>): Validator<T[]> => {
   return new Validator(async (values: T[]) => {

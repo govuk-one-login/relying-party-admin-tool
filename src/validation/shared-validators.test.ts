@@ -2,6 +2,7 @@ import {
   validUrlValidator,
   notHttpValidator,
   notLocalhostValidator,
+  productionUrlValidator,
 } from "./shared-validators.js";
 
 describe("shared client validator tests", () => {
@@ -74,6 +75,46 @@ describe("shared client validator tests", () => {
       const result = await notLocalhostValidator("test url").validate(url);
 
       expect(result).toBeValid();
+    });
+  });
+
+  describe("production valid url validator", () => {
+    beforeAll(() => {
+      process.env.ENVIRONMENT = "production";
+    });
+
+    afterAll(() => {
+      process.env.ENVIRONMENT = "";
+    });
+
+    it("should pass validation with valid https URL", async () => {
+      const testUrl = "https://url.com";
+
+      const result = await productionUrlValidator("test URL").validate(testUrl);
+
+      expect(result).toBeValid();
+    });
+
+    it("should fail validation when URL is http", async () => {
+      const testUrl = "http://url.com";
+
+      const result = await productionUrlValidator("test URL").validate(testUrl);
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        "Your test URL does not have a valid URL protocol",
+      ]);
+    });
+
+    it("should fail validation when URL is localhost", async () => {
+      const testUrl = "https://localhost:3000";
+
+      const result = await productionUrlValidator("test URL").validate(testUrl);
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        "Your test URL must not use a local hostname",
+      ]);
     });
   });
 });

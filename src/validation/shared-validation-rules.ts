@@ -11,6 +11,6 @@ export const protocolNotHttp = (url: string): boolean => {
   return !url.startsWith("http:");
 };
 
-export const isNotLocalhost = (url: string): boolean => {
-  return !(url.includes("localhost") || url.includes("127.0.0.1"));
+export const isNotLocalhost = (url?: string): boolean => {
+  return !(url?.includes("localhost") || url?.includes("127.0.0.1"));
 };
