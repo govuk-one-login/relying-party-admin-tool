@@ -107,6 +107,28 @@ const globalSetup = async (config: FullConfig) => {
     },
   });
 
+  await addDataToTable({
+    TableName: `${process.env.ENVIRONMENT}-services`,
+    Item: {
+      serviceId: { S: "1" },
+      sk: { S: "client#integration#intClientId1" },
+      env: { S: "integration" },
+      clientId: { S: "intClientId1" },
+      name: { S: "Test integration client 1" },
+    },
+  });
+
+  await addDataToTable({
+    TableName: `${process.env.ENVIRONMENT}-services`,
+    Item: {
+      serviceId: { S: "1" },
+      sk: { S: "client#production#prodClientId1" },
+      env: { S: "production" },
+      clientId: { S: "prodClientId1" },
+      name: { S: "Test production client 1" },
+    },
+  });
+
   try {
     await client.send(
       new UpdateTimeToLiveCommand({
