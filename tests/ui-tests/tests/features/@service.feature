@@ -1,15 +1,15 @@
 Feature: View service page
 
-  Scenario: View service page loads with expected layout
-    Given I go to the "service" page
+  Scenario: View service page without clients loads with expected layout
+    Given I go to the "service without clients" page
     And the page has finished loading
     Then the page meets our accessibility standards
-    And the page title is "View Service 1 - Admin Tool"
+    And the page title is "View Service 2 - Admin Tool"
     And the header shows
     And the navigation bar shows
     And the footer shows
-    And the page contains the breadcrumbs: "Your services, Service 1"
-    And the page has the heading: "Service 1"
+    And the page contains the breadcrumbs: "Your services, Service 2"
+    And the page has the heading: "Service 2"
     And the page has the exact text: "Production Client"
     And the page has the exact text: "Status"
     And the page has the exact text: "Not yet created"
@@ -18,7 +18,18 @@ Feature: View service page
     And the page has the exact text: "You do not have any integration clients yet."
     Then the page contains the button: "Create a new integration client" with the href: "/services/serviceId/clients/create"
 
+  Scenario: View service page with clients loads with expected layout
+    Given I go to the "service with clients" page
+    And the page has finished loading
+    Then the page meets our accessibility standards
+    And the page has the exact text: "Production Client"
+    And the page has the exact text: "Test production client 1"
+    And the page has the exact text: "prodClientId1"
+    And the page has the exact text: "Integration Clients"
+    And the page has the exact text: "Test integration client 1"
+    And the page has the exact text: "intClientId1"
+
   Scenario: View service page side navigation
-    Given I go to the "service" page
+    Given I go to the "service with clients" page
     And the page has finished loading
     And the side navigation shows with correct urls
