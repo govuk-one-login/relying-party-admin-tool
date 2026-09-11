@@ -16,6 +16,7 @@ import {
   jarValidationRequiredFieldValidator,
   channelFieldValidator,
   pkceEnforcedFieldValidator,
+  selectLevelOfConfidenceFieldValidator,
 } from "./client-question-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
@@ -1688,6 +1689,158 @@ describe("create client field validators", () => {
       expect(errorsArray[0].text).length(1);
       expect(errorsArray[0].text[0]).toBe(
         'Invalid service type provided: "invalid-service-type"'
+      );
+    });
+  });
+
+  describe("selectLevelsOfConfidenceFieldValidator", () => {
+    it("should pass validation with valid level-of-confidence", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "selected-locs": "P0",
+        }).withSessionnewClientConfig({
+          isIdentityVerificationSupported: true
+        })
+        .build();
+
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should pass validation with valid levels-of-confidence", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "selected-locs": ["P0", "P1"],
+        }).withSessionnewClientConfig({
+          isIdentityVerificationSupported: true
+        })
+        .build();
+
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should not pass validation with empty level-of-confidence", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "selected-locs": "",
+        }).withSessionnewClientConfig({
+          isIdentityVerificationSupported: true
+        })
+        .build();
+
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBeFalsy();
+    });
+
+    it("should fail validation with an invalid level-of-confidence", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "selected-locs": ["P0", "invalid-loc"],
+        }).withSessionnewClientConfig({
+          isIdentityVerificationSupported: true
+        })
+        .build();
+
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBeFalsy();
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        'Invalid level of confidence provided: "invalid-loc"'
+      );
+    });
+
+    it("should pass validation with P0 and identity verification not supported", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "selected-locs": "P0",
+        }).withSessionnewClientConfig({
+          isIdentityVerificationSupported: false
+        })
+        .build();
+
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation with identity verification not supported for P1", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "selected-locs": ["P1"],
+        }).withSessionnewClientConfig({
+          isIdentityVerificationSupported: false
+        })
+        .build();
+
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBeFalsy();
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        'Identity verification must be supported'
+      );
+    });
+
+    it("should fail validation with identity verification not support for P2", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "selected-locs": ["P2"],
+        }).withSessionnewClientConfig({
+          isIdentityVerificationSupported: false
+        })
+        .build();
+
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBeFalsy();
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        'Identity verification must be supported'
+      );
+    });
+
+    it("should fail validation with identity verification not set", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "selected-locs": ["P1", "P2"],
+        })
+        .build();
+
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBeFalsy();
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(2);
+      expect(errorsArray[0].text[0]).toBe(
+        'Identity verification must be supported'
       );
     });
   });

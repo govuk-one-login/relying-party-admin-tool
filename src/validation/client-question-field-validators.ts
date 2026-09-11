@@ -12,6 +12,7 @@ import {
   sectorIdentifierUriValidator,
   backchannelLogoutUrlValidator,
   allChannelsValidator,
+  validLevelOfConfidenceValidator,
 } from "./shared-client-validators.js";
 import { FieldValidator, optional, rule, when } from "./validator.js";
 import {
@@ -216,4 +217,28 @@ export const sectorIdentifierUriFieldValidator = new FieldValidator(
 export const serviceTypeFieldValidator = new FieldValidator(
   serviceTypeValidator.adaptedFrom((req: Request) => req.body["service-type"]),
   "service-type"
+);
+
+export const selectLevelOfConfidenceFieldValidator = new FieldValidator(
+  validLevelOfConfidenceValidator.adaptedFrom(
+    (req: Request) =>
+      getListFromRequestBody(req, "selected-locs")
+  ).and(
+    when((req: Request) => 
+      req.session.newClientConfig?.isIdentityVerificationSupported !== true,
+      rule(
+        (value: string[]) => !value.includes("P1"),
+        "Identity verification must be supported"
+      ).and(
+        rule(
+          (value: string[]) => !value.includes("P2"),
+          "Identity verification must be supported"
+        )
+      ).adaptedFrom(
+    (req: Request) =>
+      getListFromRequestBody(req, "selected-locs")
+    )
+    )
+  ),
+  "selected-locs"
 );

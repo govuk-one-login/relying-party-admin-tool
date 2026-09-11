@@ -12,6 +12,7 @@ import {
   backchannelLogoutUrlValidator,
   allChannelsValidator,
   channelValidator,
+  validLevelOfConfidenceValidator,
 } from "./shared-client-validators.js";
 
 describe("shared client validator tests", () => {
@@ -486,6 +487,42 @@ describe("shared client validator tests", () => {
       expect(result).toBeInvalid();
       expect(result).toHaveInvalidErrors([
         'Invalid service type provided: "invalid-service-type"',
+      ]);
+    });
+  });
+
+  describe("levels of confidence validator", () => {
+    it("should pass validation with valid levels-of-confidence", async () => {
+      const locs = [
+        "P0",
+        "P1",
+        "P2",
+      ];
+
+      const result = await validLevelOfConfidenceValidator.validate(locs);
+
+      expect(result).toBeValid();
+    });
+
+        it("should fail validation when levels-of-confidence are empty", async () => {
+      const locs: string[] = [];
+
+      const result = await validLevelOfConfidenceValidator.validate(locs);
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        "You must select one level of confidence",
+      ]);
+    });
+
+    it("should fail validation when invalid levels-of-confidence added", async () => {
+      const locs = ["invalid-loc"];
+
+      const result = await validLevelOfConfidenceValidator.validate(locs);
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        'Invalid level of confidence provided: "invalid-loc"',
       ]);
     });
   });
