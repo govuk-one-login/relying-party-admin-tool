@@ -36,6 +36,7 @@ type AdditionalClientConfig = {
   backchannelLogoutUrl?: string;
   idTokenSigningAlgorithm?: "ES256" | "RS256";
   isActive?: boolean;
+  jarValidationRequired?: boolean;
   postLogoutRedirectUrls?: string[];
   serviceType?: "OPTIONAL" | "MANDATORY";
 };
