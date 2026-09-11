@@ -65,6 +65,8 @@ import {
   createClientEditRedirectUrlsGet,
   createClientEditRedirectUrlsPost,
 } from "../components/create-client/redirect-urls/edit-redirect-urls/edit-redirect-urls-controller.js";
+import { createClientSelectLevelsOfConfidenceGet, createClientSelectLevelsOfConfidencePost } from "../components/create-client/select-levels-of-confidence/select-levels-of-confidence-controller.js";
+import { validateSelectLevelsOfConfidenceRequest } from "../components/create-client/select-levels-of-confidence/select-levels-of-confidence-validation.js";
 
 const router = express.Router();
 
@@ -180,6 +182,17 @@ router.post(
   PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL,
   validateEnterLandingPageUrlRequest(),
   createClientEnterLandingPageUrlPost()
+);
+
+router.get(
+  PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
+  createClientSelectLevelsOfConfidenceGet()
+);
+
+router.post(
+  PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
+  validateSelectLevelsOfConfidenceRequest(),
+  createClientSelectLevelsOfConfidencePost()
 );
 
 router.get(PATH_NAMES.CREATE_CLIENT_SUMMARY, createClientSummaryGet());

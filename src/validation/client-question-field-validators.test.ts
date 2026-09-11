@@ -11,6 +11,7 @@ import {
   isActiveFieldValidator,
   backchannelLogoutUrlFieldValidator,
   postLogoutRedirectUrlsFieldValidator,
+  selectLevelOfConfidenceFieldValidator,
 } from "./client-question-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
@@ -1425,6 +1426,68 @@ describe("create client field validators", () => {
       expect(errorsArray[0].text).length(1);
       expect(errorsArray[0].text[0]).toBe(
         'Invalid scope provided: "invalid-scope"'
+      );
+    });
+  });
+
+  describe("selectLevelsOfConfidenceFieldValidator", () => {
+    it("should pass validation with valid level-of-confidence", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "selected-locs": "P0",
+        })
+        .build();
+
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should pass validation with valid levels-of-confidence", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "selected-locs": ["P0", "P1"],
+        })
+        .build();
+
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should not pass validation with empty level-of-confidence", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "selected-locs": "",
+        })
+        .build();
+
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBeFalsy();
+    });
+
+    it("should fail validation with an invalid level-of-confidence", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "selected-locs": ["P0", "invalid-loc"],
+        })
+        .build();
+
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBeFalsy();
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        'Invalid loc provided: "invalid-loc"'
       );
     });
   });

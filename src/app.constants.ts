@@ -93,6 +93,13 @@ export const VALID_SCOPES = Object.freeze([
   "offline_access",
 ] as const);
 
+export const VALID_LOCS = Object.freeze([
+  "P0",
+  "P1",
+  "P2",
+  "P3",
+] as const);
+
 export const VALID_TOKEN_SIGNING_ALGS = Object.freeze([
   "ES256",
   "RS256",

@@ -1,0 +1,80 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% set pageTitleName = "Select levels of confidence" %}
+{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
+{% set serviceName %}{{ serviceName }}{% endset %}
+
+
+{% block beforeContent %}
+  {{ super() }}
+  {{ govukBreadcrumbs({
+    items: [
+      { text: "Your services", href: "/services" },
+      { text: serviceName, href: viewServiceUrl },
+      { text: "Create a client" }
+    ]
+  }) }}
+{% endblock %}
+
+{% block pageContent %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form class="form" action="select-levels-of-confidence" method="post">
+
+        <h1 class="govuk-heading-l">Which level(s) of confidence does your client require?</h1>
+
+        <p class="govuk-body"><a href="https://docs.sign-in.service.gov.uk/before-integrating/choose-the-level-of-identity-confidence/#choose-the-level-of-identity-confidence-for-your-service" class="govuk-link" rel="noreferrer noopener" target="_blank">Get guidance on selecting levels of confidence (opens in a new tab)</a></p>
+        {{
+            govukWarningText({
+              text: "P1 or P3 require approval in production",
+              iconFallbackText: "Warning"
+            })
+        }}
+
+        {{ govukCheckboxes({
+          name: "selected-locs",
+          fieldset: {
+            legend: {
+              text: "Select all that apply",
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "P0",
+              text: "P0 (No confidence)"
+            },
+            {
+              value: "P1",
+              text: "P1 (Low confidence)"
+            },
+            {
+              value: "P2",
+              text: "P2 (Medium confidence)"
+            },
+            {
+              value: "P3",
+              text: "P3 (High confidence) "
+            }
+          ],
+
+          errorMessage: {
+            text: errors["selected-locs"].text
+          } if (errors["selected-locs"])
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}
