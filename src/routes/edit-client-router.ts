@@ -25,6 +25,11 @@ import {
   editServiceTypePost,
 } from "../components/clients/edit-service-type/edit-service-type-controller.js";
 import { validateEditServiceTypeRequest } from "../components/clients/edit-service-type/edit-service-type-validation.js";
+import {
+  editChannelGet,
+  editChannelPost,
+} from "../components/clients/edit-channel/edit-channel-controller.js";
+import { validateEditChannelRequest } from "../components/clients/edit-channel/edit-channel-validation.js";
 
 const router = express.Router();
 
@@ -37,6 +42,14 @@ router.post(
   PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,
   validateEditBackchannelLogoutUrlRequest(),
   editBackchannelLogoutUrlPost()
+);
+
+router.get(PATH_NAMES.CLIENT_EDIT_CHANNEL, editChannelGet());
+
+router.post(
+  PATH_NAMES.CLIENT_EDIT_CHANNEL,
+  validateEditChannelRequest(),
+  editChannelPost()
 );
 
 router.get(

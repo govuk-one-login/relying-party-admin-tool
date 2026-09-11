@@ -10,6 +10,7 @@ import {
   idTokenSigningAlgorithmValidator,
   postLogoutRedirectUrlValidator,
   serviceTypeValidator,
+  allChannelsValidator,
 } from "./shared-client-validators.js";
 import { FieldValidator, optional, rule, when } from "./validator.js";
 import { requiredValidator, validUrlValidator } from "./shared-validators.js";
@@ -22,6 +23,11 @@ export const backchannelLogoutUrlFieldValidator = new FieldValidator(
     )
   ).adaptedFrom((req: Request) => req.body["backchannel-logout-url"] as string),
   "backchannel-logout-url"
+);
+
+export const channelFieldValidator = new FieldValidator(
+  allChannelsValidator.adaptedFrom((req: Request) => req.body["channel"]),
+  "channel"
 );
 
 const clientAuthenticationMethodInputFieldValidator = new FieldValidator(

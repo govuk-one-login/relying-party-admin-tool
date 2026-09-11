@@ -34,6 +34,7 @@ type CoreClientConfig = {
 
 type AdditionalClientConfig = {
   backchannelLogoutUrl?: string;
+  channel?: "web" | "generic_app" | "strategic_app";
   idTokenSigningAlgorithm?: "ES256" | "RS256";
   isActive?: boolean;
   postLogoutRedirectUrls?: string[];

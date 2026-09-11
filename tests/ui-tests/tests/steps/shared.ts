@@ -15,6 +15,7 @@ const pageNameToPath: Record<string, string> = {
   client: "/services/serviceId/clients/clientId",
   "client - edit backchannel logout url":
     "/services/serviceId/clients/clientId/edit-backchannel-logout-url",
+  "client - edit channel": "/services/serviceId/clients/clientId/edit-channel",
   "client - edit id token signing algorithm":
     "/services/serviceId/clients/clientId/edit-id-token-signing-algorithm",
   "client - edit is active":

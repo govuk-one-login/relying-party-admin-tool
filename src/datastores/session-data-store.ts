@@ -9,7 +9,7 @@ const dynamoDBCientSessions = new DynamoDBClient({
   region: "eu-west-2",
   ...(process.env.DYNAMO_ENDPOINT && {
     endpoint: process.env.DYNAMO_ENDPOINT,
-  })
+  }),
 });
 
 export const tableName = `${process.env.ENVIRONMENT ?? "test"}-frontend-sessions`;

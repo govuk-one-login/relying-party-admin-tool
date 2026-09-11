@@ -33,6 +33,7 @@ export const PATH_NAMES = {
   CREATE_CLIENT_SUCCESS: "/services/:serviceId/clients/create/success",
   CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL:
     "/services/:serviceId/clients/:clientId/edit-backchannel-logout-url",
+  CLIENT_EDIT_CHANNEL: "/services/:serviceId/clients/:clientId/edit-channel",
   CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM:
     "/services/:serviceId/clients/:clientId/edit-id-token-signing-algorithm",
   CLIENT_EDIT_IS_ACTIVE:
@@ -107,4 +108,11 @@ export const VALID_TOKEN_SIGNING_ALGS = Object.freeze([
 export const VALID_SERVICE_TYPES = Object.freeze([
   "MANDATORY",
   "OPTIONAL",
+] as const);
+
+export const VALID_CHANNELS = Object.freeze(["web", "generic_app"] as const);
+
+// Only supported for specific RPs
+export const ADDITIONAL_VALID_CHANNELS = Object.freeze([
+  "strategic_app",
 ] as const);
