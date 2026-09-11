@@ -8,10 +8,6 @@ const dynamoClient = DynamoDBDocument.from(
     region: "eu-west-2",
     ...(process.env.DYNAMO_ENDPOINT && {
       endpoint: process.env.DYNAMO_ENDPOINT,
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID || "test",
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "test",
-    },
     }),
   })
 );

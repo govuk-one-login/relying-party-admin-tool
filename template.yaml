@@ -330,6 +330,7 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
+                  - "dynamodb:Query"
                   - "dynamodb:DescribeTable"
                   - "dynamodb:PutItem"
                   - "dynamodb:DeleteItem"
@@ -353,6 +354,7 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
+                  - "dynamodb:Query"
                   - "dynamodb:DescribeTable"
                   - "dynamodb:PutItem"
                   - "dynamodb:DeleteItem"
@@ -376,6 +378,7 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
+                  - "dynamodb:Query"
                   - "dynamodb:DescribeTable"
                   - "dynamodb:PutItem"
                   - "dynamodb:DeleteItem"
