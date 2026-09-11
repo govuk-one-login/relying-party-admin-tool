@@ -1,7 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { Service } from "../models/service.js";
-import { ClientServiceSummary } from "../models/client.js";
+import { ClientServiceSummary, ClientSummary } from "../models/client.js";
 
 const dynamoClient = DynamoDBDocument.from(
   new DynamoDBClient({
@@ -27,6 +27,30 @@ export const getServiceByServiceId = async (
     serviceId: result.Item.serviceId,
     name: result.Item.name,
   } as Service;
+};
+
+export const getClientsByServiceId = async (
+  serviceId: string
+): Promise<ClientSummary[]> => {
+  const result = await dynamoClient.query({
+    TableName: tableName,
+    KeyConditionExpression: "serviceId = :pk AND begins_with(sk, :prefix)",
+    ExpressionAttributeValues: {
+      ":pk": serviceId,
+      ":prefix": "client#",
+    },
+  });
+  if (!result.Items) {
+    return [];
+  }
+  return result.Items.map((serviceClientRelation) => {
+    const sk = serviceClientRelation["sk"].split("#");
+    return {
+      clientId: sk[2],
+      name: serviceClientRelation["name"],
+      env: serviceClientRelation["env"],
+    };
+  });
 };
 
 export const createService = async (service: Service): Promise<void> => {

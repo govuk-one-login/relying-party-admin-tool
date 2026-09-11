@@ -5,6 +5,7 @@ import {
   createService,
   addClientToService,
   getServiceByServiceId,
+  getClientsByServiceId,
 } from "../src/datastores/services-data-store.js";
 import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
 import { ClientServiceSummary, ClientSummary } from "../src/models/client.js";
@@ -136,6 +137,58 @@ describe("Services data store tests", () => {
         await expect(createService(existingService)).rejects.toThrow(
           ConditionalCheckFailedException
         );
+      }
+    );
+  });
+
+  describe("getClientsByServiceId", () => {
+    integrationTest(
+      "should fail to add user permission if permission already exists",
+      async ({ addServiceToDynamo, addClientsToDynamo }) => {
+        const serviceId = "test-service-id";
+        const existingService: Service = {
+          serviceId: serviceId,
+          name: "Test service",
+        };
+        await addServiceToDynamo(existingService);
+
+        const client1 = {
+          clientId: "test-client-id-1",
+          env: "integration",
+          name: "Test Client 1",
+        };
+
+        const client2 = {
+          clientId: "test-client-id-2",
+          env: "integration",
+          name: "Test Client 2",
+        };
+
+        const client3 = {
+          clientId: "test-client-id-3",
+          env: "production",
+          name: "Test Client 3",
+        };
+
+        const clientServiceSummariess: ClientServiceSummary[] = [
+          {
+            ...client1,
+            serviceId,
+          } as ClientServiceSummary,
+          {
+            ...client2,
+            serviceId,
+          } as ClientServiceSummary,
+          {
+            ...client3,
+            serviceId,
+          } as ClientServiceSummary,
+        ];
+        await addClientsToDynamo(clientServiceSummariess);
+
+        const clients = await getClientsByServiceId(serviceId);
+
+        expect(clients).toStrictEqual([client1, client2, client3]);
       }
     );
   });
