@@ -4,6 +4,7 @@ import { ExpressRouteFunc } from "../../types.js";
 import { PATH_NAMES } from "../../app.constants.js";
 import path from "path";
 import { ClientEnvironment } from "../../models/client-environment.js";
+import { getServiceByServiceId } from "../../datastores/services-data-store.js";
 
 export const serviceGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response): Promise<void> => {
@@ -40,12 +41,18 @@ export const serviceGet = (): ExpressRouteFunc => {
           href: path.posix.join(req.path, "team-members"),
         },
       ];
+      try {
+        const service = await getServiceByServiceId(serviceId);
 
-      return res.render("service/index.njk", {
-        hasIntegrationWriterPermissions,
-        hasProductionWriterPermissions,
-        ...(hasManagerPermissions && { sideNavItems }),
-      });
+        return res.render("service/index.njk", {
+          hasIntegrationWriterPermissions,
+          hasProductionWriterPermissions,
+          ...(hasManagerPermissions && { sideNavItems }),
+          service,
+        });
+      } catch {
+        res.redirect(PATH_NAMES["500_ERROR"]);
+      }
     } else {
       return res.redirect(PATH_NAMES.ROOT);
     }

@@ -11,43 +11,40 @@ const pageNameToPath: Record<string, string> = {
   "500 error": "/error",
   services: "/services",
   "create service": "/services/create",
-  service: "/services/serviceId",
-  client: "/services/serviceId/clients/clientId",
+  service: "/services/1",
+  client: "/services/1/clients/clientId",
   "client - edit backchannel logout url":
-    "/services/serviceId/clients/clientId/edit-backchannel-logout-url",
+    "/services/1/clients/clientId/edit-backchannel-logout-url",
   "client - edit id token signing algorithm":
-    "/services/serviceId/clients/clientId/edit-id-token-signing-algorithm",
-  "client - edit is active":
-    "/services/serviceId/clients/clientId/edit-is-active",
+    "/services/1/clients/clientId/edit-id-token-signing-algorithm",
+  "client - edit is active": "/services/1/clients/clientId/edit-is-active",
   "client - edit post logout redirect urls":
-    "/services/serviceId/clients/clientId/edit-post-logout-redirect-urls",
+    "/services/1/clients/clientId/edit-post-logout-redirect-urls",
   "client - edit service type":
-    "/services/serviceId/clients/clientId/edit-service-type",
-  "create client": "/services/serviceId/clients/create",
+    "/services/1/clients/clientId/edit-service-type",
+  "create client": "/services/1/clients/create",
   "create client - enter client name":
-    "/services/serviceId/clients/create/enter-client-name",
+    "/services/1/clients/create/enter-client-name",
   "create client - edit client name":
-    "/services/serviceId/clients/create/edit-client-name",
+    "/services/1/clients/create/edit-client-name",
   "create client - select client authentication":
-    "/services/serviceId/clients/create/select-client-authentication",
+    "/services/1/clients/create/select-client-authentication",
   "create client - edit client authentication":
-    "/services/serviceId/clients/create/edit-client-authentication",
+    "/services/1/clients/create/edit-client-authentication",
   "create client - enter redirect urls":
-    "/services/serviceId/clients/create/enter-redirect-urls",
+    "/services/1/clients/create/enter-redirect-urls",
   "create client - edit redirect urls":
-    "/services/serviceId/clients/create/edit-redirect-urls",
-  "create client - select scopes":
-    "/services/serviceId/clients/create/select-scopes",
+    "/services/1/clients/create/edit-redirect-urls",
+  "create client - select scopes": "/services/1/clients/create/select-scopes",
   "create client - support identity verification":
-    "/services/serviceId/clients/create/support-identity-verification",
-  "create client - select claims":
-    "/services/serviceId/clients/create/select-claims",
+    "/services/1/clients/create/support-identity-verification",
+  "create client - select claims": "/services/1/clients/create/select-claims",
   "create client - enter landing page url":
-    "/services/serviceId/clients/create/enter-landing-page-url",
+    "/services/1/clients/create/enter-landing-page-url",
   "create client - select levels of confidence":
-    "/services/serviceId/clients/create/select-levels-of-confidence",
-  "create client - summary": "/services/serviceId/clients/create/summary",
-  "create client - success": "/services/serviceId/clients/create/success",
+    "/services/1/clients/create/select-levels-of-confidence",
+  "create client - summary": "/services/1/clients/create/summary",
+  "create client - success": "/services/1/clients/create/success",
 };
 
 Then("the page meets our accessibility standards", async ({ page }) => {

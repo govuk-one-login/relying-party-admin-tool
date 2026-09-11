@@ -17,7 +17,10 @@ Feature: Create a new service page
     Then the error message: "Enter your service name" shows
     And I enter "My service" into the field "What is the name of your service?"
     And I click the "Continue" button
-    Then I am taken to the "service" page
+    Then I am taken to the new service page
+    And the page has finished loading
+    Then the page title is "View My service - Admin Tool"
+    And the page has the heading: "My service"
 
   Scenario: Create a new service page cancel button goes back to services page
     Given I go to the "create service" page
