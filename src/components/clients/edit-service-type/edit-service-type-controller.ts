@@ -6,7 +6,7 @@ import { populateUrlRoute } from "../../../utils/populate-url-route.js";
 import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
 import { ClientEnvironment } from "../../../models/client-environment.js";
 
-export const editIsActiveGet = (): ExpressRouteFunc => {
+export const editServiceTypeGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
     const serviceId = req.params.serviceId as string;
     if (
@@ -16,12 +16,12 @@ export const editIsActiveGet = (): ExpressRouteFunc => {
         ClientEnvironment.INTEGRATION
       )
     ) {
-      res.render("clients/edit-is-active/index.njk", {
+      res.render("clients/edit-service-type/index.njk", {
         serviceName: "Service Name",
         serviceId,
-        isActive:
-          req.session.changedClientConfig?.isActive ??
-          req.session.currentClientConfig?.isActive,
+        serviceType:
+          req.session.changedClientConfig?.serviceType ??
+          req.session.currentClientConfig?.serviceType,
       });
     } else {
       return res.redirect(PATH_NAMES.ROOT);
@@ -29,11 +29,11 @@ export const editIsActiveGet = (): ExpressRouteFunc => {
   };
 };
 
-export const editIsActivePost = (): ExpressRouteFunc => {
+export const editServiceTypePost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
     req.session.changedClientConfig = {
       ...req.session.changedClientConfig,
-      isActive: req.body["is-active"],
+      serviceType: req.body["service-type"],
     };
     return saveSessionAndRedirect(
       req,

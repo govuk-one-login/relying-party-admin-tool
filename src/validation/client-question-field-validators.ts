@@ -9,6 +9,7 @@ import {
   redirectUrlValidator,
   idTokenSigningAlgorithmValidator,
   postLogoutRedirectUrlValidator,
+  serviceTypeValidator,
 } from "./shared-client-validators.js";
 import { FieldValidator, optional, rule, when } from "./validator.js";
 import {
@@ -196,4 +197,9 @@ export const selectScopesFieldValidator = new FieldValidator(
     getListFromRequestBody(req, "selected-scopes")
   ),
   "selected-scopes"
+);
+
+export const serviceTypeFieldValidator = new FieldValidator(
+  serviceTypeValidator.adaptedFrom((req: Request) => req.body["service-type"]),
+  "service-type"
 );

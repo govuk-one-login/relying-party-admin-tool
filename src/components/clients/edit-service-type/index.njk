@@ -1,0 +1,44 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitleName = "Edit service type" %}
+{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
+{% set serviceName %}{{ serviceName }}{% endset %}
+
+{% block pageContent %}
+  <form class="form" action="edit-service-type" method="post">
+    {{
+      govukRadios({
+        name: "service-type",
+        value: serviceType,
+        fieldset: {
+          legend: {
+            text: "Select your service type",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        items: [
+          {
+            value: "MANDATORY",
+            text: "Mandatory"
+          },
+          {
+            value: "OPTIONAL",
+            text: "Optional"
+          }
+        ],
+        errorMessage: {
+          text: errors["service-type"].text
+        } if (errors["service-type"])
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Confirm"
+      })
+    }}
+  </form>
+{% endblock %}

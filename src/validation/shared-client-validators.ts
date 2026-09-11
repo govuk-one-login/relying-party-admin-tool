@@ -4,6 +4,7 @@ import {
   PROHIBITED_REDIRECT_URI_SCHEMES,
   VALID_CLAIMS,
   VALID_SCOPES,
+  VALID_SERVICE_TYPES,
   VALID_TOKEN_SIGNING_ALGS,
 } from "../app.constants.js";
 import { isProductionEnv } from "../config.js";
@@ -133,3 +134,7 @@ export const validScopesValidator = listLimitedValidValuesValidator(
   VALID_SCOPES,
   "scope"
 );
+
+export const serviceTypeValidator = requiredValidator(
+  "Service type is required"
+).and(limitedValidValuesValidator(VALID_SERVICE_TYPES, "service type"));
