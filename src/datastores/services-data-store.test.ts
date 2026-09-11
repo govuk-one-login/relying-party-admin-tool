@@ -5,7 +5,7 @@ import { getServiceByServiceId } from "./services-data-store.js";
 const TABLE_PREFIX = "test";
 const TEST_SERVICE = {
   serviceId: "test-service-id",
-  name: "Test User",
+  name: "Test Service",
 };
 
 describe("Services store tests", () => {
@@ -15,45 +15,47 @@ describe("Services store tests", () => {
     mockDynamo.reset();
   });
 
-  it("should get service by serviceId when service exists in dynamo", async () => {
-    const serviceId = "test-service-id";
+  describe("getServiceByServiceId", () => {
+    it("should get service by serviceId when service exists in dynamo", async () => {
+      const serviceId = "test-service-id";
 
-    mockDynamo
-      .on(GetCommand, {
-        TableName: `${TABLE_PREFIX}-services`,
-        Key: {
-          serviceId: serviceId,
-          sk: "service",
-        },
-      })
-      .resolves({
-        Item: {
-          serviceId: serviceId,
-          sk: "service",
-          name: TEST_SERVICE.name,
-        },
-      });
+      mockDynamo
+        .on(GetCommand, {
+          TableName: `${TABLE_PREFIX}-services`,
+          Key: {
+            serviceId: serviceId,
+            sk: "service",
+          },
+        })
+        .resolves({
+          Item: {
+            serviceId: serviceId,
+            sk: "service",
+            name: TEST_SERVICE.name,
+          },
+        });
 
-    const result = await getServiceByServiceId(serviceId);
+      const result = await getServiceByServiceId(serviceId);
 
-    expect(result).toStrictEqual(TEST_SERVICE);
-  });
+      expect(result).toStrictEqual(TEST_SERVICE);
+    });
 
-  it("should get no service if servvice does not exist with serviceId", async () => {
-    const serviceId = "not-a-service-id";
+    it("should get no service if service does not exist with serviceId", async () => {
+      const serviceId = "not-a-service-id";
 
-    mockDynamo
-      .on(GetCommand, {
-        TableName: `${TABLE_PREFIX}-services`,
-        Key: {
-          serviceId: serviceId,
-          sk: "service",
-        },
-      })
-      .resolves({});
+      mockDynamo
+        .on(GetCommand, {
+          TableName: `${TABLE_PREFIX}-services`,
+          Key: {
+            serviceId: serviceId,
+            sk: "service",
+          },
+        })
+        .resolves({});
 
-    const result = await getServiceByServiceId(serviceId);
+      const result = await getServiceByServiceId(serviceId);
 
-    expect(result).toBeUndefined();
+      expect(result).toBeUndefined();
+    });
   });
 });
