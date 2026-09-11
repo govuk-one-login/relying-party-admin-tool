@@ -3,6 +3,7 @@ import {
   PROHIBITED_REDIRECT_URI_QUERY_PARAMETER_NAMES,
   PROHIBITED_REDIRECT_URI_SCHEMES,
   VALID_CLAIMS,
+  VALID_LOCS,
   VALID_SCOPES,
   VALID_TOKEN_SIGNING_ALGS,
 } from "../app.constants.js";
@@ -133,3 +134,8 @@ export const validScopesValidator = listLimitedValidValuesValidator(
   VALID_SCOPES,
   "scope"
 );
+
+export const validLevelOfConfidenceValidator = listLimitedValidValuesValidator(
+  VALID_LOCS,
+  "loc")
+

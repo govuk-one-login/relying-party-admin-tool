@@ -9,6 +9,7 @@ import {
   redirectUrlValidator,
   idTokenSigningAlgorithmValidator,
   postLogoutRedirectUrlValidator,
+  validLevelOfConfidenceValidator,
 } from "./shared-client-validators.js";
 import { FieldValidator, optional, rule, when } from "./validator.js";
 import {
@@ -196,4 +197,17 @@ export const selectScopesFieldValidator = new FieldValidator(
     getListFromRequestBody(req, "selected-scopes")
   ),
   "selected-scopes"
+);
+
+export const selectLevelOfConfidenceFieldValidator = new FieldValidator(
+  validLevelOfConfidenceValidator.adaptedFrom(
+    (req: Request) =>
+      getListFromRequestBody(req, "selected-locs")
+  ).and(
+  notEmptyListValidator("You must select one level of confidence").adaptedFrom(
+    (req: Request) =>
+      getListFromRequestBody(req, "selected-locs")
+    )
+  ),
+  "selected-locs"
 );

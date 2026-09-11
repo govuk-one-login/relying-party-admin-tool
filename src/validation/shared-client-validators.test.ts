@@ -8,6 +8,7 @@ import {
   idTokenSigningAlgorithmValidator,
   validScopesValidator,
   postLogoutRedirectUrlValidator,
+  validLevelOfConfidenceValidator,
 } from "./shared-client-validators.js";
 
 describe("shared client validator tests", () => {
@@ -336,6 +337,40 @@ describe("shared client validator tests", () => {
       ];
 
       const result = await validScopesValidator.validate(scopes);
+
+      expect(result).toBeValid();
+    });
+
+    it("should pass validation when scopes are empty", async () => {
+      const scopes: string[] = [];
+
+      const result = await validScopesValidator.validate(scopes);
+
+      expect(result).toBeValid();
+    });
+
+    it("should fail validation when invalid scopes added", async () => {
+      const scopes = ["not-a-scope"];
+
+      const result = await validScopesValidator.validate(scopes);
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        'Invalid scope provided: "not-a-scope"',
+      ]);
+    });
+  });
+
+  describe("levels of confidence validator", () => {
+    it("should pass validation with valid levels-of-confidence", async () => {
+      const locs = [
+        "P0",
+        "P1",
+        "P2",
+        "P3",
+      ];
+
+      const result = await validLevelOfConfidenceValidator.validate(locs);
 
       expect(result).toBeValid();
     });
