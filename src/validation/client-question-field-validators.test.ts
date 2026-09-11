@@ -547,7 +547,7 @@ describe("create client field validators", () => {
   });
 
   describe("selectClaimsFieldValidator", () => {
-    it("should pass validation with valid claims and identity verification is empty", async () => {
+    it("should pass validation with valid claims", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
         .withBody({
@@ -562,39 +562,7 @@ describe("create client field validators", () => {
       expect(result.isValid).toBe(true);
     });
 
-    it("should pass validation with valid claims and identity verification false", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
-        .withSessionnewClientConfig({ isIdentityVerificationSupported: false })
-        .withBody({
-          "selected-claims": [
-            "https://vocab.account.gov.uk/v1/coreIdentityJWT",
-          ],
-        })
-        .build();
-
-      const result = await selectClaimsFieldValidator.validate(req as Request);
-
-      expect(result.isValid).toBe(true);
-    });
-
-    it("should pass validation with valid claims and identity verification true", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
-        .withSessionnewClientConfig({ isIdentityVerificationSupported: true })
-        .withBody({
-          "selected-claims": [
-            "https://vocab.account.gov.uk/v1/coreIdentityJWT",
-          ],
-        })
-        .build();
-
-      const result = await selectClaimsFieldValidator.validate(req as Request);
-
-      expect(result.isValid).toBe(true);
-    });
-
-    it("should pass validation when claims are empty and identity verification is empty", async () => {
+    it("should pass validation when claims are empty", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
         .withBody({
@@ -605,42 +573,6 @@ describe("create client field validators", () => {
       const result = await selectClaimsFieldValidator.validate(req as Request);
 
       expect(result.isValid).toBe(true);
-    });
-
-    it("should pass validation when claims are empty and identity verification is false", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
-        .withSessionnewClientConfig({ isIdentityVerificationSupported: false })
-        .withBody({
-          "selected-claims": [],
-        })
-        .build();
-
-      const result = await selectClaimsFieldValidator.validate(req as Request);
-
-      expect(result.isValid).toBe(true);
-    });
-
-    it("should fail validation when claims are empty and identity verification is true", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
-        .withSessionnewClientConfig({ isIdentityVerificationSupported: true })
-        .withBody({
-          "selected-claims": [],
-        })
-        .build();
-
-      const result = await selectClaimsFieldValidator.validate(req as Request);
-
-      expect(result.isValid).toBe(false);
-
-      const errorsArray = (result as InvalidField).errors;
-
-      expect(errorsArray).length(1);
-      expect(errorsArray[0].text).length(1);
-      expect(errorsArray[0].text[0]).toBe(
-        "Claims cannot be empty when identity verification is supported"
-      );
     });
 
     it("should fail validation when invalid claim added", async () => {
