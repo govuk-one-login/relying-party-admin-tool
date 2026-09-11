@@ -1,3 +1,4 @@
+/* eslint-disable vitest/max-expects */
 import { Service } from "../src/models/service.js";
 import { integrationTest, setupServicesTable } from "./base.js";
 import {
@@ -11,116 +12,125 @@ import { TransactionCanceledException } from "@aws-sdk/client-dynamodb";
 
 describe("Services data store tests", () => {
   setupServicesTable();
-  integrationTest(
-    "should get service from table by serviceId if service exists",
-    async ({ addServicesToDynamo }) => {
-      const serviceId = "test-service-id";
-      const existingService: Service = {
-        serviceId: serviceId,
-        name: "Test service",
-      };
-      await addServicesToDynamo(existingService);
 
-      const service = await getServiceByServiceId(serviceId);
+  describe("getServiceByServiceId", () => {
+    integrationTest(
+      "should get service from table by serviceId if service exists",
+      async ({ addServiceToDynamo }) => {
+        const serviceId = "test-service-id";
+        const existingService: Service = {
+          serviceId: serviceId,
+          name: "Test service",
+        };
+        await addServiceToDynamo(existingService);
 
-      expect(service).toStrictEqual(existingService);
-    }
-  );
+        const service = await getServiceByServiceId(serviceId);
 
-  integrationTest(
-    "should not get service if service with ID does not exist",
-    async () => {
-      const user = await getServiceByServiceId("not-a-service-id");
+        expect(service).toStrictEqual(existingService);
+      }
+    );
 
-      expect(user).toBeUndefined();
-    }
-  );
+    integrationTest(
+      "should not get service if service with ID does not exist",
+      async () => {
+        const user = await getServiceByServiceId("not-a-service-id");
 
-  integrationTest(
-    "should create service if services does not already exist",
-    async () => {
-      const serviceToStore: Service = {
-        serviceId: "test-service",
-        name: "My test service",
-      };
-      await createService(serviceToStore);
+        expect(user).toBeUndefined();
+      }
+    );
+  });
 
-      const actualService = await getServiceByServiceId("test-service");
+  describe("createService", () => {
+    integrationTest(
+      "should create service if services does not already exist",
+      async () => {
+        const serviceToStore: Service = {
+          serviceId: "test-service",
+          name: "My test service",
+        };
+        await createService(serviceToStore);
 
-      expect(actualService).toStrictEqual(serviceToStore);
-    }
-  );
-  integrationTest(
-    "should fail to create service if service already exists",
-    async ({ addServicesToDynamo }) => {
-      const existingService: Service = {
-        serviceId: "test-service",
-        name: "My test service",
-      };
-      await addServicesToDynamo(existingService);
+        const actualService = await getServiceByServiceId("test-service");
 
-      await expect(createService(existingService)).rejects.toThrow(
-        ConditionalCheckFailedException
-      );
-    }
-  );
+        expect(actualService).toStrictEqual(serviceToStore);
+      }
+    );
 
-  integrationTest(
-    "should add client to service if service exists",
-    async ({ addServicesToDynamo, getClientFromDynamo }) => {
-      const serviceId = "test-service-id";
-      const existingService: Service = {
-        serviceId: serviceId,
-        name: "Test service",
-      };
-      await addServicesToDynamo(existingService);
+    integrationTest(
+      "should fail to create service if service already exists",
+      async ({ addServiceToDynamo }) => {
+        const existingService: Service = {
+          serviceId: "test-service",
+          name: "My test service",
+        };
+        await addServiceToDynamo(existingService);
 
-      const client: ClientSummary = {
-        clientId: "test-client-id",
-        env: "integration",
-        name: "Test Client",
-      };
-      await addClientToService(client, serviceId);
+        await expect(createService(existingService)).rejects.toThrow(
+          ConditionalCheckFailedException
+        );
+      }
+    );
+  });
 
-      const actualClient = await getClientFromDynamo(
-        serviceId,
-        client.env,
-        client.clientId
-      );
+  describe("addClientToService", () => {
+    integrationTest(
+      "should add client to service if service exists",
+      async ({ addServiceToDynamo, getClientFromDynamo }) => {
+        const serviceId = "test-service-id";
+        const existingService: Service = {
+          serviceId,
+          name: "Test service",
+        };
+        await addServiceToDynamo(existingService);
 
-      expect(actualClient).toStrictEqual(client);
-    }
-  );
+        const client: ClientSummary = {
+          clientId: "test-client-id",
+          env: "integration",
+          name: "Test Client",
+        };
 
-  integrationTest(
-    "should fail to add client to service if service does not exist",
-    async () => {
-      const serviceId = "test-service-id";
-      const client: ClientSummary = {
-        clientId: "test-client-id",
-        env: "integration",
-        name: "Test Client",
-      };
+        await addClientToService(client, serviceId);
 
-      await expect(addClientToService(client, serviceId)).rejects.toThrow(
-        TransactionCanceledException
-      );
-    }
-  );
+        const actualClient = await getClientFromDynamo(
+          serviceId,
+          client.env,
+          client.clientId
+        );
 
-  integrationTest(
-    "should fail to add client to service if client already exists",
-    async ({ addServicesToDynamo }) => {
-      const serviceId = "test-service-id";
-      const existingService: Service = {
-        serviceId: serviceId,
-        name: "Test service",
-      };
-      await addServicesToDynamo(existingService);
+        expect(actualClient).toStrictEqual(client);
+      }
+    );
 
-      await expect(createService(existingService)).rejects.toThrow(
-        ConditionalCheckFailedException
-      );
-    }
-  );
+    integrationTest(
+      "should fail to add client to service if service does not exist",
+      async () => {
+        const serviceId = "test-service-id";
+        const client: ClientSummary = {
+          clientId: "test-client-id",
+          env: "integration",
+          name: "Test Client",
+        };
+
+        await expect(addClientToService(client, serviceId)).rejects.toThrow(
+          TransactionCanceledException
+        );
+      }
+    );
+
+    integrationTest(
+      "should fail to add client to service if client already exists",
+      async ({ addServiceToDynamo }) => {
+        const serviceId = "test-service-id";
+        const existingService: Service = {
+          serviceId: serviceId,
+          name: "Test service",
+        };
+        await addServiceToDynamo(existingService);
+
+        await expect(createService(existingService)).rejects.toThrow(
+          ConditionalCheckFailedException
+        );
+      }
+    );
+  });
 });

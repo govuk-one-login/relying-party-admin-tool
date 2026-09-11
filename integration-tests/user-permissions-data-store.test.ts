@@ -1,3 +1,4 @@
+/* eslint-disable vitest/max-expects */
 import { integrationTest, setupUserPermissionsTable } from "./base.js";
 import { User } from "../src/models/user.js";
 import {
@@ -17,13 +18,13 @@ describe("user permissions data store tests", () => {
   setupUserPermissionsTable();
   integrationTest(
     "should get user from table by ID if user exists",
-    async ({ addUsersToDynamo }) => {
+    async ({ addUserToDynamo }) => {
       const existingUser: User = {
         id: "test-user-id",
         name: "Test User",
         email: "test@user.com",
       };
-      await addUsersToDynamo(existingUser);
+      await addUserToDynamo(existingUser);
 
       const user = await getUser("test-user-id");
 
@@ -42,7 +43,7 @@ describe("user permissions data store tests", () => {
 
   integrationTest(
     "should get services with relation from table by ID if user exists",
-    async ({ addUserRelationsToDynamo }) => {
+    async ({ addUserRelationToDynamo }) => {
       const relationServiceId1 = "1";
       const existingRelation1: Relation = {
         userId: "test-user-id",
@@ -55,8 +56,8 @@ describe("user permissions data store tests", () => {
         object: `service:${relationServiceId2}`,
         relation: UserPermission.READER,
       };
-      await addUserRelationsToDynamo(existingRelation1);
-      await addUserRelationsToDynamo(existingRelation2);
+      await addUserRelationToDynamo(existingRelation1);
+      await addUserRelationToDynamo(existingRelation2);
 
       const relation = await getServicesWithRelationForUser(
         "test-user-id",
@@ -85,13 +86,13 @@ describe("user permissions data store tests", () => {
 
   integrationTest(
     "should fail to create user if user already exists with id",
-    async ({ addUsersToDynamo }) => {
+    async ({ addUserToDynamo }) => {
       const existingUser: User = {
         id: "test-user-id",
         name: "Test User",
         email: "test@email.com",
       };
-      await addUsersToDynamo(existingUser);
+      await addUserToDynamo(existingUser);
 
       await expect(createUser(existingUser)).rejects.toThrow(
         ConditionalCheckFailedException
@@ -101,13 +102,13 @@ describe("user permissions data store tests", () => {
 
   integrationTest(
     "should add user permission if user exists",
-    async ({ addUsersToDynamo, userPermissionExistsInDynamo }) => {
+    async ({ addUserToDynamo, userPermissionExistsInDynamo }) => {
       const existingUser: User = {
         id: "test-user-id",
         name: "Test User",
         email: "test@user.com",
       };
-      await addUsersToDynamo(existingUser);
+      await addUserToDynamo(existingUser);
 
       const relation: Relation = {
         userId: "test-user-id",
@@ -137,20 +138,20 @@ describe("user permissions data store tests", () => {
 
   integrationTest(
     "should fail to add user permission if permission already exists",
-    async ({ addUsersToDynamo, addUserRelationsToDynamo }) => {
+    async ({ addUserToDynamo, addUserRelationToDynamo }) => {
       const existingUser: User = {
         id: "test-user-id",
         name: "Test User",
         email: "test@user.com",
       };
-      await addUsersToDynamo(existingUser);
+      await addUserToDynamo(existingUser);
 
       const existingRelation: Relation = {
         userId: "test-user-id",
         object: `service:123`,
         relation: UserPermission.READER,
       };
-      await addUserRelationsToDynamo(existingRelation);
+      await addUserRelationToDynamo(existingRelation);
 
       await expect(addUserPermission(existingRelation)).rejects.toThrow(
         TransactionCanceledException
