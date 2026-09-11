@@ -1,14 +1,14 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { Service } from "../models/service.js";
-import { ClientSummary } from "../models/client.js";
+import { ClientServiceSummary, ClientSummary } from "../models/client.js";
 
 const dynamoClient = DynamoDBDocument.from(
   new DynamoDBClient({
     region: "eu-west-2",
     ...(process.env.DYNAMO_ENDPOINT && {
       endpoint: process.env.DYNAMO_ENDPOINT,
-    })
+    }),
   })
 );
 export const tableName = `${process.env.ENVIRONMENT ?? "test"}-services`;
@@ -29,6 +29,30 @@ export const getServiceByServiceId = async (
   } as Service;
 };
 
+export const getClientsByServiceId = async (
+  serviceId: string
+): Promise<ClientSummary[]> => {
+  const result = await dynamoClient.query({
+    TableName: tableName,
+    KeyConditionExpression: "serviceId = :pk AND begins_with(sk, :prefix)",
+    ExpressionAttributeValues: {
+      ":pk": serviceId,
+      ":prefix": "client#",
+    },
+  });
+  if (!result.Items) {
+    return [];
+  }
+  return result.Items.map((serviceClientRelation) => {
+    const sk = serviceClientRelation["sk"].split("#");
+    return {
+      clientId: sk[2],
+      name: serviceClientRelation["name"],
+      env: serviceClientRelation["env"],
+    };
+  });
+};
+
 export const createService = async (service: Service): Promise<void> => {
   await dynamoClient.put({
     TableName: tableName,
@@ -42,15 +66,14 @@ export const createService = async (service: Service): Promise<void> => {
 };
 
 export const addClientToService = async (
-  client: ClientSummary,
-  serviceId: string
+  clientServiceSummary: ClientServiceSummary
 ): Promise<void> => {
   await dynamoClient.transactWrite({
     TransactItems: [
       {
         ConditionCheck: {
           TableName: tableName,
-          Key: { serviceId: serviceId, sk: "service" },
+          Key: { serviceId: clientServiceSummary.serviceId, sk: "service" },
           ConditionExpression: "attribute_exists(serviceId)",
         },
       },
@@ -58,11 +81,11 @@ export const addClientToService = async (
         Put: {
           TableName: tableName,
           Item: {
-            serviceId: serviceId,
-            sk: `client#${client.env}#${client.clientId}`,
-            env: client.env,
-            name: client.name,
-            clientId: client.clientId,
+            serviceId: clientServiceSummary.serviceId,
+            sk: `client#${clientServiceSummary.env}#${clientServiceSummary.clientId}`,
+            env: clientServiceSummary.env,
+            name: clientServiceSummary.name,
+            clientId: clientServiceSummary.clientId,
           },
           ConditionExpression: "attribute_not_exists(sk)",
         },

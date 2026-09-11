@@ -29,13 +29,42 @@
   <h1 class="govuk-heading-l">Service name</h1>
   <h2 class="govuk-heading-m">Production Client</h2>
 
-  {% if not productionClient %}
+  {% if productionClient %}
+    {{
+      govukSummaryList({
+        card: {
+          title: { text: productionClient.name },
+          actions: {
+            items: [
+              {
+                href: "#",
+                text: "View",
+                visuallyHiddenText: "production client"
+              }
+            ]
+          }
+        },
+        rows: [
+          {
+            key: { text: "Client ID" },
+            value: { html: "<code class='red-code'>" + productionClient.clientId + "</code>" }
+          }
+        ]
+      })
+    }}
+
+    {{
+      govukInsetText({
+        text: "Production client is read-only. Contact support if you need to make changes."
+      })
+    }}
+  {% else %}
     {{
       govukSummaryList({
         rows: [
           {
             key: { text: "Status" },
-            value: { html: '<strong class="govuk-tag govuk-tag--grey">Not yet created</strong>' }
+            value: { html: "<strong class='govuk-tag govuk-tag--grey'>Not yet created</strong>" }
           }
         ]
       })
@@ -48,7 +77,30 @@
   {% endif %}
 
   <h2 class="govuk-heading-m">Integration Clients</h2>
-  {% if not integrationClients %}
+  {% if integrationClients %}
+    {% for integrationClient in integrationClients %}
+      {{
+        govukSummaryList({
+          card: {
+            title: { text: integrationClient.name },
+            actions: {
+              items: [
+                {
+                  href: "#",
+                  text: "View",
+                  visuallyHiddenText: integrationClient.name + " client"
+                }
+              ]
+            }
+          },
+          rows: [{
+            key: { text: "Client ID" },
+            value: { html: "<code class='red-code'>" + integrationClient.clientId + "</code>" }
+          }]
+        })
+      }}
+    {% endfor %}
+  {% else %}
     {{
       govukInsetText({
         text: "You do not have any integration clients yet."

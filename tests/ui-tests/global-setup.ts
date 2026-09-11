@@ -72,38 +72,60 @@ const globalSetup = async (config: FullConfig) => {
   await addDataToTable({
     TableName: `${process.env.ENVIRONMENT}-services`,
     Item: {
-      "serviceId": {"S": "1"},
-      "sk": {"S": "service"},
-      "name": {"S": "Service 1"}
+      serviceId: { S: "1" },
+      sk: { S: "service" },
+      name: { S: "Service 1" },
     },
   });
 
   await addDataToTable({
     TableName: `${process.env.ENVIRONMENT}-services`,
     Item: {
-      "serviceId": {"S": "2"},
-      "sk": {"S": "service"},
-      "name": {"S": "Service 2"}
+      serviceId: { S: "2" },
+      sk: { S: "service" },
+      name: { S: "Service 2" },
     },
   });
 
   await addDataToTable({
     TableName: `${process.env.ENVIRONMENT}-user-permissions`,
     Item: {
-      "subject": {"S": "user:userId"},
-      "sk": {"S": "relation#service:1#reader"},
-      "object": {"S": "service:1"},
-      "relation": {"S": "reader"}
+      subject: { S: "user:userId" },
+      sk: { S: "relation#service:1#reader" },
+      object: { S: "service:1" },
+      relation: { S: "reader" },
     },
   });
 
   await addDataToTable({
     TableName: `${process.env.ENVIRONMENT}-user-permissions`,
     Item: {
-      "subject": {"S": "user:userId"},
-      "sk": {"S": "relation#service:2#reader"},
-      "object": {"S": "service:2"},
-      "relation": {"S": "reader"}
+      subject: { S: "user:userId" },
+      sk: { S: "relation#service:2#reader" },
+      object: { S: "service:2" },
+      relation: { S: "reader" },
+    },
+  });
+
+  await addDataToTable({
+    TableName: `${process.env.ENVIRONMENT}-services`,
+    Item: {
+      serviceId: { S: "1" },
+      sk: { S: "client#integration#intClientId1" },
+      env: { S: "integration" },
+      clientId: { S: "intClientId1" },
+      name: { S: "Test integration client 1" },
+    },
+  });
+
+  await addDataToTable({
+    TableName: `${process.env.ENVIRONMENT}-services`,
+    Item: {
+      serviceId: { S: "1" },
+      sk: { S: "client#production#prodClientId1" },
+      env: { S: "production" },
+      clientId: { S: "prodClientId1" },
+      name: { S: "Test production client 1" },
     },
   });
 
