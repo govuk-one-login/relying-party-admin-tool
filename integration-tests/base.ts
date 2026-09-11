@@ -9,7 +9,7 @@ import { User } from "../src/models/user.js";
 import { logger } from "../src/utils/logger.js";
 import { Service } from "../src/models/service.js";
 import { Relation } from "../src/models/relation.js";
-import { ClientSummary } from "../src/models/client.js";
+import { ClientServiceSummary, ClientSummary } from "../src/models/client.js";
 
 export enum Table {
   // eslint-disable-next-line no-unused-vars
@@ -124,6 +124,22 @@ export const integrationTest = test
           Key: { serviceId: serviceId },
         })
       ).Item;
+    };
+  })
+  .extend("addClientsToDynamo", ({ dynamoDocClient }) => {
+    return async (clients: ClientServiceSummary[]) => {
+      for (const client of clients) {
+        await dynamoDocClient.put({
+          TableName: `${process.env.VITEST_WORKER_ID}-services`,
+          Item: {
+            serviceId: client.serviceId,
+            name: client.name,
+            sk: `client#${client.env}#${client.clientId}`,
+            env: client.env,
+            clientId: client.clientId,
+          },
+        });
+      }
     };
   })
   .extend("getClientFromDynamo", ({ dynamoDocClient }) => {
