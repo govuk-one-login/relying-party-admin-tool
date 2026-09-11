@@ -5,14 +5,14 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {%- from "govuk/components/tag/macro.njk" import govukTag -%}
 
-{% set pageTitleName = 'View service name' %}
+{% set pageTitleName = 'View ' + service.name %}
 
 {% block beforeContent %}
   {{
     govukBreadcrumbs({
       items: [
         { text: "Your services", href: "/services" },
-        { text: "Service name"}
+        { text: service.name }
       ]
     })
   }}
@@ -26,7 +26,7 @@
 {% endblock %}
 
 {% block pageContent %}
-  <h1 class="govuk-heading-l">Service name</h1>
+  <h1 class="govuk-heading-l">{{ service.name }}</h1>
   <h2 class="govuk-heading-m">Production Client</h2>
 
   {% if not productionClient %}
