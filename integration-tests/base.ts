@@ -9,7 +9,7 @@ import { User } from "../src/models/user.js";
 import { logger } from "../src/utils/logger.js";
 import { Service } from "../src/models/service.js";
 import { Relation } from "../src/models/relation.js";
-import { ClientSummary } from "../src/models/client.js";
+import { ClientServiceSummary, ClientSummary } from "../src/models/client.js";
 
 export enum Table {
   // eslint-disable-next-line no-unused-vars
@@ -43,34 +43,30 @@ export const integrationTest = test
   .extend("tables", async () => {
     return [Table.EMPTY];
   })
-  .extend("addUsersToDynamo", ({ dynamoDocClient }) => {
-    return async (...users: User[]) => {
-      for (const user of users) {
-        await dynamoDocClient.put({
-          TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
-          Item: {
-            subject: `user:${user.id}`,
-            email: user.email,
-            name: user.name,
-            sk: "user",
-          },
-        });
-      }
+  .extend("addUserToDynamo", ({ dynamoDocClient }) => {
+    return async (user: User) => {
+      await dynamoDocClient.put({
+        TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
+        Item: {
+          subject: `user:${user.id}`,
+          email: user.email,
+          name: user.name,
+          sk: "user",
+        },
+      });
     };
   })
-  .extend("addUserRelationsToDynamo", ({ dynamoDocClient }) => {
-    return async (...relations: Relation[]) => {
-      for (const relation of relations) {
-        await dynamoDocClient.put({
-          TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
-          Item: {
-            subject: `user:${relation.userId}`,
-            sk: `relation#${relation.object}#${relation.relation}`,
-            object: `${relation.object}`,
-            relation: `${relation.relation}`,
-          },
-        });
-      }
+  .extend("addUserRelationToDynamo", ({ dynamoDocClient }) => {
+    return async (relation: Relation) => {
+      await dynamoDocClient.put({
+        TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
+        Item: {
+          subject: `user:${relation.userId}`,
+          sk: `relation#${relation.object}#${relation.relation}`,
+          object: `${relation.object}`,
+          relation: `${relation.relation}`,
+        },
+      });
     };
   })
   .extend("getUserFromDynamo", ({ dynamoDocClient }) => {
@@ -108,18 +104,16 @@ export const integrationTest = test
       return true;
     };
   })
-  .extend("addServicesToDynamo", ({ dynamoDocClient }) => {
-    return async (...services: Service[]) => {
-      for (const service of services) {
-        await dynamoDocClient.put({
-          TableName: `${process.env.VITEST_WORKER_ID}-services`,
-          Item: {
-            serviceId: service.serviceId,
-            name: service.name,
-            sk: "service",
-          },
-        });
-      }
+  .extend("addServiceToDynamo", ({ dynamoDocClient }) => {
+    return async (service: Service) => {
+      await dynamoDocClient.put({
+        TableName: `${process.env.VITEST_WORKER_ID}-services`,
+        Item: {
+          serviceId: service.serviceId,
+          name: service.name,
+          sk: "service",
+        },
+      });
     };
   })
   .extend("getServiceFromDynamo", ({ dynamoDocClient }) => {
@@ -130,6 +124,22 @@ export const integrationTest = test
           Key: { serviceId: serviceId },
         })
       ).Item;
+    };
+  })
+  .extend("addClientsToDynamo", ({ dynamoDocClient }) => {
+    return async (clients: ClientServiceSummary[]) => {
+      for (const client of clients) {
+        await dynamoDocClient.put({
+          TableName: `${process.env.VITEST_WORKER_ID}-services`,
+          Item: {
+            serviceId: client.serviceId,
+            name: client.name,
+            sk: `client#${client.env}#${client.clientId}`,
+            env: client.env,
+            clientId: client.clientId,
+          },
+        });
+      }
     };
   })
   .extend("getClientFromDynamo", ({ dynamoDocClient }) => {

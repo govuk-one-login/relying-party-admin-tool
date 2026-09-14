@@ -38,3 +38,33 @@ aws dynamodb put-item \
         "sk": {"S": "service"},
         "name": {"S": "Service 2"}
     }'
+
+aws dynamodb put-item \
+    --table-name local-services \
+    --item '{
+        "serviceId": {"S": "1"},
+        "sk": {"S": "client#integration#client1"},
+        "env": {"S": "integration"},
+        "clientId": {"S": "client1"},
+        "name": {"S": "Test client"}
+    }'
+
+aws dynamodb put-item \
+    --table-name local-services \
+    --item '{
+        "serviceId": {"S": "1"},
+        "sk": {"S": "client#integration#client2"},
+        "env": {"S": "integration"},
+        "clientId": {"S": "client2"},
+        "name": {"S": "UAT client"}
+    }'
+
+aws dynamodb put-item \
+    --table-name local-services \
+    --item '{
+        "serviceId": {"S": "1"},
+        "sk": {"S": "client#production#prodclient1"},
+        "env": {"S": "production"},
+        "clientId": {"S": "prodclient1"},
+        "name": {"S": "Production client"}
+    }'

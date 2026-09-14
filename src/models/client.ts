@@ -9,6 +9,10 @@ export type ClientSummary = {
   env: "production" | "integration";
 };
 
+export type ClientServiceSummary = {
+  serviceId: string;
+} & ClientSummary;
+
 export type IdTokenSigningAlgorithm = (typeof VALID_TOKEN_SIGNING_ALGS)[number];
 
 export type ServiceType = (typeof VALID_SERVICE_TYPES)[number];

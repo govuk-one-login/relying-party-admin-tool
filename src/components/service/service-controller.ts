@@ -5,6 +5,7 @@ import { PATH_NAMES } from "../../app.constants.js";
 import path from "path";
 import { ClientEnvironment } from "../../models/client-environment.js";
 import { getServiceByServiceId } from "../../datastores/services-data-store.js";
+import { getClientsByServiceId } from "../../datastores/services-data-store.js";
 
 export const serviceGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response): Promise<void> => {
@@ -18,17 +19,12 @@ export const serviceGet = (): ExpressRouteFunc => {
           serviceId,
           ClientEnvironment.INTEGRATION
         );
-      const hasProductionWriterPermissions: boolean =
-        await permissionsService.checkUserHasWriterPermissions(
-          "user",
-          serviceId,
-          ClientEnvironment.PRODUCTION
-        );
       const hasManagerPermissions =
         await permissionsService.checkUserHasManagerPermissions(
           "user",
           serviceId
         );
+
       const sideNavItems = [
         {
           active: true,
@@ -44,11 +40,21 @@ export const serviceGet = (): ExpressRouteFunc => {
       try {
         const service = await getServiceByServiceId(serviceId);
 
+        const allClients = await getClientsByServiceId(serviceId);
+
+        const productionClient = allClients.filter(
+          (client) => client.env === "production"
+        )[0];
+        const integrationClients = allClients.filter(
+          (client) => client.env === "integration"
+        );
+
         return res.render("service/index.njk", {
           hasIntegrationWriterPermissions,
-          hasProductionWriterPermissions,
           ...(hasManagerPermissions && { sideNavItems }),
           service,
+          productionClient,
+          ...(integrationClients.length > 0 && { integrationClients }),
         });
       } catch {
         res.redirect(PATH_NAMES["500_ERROR"]);

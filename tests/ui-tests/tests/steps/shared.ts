@@ -11,7 +11,8 @@ const pageNameToPath: Record<string, string> = {
   "500 error": "/error",
   services: "/services",
   "create service": "/services/create",
-  service: "/services/1",
+  "service with clients": "/services/1",
+  "service without clients": "/services/2",
   client: "/services/1/clients/clientId",
   "client - edit backchannel logout url":
     "/services/1/clients/clientId/edit-backchannel-logout-url",
