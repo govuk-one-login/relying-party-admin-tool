@@ -1,36 +1,24 @@
 import type { Request, Response } from "express";
 import { PATH_NAMES } from "../../../../app.constants.js";
 import { ExpressRouteFunc } from "../../../../types.js";
-import { permissionsService } from "../../../../services/permissions-service.js";
 import { populateUrlRoute } from "../../../../utils/populate-url-route.js";
 import { saveSessionAndRedirect } from "../../../../utils/save-session-and-redirect.js";
-import { ClientEnvironment } from "../../../../models/client-environment.js";
 
 export const createClientEditClientAuthenticationGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
     const serviceId = req.params.serviceId as string;
-    if (
-      await permissionsService.checkUserHasWriterPermissions(
-        "user",
+    res.render(
+      "create-client/client-authentication-method/edit-client-authentication-method/index.njk",
+      {
+        serviceName: "Service Name",
         serviceId,
-        ClientEnvironment.INTEGRATION
-      )
-    ) {
-      res.render(
-        "create-client/client-authentication-method/edit-client-authentication-method/index.njk",
-        {
-          serviceName: "Service Name",
-          serviceId,
-          clientAuthenticationMethod:
-            req.session.newClientConfig?.clientAuthenticationMethod,
-          jwksUrl: req.session.newClientConfig?.jwksURL,
-          publicKey: req.session.newClientConfig?.publicKey,
-          clientSecret: req.session.newClientConfig?.clientSecret,
-        }
-      );
-    } else {
-      return res.redirect(PATH_NAMES.ROOT);
-    }
+        clientAuthenticationMethod:
+          req.session.newClientConfig?.clientAuthenticationMethod,
+        jwksUrl: req.session.newClientConfig?.jwksURL,
+        publicKey: req.session.newClientConfig?.publicKey,
+        clientSecret: req.session.newClientConfig?.clientSecret,
+      }
+    );
   };
 };
 
