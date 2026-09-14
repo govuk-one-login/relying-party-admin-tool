@@ -8,7 +8,10 @@ import {
 } from "../src/datastores/user-permissions-data-store.js";
 import { Relation } from "../src/models/relation.js";
 import { UserPermission } from "../src/models/permissions.js";
-import { ConditionalCheckFailedException, TransactionCanceledException } from "@aws-sdk/client-dynamodb";
+import {
+  ConditionalCheckFailedException,
+  TransactionCanceledException,
+} from "@aws-sdk/client-dynamodb";
 
 describe("user permissions data store tests", () => {
   setupUserPermissionsTable();

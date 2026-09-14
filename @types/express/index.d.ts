@@ -37,5 +37,6 @@ type AdditionalClientConfig = {
   idTokenSigningAlgorithm?: "ES256" | "RS256";
   isActive?: boolean;
   postLogoutRedirectUrls?: string[];
+  sectorIdentifierUri?: string;
   serviceType?: "OPTIONAL" | "MANDATORY";
 };

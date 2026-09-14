@@ -9,16 +9,16 @@
 
   <ul class="govuk-list">
     {% for service in services %}
-    <li>
-      <a
-        class="govuk-body-l govuk-!-font-weight-bold govuk-link--no-visited-state"
-        href="/services/{{ service.serviceId }}"
-        >{{ service.name }}</a
-      >
-    </li>
-    <hr
-      class="govuk-section-break govuk-section-break--visible govuk-section-break--l"
-    />
+      <li>
+        <a
+          class="govuk-body-l govuk-!-font-weight-bold govuk-link--no-visited-state"
+          href="/services/{{ service.serviceId }}"
+          >{{ service.name }}</a
+        >
+      </li>
+      <hr
+        class="govuk-section-break govuk-section-break--visible govuk-section-break--l"
+      />
     {% endfor %}
   </ul>
 

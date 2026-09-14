@@ -21,6 +21,8 @@ const pageNameToPath: Record<string, string> = {
     "/services/serviceId/clients/clientId/edit-is-active",
   "client - edit post logout redirect urls":
     "/services/serviceId/clients/clientId/edit-post-logout-redirect-urls",
+  "client - edit sector identifier uri":
+    "/services/serviceId/clients/clientId/edit-sector-identifier-uri",
   "client - edit service type":
     "/services/serviceId/clients/clientId/edit-service-type",
   "create client": "/services/serviceId/clients/create",
@@ -155,6 +157,11 @@ Then(
     await page.getByRole("textbox", { name: label }).fill(text);
   }
 );
+
+Then("I enter {string} into the textbox", async ({ page }, text: string) => {
+  await expect(page.getByRole("textbox")).toBeVisible();
+  await page.getByRole("textbox").fill(text);
+});
 
 Given("I click the {string} button", async ({ page }, name: string) => {
   await page.getByRole("button", { name, exact: true }).click();

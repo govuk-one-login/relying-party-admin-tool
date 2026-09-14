@@ -1,0 +1,37 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% set pageTitleName = "Edit sector identifier URI" %}
+{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
+{% set serviceName %}{{ serviceName }}{% endset %}
+
+{% block pageContent %}
+  <form class="form" action="edit-sector-identifier-uri" method="post">
+    <h1 class="govuk-heading-l">What is your client's sector identifier?</h1>
+
+    {{
+      govukWarningText({
+        text: "Changing this will change all user IDs for users of your client",
+        iconFallbackText: "Warning"
+      })
+    }}
+
+    {{
+      govukInput({
+        name: "sector-identifier-uri",
+        value: sectorIdentifierUri,
+          errorMessage: {
+            text: errors["sector-identifier-uri"].text
+          } if (errors["sector-identifier-uri"])
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Confirm"
+      })
+    }}
+  </form>
+{% endblock %}

@@ -5,22 +5,25 @@ import {
   publicKeyValidator,
   validClaimsValidator,
   validScopesValidator,
-  productionUrlValidator,
   redirectUrlValidator,
   idTokenSigningAlgorithmValidator,
   postLogoutRedirectUrlValidator,
   serviceTypeValidator,
+  sectorIdentifierUriValidator,
+  backchannelLogoutUrlValidator,
 } from "./shared-client-validators.js";
 import { FieldValidator, optional, rule, when } from "./validator.js";
-import { requiredValidator, validUrlValidator } from "./shared-validators.js";
+import {
+  productionUrlValidator,
+  requiredValidator,
+  validUrlValidator,
+} from "./shared-validators.js";
 import { getListFromRequestBody } from "../helpers/request-helpers.js";
 
 export const backchannelLogoutUrlFieldValidator = new FieldValidator(
-  optional(
-    validUrlValidator("backchannel logout URL").and(
-      productionUrlValidator("backchannel logout URL")
-    )
-  ).adaptedFrom((req: Request) => req.body["backchannel-logout-url"] as string),
+  backchannelLogoutUrlValidator.adaptedFrom(
+    (req: Request) => req.body["backchannel-logout-url"] as string
+  ),
   "backchannel-logout-url"
 );
 
@@ -181,6 +184,13 @@ export const selectScopesFieldValidator = new FieldValidator(
     getListFromRequestBody(req, "selected-scopes")
   ),
   "selected-scopes"
+);
+
+export const sectorIdentifierUriFieldValidator = new FieldValidator(
+  sectorIdentifierUriValidator.adaptedFrom(
+    (req: Request) => req.body["sector-identifier-uri"]
+  ),
+  "sector-identifier-uri"
 );
 
 export const serviceTypeFieldValidator = new FieldValidator(
