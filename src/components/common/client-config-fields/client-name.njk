@@ -2,10 +2,6 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
-
-{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
-{% set serviceName %}{{ serviceName }}{% endset %}
-
 {% block pageContent %}
   <form class="form" action="{{ formAction }}" method="post">
     {{

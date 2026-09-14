@@ -6,14 +6,9 @@ import { saveSessionAndRedirect } from "../../../../utils/save-session-and-redir
 
 export const createClientSelectClientAuthenticationGet =
   (): ExpressRouteFunc => {
-    return async (req: Request, res: Response) => {
-      const serviceId = req.params.serviceId as string;
+    return async (_req: Request, res: Response) => {
       res.render(
-        "create-client/client-authentication-method/select-client-authentication-method/index.njk",
-        {
-          serviceName: "Service Name",
-          serviceId,
-        }
+        "create-client/client-authentication-method/select-client-authentication-method/index.njk"
       );
     };
   };

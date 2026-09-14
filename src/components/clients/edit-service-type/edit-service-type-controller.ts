@@ -6,10 +6,7 @@ import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect
 
 export const editServiceTypeGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    const serviceId = req.params.serviceId as string;
     res.render("clients/edit-service-type/index.njk", {
-      serviceName: "Service Name",
-      serviceId,
       serviceType:
         req.session.changedClientConfig?.serviceType ??
         req.session.currentClientConfig?.serviceType,

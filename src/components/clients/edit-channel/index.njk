@@ -3,8 +3,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set pageTitleName = "Edit channel" %}
-{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
-{% set serviceName %}{{ serviceName }}{% endset %}
+
 {% set radioOptions = [] %}
 {%
   set radioOptions = radioOptions.concat([

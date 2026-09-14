@@ -6,11 +6,7 @@ import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect
 
 export const editBackchannelLogoutUrlGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    const serviceId = req.params.serviceId as string;
-
     res.render("clients/edit-backchannel-logout-url/index.njk", {
-      serviceName: "Service Name",
-      serviceId,
       backchannelLogoutUrl:
         req.session.changedClientConfig?.backchannelLogoutUrl ??
         req.session.currentClientConfig?.backchannelLogoutUrl,

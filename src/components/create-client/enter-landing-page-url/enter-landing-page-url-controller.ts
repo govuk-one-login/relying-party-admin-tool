@@ -5,12 +5,8 @@ import { populateUrlRoute } from "../../../utils/populate-url-route.js";
 import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
 
 export const createClientEnterLandingPageUrlGet = (): ExpressRouteFunc => {
-  return async function (req: Request, res: Response) {
-    const serviceId = req.params.serviceId as string;
-    res.render("create-client/enter-landing-page-url/index.njk", {
-      serviceName: "Service Name",
-      serviceId,
-    });
+  return async function (_req: Request, res: Response) {
+    res.render("create-client/enter-landing-page-url/index.njk");
   };
 };
 

@@ -4,8 +4,6 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% set pageTitleName = "Create client summary" %}
-{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
-{% set serviceName %}{{ serviceName }}{% endset %}
 
 {% set coreFieldsRowItems = [] %}
 
@@ -119,16 +117,6 @@
     }
   ])
 %}
-
-{% block beforeContent %}
-  {{
-    govukBreadcrumbs({
-    items: [
-      { text: "Your services", href: "/services" },
-      { text: serviceName, href: viewServiceUrl },
-      { text: "Create a client" } ] })
-  }}
-{% endblock %}
 
 {% block pageContent %}
   <form class="form" action="summary" method="post">

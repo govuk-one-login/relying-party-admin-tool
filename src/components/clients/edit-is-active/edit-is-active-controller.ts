@@ -6,10 +6,7 @@ import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect
 
 export const editIsActiveGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    const serviceId = req.params.serviceId as string;
     res.render("clients/edit-is-active/index.njk", {
-      serviceName: "Service Name",
-      serviceId,
       isActive:
         req.session.changedClientConfig?.isActive ??
         req.session.currentClientConfig?.isActive,

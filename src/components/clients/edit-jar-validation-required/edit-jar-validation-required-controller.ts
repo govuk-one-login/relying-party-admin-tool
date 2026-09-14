@@ -6,10 +6,7 @@ import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect
 
 export const editJarValidationRequiredGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    const serviceId = req.params.serviceId as string;
     res.render("clients/edit-jar-validation-required/index.njk", {
-      serviceName: "Service Name",
-      serviceId,
       jarValidationRequired:
         req.session.changedClientConfig?.jarValidationRequired ??
         req.session.currentClientConfig?.jarValidationRequired,

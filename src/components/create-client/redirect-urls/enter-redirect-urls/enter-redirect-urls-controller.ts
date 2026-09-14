@@ -5,11 +5,8 @@ import { createClientRedirectUrlsPost } from "../shared.js";
 
 export const createClientEnterRedirectUrlsGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    const serviceId = req.params.serviceId as string;
     const redirectUrls = req.session?.newClientConfig?.redirectUrls || [];
     res.render("create-client/redirect-urls/enter-redirect-urls/index.njk", {
-      serviceName: "Service Name",
-      serviceId,
       redirectUrls,
     });
   };
