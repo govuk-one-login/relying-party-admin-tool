@@ -1,32 +1,20 @@
 import type { Request, Response } from "express";
 import { PATH_NAMES } from "../../../app.constants.js";
 import { ExpressRouteFunc } from "../../../types.js";
-import { permissionsService } from "../../../services/permissions-service.js";
 import { populateUrlRoute } from "../../../utils/populate-url-route.js";
 import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
-import { ClientEnvironment } from "../../../models/client-environment.js";
 
 export const editPostLogoutRedirectUrlsGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
     const serviceId = req.params.serviceId as string;
-    if (
-      await permissionsService.checkUserHasWriterPermissions(
-        "user",
-        serviceId,
-        ClientEnvironment.INTEGRATION
-      )
-    ) {
-      const postLogoutRedirectUrls =
-        req.session?.changedClientConfig?.postLogoutRedirectUrls ??
-        req.session?.currentClientConfig?.postLogoutRedirectUrls;
-      res.render("clients/edit-post-logout-redirect-urls/index.njk", {
-        serviceName: "Service Name",
-        serviceId,
-        postLogoutRedirectUrls,
-      });
-    } else {
-      return res.redirect(PATH_NAMES.ROOT);
-    }
+    const postLogoutRedirectUrls =
+      req.session?.changedClientConfig?.postLogoutRedirectUrls ??
+      req.session?.currentClientConfig?.postLogoutRedirectUrls;
+    res.render("clients/edit-post-logout-redirect-urls/index.njk", {
+      serviceName: "Service Name",
+      serviceId,
+      postLogoutRedirectUrls,
+    });
   };
 };
 
