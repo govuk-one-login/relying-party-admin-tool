@@ -17,7 +17,8 @@ dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 export default defineConfig({
   testDir,
-  globalSetup: env.TEST_TARGET === "local" ? "./global-setup.ts" : undefined,
+  globalSetup: "./global-setup.ts",
+  globalTeardown: "./global-teardown.ts",
   forbidOnly: !env.HUMAN_IN_THE_LOOP,
   preserveOutput: "failures-only",
   workers: "50%",

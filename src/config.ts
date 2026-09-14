@@ -31,3 +31,7 @@ export const getSessionExpiry = (): number => {
 export const getProductPagesBaseUrl = (): string => {
   return PRODUCT_PAGE_BASE_URL[getAppEnv()] ?? PRODUCT_PAGE_BASE_URL.local;
 };
+
+export const getTestServiceId = (): string | undefined => {
+  return process.env.TEST_SERVICE_ID;
+};
