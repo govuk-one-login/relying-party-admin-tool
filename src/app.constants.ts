@@ -32,6 +32,7 @@ export const PATH_NAMES = {
     "/services/:serviceId/clients/create/select-levels-of-confidence",
   CREATE_CLIENT_SUMMARY: "/services/:serviceId/clients/create/summary",
   CREATE_CLIENT_SUCCESS: "/services/:serviceId/clients/create/success",
+  CLIENT_EDIT_BASE_URL: "/services/:serviceId/clients/:clientId/edit-{*any}",
   CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL:
     "/services/:serviceId/clients/:clientId/edit-backchannel-logout-url",
   CLIENT_EDIT_CHANNEL: "/services/:serviceId/clients/:clientId/edit-channel",
