@@ -3,17 +3,6 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set pageTitleName = 'Create a new integration client' %}
-{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
-
-{% block beforeContent %}
-  {{
-    govukBreadcrumbs({
-    items: [
-      { text: "Your services", href: "/services" },
-      { text: serviceName, href: viewServiceUrl },
-      { text: "Create a client" } ] })
-  }}
-{% endblock %}
 
 {% block pageContent %}
   <h1 class="govuk-heading-xl">Create a new integration client</h1>

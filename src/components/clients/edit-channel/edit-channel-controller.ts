@@ -6,10 +6,7 @@ import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect
 
 export const editChannelGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    const serviceId = req.params.serviceId as string;
     res.render("clients/edit-channel/index.njk", {
-      serviceName: "Service Name",
-      serviceId,
       channel:
         req.session.changedClientConfig?.channel ??
         req.session.currentClientConfig?.channel,

@@ -20,8 +20,6 @@ export const createClientRedirectUrlsPost = async (
   if (action === "add") {
     redirectUrls.push(redirectUrlInput.trim());
     return res.render(templatePath, {
-      serviceName: "Service Name",
-      serviceId: req.params.serviceId as string,
       redirectUrls,
     });
   }
@@ -30,8 +28,6 @@ export const createClientRedirectUrlsPost = async (
     const indexToDelete = parseInt(action.split("-")[1], 10);
     redirectUrls.splice(indexToDelete, 1);
     return res.render(templatePath, {
-      serviceName: "Service Name",
-      serviceId: req.params.serviceId as string,
       redirectUrls,
     });
   }

@@ -4,12 +4,8 @@ import { ExpressRouteFunc } from "../../types.js";
 import { populateUrlRoute } from "../../utils/populate-url-route.js";
 
 export const createClientStartGet = (): ExpressRouteFunc => {
-  return async (req: Request, res: Response) => {
-    const serviceId = req.params.serviceId as string;
-    res.render("create-client/index.njk", {
-      serviceName: "Service Name",
-      serviceId,
-    });
+  return async (_req: Request, res: Response) => {
+    res.render("create-client/index.njk");
   };
 };
 

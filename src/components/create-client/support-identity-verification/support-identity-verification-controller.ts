@@ -6,12 +6,8 @@ import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect
 
 export const createClientIsIdentityVerificationSupportedGet =
   (): ExpressRouteFunc => {
-    return async (req: Request, res: Response) => {
-      const serviceId = req.params.serviceId as string;
-      res.render("create-client/support-identity-verification/index.njk", {
-        serviceName: "Service Name",
-        serviceId,
-      });
+    return async (_req: Request, res: Response) => {
+      res.render("create-client/support-identity-verification/index.njk");
     };
   };
 

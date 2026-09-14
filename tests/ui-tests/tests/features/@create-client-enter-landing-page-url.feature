@@ -8,7 +8,6 @@ Feature: Create a new client - enter landing page url page
     And the header shows
     And the navigation bar shows
     And the footer shows
-    And the page contains the breadcrumbs: "Your services, Service Name, Create a client"
     Then the page has the heading: "Enter landing page URL for your client"
 
   Scenario: Create a new client - enter landing page url page validates the client name

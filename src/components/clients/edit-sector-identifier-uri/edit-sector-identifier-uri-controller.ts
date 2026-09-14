@@ -6,10 +6,7 @@ import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect
 
 export const editSectorIdentifierUriGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    const serviceId = req.params.serviceId as string;
     res.render("clients/edit-sector-identifier-uri/index.njk", {
-      serviceName: "Service Name",
-      serviceId,
       sectorIdentifierUri:
         req.session.changedClientConfig?.sectorIdentifierUri ??
         req.session.currentClientConfig?.sectorIdentifierUri,

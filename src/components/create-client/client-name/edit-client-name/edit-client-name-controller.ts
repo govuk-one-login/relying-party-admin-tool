@@ -6,10 +6,7 @@ import { saveSessionAndRedirect } from "../../../../utils/save-session-and-redir
 
 export const createClientEditClientNameGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    const serviceId = req.params.serviceId as string;
     res.render("create-client/client-name/edit-client-name/index.njk", {
-      serviceName: "Service Name",
-      serviceId,
       clientName: req.session.newClientConfig?.name ?? "",
     });
   };

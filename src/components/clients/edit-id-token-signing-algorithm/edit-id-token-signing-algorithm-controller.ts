@@ -6,10 +6,7 @@ import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect
 
 export const editIdTokenSigningAlgorithmGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    const serviceId = req.params.serviceId as string;
     res.render("clients/edit-id-token-signing-algorithm/index.njk", {
-      serviceName: "Service Name",
-      serviceId,
       idTokenSigningAlgorithm:
         req.session.changedClientConfig?.idTokenSigningAlgorithm ??
         req.session.currentClientConfig?.idTokenSigningAlgorithm,
