@@ -36,6 +36,12 @@ Parameters:
     Description: The port on which the container is running
     Type: Number
     Default: 6001
+  TestRoleArn:
+    Description: >
+      ARN of the SAM pipeline's CodeBuild TestRole, supplied automatically by the
+      sam-deploy-pipeline. Used to let the role access dynamodb tables.
+    Type: String
+    Default: "none"
 
   # region Tag Parameters
   ProductTagValue:
@@ -64,6 +70,7 @@ Conditions:
     !Or [!Equals [!Ref Environment, "dev"], !Equals [!Ref Environment, "build"]]
   DeployCloudfrontDnsRecord:
     !Or [!Equals [!Ref Environment, "dev"], !Equals [!Ref Environment, "build"]]
+  TestRoleExists: !Not [!Equals [!Ref TestRoleArn, "none"]]
 
 Mappings:
   EnvironmentConfiguration:
@@ -760,6 +767,37 @@ Resources:
             Condition:
               ArnLike:
                 kms:EncryptionContext:aws:dynamodb:table/arn: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/*
+
+  ServiceTablePolicy: # This is needed for the UI tests in the pipeline
+    Type: AWS::IAM::ManagedPolicy
+    Condition: TestRoleExists
+    Properties:
+      ManagedPolicyName: !Sub "${Environment}-service-table-policy"
+      Description: Gives read and write access to dynamodb service table
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowReadAndWriteAccessServiceTable
+            Effect: Allow
+            Action:
+              - "dynamodb:Query"
+              - "dynamodb:DescribeTable"
+              - "dynamodb:PutItem"
+              - "dynamodb:DeleteItem"
+              - "dynamodb:GetItem"
+              - "dynamodb:Scan"
+              - "dynamodb:UpdateItem"
+            Resource:
+              - !GetAtt ServicesTable.Arn
+          - Sid: AllowAccessToEncryptionKey
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+              - kms:Encrypt
+            Resource:
+              - !GetAtt ServicesTableEncryptionKey.Arn
+      Roles:
+        - !Ref TestRoleArn
   #endregion
 
   #region SessionStorage
@@ -939,6 +977,37 @@ Resources:
       Tags:
         - Key: Name
           Value: UserPermissionsTable
+
+  UserPermissionsPolicy: # This is needed for the UI tests in the pipeline
+    Type: AWS::IAM::ManagedPolicy
+    Condition: TestRoleExists
+    Properties:
+      ManagedPolicyName: !Sub "${Environment}-user-permissions-table-policy"
+      Description: Gives read and write access to dynamodb user permissions table
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowReadAndWriteAccessUserPermissionsTable
+            Effect: Allow
+            Action:
+              - "dynamodb:Query"
+              - "dynamodb:DescribeTable"
+              - "dynamodb:PutItem"
+              - "dynamodb:DeleteItem"
+              - "dynamodb:GetItem"
+              - "dynamodb:Scan"
+              - "dynamodb:UpdateItem"
+            Resource:
+              - !GetAtt UserPermissionsTable.Arn
+          - Sid: AllowAccessToEncryptionKey
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+              - kms:Encrypt
+            Resource:
+              - !GetAtt UserPermissionsTableEncryptionKey.Arn
+      Roles:
+        - !Ref TestRoleArn
   #endregion
 
   #region OIDC signing key pair
