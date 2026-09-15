@@ -38,6 +38,7 @@ type AdditionalClientConfig = {
   idTokenSigningAlgorithm?: "ES256" | "RS256";
   isActive?: boolean;
   jarValidationRequired?: boolean;
+  pkceEnforced?: boolean;
   postLogoutRedirectUrls?: string[];
   sectorIdentifierUri?: string;
   serviceType?: "OPTIONAL" | "MANDATORY";

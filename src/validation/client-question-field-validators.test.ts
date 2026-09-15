@@ -15,6 +15,7 @@ import {
   sectorIdentifierUriFieldValidator,
   jarValidationRequiredFieldValidator,
   channelFieldValidator,
+  pkceEnforcedFieldValidator,
 } from "./client-question-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
@@ -1007,6 +1008,36 @@ describe("create client field validators", () => {
           "Your landing page URL must not use a local hostname"
         );
       });
+    });
+  });
+
+  describe("pkceEnforcedFieldValidator", () => {
+    it("should pass validation when an option is selected", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "pkce-enforced": "true",
+        })
+        .build();
+
+      const result = await pkceEnforcedFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when PKCE enforced is empty", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder().withBody({}).build();
+
+      const result = await pkceEnforcedFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe("Select an option");
     });
   });
 

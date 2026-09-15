@@ -42,6 +42,8 @@ export const PATH_NAMES = {
     "/services/:serviceId/clients/:clientId/edit-jar-validation-required",
   CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS:
     "/services/:serviceId/clients/:clientId/edit-post-logout-redirect-urls",
+  CLIENT_EDIT_PKCE_ENFORCED:
+    "/services/:serviceId/clients/:clientId/edit-pkce-enforced",
   CLIENT_EDIT_SECTOR_IDENTIFIER_URI:
     "/services/:serviceId/clients/:clientId/edit-sector-identifier-uri",
   CLIENT_EDIT_SERVICE_TYPE:

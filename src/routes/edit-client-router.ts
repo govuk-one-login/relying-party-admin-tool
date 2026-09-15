@@ -40,6 +40,11 @@ import {
   editChannelPost,
 } from "../components/clients/edit-channel/edit-channel-controller.js";
 import { validateEditChannelRequest } from "../components/clients/edit-channel/edit-channel-validation.js";
+import {
+  editPKCEEnforcedGet,
+  editPKCEEnforcedPost,
+} from "../components/clients/edit-pkce-enforced/edit-pkce-enforced-controller.js";
+import { validateEditPKCEEnforcedRequest } from "../components/clients/edit-pkce-enforced/edit-pkce-enforced-validation.js";
 
 const router = express.Router();
 
@@ -90,6 +95,14 @@ router.post(
   PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED,
   validateEditJarValidationRequiredRequest(),
   editJarValidationRequiredPost()
+);
+
+router.get(PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED, editPKCEEnforcedGet());
+
+router.post(
+  PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED,
+  validateEditPKCEEnforcedRequest(),
+  editPKCEEnforcedPost()
 );
 
 router.get(
