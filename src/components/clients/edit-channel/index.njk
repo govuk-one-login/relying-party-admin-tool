@@ -1,0 +1,67 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitleName = "Edit channel" %}
+{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
+{% set serviceName %}{{ serviceName }}{% endset %}
+{% set radioOptions = [] %}
+{%
+  set radioOptions = radioOptions.concat([
+    {
+      value: "web",
+      text: "Web"
+    }
+  ])
+%}
+{% if channel === "strategic_app" %}
+  {%
+    set radioOptions = radioOptions.concat([
+      {
+        value: "generic_app",
+        text: "Generic app"
+      },
+      {
+        value: "strategic_app",
+        text: "Strategic app"
+      }
+    ])
+  %}
+{% else %}
+  {%
+    set radioOptions = radioOptions.concat([
+      {
+        value: "generic_app",
+        text: "App"
+      }
+    ])
+  %}
+{% endif %}
+
+{% block pageContent %}
+  <form class="form" action="edit-channel" method="post">
+    {{
+      govukRadios({
+        name: "channel",
+        value: channel,
+        fieldset: {
+          legend: {
+            text: "What format is your client?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        items: radioOptions,
+        errorMessage: {
+          text: errors["channel"].text
+        } if (errors["channel"])
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Confirm"
+      })
+    }}
+  </form>
+{% endblock %}
