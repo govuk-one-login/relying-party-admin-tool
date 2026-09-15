@@ -8,7 +8,6 @@ Feature: Create a new client - select scopes page
     And the header shows
     And the navigation bar shows
     And the footer shows
-    And the page contains the breadcrumbs: "Your services, Service Name, Create a client"
     Then the page has the heading: "Select your scopes"
     And the page contains the text: "openid will be automatically added to your scopes configuration as it is required to sign in users"
 

@@ -1,0 +1,23 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% set pageTitleName = "Forbidden" %}
+{% if isUserLoggedIn %}
+  {% set buttonText = "Go to your One Login Admin account" %}
+{% else %}
+  {% set buttonText = "Sign in to One Login Admin" %}
+{% endif %}
+
+{% block pageContent %}
+  <h1 class="govuk-heading-l">Forbidden</h1>
+  <p class="govuk-body">You do not have access to this page.</p>
+  <p class="govuk-body">If you typed the web address, check it is correct.</p>
+  <p class="govuk-body">
+    If you pasted the web address, check you copied the entire address.
+  </p>
+  {{
+    govukButton({
+      text: buttonText,
+      href: landingPageUrl
+    })
+  }}
+{% endblock %}

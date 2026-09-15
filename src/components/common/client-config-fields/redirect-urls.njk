@@ -3,9 +3,6 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
-
-{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
-{% set serviceName %}{{ serviceName }}{% endset %}
 {% set redirectError = errors["redirect-url-input"] or errors["redirect-urls"] %}
 {% set rowItems = [] %}
 {% for redirectUrl in redirectUrls %}

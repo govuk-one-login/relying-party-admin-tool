@@ -8,7 +8,6 @@ Feature: Create a new client - summary page
     And the header shows
     And the navigation bar shows
     And the footer shows
-    And the page contains the breadcrumbs: "Your services, Service Name, Create a client"
     Then the page has the heading: "Check these details before creating your client"
     And the field: "name" has the value: "Not set"
     And the field: "client-authentication-method" has the value: "Not set"

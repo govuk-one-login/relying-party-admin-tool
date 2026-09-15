@@ -4,18 +4,6 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% set pageTitleName = "Enter landing page URL" %}
-{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
-{% set serviceName %}{{ serviceName }}{% endset %}
-
-{% block beforeContent %}
-  {{
-    govukBreadcrumbs({
-    items: [
-      { text: "Your services", href: "/services" },
-      { text: serviceName, href: viewServiceUrl },
-      { text: "Create a client" } ] })
-  }}
-{% endblock %}
 
 {% block pageContent %}
   <form class="form" action="enter-landing-page-url" method="post">

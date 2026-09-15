@@ -40,8 +40,14 @@ import {
   editChannelPost,
 } from "../components/clients/edit-channel/edit-channel-controller.js";
 import { validateEditChannelRequest } from "../components/clients/edit-channel/edit-channel-validation.js";
+import { checkIntegrationWriterPermissionsMiddleware } from "../middleware/permissions-check-middleware.js";
 
 const router = express.Router();
+
+router.use(
+  PATH_NAMES.CLIENT_EDIT_BASE_URL,
+  checkIntegrationWriterPermissionsMiddleware
+);
 
 router.get(
   PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,

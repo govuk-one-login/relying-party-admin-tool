@@ -5,18 +5,6 @@
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set pageTitleName = "Select scopes" %}
-{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
-{% set serviceName %}{{ serviceName }}{% endset %}
-
-{% block beforeContent %}
-  {{
-    govukBreadcrumbs({
-    items: [
-      { text: "Your services", href: "/services" },
-      { text: serviceName, href: viewServiceUrl },
-      { text: "Create a client" } ] })
-  }}
-{% endblock %}
 
 {% block pageContent %}
   <form class="form" action="select-scopes" method="post">
