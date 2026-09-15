@@ -54,4 +54,5 @@ jobs:
           echo "AWS_SECRET_ACCESS_KEY=DUMMYEXAMPLEKEY" >> .env
           echo "AWS_REGION=eu-west-2" >> .env
           echo "ENVIRONMENT=local" >> .env
+          echo "TEST_ENVIRONMENT=local" >> .env
           npm run test
