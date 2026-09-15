@@ -22,7 +22,7 @@ const deleteDataFromTable = async (deleteItemCommand: DeleteItemCommand) => {
 const globalTeardown = async (config: FullConfig) => {
   await deleteDataFromTable(
     new DeleteItemCommand({
-      TableName: `${process.env.ENVIRONMENT}-services`,
+      TableName: `${process.env.TEST_ENVIRONMENT}-services`,
       Key: {
         serviceId: { S: getTestServiceId() },
         sk: { S: "service" },
