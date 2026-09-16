@@ -768,36 +768,6 @@ Resources:
               ArnLike:
                 kms:EncryptionContext:aws:dynamodb:table/arn: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/*
 
-  ServiceTablePolicy: # This is needed for the UI tests in the pipeline
-    Type: AWS::IAM::ManagedPolicy
-    Condition: TestRoleExists
-    Properties:
-      ManagedPolicyName: !Sub "${Environment}-service-table-policy"
-      Description: Gives read and write access to dynamodb service table
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Sid: AllowReadAndWriteAccessServiceTable
-            Effect: Allow
-            Action:
-              - "dynamodb:Query"
-              - "dynamodb:DescribeTable"
-              - "dynamodb:PutItem"
-              - "dynamodb:DeleteItem"
-              - "dynamodb:GetItem"
-              - "dynamodb:Scan"
-              - "dynamodb:UpdateItem"
-            Resource:
-              - !GetAtt ServicesTable.Arn
-          - Sid: AllowAccessToEncryptionKey
-            Effect: Allow
-            Action:
-              - kms:Decrypt
-              - kms:Encrypt
-            Resource:
-              - !GetAtt ServicesTableEncryptionKey.Arn
-      Roles:
-        - !Ref TestRoleArn
   #endregion
 
   #region SessionStorage
@@ -978,36 +948,6 @@ Resources:
         - Key: Name
           Value: UserPermissionsTable
 
-  UserPermissionsPolicy: # This is needed for the UI tests in the pipeline
-    Type: AWS::IAM::ManagedPolicy
-    Condition: TestRoleExists
-    Properties:
-      ManagedPolicyName: !Sub "${Environment}-user-permissions-table-policy"
-      Description: Gives read and write access to dynamodb user permissions table
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Sid: AllowReadAndWriteAccessUserPermissionsTable
-            Effect: Allow
-            Action:
-              - "dynamodb:Query"
-              - "dynamodb:DescribeTable"
-              - "dynamodb:PutItem"
-              - "dynamodb:DeleteItem"
-              - "dynamodb:GetItem"
-              - "dynamodb:Scan"
-              - "dynamodb:UpdateItem"
-            Resource:
-              - !GetAtt UserPermissionsTable.Arn
-          - Sid: AllowAccessToEncryptionKey
-            Effect: Allow
-            Action:
-              - kms:Decrypt
-              - kms:Encrypt
-            Resource:
-              - !GetAtt UserPermissionsTableEncryptionKey.Arn
-      Roles:
-        - !Ref TestRoleArn
   #endregion
 
   #region OIDC signing key pair
@@ -1040,7 +980,7 @@ Resources:
   #region Testing Role
   #This is needed for the UI tests in the pipeline
   
-  DynamoDbUItestRole:
+  DynamoDbUITestRole:
     Type: AWS::IAM::Role
     Condition: TestRoleExists
     Properties:
@@ -1077,7 +1017,8 @@ Resources:
                 Action:
                   - kms:Decrypt
                   - kms:Encrypt
-                Resource: !GetAtt ServicesTableEncryptionKey.Arn
+                Resource: 
+                  - !GetAtt ServicesTableEncryptionKey.Arn
         - PolicyName: "UserPermissionsTableCRUD"
           PolicyDocument:
             Version: "2012-10-17"
@@ -1101,7 +1042,8 @@ Resources:
                 Action:
                   - kms:Decrypt
                   - kms:Encrypt
-                Resource: !GetAtt UserPermissionsTableEncryptionKey.Arn
+                Resource: 
+                  - !GetAtt UserPermissionsTableEncryptionKey.Arn
       PermissionsBoundary: !If
         - UsePermissionsBoundary
         - !Ref PermissionsBoundary
