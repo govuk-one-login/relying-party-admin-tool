@@ -20,9 +20,10 @@ export const createClientSummaryGet = (): ExpressRouteFunc => {
 export const createClientSummaryPost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
     const serviceId = req.params.serviceId as string;
+    const userId = "userId";
     if (
       await permissionsService.checkUserHasWriterPermissions(
-        "user",
+        userId,
         serviceId,
         ClientEnvironment.INTEGRATION
       )
@@ -37,7 +38,13 @@ export const createClientSummaryPost = (): ExpressRouteFunc => {
         })
       );
     } else {
-      return res.redirect(PATH_NAMES.ROOT);
+      req.log.warn(
+        {
+          serviceId,
+        },
+        "User does not have permissions to create an integration client"
+      );
+      return res.redirect(PATH_NAMES["403_ERROR"]);
     }
   };
 };

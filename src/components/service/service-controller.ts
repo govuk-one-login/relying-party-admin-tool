@@ -10,15 +10,16 @@ import { getClientsByServiceId } from "../../datastores/services-data-store.js";
 export const serviceGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response): Promise<void> => {
     const serviceId = req.params.serviceId as string;
+    const userId = "userId";
     const hasIntegrationWriterPermissions: boolean =
       await permissionsService.checkUserHasWriterPermissions(
-        "user",
+        userId,
         serviceId,
         ClientEnvironment.INTEGRATION
       );
     const hasManagerPermissions =
       await permissionsService.checkUserHasManagerPermissions(
-        "user",
+        userId,
         serviceId
       );
 
