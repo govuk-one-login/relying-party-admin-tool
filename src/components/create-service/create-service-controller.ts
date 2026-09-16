@@ -11,14 +11,14 @@ export const createServicePost = (): ExpressRouteFunc => {
     const serviceId =
       getTestServiceId() ?? crypto.randomBytes(20).toString("base64url");
     const serviceName = req.body.name;
-    if (!serviceName) {
-      return res.redirect(PATH_NAMES["500_ERROR"]);
-    }
+
     try {
       await createService({
         serviceId,
         name: serviceName,
       });
+
+      req.log.info({ serviceId }, `Successfully created service: ${serviceId}`);
       // TODO: add user to user permissions with manager role
     } catch (error: unknown) {
       const errorMessage =
@@ -26,6 +26,7 @@ export const createServicePost = (): ExpressRouteFunc => {
       req.log.error(errorMessage);
       res.redirect(PATH_NAMES["500_ERROR"]);
     }
+
     return res.redirect(
       populateUrlRoute(PATH_NAMES.SERVICE, { [":serviceId"]: serviceId })
     );
