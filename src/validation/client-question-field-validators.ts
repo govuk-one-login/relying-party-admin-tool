@@ -158,6 +158,13 @@ const postLogoutRedirectUrlInputValidator = when(
     )
 );
 
+export const pkceEnforcedFieldValidator = new FieldValidator(
+  requiredValidator("Select an option").adaptedFrom(
+    (req: Request) => req.body["pkce-enforced"]
+  ),
+  "pkce-enforced"
+);
+
 export const postLogoutRedirectUrlsFieldValidator = new FieldValidator(
   postLogoutRedirectUrlInputValidator,
   "post-logout-redirect-url-input"

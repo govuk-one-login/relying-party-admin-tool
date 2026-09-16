@@ -1,0 +1,42 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitleName = "Edit is PKCE enforced" %}
+
+{% block pageContent %}
+  <form class="form" action="edit-pkce-enforced" method="post">
+    {{
+      govukRadios({
+        name: "pkce-enforced",
+        value: pkceEnforced,
+        fieldset: {
+          legend: {
+            text: "Is PKCE enforced?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        items: [
+          {
+            value: "true",
+            text: "Yes"
+          },
+          {
+            value: "false",
+            text: "No"
+          }
+        ],
+        errorMessage: {
+          text: errors["pkce-enforced"].text
+        } if (errors["pkce-enforced"])
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Confirm"
+      })
+    }}
+  </form>
+{% endblock %}

@@ -19,12 +19,13 @@ const pageNameToPath: Record<string, string> = {
   "client - edit channel": "/services/1/clients/clientId/edit-channel",
   "client - edit id token signing algorithm":
     "/services/1/clients/clientId/edit-id-token-signing-algorithm",
-  "client - edit is active":
-    "/services/1/clients/clientId/edit-is-active",
+  "client - edit is active": "/services/1/clients/clientId/edit-is-active",
   "client - edit jar validation required":
     "/services/1/clients/clientId/edit-jar-validation-required",
   "client - edit post logout redirect urls":
     "/services/1/clients/clientId/edit-post-logout-redirect-urls",
+  "client - edit pkce enforced":
+    "/services/1/clients/clientId/edit-pkce-enforced",
   "client - edit sector identifier uri":
     "/services/1/clients/clientId/edit-sector-identifier-uri",
   "client - edit service type":
