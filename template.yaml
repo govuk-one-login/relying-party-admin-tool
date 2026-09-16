@@ -1036,3 +1036,88 @@ Resources:
             Resource: "*"
 
   #endregion
+
+  #region Testing Role
+  #This is needed for the UI tests in the pipeline
+  
+  DynamoDbUItestRole:
+    Type: AWS::IAM::Role
+    Condition: TestRoleExists
+    Properties:
+      RoleName: !Sub ${Environment}-DynamoDbUItestRole
+      Description: Role to allow Test Role to assume in order to be able to run UI tests
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              AWS: !Ref TestRoleArn
+      Policies:
+        - PolicyName: "ServicesTableCRUD"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "dynamodb:Query"
+                  - "dynamodb:DescribeTable"
+                  - "dynamodb:PutItem"
+                  - "dynamodb:DeleteItem"
+                  - "dynamodb:GetItem"
+                  - "dynamodb:Scan"
+                  - "dynamodb:UpdateItem"
+                Resource:
+                  - !GetAtt ServicesTable.Arn
+        - PolicyName: "ServicesTableKmsEncryptDecrypt"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - kms:Decrypt
+                  - kms:Encrypt
+                Resource: !GetAtt ServicesTableEncryptionKey.Arn
+        - PolicyName: "UserPermissionsTableCRUD"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "dynamodb:Query"
+                  - "dynamodb:DescribeTable"
+                  - "dynamodb:PutItem"
+                  - "dynamodb:DeleteItem"
+                  - "dynamodb:GetItem"
+                  - "dynamodb:Scan"
+                  - "dynamodb:UpdateItem"
+                Resource:
+                  - !GetAtt UserPermissionsTable.Arn
+        - PolicyName: "UserPermissionsTableKmsEncryptDecrypt"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - kms:Decrypt
+                  - kms:Encrypt
+                Resource: !GetAtt UserPermissionsTableEncryptionKey.Arn
+      PermissionsBoundary: !If
+        - UsePermissionsBoundary
+        - !Ref PermissionsBoundary
+        - !Ref AWS::NoValue
+      Tags:
+        - Key: Product
+          Value: !Ref ProductTagValue
+        - Key: System
+          Value: !Ref SystemTagValue
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-DynamoDbUItestRole"
+        - Key: Owner
+          Value: !Ref OwnerTagValue
+        - Key: Source
+          Value: !Ref SourceTagValue
+
+  #endregion
