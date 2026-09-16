@@ -25,6 +25,8 @@ import { getSessionStore } from "./datastores/session-data-store.js";
 import { getSessionCookieOptions } from "./config/cookie.js";
 import { jwksRouter } from "./routes/jwks-router.js";
 import { editClientRouter } from "./routes/edit-client-router.js";
+import helmet from "helmet";
+import { helmetConfiguration } from "./config/helmet.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -107,6 +109,8 @@ const createApp = async (): Promise<express.Application> => {
     engine.addGlobal("response", res);
     next();
   });
+
+  app.use(helmet(helmetConfiguration));
 
   app.use(indexRouter);
   app.use(servicesRouter);
