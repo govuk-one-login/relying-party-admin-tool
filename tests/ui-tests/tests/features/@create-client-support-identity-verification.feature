@@ -8,7 +8,6 @@ Feature: Create a new client - support identity verification page
     And the header shows
     And the navigation bar shows
     And the footer shows
-    And the page contains the breadcrumbs: "Your services, Service Name, Create a client"
     Then the page has the heading: "Is your client using identity verification?"
     And the page contains the text: "This will require: claims your client requires required levels of confidence landing page url"
     And the page contains the text: "This can be added/changed after your client is created. This cannot be used injuction with client secret."

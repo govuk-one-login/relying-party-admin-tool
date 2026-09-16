@@ -45,8 +45,14 @@ import {
   editPKCEEnforcedPost,
 } from "../components/clients/edit-pkce-enforced/edit-pkce-enforced-controller.js";
 import { validateEditPKCEEnforcedRequest } from "../components/clients/edit-pkce-enforced/edit-pkce-enforced-validation.js";
+import { checkIntegrationWriterPermissionsMiddleware } from "../middleware/permissions-check-middleware.js";
 
 const router = express.Router();
+
+router.use(
+  PATH_NAMES.CLIENT_EDIT_BASE_URL,
+  checkIntegrationWriterPermissionsMiddleware
+);
 
 router.get(
   PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,

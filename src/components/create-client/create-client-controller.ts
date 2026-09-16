@@ -1,27 +1,11 @@
 import type { Request, Response } from "express";
 import { PATH_NAMES } from "../../app.constants.js";
 import { ExpressRouteFunc } from "../../types.js";
-import { permissionsService } from "../../services/permissions-service.js";
 import { populateUrlRoute } from "../../utils/populate-url-route.js";
-import { ClientEnvironment } from "../../models/client-environment.js";
 
 export const createClientStartGet = (): ExpressRouteFunc => {
-  return async (req: Request, res: Response) => {
-    const serviceId = req.params.serviceId as string;
-    if (
-      await permissionsService.checkUserHasWriterPermissions(
-        "user",
-        serviceId,
-        ClientEnvironment.INTEGRATION
-      )
-    ) {
-      res.render("create-client/index.njk", {
-        serviceName: "Service Name",
-        serviceId,
-      });
-    } else {
-      return res.redirect(PATH_NAMES.ROOT);
-    }
+  return async (_req: Request, res: Response) => {
+    res.render("create-client/index.njk");
   };
 };
 

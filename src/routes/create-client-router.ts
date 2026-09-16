@@ -65,8 +65,14 @@ import {
   createClientEditRedirectUrlsGet,
   createClientEditRedirectUrlsPost,
 } from "../components/create-client/redirect-urls/edit-redirect-urls/edit-redirect-urls-controller.js";
+import { checkIntegrationWriterPermissionsMiddleware } from "../middleware/permissions-check-middleware.js";
 
 const router = express.Router();
+
+router.use(
+  PATH_NAMES.CREATE_CLIENT,
+  checkIntegrationWriterPermissionsMiddleware
+);
 
 router.get(PATH_NAMES.CREATE_CLIENT, createClientStartGet());
 

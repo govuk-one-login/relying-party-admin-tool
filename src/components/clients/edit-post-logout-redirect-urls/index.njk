@@ -4,8 +4,6 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
 {% set pageTitleName = "Edit post logout redirect URLs" %}
-{% set viewServiceUrl %}/services/{{ serviceId }}{% endset %}
-{% set serviceName %}{{ serviceName }}{% endset %}
 
 {% set postLogoutRedirectError = errors["post-logout-redirect-url-input"] or errors["post-logout-redirect-urls"] %}
 {% set rowItems = [] %}

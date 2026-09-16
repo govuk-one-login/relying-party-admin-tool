@@ -8,25 +8,12 @@ import { ClientEnvironment } from "../../../models/client-environment.js";
 
 export const createClientSummaryGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    const serviceId = req.params.serviceId as string;
-    if (
-      await permissionsService.checkUserHasWriterPermissions(
-        "user",
-        serviceId,
-        ClientEnvironment.INTEGRATION
-      )
-    ) {
-      res.render("create-client/summary/index.njk", {
-        serviceName: "Service Name",
-        serviceId,
-        client: req.session.newClientConfig,
-        baseUrl: populateUrlRoute(PATH_NAMES.CREATE_CLIENT, {
-          [":serviceId"]: req.params.serviceId as string,
-        }),
-      });
-    } else {
-      return res.redirect(PATH_NAMES.ROOT);
-    }
+    res.render("create-client/summary/index.njk", {
+      client: req.session.newClientConfig,
+      baseUrl: populateUrlRoute(PATH_NAMES.CREATE_CLIENT, {
+        [":serviceId"]: req.params.serviceId as string,
+      }),
+    });
   };
 };
 

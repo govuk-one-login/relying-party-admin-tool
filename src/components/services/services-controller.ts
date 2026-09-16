@@ -3,7 +3,7 @@ import { ExpressRouteFunc } from "../../types.js";
 import { getServicesUserCanView } from "../../services/service-permissions-service.js";
 
 export const servicesGet = (): ExpressRouteFunc => {
-  return async (req: Request, res: Response): Promise<void> => {
+  return async (_req: Request, res: Response): Promise<void> => {
     const services = await getServicesUserCanView("userId");
 
     return res.render("services/index.njk", {
