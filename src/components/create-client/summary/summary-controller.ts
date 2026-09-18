@@ -21,6 +21,7 @@ export const createClientSummaryPost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
     const serviceId = req.params.serviceId as string;
     const userId = "userId";
+    const clientId = "clientId";
     if (
       await permissionsService.checkUserHasWriterPermissions(
         userId,
@@ -29,6 +30,13 @@ export const createClientSummaryPost = (): ExpressRouteFunc => {
       )
     ) {
       // TODO: write to service/client database and send to client registry api
+      req.log.info(
+        {
+          serviceId,
+          clientId,
+        },
+        `Creating new client: ${clientId}`
+      );
       req.session.newClientConfig = {};
       return saveSessionAndRedirect(
         req,
