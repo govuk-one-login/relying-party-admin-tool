@@ -38,6 +38,14 @@ export const serviceGet = (): ExpressRouteFunc => {
     try {
       const service = await getServiceByServiceId(serviceId);
 
+      if (service === undefined) {
+        req.log.error(
+          { serviceId },
+          "Service ID does not exist, but user permissions do"
+        );
+        return res.redirect(PATH_NAMES["500_ERROR"]);
+      }
+
       const allClients = await getClientsByServiceId(serviceId);
 
       const productionClient = allClients.filter(
