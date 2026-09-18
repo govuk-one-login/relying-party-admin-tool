@@ -24,7 +24,7 @@ export const createServicePost = (): ExpressRouteFunc => {
       const errorMessage =
         error instanceof Error ? error.message : "Error creating service";
       req.log.error(errorMessage);
-      res.redirect(PATH_NAMES["500_ERROR"]);
+      return res.redirect(PATH_NAMES["500_ERROR"]);
     }
 
     return res.redirect(

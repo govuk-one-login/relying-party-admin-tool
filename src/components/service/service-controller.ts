@@ -60,7 +60,7 @@ export const serviceGet = (): ExpressRouteFunc => {
           ? error.message
           : "Error fetching service/clients";
       req.log.error(errorMessage);
-      res.redirect(PATH_NAMES["500_ERROR"]);
+      return res.redirect(PATH_NAMES["500_ERROR"]);
     }
   };
 };
