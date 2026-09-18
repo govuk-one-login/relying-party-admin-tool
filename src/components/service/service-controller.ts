@@ -53,7 +53,12 @@ export const serviceGet = (): ExpressRouteFunc => {
         productionClient,
         ...(integrationClients.length > 0 && { integrationClients }),
       });
-    } catch {
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Error fetching service/clients";
+      req.log.error(errorMessage);
       res.redirect(PATH_NAMES["500_ERROR"]);
     }
   };

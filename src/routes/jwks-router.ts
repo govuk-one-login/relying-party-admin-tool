@@ -40,8 +40,11 @@ router.get(PATH_NAMES.OIDC_JWKS, async (req, res, next) => {
     res.json({
       keys: [oidcSigningJwk],
     });
-  } catch (err) {
-    next(err);
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Error getting JWK key from KMS";
+    req.log.error(errorMessage);
+    next(error);
   }
 });
 

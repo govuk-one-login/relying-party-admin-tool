@@ -21,7 +21,12 @@ export const checkIntegrationWriterPermissionsMiddleware = async (
     } else {
       return res.redirect(PATH_NAMES["403_ERROR"]);
     }
-  } catch {
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Error checking user's integration writer permissions";
+    req.log.error(errorMessage);
     return res.redirect(PATH_NAMES["500_ERROR"]);
   }
 };
@@ -40,7 +45,12 @@ export const checkReaderPermissionsMiddleware = async (
     } else {
       return res.redirect(PATH_NAMES["403_ERROR"]);
     }
-  } catch {
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Error checking user's reader permissions";
+    req.log.error(errorMessage);
     return res.redirect(PATH_NAMES["500_ERROR"]);
   }
 };
