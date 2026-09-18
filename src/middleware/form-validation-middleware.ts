@@ -24,6 +24,7 @@ export const validateFieldsMiddleware = (
         : undefined;
 
     if (!result.isValid) {
+      req.log.warn(`Validation failed: ${result.errors}`);
       return renderBadRequest(res, req, template, result.errors, locals);
     }
     next();
