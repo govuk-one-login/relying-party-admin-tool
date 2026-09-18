@@ -15,7 +15,13 @@ describe("check-permissions-middleware", () => {
       params: {
         serviceId: "test-service-id",
       },
-    };
+      log: {
+        debug: vi.fn(() => {}),
+        info: vi.fn(() => {}),
+        warn: vi.fn(() => {}),
+        error: vi.fn(() => {}),
+      },
+    } as unknown as Request;
     res = { redirect: vi.fn(() => {}) };
     next = vi.fn(() => {});
   });

@@ -1,11 +1,16 @@
 import "express";
 import "express-session";
 import { ClientConfig } from "../../src/models/client.ts";
+import { logger } from "../../src/utils/logger";
 
 declare global {
   namespace Express {
     export interface Locals {
       scriptNonce?: string;
+    }
+
+    export interface Request {
+      log: logger;
     }
   }
 }

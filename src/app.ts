@@ -95,9 +95,10 @@ const createApp = async (): Promise<express.Application> => {
 
   app.use(setLocalVarsMiddleware);
 
-  app.use((req, res, next) => {
+  app.use((req, _res, next) => {
     req.log = req.log.child({
-      trace: res.locals.trace,
+      sessionId: req.sessionID,
+      // TODO: add userID when logged in
     });
     next();
   });
