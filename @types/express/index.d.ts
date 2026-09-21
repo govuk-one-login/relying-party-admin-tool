@@ -11,6 +11,7 @@ declare global {
 
     export interface Request {
       log: logger;
+      csrfToken?: () => string;
     }
   }
 }
