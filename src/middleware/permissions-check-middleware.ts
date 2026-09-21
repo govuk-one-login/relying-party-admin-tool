@@ -9,19 +9,31 @@ export const checkIntegrationWriterPermissionsMiddleware = async (
   next: NextFunction
 ): Promise<void> => {
   const serviceId = req.params.serviceId as string;
+  const userId = "userId";
   try {
     if (
       await permissionsService.checkUserHasWriterPermissions(
-        "user",
+        userId,
         serviceId,
         ClientEnvironment.INTEGRATION
       )
     ) {
       next();
     } else {
+      req.log.warn(
+        {
+          serviceId,
+        },
+        "User does not have permissions to write to integration client"
+      );
       return res.redirect(PATH_NAMES["403_ERROR"]);
     }
-  } catch {
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Error checking user's integration writer permissions";
+    req.log.error(errorMessage);
     return res.redirect(PATH_NAMES["500_ERROR"]);
   }
 };
@@ -32,15 +44,27 @@ export const checkReaderPermissionsMiddleware = async (
   next: NextFunction
 ): Promise<void> => {
   const serviceId = req.params.serviceId as string;
+  const userId = "userId";
   try {
     if (
-      await permissionsService.checkUserHasReaderPermissions("user", serviceId)
+      await permissionsService.checkUserHasReaderPermissions(userId, serviceId)
     ) {
       next();
     } else {
+      req.log.warn(
+        {
+          serviceId,
+        },
+        "User does not have permissions to read to service"
+      );
       return res.redirect(PATH_NAMES["403_ERROR"]);
     }
-  } catch {
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Error checking user's reader permissions";
+    req.log.error(errorMessage);
     return res.redirect(PATH_NAMES["500_ERROR"]);
   }
 };

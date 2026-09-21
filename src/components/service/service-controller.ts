@@ -10,15 +10,16 @@ import { getClientsByServiceId } from "../../datastores/services-data-store.js";
 export const serviceGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response): Promise<void> => {
     const serviceId = req.params.serviceId as string;
+    const userId = "userId";
     const hasIntegrationWriterPermissions: boolean =
       await permissionsService.checkUserHasWriterPermissions(
-        "user",
+        userId,
         serviceId,
         ClientEnvironment.INTEGRATION
       );
     const hasManagerPermissions =
       await permissionsService.checkUserHasManagerPermissions(
-        "user",
+        userId,
         serviceId
       );
 
@@ -37,6 +38,14 @@ export const serviceGet = (): ExpressRouteFunc => {
     try {
       const service = await getServiceByServiceId(serviceId);
 
+      if (service === undefined) {
+        req.log.error(
+          { serviceId },
+          "Service ID does not exist, but user permissions do"
+        );
+        return res.redirect(PATH_NAMES["500_ERROR"]);
+      }
+
       const allClients = await getClientsByServiceId(serviceId);
 
       const productionClient = allClients.filter(
@@ -53,8 +62,13 @@ export const serviceGet = (): ExpressRouteFunc => {
         productionClient,
         ...(integrationClients.length > 0 && { integrationClients }),
       });
-    } catch {
-      res.redirect(PATH_NAMES["500_ERROR"]);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Error fetching service/clients";
+      req.log.error(errorMessage);
+      return res.redirect(PATH_NAMES["500_ERROR"]);
     }
   };
 };
