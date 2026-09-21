@@ -6,6 +6,8 @@
 
 {% block pageContent %}
   <form class="form" action="edit-service-type" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
     {{
       govukRadios({
         name: "service-type",

@@ -7,6 +7,8 @@
 
 {% block pageContent %}
   <form class="form" action="support-identity-verification" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
     <h1 class="govuk-heading-l">Is your client using identity verification?</h1>
 
     <p class="govuk-body">This will require:</p>

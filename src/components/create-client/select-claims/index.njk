@@ -7,6 +7,8 @@
 
 {% block pageContent %}
   <form class="form" action="select-claims" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
     {{
       govukCheckboxes({
         name: "selected-claims",

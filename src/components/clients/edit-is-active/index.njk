@@ -7,6 +7,8 @@
 
 {% block pageContent %}
   <form class="form" action="edit-is-active" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
     <h1 class="govuk-heading-l">Is your client active?</h1>
 
     {{

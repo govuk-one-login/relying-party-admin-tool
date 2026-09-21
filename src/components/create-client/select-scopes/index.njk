@@ -8,6 +8,8 @@
 
 {% block pageContent %}
   <form class="form" action="select-scopes" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
     <h1 class="govuk-heading-l">Select your scopes</h1>
     {% call govukInsetText() %}
       <code class="red-code">openid</code> will be automatically added to your

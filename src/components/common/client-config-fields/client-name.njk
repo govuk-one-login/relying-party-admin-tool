@@ -4,6 +4,8 @@
 
 {% block pageContent %}
   <form class="form" action="{{ formAction }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
     {{
       govukInput({
         label: {
