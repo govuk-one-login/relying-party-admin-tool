@@ -7,6 +7,8 @@
 
 {% block pageContent %}
   <form class="form" action="edit-jar-validation-required" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
     <h1 class="govuk-heading-l">Does your client require JAR validation?</h1>
 
     {{

@@ -42,6 +42,8 @@
 
 {% block pageContent %}
   <form class="form" action="edit-post-logout-redirect-urls" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
     {{
       govukInput({
         label: {

@@ -120,6 +120,8 @@
 
 {% block pageContent %}
   <form class="form" action="summary" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
     <h1 class="govuk-heading-xl">
       Check these details before creating your client
     </h1>

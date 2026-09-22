@@ -27,6 +27,9 @@ import { jwksRouter } from "./routes/jwks-router.js";
 import { editClientRouter } from "./routes/edit-client-router.js";
 import helmet from "helmet";
 import { helmetConfiguration } from "./config/helmet.js";
+import { csrfSynchronisedProtection } from "./config/csrf.js";
+import { csrfMiddleware } from "./middleware/csrf-middleware.js";
+import { csrfErrorHandler } from "./handler/csrf-error-handler.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -113,6 +116,10 @@ const createApp = async (): Promise<express.Application> => {
 
   app.use(helmet(helmetConfiguration));
 
+  // Must be added to the app after the session is set up and before the routers
+  app.use(csrfSynchronisedProtection);
+  app.use(csrfMiddleware);
+
   app.use(indexRouter);
   app.use(servicesRouter);
   app.use(createClientRouter);
@@ -122,6 +129,8 @@ const createApp = async (): Promise<express.Application> => {
   // Router for all previously used URLs, that we want to redirect on
   // No URL left behind policy
   app.use(pageNotFoundRouter);
+
+  app.use(csrfErrorHandler);
 
   return app;
 };
