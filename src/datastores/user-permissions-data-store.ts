@@ -1,20 +1,11 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { User } from "../models/user.js";
-import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { Relation } from "../models/relation.js";
+import { dynamoDocClient } from "../utils/dynamo.js";
 
-const dynamoClient = DynamoDBDocument.from(
-  new DynamoDBClient({
-    region: "eu-west-2",
-    ...(process.env.DYNAMO_ENDPOINT && {
-      endpoint: process.env.DYNAMO_ENDPOINT,
-    }),
-  })
-);
 export const tableName = `${process.env.ENVIRONMENT ?? "test"}-user-permissions`;
 
 export const getUser = async (id: string): Promise<User | undefined> => {
-  const result = await dynamoClient.get({
+  const result = await dynamoDocClient.get({
     TableName: tableName,
     Key: { subject: `user:${id}`, sk: "user" },
   });
@@ -32,7 +23,7 @@ export const getServicesWithRelationForUser = async (
   id: string,
   relation: string
 ): Promise<string[]> => {
-  const result = await dynamoClient.query({
+  const result = await dynamoDocClient.query({
     TableName: tableName,
     KeyConditionExpression: "subject = :pk AND begins_with(sk, :prefix)",
     FilterExpression: "relation = :relation",
@@ -53,7 +44,7 @@ export const getServicesWithRelationForUser = async (
 };
 
 export const createUser = async (user: User): Promise<void> => {
-  await dynamoClient.put({
+  await dynamoDocClient.put({
     TableName: tableName,
     Item: {
       subject: `user:${user.id}`,
@@ -66,7 +57,7 @@ export const createUser = async (user: User): Promise<void> => {
 };
 
 export const addUserPermission = async (relation: Relation): Promise<void> => {
-  await dynamoClient.transactWrite({
+  await dynamoDocClient.transactWrite({
     TransactItems: [
       {
         ConditionCheck: {
