@@ -1,11 +1,11 @@
 import { PRODUCT_PAGE_BASE_URL } from "./app.constants.js";
 
-export const getAppEnv = (): string => {
-  return process.env.APP_ENV || "local";
+export const getEnv = (): string => {
+  return process.env.ENVIRONMENT || "local";
 };
 
 export const isLocalEnv = (): boolean => {
-  return getAppEnv() === "local";
+  return process.env.ENVIRONMENT === "local";
 };
 
 export const isProductionEnv = (): boolean => {
@@ -29,7 +29,7 @@ export const getSessionExpiry = (): number => {
 };
 
 export const getProductPagesBaseUrl = (): string => {
-  return PRODUCT_PAGE_BASE_URL[getAppEnv()] ?? PRODUCT_PAGE_BASE_URL.local;
+  return PRODUCT_PAGE_BASE_URL[getEnv()] ?? PRODUCT_PAGE_BASE_URL.local;
 };
 
 export const getTestServiceId = (): string | undefined => {
