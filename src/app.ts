@@ -87,8 +87,7 @@ const createApp = async (): Promise<express.Application> => {
       unset: "destroy",
       cookie: getSessionCookieOptions(
         isDeployedEnvironment,
-        getSessionExpiry(),
-        getSessionSecret()
+        getSessionExpiry()
       ),
     })
   );
