@@ -1,25 +1,23 @@
-import type { Store } from "express-session";
-import session from "express-session";
-import connectDynamoDB from "connect-dynamodb";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { getSessionExpiry } from "../config.js";
+import { Store } from "express-session";
+import { dynamoClient } from "../utils/dynamo.js";
+import { DynamoDBSessionStore } from "../utils/dynamodb-session-store.js";
 
-const DynamoDBStore = connectDynamoDB(session);
+const tableName = `${process.env.ENVIRONMENT ?? "test"}-frontend-sessions`;
 
-const dynamoDBCientSessions = new DynamoDBClient({
-  region: "eu-west-2",
-  ...(process.env.DYNAMO_ENDPOINT && {
-    endpoint: process.env.DYNAMO_ENDPOINT,
-  }),
-});
+const PREFIX = "sess:";
 
-export const tableName = `${process.env.ENVIRONMENT ?? "test"}-frontend-sessions`;
+let sessionStoreInstance: Store | null = null;
 
-export const getSessionStore = (): Store => {
-  return new DynamoDBStore({
-    table: tableName,
-    hashKey: "id",
-    prefix: "",
-    client: new DynamoDBClient(dynamoDBCientSessions),
-    initialized: true,
-  });
-};
+export function getSessionStore(): Store {
+  if (!sessionStoreInstance) {
+    sessionStoreInstance = new DynamoDBSessionStore({
+      client: dynamoClient,
+      tableName,
+      prefix: PREFIX,
+      defaultTtlSeconds: Math.floor(getSessionExpiry() / 1000),
+    });
+  }
+
+  return sessionStoreInstance!;
+}
