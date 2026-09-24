@@ -5,11 +5,11 @@ export const getEnv = (): string => {
 };
 
 export const isLocalEnv = (): boolean => {
-  return process.env.ENVIRONMENT === "local";
+  return getEnv() === "local";
 };
 
 export const isProductionEnv = (): boolean => {
-  return process.env.ENVIRONMENT === "production";
+  return getEnv() === "production";
 };
 
 export const getLogLevel = (): string => {

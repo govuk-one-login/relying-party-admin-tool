@@ -30,7 +30,6 @@ describe("set-local-vars-middleware", () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-    delete process.env.APP_ENV;
   });
 
   describe("setLocalVarsMiddleware", () => {
