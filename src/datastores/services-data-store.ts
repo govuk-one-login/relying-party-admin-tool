@@ -1,22 +1,13 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { Service } from "../models/service.js";
 import { ClientServiceSummary, ClientSummary } from "../models/client.js";
+import { dynamoDocClient } from "../utils/dynamo.js";
 
-const dynamoClient = DynamoDBDocument.from(
-  new DynamoDBClient({
-    region: "eu-west-2",
-    ...(process.env.DYNAMO_ENDPOINT && {
-      endpoint: process.env.DYNAMO_ENDPOINT,
-    }),
-  })
-);
 export const tableName = `${process.env.ENVIRONMENT ?? "test"}-services`;
 
 export const getServiceByServiceId = async (
   serviceId: string
 ): Promise<Service | undefined> => {
-  const result = await dynamoClient.get({
+  const result = await dynamoDocClient.get({
     TableName: tableName,
     Key: { serviceId: serviceId, sk: "service" },
   });
@@ -32,7 +23,7 @@ export const getServiceByServiceId = async (
 export const getClientsByServiceId = async (
   serviceId: string
 ): Promise<ClientSummary[]> => {
-  const result = await dynamoClient.query({
+  const result = await dynamoDocClient.query({
     TableName: tableName,
     KeyConditionExpression: "serviceId = :pk AND begins_with(sk, :prefix)",
     ExpressionAttributeValues: {
@@ -54,7 +45,7 @@ export const getClientsByServiceId = async (
 };
 
 export const createService = async (service: Service): Promise<void> => {
-  await dynamoClient.put({
+  await dynamoDocClient.put({
     TableName: tableName,
     Item: {
       serviceId: service.serviceId,
@@ -68,7 +59,7 @@ export const createService = async (service: Service): Promise<void> => {
 export const addClientToService = async (
   clientServiceSummary: ClientServiceSummary
 ): Promise<void> => {
-  await dynamoClient.transactWrite({
+  await dynamoDocClient.transactWrite({
     TransactItems: [
       {
         ConditionCheck: {

@@ -1,15 +1,15 @@
 import { PRODUCT_PAGE_BASE_URL } from "./app.constants.js";
 
-export const getAppEnv = (): string => {
-  return process.env.APP_ENV || "local";
+export const getEnv = (): string => {
+  return process.env.ENVIRONMENT || "local";
 };
 
 export const isLocalEnv = (): boolean => {
-  return getAppEnv() === "local";
+  return getEnv() === "local";
 };
 
 export const isProductionEnv = (): boolean => {
-  return process.env.ENVIRONMENT === "production";
+  return getEnv() === "production";
 };
 
 export const getLogLevel = (): string => {
@@ -29,9 +29,17 @@ export const getSessionExpiry = (): number => {
 };
 
 export const getProductPagesBaseUrl = (): string => {
-  return PRODUCT_PAGE_BASE_URL[getAppEnv()] ?? PRODUCT_PAGE_BASE_URL.local;
+  return PRODUCT_PAGE_BASE_URL[getEnv()] ?? PRODUCT_PAGE_BASE_URL.local;
 };
 
 export const getTestServiceId = (): string | undefined => {
   return process.env.TEST_SERVICE_ID;
 };
+
+export function getAwsRegion(): string {
+  return process.env.AWS_REGION ?? "eu-west-2";
+}
+
+export function getDynamoDBLocalBaseUrl(): string {
+  return process.env.DYNAMO_ENDPOINT ?? "http://127.0.0.1:8001";
+}
