@@ -104,6 +104,16 @@ const globalSetup = async (config: FullConfig) => {
     TableName: `${process.env.ENVIRONMENT}-user-permissions`,
     Item: {
       subject: { S: "user:userId" },
+      sk: { S: "user" },
+      email: { S: "user@email.com" },
+      name: { S: "User" },
+    },
+  });
+
+  await addDataToTable({
+    TableName: `${process.env.ENVIRONMENT}-user-permissions`,
+    Item: {
+      subject: { S: "user:userId" },
       sk: { S: "relation#service:1#reader" },
       object: { S: "service:1" },
       relation: { S: "reader" },

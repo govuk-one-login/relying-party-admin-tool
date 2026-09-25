@@ -9,6 +9,15 @@ aws dynamodb put-item \
     --table-name local-user-permissions \
     --item '{
         "subject": {"S": "user:userId"},
+        "sk": {"S": "user"},
+        "email": {"S": "user@email.com"},
+        "name": {"S": "User"}
+    }'
+
+aws dynamodb put-item \
+    --table-name local-user-permissions \
+    --item '{
+        "subject": {"S": "user:userId"},
         "sk": {"S": "relation#service:1#reader"},
         "object": {"S": "service:1"},
         "relation": {"S": "reader"}

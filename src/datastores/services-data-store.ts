@@ -2,13 +2,13 @@ import { Service } from "../models/service.js";
 import { ClientServiceSummary, ClientSummary } from "../models/client.js";
 import { dynamoDocClient } from "../utils/dynamo.js";
 
-export const tableName = `${process.env.ENVIRONMENT ?? "test"}-services`;
+export const servicesTableName = `${process.env.ENVIRONMENT ?? "test"}-services`;
 
 export const getServiceByServiceId = async (
   serviceId: string
 ): Promise<Service | undefined> => {
   const result = await dynamoDocClient.get({
-    TableName: tableName,
+    TableName: servicesTableName,
     Key: { serviceId: serviceId, sk: "service" },
   });
   if (!result.Item) {
@@ -24,7 +24,7 @@ export const getClientsByServiceId = async (
   serviceId: string
 ): Promise<ClientSummary[]> => {
   const result = await dynamoDocClient.query({
-    TableName: tableName,
+    TableName: servicesTableName,
     KeyConditionExpression: "serviceId = :pk AND begins_with(sk, :prefix)",
     ExpressionAttributeValues: {
       ":pk": serviceId,
@@ -44,18 +44,6 @@ export const getClientsByServiceId = async (
   });
 };
 
-export const createService = async (service: Service): Promise<void> => {
-  await dynamoDocClient.put({
-    TableName: tableName,
-    Item: {
-      serviceId: service.serviceId,
-      sk: "service",
-      name: service.name,
-    },
-    ConditionExpression: "attribute_not_exists(serviceId)",
-  });
-};
-
 export const addClientToService = async (
   clientServiceSummary: ClientServiceSummary
 ): Promise<void> => {
@@ -63,14 +51,14 @@ export const addClientToService = async (
     TransactItems: [
       {
         ConditionCheck: {
-          TableName: tableName,
+          TableName: servicesTableName,
           Key: { serviceId: clientServiceSummary.serviceId, sk: "service" },
           ConditionExpression: "attribute_exists(serviceId)",
         },
       },
       {
         Put: {
-          TableName: tableName,
+          TableName: servicesTableName,
           Item: {
             serviceId: clientServiceSummary.serviceId,
             sk: `client#${clientServiceSummary.env}#${clientServiceSummary.clientId}`,

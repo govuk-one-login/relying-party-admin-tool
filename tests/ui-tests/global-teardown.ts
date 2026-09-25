@@ -29,6 +29,36 @@ const globalTeardown = async (config: FullConfig) => {
       },
     })
   );
+
+  await deleteDataFromTable(
+    new DeleteItemCommand({
+      TableName: `${process.env.ENVIRONMENT}-user-permissions`,
+      Key: {
+        subject: { S: "user:userId" },
+        sk: { S: `relation#service:${getTestServiceId()}#reader` },
+      },
+    })
+  );
+
+  await deleteDataFromTable(
+    new DeleteItemCommand({
+      TableName: `${process.env.ENVIRONMENT}-user-permissions`,
+      Key: {
+        subject: { S: "user:userId" },
+        sk: { S: `relation#service:${getTestServiceId()}#writer_int` },
+      },
+    })
+  );
+
+  await deleteDataFromTable(
+    new DeleteItemCommand({
+      TableName: `${process.env.ENVIRONMENT}-user-permissions`,
+      Key: {
+        subject: { S: "user:userId" },
+        sk: { S: `relation#service:${getTestServiceId()}#manager` },
+      },
+    })
+  );
 };
 
 export default globalTeardown;

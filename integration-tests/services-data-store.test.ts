@@ -2,12 +2,10 @@
 import { Service } from "../src/models/service.js";
 import { integrationTest, setupServicesTable } from "./base.js";
 import {
-  createService,
   addClientToService,
   getServiceByServiceId,
   getClientsByServiceId,
 } from "../src/datastores/services-data-store.js";
-import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
 import { ClientServiceSummary, ClientSummary } from "../src/models/client.js";
 import { TransactionCanceledException } from "@aws-sdk/client-dynamodb";
 
@@ -37,38 +35,6 @@ describe("Services data store tests", () => {
         const user = await getServiceByServiceId("not-a-service-id");
 
         expect(user).toBeUndefined();
-      }
-    );
-  });
-
-  describe("createService", () => {
-    integrationTest(
-      "should create service if services does not already exist",
-      async () => {
-        const serviceToStore: Service = {
-          serviceId: "test-service",
-          name: "My test service",
-        };
-        await createService(serviceToStore);
-
-        const actualService = await getServiceByServiceId("test-service");
-
-        expect(actualService).toStrictEqual(serviceToStore);
-      }
-    );
-
-    integrationTest(
-      "should fail to create service if service already exists",
-      async ({ addServiceToDynamo }) => {
-        const existingService: Service = {
-          serviceId: "test-service",
-          name: "My test service",
-        };
-        await addServiceToDynamo(existingService);
-
-        await expect(createService(existingService)).rejects.toThrow(
-          ConditionalCheckFailedException
-        );
       }
     );
   });
@@ -126,16 +92,23 @@ describe("Services data store tests", () => {
 
     integrationTest(
       "should fail to add client to service if client already exists",
-      async ({ addServiceToDynamo }) => {
+      async ({ addServiceToDynamo, addClientsToDynamo }) => {
         const serviceId = "test-service-id";
         const existingService: Service = {
-          serviceId: serviceId,
+          serviceId,
           name: "Test service",
         };
         await addServiceToDynamo(existingService);
+        const existingClient: ClientServiceSummary = {
+          clientId: "test-client-id",
+          env: "integration",
+          name: "Test Client",
+          serviceId,
+        };
+        await addClientsToDynamo([existingClient]);
 
-        await expect(createService(existingService)).rejects.toThrow(
-          ConditionalCheckFailedException
+        await expect(addClientToService(existingClient)).rejects.toThrow(
+          TransactionCanceledException
         );
       }
     );
@@ -143,7 +116,7 @@ describe("Services data store tests", () => {
 
   describe("getClientsByServiceId", () => {
     integrationTest(
-      "should fail to add user permission if permission already exists",
+      "should get clients by service id",
       async ({ addServiceToDynamo, addClientsToDynamo }) => {
         const serviceId = "test-service-id";
         const existingService: Service = {
