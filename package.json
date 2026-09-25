@@ -48,7 +48,7 @@
     "eslint-plugin-playwright": "^2.10.4",
     "express": "~5.2.1",
     "express-session": "^1.19.0",
-    "govuk-frontend": "^6.1.0",
+    "govuk-frontend": "^6.5.1",
     "helmet": "^8.3.0",
     "jiti": "^2.7.0",
     "jose": "^6.2.12",
