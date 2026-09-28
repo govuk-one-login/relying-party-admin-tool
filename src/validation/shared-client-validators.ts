@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import {
   ADDITIONAL_VALID_CHANNELS,
+  ADDITIONAL_VALID_SCOPES,
   PROHIBITED_REDIRECT_URI_QUERY_PARAMETER_NAMES,
   PROHIBITED_REDIRECT_URI_SCHEMES,
   VALID_CHANNELS,
@@ -142,6 +143,11 @@ export const redirectUrlValidator = requiredValidator("Enter a redirect URL")
 
 export const validScopesValidator = listLimitedValidValuesValidator(
   VALID_SCOPES,
+  "scope"
+);
+
+export const allScopesValidator = listLimitedValidValuesValidator(
+  [...VALID_SCOPES, ...ADDITIONAL_VALID_SCOPES],
   "scope"
 );
 

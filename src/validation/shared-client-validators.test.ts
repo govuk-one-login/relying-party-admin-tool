@@ -13,6 +13,7 @@ import {
   allChannelsValidator,
   channelValidator,
   validLevelOfConfidenceValidator,
+  allScopesValidator,
 } from "./shared-client-validators.js";
 
 describe("shared client validator tests", () => {
@@ -382,55 +383,78 @@ describe("shared client validator tests", () => {
     });
   });
 
-  describe("scope validator", () => {
-    it("should pass validation with valid scopes and no additional valid scopes", async () => {
-      const scopes = ["openid", "phone", "email", "wallet-subject-id"];
+  describe("scope validators", () => {
+    describe("scope validator", () => {
+      it("should pass validation with valid scopes and no additional valid scopes", async () => {
+        const scopes = ["openid", "phone", "email", "wallet-subject-id"];
 
-      const result = await validScopesValidator.validate(scopes);
+        const result = await validScopesValidator.validate(scopes);
 
-      expect(result).toBeValid();
+        expect(result).toBeValid();
+      });
+
+      it("should pass validation when scopes are empty", async () => {
+        const scopes: string[] = [];
+
+        const result = await validScopesValidator.validate(scopes);
+
+        expect(result).toBeValid();
+      });
+
+      it("should fail validation with valid scopes and additional valid scopes", async () => {
+        const scopes = [
+          "openid",
+          "phone",
+          "email",
+          "wallet-subject-id",
+          "am",
+          "doc-checking-app",
+          "govuk-account",
+          "offline_access",
+        ];
+
+        const result = await validScopesValidator.validate(scopes);
+
+        expect(result).toBeInvalid();
+        expect(result).toHaveInvalidErrors([
+          'Invalid scope provided: "am"',
+          'Invalid scope provided: "doc-checking-app"',
+          'Invalid scope provided: "govuk-account"',
+          'Invalid scope provided: "offline_access"',
+        ]);
+      });
+
+      it("should fail validation when invalid scopes added", async () => {
+        const scopes = ["not-a-scope"];
+
+        const result = await validScopesValidator.validate(scopes);
+
+        expect(result).toBeInvalid();
+        expect(result).toHaveInvalidErrors([
+          'Invalid scope provided: "not-a-scope"',
+        ]);
+      });
     });
 
-    it("should pass validation when scopes are empty", async () => {
-      const scopes: string[] = [];
+    describe("all scopes validator", () => {
+      it("should pass validation when scopes are empty", async () => {
+        const scopes: string[] = [];
 
-      const result = await validScopesValidator.validate(scopes);
+        const result = await allScopesValidator.validate(scopes);
 
-      expect(result).toBeValid();
-    });
+        expect(result).toBeValid();
+      });
 
-    it("should fail validation with valid scopes and additional valid scopes", async () => {
-      const scopes = [
-        "openid",
-        "phone",
-        "email",
-        "wallet-subject-id",
-        "am",
-        "doc-checking-app",
-        "govuk-account",
-        "offline_access",
-      ];
+      it("should fail validation when invalid scopes added", async () => {
+        const scopes = ["not-a-scope"];
 
-      const result = await validScopesValidator.validate(scopes);
+        const result = await allScopesValidator.validate(scopes);
 
-      expect(result).toBeInvalid();
-      expect(result).toHaveInvalidErrors([
-        'Invalid scope provided: "am"',
-        'Invalid scope provided: "doc-checking-app"',
-        'Invalid scope provided: "govuk-account"',
-        'Invalid scope provided: "offline_access"',
-      ]);
-    });
-
-    it("should fail validation when invalid scopes added", async () => {
-      const scopes = ["not-a-scope"];
-
-      const result = await validScopesValidator.validate(scopes);
-
-      expect(result).toBeInvalid();
-      expect(result).toHaveInvalidErrors([
-        'Invalid scope provided: "not-a-scope"',
-      ]);
+        expect(result).toBeInvalid();
+        expect(result).toHaveInvalidErrors([
+          'Invalid scope provided: "not-a-scope"',
+        ]);
+      });
     });
   });
 

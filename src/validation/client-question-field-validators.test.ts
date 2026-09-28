@@ -4,7 +4,7 @@ import {
   redirectUrlsFieldValidator,
   enterLandingPageUrlFieldValidator,
   selectClaimsFieldValidator,
-  selectScopesFieldValidator,
+  scopesFieldValidator,
   supportIdentityVerificationFieldValidator,
   clientAuthenticationInputFieldValidatorChain,
   idTokenSigningAlgorithmFieldValidator,
@@ -17,6 +17,7 @@ import {
   channelFieldValidator,
   pkceEnforcedFieldValidator,
   selectLevelOfConfidenceFieldValidator,
+  allScopesFieldValidator,
 } from "./client-question-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
@@ -1420,7 +1421,7 @@ describe("create client field validators", () => {
     });
   });
 
-  describe("selectScopesFieldValidator", () => {
+  describe("scopesFieldValidator", () => {
     it("should pass validation with valid scope", async () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
@@ -1429,7 +1430,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectScopesFieldValidator.validate(req as Request);
+      const result = await scopesFieldValidator.validate(req as Request);
 
       expect(result.isValid).toBe(true);
     });
@@ -1442,7 +1443,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectScopesFieldValidator.validate(req as Request);
+      const result = await scopesFieldValidator.validate(req as Request);
 
       expect(result.isValid).toBe(true);
     });
@@ -1455,7 +1456,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectScopesFieldValidator.validate(req as Request);
+      const result = await scopesFieldValidator.validate(req as Request);
 
       expect(result.isValid).toBe(true);
     });
@@ -1468,7 +1469,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectScopesFieldValidator.validate(req as Request);
+      const result = await scopesFieldValidator.validate(req as Request);
 
       expect(result.isValid).toBe(false);
 
@@ -1479,6 +1480,68 @@ describe("create client field validators", () => {
       expect(errorsArray[0].text[0]).toBe(
         'Invalid scope provided: "invalid-scope"'
       );
+    });
+
+    describe("allScopesFieldValidator", () => {
+      it("should pass validation with valid scope", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            "selected-scopes": "email",
+          })
+          .build();
+
+        const result = await allScopesFieldValidator.validate(req as Request);
+
+        expect(result.isValid).toBe(true);
+      });
+
+      it("should pass validation with valid scopes", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            "selected-scopes": ["email", "am"],
+          })
+          .build();
+
+        const result = await allScopesFieldValidator.validate(req as Request);
+
+        expect(result.isValid).toBe(true);
+      });
+
+      it("should pass validation with empty scopes", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            "selected-scopes": "",
+          })
+          .build();
+
+        const result = await allScopesFieldValidator.validate(req as Request);
+
+        expect(result.isValid).toBe(true);
+      });
+
+      it("should fail validation with an invalid scope", async () => {
+        let req: Partial<Request>;
+        req = new RequestBuilder()
+          .withBody({
+            "selected-scopes": ["email", "invalid-scope"],
+          })
+          .build();
+
+        const result = await allScopesFieldValidator.validate(req as Request);
+
+        expect(result.isValid).toBe(false);
+
+        const errorsArray = (result as InvalidField).errors;
+
+        expect(errorsArray).length(1);
+        expect(errorsArray[0].text).length(1);
+        expect(errorsArray[0].text[0]).toBe(
+          'Invalid scope provided: "invalid-scope"'
+        );
+      });
     });
   });
 
