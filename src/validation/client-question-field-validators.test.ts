@@ -1699,12 +1699,15 @@ describe("create client field validators", () => {
       req = new RequestBuilder()
         .withBody({
           "selected-locs": "P0",
-        }).withSessionnewClientConfig({
-          isIdentityVerificationSupported: true
+        })
+        .withSessionnewClientConfig({
+          isIdentityVerificationSupported: true,
         })
         .build();
 
-      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+      const result = await selectLevelOfConfidenceFieldValidator.validate(
+        req as Request
+      );
 
       expect(result.isValid).toBe(true);
     });
@@ -1714,12 +1717,15 @@ describe("create client field validators", () => {
       req = new RequestBuilder()
         .withBody({
           "selected-locs": ["P0", "P1"],
-        }).withSessionnewClientConfig({
-          isIdentityVerificationSupported: true
+        })
+        .withSessionnewClientConfig({
+          isIdentityVerificationSupported: true,
         })
         .build();
 
-      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+      const result = await selectLevelOfConfidenceFieldValidator.validate(
+        req as Request
+      );
 
       expect(result.isValid).toBe(true);
     });
@@ -1729,14 +1735,17 @@ describe("create client field validators", () => {
       req = new RequestBuilder()
         .withBody({
           "selected-locs": "",
-        }).withSessionnewClientConfig({
-          isIdentityVerificationSupported: true
+        })
+        .withSessionnewClientConfig({
+          isIdentityVerificationSupported: true,
         })
         .build();
 
-      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+      const result = await selectLevelOfConfidenceFieldValidator.validate(
+        req as Request
+      );
 
-      expect(result.isValid).toBeFalsy();
+      expect(result.isValid).toBe(false);
     });
 
     it("should fail validation with an invalid level-of-confidence", async () => {
@@ -1744,14 +1753,17 @@ describe("create client field validators", () => {
       req = new RequestBuilder()
         .withBody({
           "selected-locs": ["P0", "invalid-loc"],
-        }).withSessionnewClientConfig({
-          isIdentityVerificationSupported: true
+        })
+        .withSessionnewClientConfig({
+          isIdentityVerificationSupported: true,
         })
         .build();
 
-      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+      const result = await selectLevelOfConfidenceFieldValidator.validate(
+        req as Request
+      );
 
-      expect(result.isValid).toBeFalsy();
+      expect(result.isValid).toBe(false);
 
       const errorsArray = (result as InvalidField).errors;
 
@@ -1767,12 +1779,15 @@ describe("create client field validators", () => {
       req = new RequestBuilder()
         .withBody({
           "selected-locs": "P0",
-        }).withSessionnewClientConfig({
-          isIdentityVerificationSupported: false
+        })
+        .withSessionnewClientConfig({
+          isIdentityVerificationSupported: false,
         })
         .build();
 
-      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+      const result = await selectLevelOfConfidenceFieldValidator.validate(
+        req as Request
+      );
 
       expect(result.isValid).toBe(true);
     });
@@ -1782,21 +1797,24 @@ describe("create client field validators", () => {
       req = new RequestBuilder()
         .withBody({
           "selected-locs": ["P1"],
-        }).withSessionnewClientConfig({
-          isIdentityVerificationSupported: false
+        })
+        .withSessionnewClientConfig({
+          isIdentityVerificationSupported: false,
         })
         .build();
 
-      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+      const result = await selectLevelOfConfidenceFieldValidator.validate(
+        req as Request
+      );
 
-      expect(result.isValid).toBeFalsy();
+      expect(result.isValid).toBe(false);
 
       const errorsArray = (result as InvalidField).errors;
 
       expect(errorsArray).length(1);
       expect(errorsArray[0].text).length(1);
       expect(errorsArray[0].text[0]).toBe(
-        'Identity verification must be supported'
+        "Identity verification must be supported"
       );
     });
 
@@ -1805,21 +1823,24 @@ describe("create client field validators", () => {
       req = new RequestBuilder()
         .withBody({
           "selected-locs": ["P2"],
-        }).withSessionnewClientConfig({
-          isIdentityVerificationSupported: false
+        })
+        .withSessionnewClientConfig({
+          isIdentityVerificationSupported: false,
         })
         .build();
 
-      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+      const result = await selectLevelOfConfidenceFieldValidator.validate(
+        req as Request
+      );
 
-      expect(result.isValid).toBeFalsy();
+      expect(result.isValid).toBe(false);
 
       const errorsArray = (result as InvalidField).errors;
 
       expect(errorsArray).length(1);
       expect(errorsArray[0].text).length(1);
       expect(errorsArray[0].text[0]).toBe(
-        'Identity verification must be supported'
+        "Identity verification must be supported"
       );
     });
 
@@ -1831,16 +1852,18 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectLevelOfConfidenceFieldValidator.validate(req as Request);
+      const result = await selectLevelOfConfidenceFieldValidator.validate(
+        req as Request
+      );
 
-      expect(result.isValid).toBeFalsy();
+      expect(result.isValid).toBe(false);
 
       const errorsArray = (result as InvalidField).errors;
 
       expect(errorsArray).length(1);
       expect(errorsArray[0].text).length(2);
       expect(errorsArray[0].text[0]).toBe(
-        'Identity verification must be supported'
+        "Identity verification must be supported"
       );
     });
   });

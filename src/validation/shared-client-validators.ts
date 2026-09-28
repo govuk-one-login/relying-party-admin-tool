@@ -157,6 +157,5 @@ export const serviceTypeValidator = requiredValidator(
 
 export const validLevelOfConfidenceValidator = listLimitedValidValuesValidator(
   VALID_LOCS,
-  "level of confidence").and(
-    notEmptyListValidator("You must select one level of confidence")
-  );
+  "level of confidence"
+).and(notEmptyListValidator("You must select one level of confidence"));

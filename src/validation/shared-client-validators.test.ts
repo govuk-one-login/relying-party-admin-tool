@@ -493,18 +493,14 @@ describe("shared client validator tests", () => {
 
   describe("levels of confidence validator", () => {
     it("should pass validation with valid levels-of-confidence", async () => {
-      const locs = [
-        "P0",
-        "P1",
-        "P2",
-      ];
+      const locs = ["P0", "P1", "P2"];
 
       const result = await validLevelOfConfidenceValidator.validate(locs);
 
       expect(result).toBeValid();
     });
 
-        it("should fail validation when levels-of-confidence are empty", async () => {
+    it("should fail validation when levels-of-confidence are empty", async () => {
       const locs: string[] = [];
 
       const result = await validLevelOfConfidenceValidator.validate(locs);

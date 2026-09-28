@@ -66,7 +66,10 @@ import {
   createClientEditRedirectUrlsPost,
 } from "../components/create-client/redirect-urls/edit-redirect-urls/edit-redirect-urls-controller.js";
 import { checkIntegrationWriterPermissionsMiddleware } from "../middleware/permissions-check-middleware.js";
-import { createClientSelectLevelsOfConfidenceGet, createClientSelectLevelsOfConfidencePost } from "../components/create-client/select-levels-of-confidence/select-levels-of-confidence-controller.js";
+import {
+  createClientSelectLevelsOfConfidenceGet,
+  createClientSelectLevelsOfConfidencePost,
+} from "../components/create-client/select-levels-of-confidence/select-levels-of-confidence-controller.js";
 import { validateSelectLevelsOfConfidenceRequest } from "../components/create-client/select-levels-of-confidence/select-levels-of-confidence-validation.js";
 
 const router = express.Router();
