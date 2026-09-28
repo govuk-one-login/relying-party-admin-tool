@@ -50,5 +50,6 @@ Feature: Create a new client - summary page
     And the field: "client-secret" has the value: "client-secret"
     And the field: "token-authentication-method" has the value: "client_secret_post"
     And the field: "redirect-urls" has the value: "http://url.com"
+    And the field: "scopes" has the value: "openid"
     And I click the "Create client" button
     Then I am taken to the "create client - success" page

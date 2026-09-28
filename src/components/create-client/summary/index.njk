@@ -112,7 +112,7 @@
         html: '<div id="scopes">' + (client.scopes | join("<br>") if client.scopes else "Not set") + '</div>'
       },
       actions: {
-        items: [{ href: "/", text: "Change", visuallyHiddenText: "scopes" }]
+        items: [{ href: baseUrl + "/edit-scopes", text: "Change", visuallyHiddenText: "scopes" }]
       }
     }
   ])

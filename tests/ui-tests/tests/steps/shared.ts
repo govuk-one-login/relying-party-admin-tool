@@ -45,6 +45,7 @@ const pageNameToPath: Record<string, string> = {
   "create client - edit redirect urls":
     "/services/1/clients/create/edit-redirect-urls",
   "create client - select scopes": "/services/1/clients/create/select-scopes",
+  "create client - edit scopes": "/services/1/clients/create/edit-scopes",
   "create client - support identity verification":
     "/services/1/clients/create/support-identity-verification",
   "create client - select claims": "/services/1/clients/create/select-claims",
@@ -283,5 +284,14 @@ Then(
   "the table does not contains the text: {string}",
   async ({ page }, text: string) => {
     await expect(page.getByRole("cell", { name: text })).toBeHidden();
+  }
+);
+
+Then(
+  "the checkbox: {string} is checked",
+  async ({ page }, checkboxLabel: string) => {
+    await expect(
+      page.getByRole("checkbox", { name: checkboxLabel })
+    ).toBeChecked();
   }
 );

@@ -32,7 +32,10 @@ import {
   createClientSelectScopesGet,
   createClientSelectScopesPost,
 } from "../components/create-client/scopes/select-scopes/select-scopes-controller.js";
-import { validateSelectScopesRequest } from "../components/create-client/scopes/validation.js";
+import {
+  validateEditScopesRequest,
+  validateSelectScopesRequest,
+} from "../components/create-client/scopes/validation.js";
 import {
   createClientIsIdentityVerificationSupportedGet,
   createClientIsIdentityVerificationSupportedPost,
@@ -71,6 +74,10 @@ import {
   createClientSelectLevelsOfConfidencePost,
 } from "../components/create-client/select-levels-of-confidence/select-levels-of-confidence-controller.js";
 import { validateSelectLevelsOfConfidenceRequest } from "../components/create-client/select-levels-of-confidence/select-levels-of-confidence-validation.js";
+import {
+  createClientEditScopesGet,
+  createClientEditScopesPost,
+} from "../components/create-client/scopes/edit-scopes/edit-scopes-controller.js";
 
 const router = express.Router();
 
@@ -158,6 +165,14 @@ router.post(
   PATH_NAMES.CREATE_CLIENT_SELECT_SCOPES,
   validateSelectScopesRequest(),
   createClientSelectScopesPost()
+);
+
+router.get(PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES, createClientEditScopesGet());
+
+router.post(
+  PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES,
+  validateEditScopesRequest(),
+  createClientEditScopesPost()
 );
 
 router.get(

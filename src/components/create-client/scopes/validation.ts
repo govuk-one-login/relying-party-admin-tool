@@ -10,3 +10,12 @@ export const validateSelectScopesRequest = (): ValidationChainFunc => {
     ),
   ];
 };
+
+export const validateEditScopesRequest = (): ValidationChainFunc => {
+  return [
+    validateFieldsMiddleware(
+      "create-client/scopes/edit-scopes/index.njk",
+      scopesFieldValidator
+    ),
+  ];
+};
