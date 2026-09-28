@@ -1,14 +1,14 @@
 /* eslint-disable vitest/max-expects */
-import { integrationTest, setupUserPermissionsTable } from "./base.js";
-import { User } from "../src/models/user.js";
+import { integrationTest, setupUserPermissionsTable } from "../base.js";
+import { User } from "../../src/models/user.js";
 import {
   addUserPermission,
   createUser,
   getServicesWithRelationForUser,
   getUser,
-} from "../src/datastores/user-permissions-data-store.js";
-import { Relation } from "../src/models/relation.js";
-import { UserPermission } from "../src/models/permissions.js";
+} from "../../src/datastores/user-permissions-data-store.js";
+import { Relation } from "../../src/models/relation.js";
+import { UserPermission } from "../../src/models/permissions.js";
 import {
   ConditionalCheckFailedException,
   TransactionCanceledException,

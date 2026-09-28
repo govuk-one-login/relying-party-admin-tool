@@ -8,9 +8,10 @@
     "strict": true,
     "skipLibCheck": true,
     "sourceMap": true,
+    "typeRoots": ["../@types", "../node_modules/@types", "../node_modules"],
     "types": ["vitest/globals"],
     "rootDir": "../"
   },
-  "include": ["./*.ts", "../src/**/*.ts"],
+  "include": ["./**/*.ts", "../src/**/*.ts"],
   "exclude": ["../src/**/*.test.ts"]
 }
