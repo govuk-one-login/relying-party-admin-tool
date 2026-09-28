@@ -5,6 +5,7 @@ import {
   PROHIBITED_REDIRECT_URI_SCHEMES,
   VALID_CHANNELS,
   VALID_CLAIMS,
+  VALID_LOCS,
   VALID_SCOPES,
   VALID_SERVICE_TYPES,
   VALID_TOKEN_SIGNING_ALGS,
@@ -15,6 +16,7 @@ import {
   limitedValidValuesValidator,
   listLimitedValidValuesValidator,
   productionUrlValidator,
+  notEmptyListValidator,
   requiredValidator,
   validUrlValidator,
 } from "./shared-validators.js";
@@ -152,3 +154,9 @@ export const sectorIdentifierUriValidator = requiredValidator(
 export const serviceTypeValidator = requiredValidator(
   "Service type is required"
 ).and(limitedValidValuesValidator(VALID_SERVICE_TYPES, "service type"));
+
+export const validLevelOfConfidenceValidator = listLimitedValidValuesValidator(
+  VALID_LOCS,
+  "level of confidence").and(
+    notEmptyListValidator("You must select one level of confidence")
+  );
