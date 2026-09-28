@@ -31,8 +31,8 @@ import {
 import {
   createClientSelectScopesGet,
   createClientSelectScopesPost,
-} from "../components/create-client/select-scopes/select-scopes-controller.js";
-import { validateSelectScopesRequest } from "../components/create-client/select-scopes/select-scopes-validation.js";
+} from "../components/create-client/scopes/select-scopes/select-scopes-controller.js";
+import { validateSelectScopesRequest } from "../components/create-client/scopes/validation.js";
 import {
   createClientIsIdentityVerificationSupportedGet,
   createClientIsIdentityVerificationSupportedPost,

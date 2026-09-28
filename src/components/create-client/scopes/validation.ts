@@ -5,7 +5,7 @@ import { selectScopesFieldValidator } from "../../../validation/client-question-
 export const validateSelectScopesRequest = (): ValidationChainFunc => {
   return [
     validateFieldsMiddleware(
-      "create-client/select-scopes/index.njk",
+      "create-client/scopes/select-scopes/index.njk",
       selectScopesFieldValidator
     ),
   ];
