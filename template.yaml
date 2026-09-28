@@ -368,6 +368,7 @@ Resources:
                   - "dynamodb:GetItem"
                   - "dynamodb:Scan"
                   - "dynamodb:UpdateItem"
+                  - "dynamodb:ConditionCheckItem"
                 Resource:
                   - !GetAtt ServicesTable.Arn
         - PolicyName: "ServicesTableKmsEncryptDecrypt"
@@ -392,6 +393,7 @@ Resources:
                   - "dynamodb:GetItem"
                   - "dynamodb:Scan"
                   - "dynamodb:UpdateItem"
+                  - "dynamodb:ConditionCheckItem"
                 Resource:
                   - !GetAtt UserPermissionsTable.Arn
         - PolicyName: "UserPermissionsTableKmsEncryptDecrypt"
@@ -748,6 +750,7 @@ Resources:
                 - "dynamodb:GetItem"
                 - "dynamodb:Scan"
                 - "dynamodb:UpdateItem"
+                - "dynamodb:ConditionCheckItem"
               Resource: "*"
       Tags:
         - Key: Name
@@ -1000,6 +1003,7 @@ Resources:
                 - "dynamodb:GetItem"
                 - "dynamodb:Scan"
                 - "dynamodb:UpdateItem"
+                - "dynamodb:ConditionCheckItem"
               Resource: "*"
       Tags:
         - Key: Name
