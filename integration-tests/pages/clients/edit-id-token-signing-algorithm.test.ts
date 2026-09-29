@@ -8,9 +8,9 @@ import { Service } from "../../../src/models/service.js";
 
 setupAllTables();
 
-describe("Integration:: edit backchannel logout url", () => {
+describe("Integration:: edit id token signing algorithm", () => {
   integrationTest(
-    "should return edit backchannel logout url page",
+    "should return edit id token signing algorithm page",
     async ({
       addUserToDynamo,
       addUserRelationToDynamo,
@@ -38,7 +38,7 @@ describe("Integration:: edit backchannel logout url", () => {
       await addServiceToDynamo(existingService);
 
       const res = await request.get(
-        getServicePaths(PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL)
+        getServicePaths(PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM)
       );
       if (res.statusCode !== 200) {
         console.error("Express Error Body:", res.text);
