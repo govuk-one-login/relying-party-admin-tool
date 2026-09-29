@@ -1,4 +1,3 @@
-import request from "supertest";
 import { load } from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest, setupAllTables } from "../../base.js";
@@ -6,55 +5,50 @@ import { getServicePaths } from "../../helpers/urls.js";
 import { User } from "../../../src/models/user.js";
 import { UserPermission } from "../../../src/models/permissions.js";
 import { Relation } from "../../../src/models/relation.js";
+import { createApp } from "../../../src/app.js";
+import { Service } from "../../../src/models/service.js";
+
+setupAllTables();
 
 describe("Integration:: edit backchannel logout url", () => {
   let token: string | string[] | undefined;
   let cookies: string;
   let app: any;
 
-  integrationTest.beforeAll(async () => {
-    vi.resetModules();
-    setupAllTables();
-
-    app = await (await import("../../../src/app.js")).createApp();
-  });
-
-  integrationTest.beforeEach(async () => {
-    vi.clearAllMocks();
-    await request(app)
-      .get(getServicePaths(PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL))
-      .then((res) => {
-        const $ = load(res.text);
-        cookies = res.headers["set-cookie"];
-        token = $("[name=_csrf]").val();
-      });
-  });
-
-  integrationTest.afterAll(() => {
-    vi.restoreAllMocks();
-    app = undefined;
-  });
-
   integrationTest(
     "should return edit backchannel logout url page",
-    async ({ addUserToDynamo, addUserRelationToDynamo }) => {
+    async ({
+      addUserToDynamo,
+      addUserRelationToDynamo,
+      addServiceToDynamo,
+      request,
+    }) => {
       const existingUser: User = {
         id: "userId",
         name: "Test User",
         email: "test@user.com",
       };
       await addUserToDynamo(existingUser);
-      const relationServiceId = "1";
+      const serviceId = "1";
       const existingRelation: Relation = {
         userId: "userId",
-        object: `service:${relationServiceId}`,
+        object: `service:${serviceId}`,
         relation: UserPermission.WRITER_INT,
       };
       await addUserRelationToDynamo(existingRelation);
 
-      const res = await request(app)
-        .get(getServicePaths(PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL))
-        .expect(200);
+      const existingService: Service = {
+        serviceId: serviceId,
+        name: "Test service",
+      };
+      await addServiceToDynamo(existingService);
+
+      const res = await request.get(
+        getServicePaths(PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL)
+      );
+      if (res.statusCode !== 200) {
+        console.error("Express Error Body:", res.text);
+      }
       expect(res.statusCode).toBe(200);
     }
   );

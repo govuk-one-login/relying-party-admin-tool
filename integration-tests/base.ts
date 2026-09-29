@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-empty-pattern */
+import request, { SuperAgentTest } from "supertest";
 import {
   CreateTableCommand,
   DeleteTableCommand,
@@ -10,16 +13,38 @@ import { logger } from "../src/utils/logger.js";
 import { Service } from "../src/models/service.js";
 import { Relation } from "../src/models/relation.js";
 import { ClientServiceSummary, ClientSummary } from "../src/models/client.js";
+import TestAgent from "supertest/lib/agent.js";
+import { createApp } from "../src/app.js";
 
 export enum Table {
-  // eslint-disable-next-line no-unused-vars
   EMPTY,
-  // eslint-disable-next-line no-unused-vars
+
   USER_PERMISSIONS,
-  // eslint-disable-next-line no-unused-vars
+
   SERVICES,
-  // eslint-disable-next-line no-unused-vars
+
   SESSION,
+}
+
+export interface TestFixtures {
+  dynamoClient: DynamoDBClient;
+  dynamoDocClient: DynamoDBDocument;
+  tables: Table[];
+  request: TestAgent;
+  addUserToDynamo: (user: User) => Promise<void>;
+  addUserRelationToDynamo: (relation: Relation) => Promise<void>;
+  getUserFromDynamo: (
+    userId: string
+  ) => Promise<{ id: string; name: string; email: string } | undefined>;
+  userPermissionExistsInDynamo: (relation: Relation) => Promise<boolean>;
+  addServiceToDynamo: (service: Service) => Promise<void>;
+  getServiceFromDynamo: (serviceId: string) => Promise<any>;
+  addClientsToDynamo: (clients: ClientServiceSummary[]) => Promise<void>;
+  getClientFromDynamo: (
+    serviceId: string,
+    env: "production" | "integration",
+    clientId: string
+  ) => Promise<ClientSummary>;
 }
 
 export const setupUserPermissionsTable = () => {
@@ -38,23 +63,31 @@ export const setupAllTables = () => {
   ]);
 };
 
-export const integrationTest = test
-  .extend("dynamoClient", async () => {
-    return new DynamoDBClient({
+export const integrationTest = test.extend<TestFixtures>({
+  dynamoClient: async ({}, use) => {
+    const client = new DynamoDBClient({
       region: "eu-west-2",
       ...(process.env.DYNAMO_ENDPOINT && {
         endpoint: process.env.DYNAMO_ENDPOINT,
       }),
     });
-  })
-  .extend("dynamoDocClient", async ({ dynamoClient }) => {
-    return DynamoDBDocument.from(dynamoClient);
-  })
-  .extend("tables", async () => {
-    return [Table.EMPTY];
-  })
-  .extend("addUserToDynamo", ({ dynamoDocClient }) => {
-    return async (user: User) => {
+    await use(client);
+  },
+
+  dynamoDocClient: async ({ dynamoClient }, use) => {
+    await use(DynamoDBDocument.from(dynamoClient));
+  },
+
+  tables: async ({}, use) => {
+    await use([Table.EMPTY]);
+  },
+
+  request: async ({}, use) => {
+    await use(request.agent(await createApp()));
+  },
+
+  addUserToDynamo: async ({ dynamoDocClient }, use) => {
+    await use(async (user: User) => {
       await dynamoDocClient.put({
         TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
         Item: {
@@ -64,10 +97,11 @@ export const integrationTest = test
           sk: "user",
         },
       });
-    };
-  })
-  .extend("addUserRelationToDynamo", ({ dynamoDocClient }) => {
-    return async (relation: Relation) => {
+    });
+  },
+
+  addUserRelationToDynamo: async ({ dynamoDocClient }, use) => {
+    await use(async (relation: Relation) => {
       await dynamoDocClient.put({
         TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
         Item: {
@@ -77,28 +111,28 @@ export const integrationTest = test
           relation: `${relation.relation}`,
         },
       });
-    };
-  })
-  .extend("getUserFromDynamo", ({ dynamoDocClient }) => {
-    return async (userId: string) => {
+    });
+  },
+
+  getUserFromDynamo: async ({ dynamoDocClient }, use) => {
+    await use(async (userId: string) => {
       const item = (
         await dynamoDocClient.get({
           TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
           Key: { subject: `user:${userId}`, sk: "user" },
         })
       ).Item;
-      if (!item) {
-        return;
-      }
+      if (!item) return;
       return {
         id: item.subject.substring(5),
         name: item.name,
         email: item.email,
       };
-    };
-  })
-  .extend("userPermissionExistsInDynamo", ({ dynamoDocClient }) => {
-    return async (relation: Relation) => {
+    });
+  },
+
+  userPermissionExistsInDynamo: async ({ dynamoDocClient }, use) => {
+    await use(async (relation: Relation) => {
       const item = (
         await dynamoDocClient.get({
           TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
@@ -108,14 +142,12 @@ export const integrationTest = test
           },
         })
       ).Item;
-      if (!item) {
-        return false;
-      }
-      return true;
-    };
-  })
-  .extend("addServiceToDynamo", ({ dynamoDocClient }) => {
-    return async (service: Service) => {
+      return Boolean(item);
+    });
+  },
+
+  addServiceToDynamo: async ({ dynamoDocClient }, use) => {
+    await use(async (service: Service) => {
       await dynamoDocClient.put({
         TableName: `${process.env.VITEST_WORKER_ID}-services`,
         Item: {
@@ -124,20 +156,22 @@ export const integrationTest = test
           sk: "service",
         },
       });
-    };
-  })
-  .extend("getServiceFromDynamo", ({ dynamoDocClient }) => {
-    return async (serviceId: string) => {
+    });
+  },
+
+  getServiceFromDynamo: async ({ dynamoDocClient }, use) => {
+    await use(async (serviceId: string) => {
       return (
         await dynamoDocClient.get({
           TableName: `${process.env.VITEST_WORKER_ID}-services`,
           Key: { serviceId: serviceId },
         })
       ).Item;
-    };
-  })
-  .extend("addClientsToDynamo", ({ dynamoDocClient }) => {
-    return async (clients: ClientServiceSummary[]) => {
+    });
+  },
+
+  addClientsToDynamo: async ({ dynamoDocClient }, use) => {
+    await use(async (clients: ClientServiceSummary[]) => {
       for (const client of clients) {
         await dynamoDocClient.put({
           TableName: `${process.env.VITEST_WORKER_ID}-services`,
@@ -150,31 +184,35 @@ export const integrationTest = test
           },
         });
       }
-    };
-  })
-  .extend("getClientFromDynamo", ({ dynamoDocClient }) => {
-    return async (
-      serviceId: string,
-      env: "production" | "integration",
-      clientId: string
-    ): Promise<ClientSummary> => {
-      const item = (
-        await dynamoDocClient.get({
-          TableName: `${process.env.VITEST_WORKER_ID}-services`,
-          Key: {
-            serviceId: serviceId,
-            sk: `client#${env}#${clientId}`,
-          },
-        })
-      ).Item;
+    });
+  },
 
-      return {
-        clientId: item?.clientId,
-        name: item?.name,
-        env: item?.env,
-      };
-    };
-  });
+  getClientFromDynamo: async ({ dynamoDocClient }, use) => {
+    await use(
+      async (
+        serviceId: string,
+        env: "production" | "integration",
+        clientId: string
+      ): Promise<ClientSummary> => {
+        const item = (
+          await dynamoDocClient.get({
+            TableName: `${process.env.VITEST_WORKER_ID}-services`,
+            Key: {
+              serviceId: serviceId,
+              sk: `client#${env}#${clientId}`,
+            },
+          })
+        ).Item;
+
+        return {
+          clientId: item?.clientId,
+          name: item?.name,
+          env: item?.env,
+        };
+      }
+    );
+  },
+});
 
 integrationTest.beforeEach(async ({ dynamoClient, tables }) => {
   if (tables.includes(Table.USER_PERMISSIONS)) {
