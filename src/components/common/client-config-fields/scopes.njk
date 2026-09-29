@@ -1,0 +1,80 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% set items = [] %}
+{% if scopes %}
+  {%
+    set items = items.concat(
+    [
+      {
+        value: "email",
+        html: "<code class='red-code'>email</code>",
+        hint: { html: "Returns the <code class='red-code'>email</code> claim and <code class='red-code'>email_verified</code> claim" },
+        checked: "email" in scopes
+      },
+      {
+        value: "phone",
+        html: "<code class='red-code'>phone</code>",
+        hint: { html: "Returns the <code class='red-code'>phone_number</code> claim and <code class='red-code'>phone_number_verified</code> claim" },
+        checked: "phone" in scopes
+      },
+      {
+        value: "wallet-subject-id",
+        html: "<code class='red-code'>wallet-subject-id</code>",
+        hint: { html: "Returns the <code class='red-code'>wallet_subject_id</code> claim and is required if you plan to onboard with GOV.UK Wallet" },
+        checked: "wallet-subject-id" in scopes
+      }
+    ])
+  %}
+{% else %}
+  {%
+    set items = [
+    {
+      value: "email",
+      html: "<code class='red-code'>email</code>",
+      hint: { html: "Returns the <code class='red-code'>email</code> claim and <code class='red-code'>email_verified</code> claim" }
+    },
+    {
+      value: "phone",
+      html: "<code class='red-code'>phone</code>",
+      hint: { html: "Returns the <code class='red-code'>phone_number</code> claim and <code class='red-code'>phone_number_verified</code> claim" }
+    },
+    {
+      value: "wallet-subject-id",
+      html: "<code class='red-code'>wallet-subject-id</code>",
+      hint: { html: "Returns the <code class='red-code'>wallet_subject_id</code> claim and is required if you plan to onboard with GOV.UK Wallet" }
+    }]
+  %}
+{% endif %}
+
+{% block pageContent %}
+  <form class="form" action="{{ formAction }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+    <h1 class="govuk-heading-l">Select your scopes</h1>
+    {% call govukInsetText() %}
+      <code class="red-code">openid</code> will be automatically added to your
+      scopes configuration as it is required to sign in users
+    {% endcall %}
+    {{
+      govukCheckboxes({
+        name: "selected-scopes",
+        hint: {
+          text: "Select all that apply."
+        },
+        items: items,
+        errorMessage: {
+          text: errors["selected-scopes"].text
+        } if (errors["selected-scopes"])
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Continue"
+      })
+    }}
+  </form>
+{% endblock %}

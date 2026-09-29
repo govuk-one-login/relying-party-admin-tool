@@ -13,6 +13,7 @@ import {
   backchannelLogoutUrlValidator,
   allChannelsValidator,
   validLevelOfConfidenceValidator,
+  allScopesValidator,
 } from "./shared-client-validators.js";
 import { FieldValidator, optional, rule, when } from "./validator.js";
 import {
@@ -200,8 +201,15 @@ export const redirectUrlsFieldValidator = new FieldValidator(
   "redirect-url-input"
 );
 
-export const selectScopesFieldValidator = new FieldValidator(
+export const scopesFieldValidator = new FieldValidator(
   validScopesValidator.adaptedFrom((req: Request) =>
+    getListFromRequestBody(req, "selected-scopes")
+  ),
+  "selected-scopes"
+);
+
+export const allScopesFieldValidator = new FieldValidator(
+  allScopesValidator.adaptedFrom((req: Request) =>
     getListFromRequestBody(req, "selected-scopes")
   ),
   "selected-scopes"
@@ -220,25 +228,26 @@ export const serviceTypeFieldValidator = new FieldValidator(
 );
 
 export const selectLevelOfConfidenceFieldValidator = new FieldValidator(
-  validLevelOfConfidenceValidator.adaptedFrom(
-    (req: Request) =>
-      getListFromRequestBody(req, "selected-locs")
-  ).and(
-    when((req: Request) => 
-      req.session.newClientConfig?.isIdentityVerificationSupported !== true,
-      rule(
-        (value: string[]) => !value.includes("P1"),
-        "Identity verification must be supported"
-      ).and(
+  validLevelOfConfidenceValidator
+    .adaptedFrom((req: Request) => getListFromRequestBody(req, "selected-locs"))
+    .and(
+      when(
+        (req: Request) =>
+          req.session.newClientConfig?.isIdentityVerificationSupported !== true,
         rule(
-          (value: string[]) => !value.includes("P2"),
+          (value: string[]) => !value.includes("P1"),
           "Identity verification must be supported"
         )
-      ).adaptedFrom(
-    (req: Request) =>
-      getListFromRequestBody(req, "selected-locs")
-    )
-    )
-  ),
+          .and(
+            rule(
+              (value: string[]) => !value.includes("P2"),
+              "Identity verification must be supported"
+            )
+          )
+          .adaptedFrom((req: Request) =>
+            getListFromRequestBody(req, "selected-locs")
+          )
+      )
+    ),
   "selected-locs"
 );

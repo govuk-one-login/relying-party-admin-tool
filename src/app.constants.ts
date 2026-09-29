@@ -22,6 +22,7 @@ export const PATH_NAMES = {
     "/services/:serviceId/clients/create/edit-redirect-urls",
   CREATE_CLIENT_SELECT_SCOPES:
     "/services/:serviceId/clients/create/select-scopes",
+  CREATE_CLIENT_EDIT_SCOPES: "/services/:serviceId/clients/create/edit-scopes",
   CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT:
     "/services/:serviceId/clients/create/support-identity-verification",
   CREATE_CLIENT_SELECT_CLAIMS:
@@ -108,11 +109,7 @@ export const ADDITIONAL_VALID_SCOPES = Object.freeze([
   "offline_access",
 ] as const);
 
-export const VALID_LOCS = Object.freeze([
-  "P0",
-  "P1",
-  "P2",
-] as const);
+export const VALID_LOCS = Object.freeze(["P0", "P1", "P2"] as const);
 
 export const VALID_TOKEN_SIGNING_ALGS = Object.freeze([
   "ES256",

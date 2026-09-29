@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import {
   ADDITIONAL_VALID_CHANNELS,
+  ADDITIONAL_VALID_SCOPES,
   PROHIBITED_REDIRECT_URI_QUERY_PARAMETER_NAMES,
   PROHIBITED_REDIRECT_URI_SCHEMES,
   VALID_CHANNELS,
@@ -145,6 +146,11 @@ export const validScopesValidator = listLimitedValidValuesValidator(
   "scope"
 );
 
+export const allScopesValidator = listLimitedValidValuesValidator(
+  [...VALID_SCOPES, ...ADDITIONAL_VALID_SCOPES],
+  "scope"
+);
+
 export const sectorIdentifierUriValidator = requiredValidator(
   "Enter a sector identifier URI"
 )
@@ -157,6 +163,5 @@ export const serviceTypeValidator = requiredValidator(
 
 export const validLevelOfConfidenceValidator = listLimitedValidValuesValidator(
   VALID_LOCS,
-  "level of confidence").and(
-    notEmptyListValidator("You must select one level of confidence")
-  );
+  "level of confidence"
+).and(notEmptyListValidator("You must select one level of confidence"));
