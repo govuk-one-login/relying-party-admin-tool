@@ -107,3 +107,54 @@ variable "load_balancer_dns_name" {
   type        = string
   description = "DNS name of private application load balancer to target as Cloudfront origin"
 }
+
+variable "build_notification_stack_version" {
+  type        = string
+  description = "Version number of the build notification stack to use. Must be a semantic version formatted like the following: v2.7.1"
+}
+
+variable "certificate_stack_version" {
+  type        = string
+  description = "Version number of the certificate stack to use. Must be a semantic version formatted like the following: v2.7.1"
+}
+
+variable "ecr_scan_logger_stack_version" {
+  type        = string
+  description = "Version number of the ecr scan logger stack to use. Must be a semantic version formatted like the following: v2.7.1"
+}
+
+variable "ecr_stack_version" {
+  type        = string
+  description = "Version number of the ecr scan logger stack to use. Must be a semantic version formatted like the following: v2.7.1"
+}
+
+variable "test_image_repository_stack_version" {
+  type        = string
+  description = "Version number of the ecr stack to use. Must be a semantic version formatted like the following: v2.7.1"
+}
+
+variable "github_identity_provider_stack_version" {
+  type        = string
+  description = "Version number of the github identity provider stack to use. Must be a semantic version formatted like the following: v2.7.1"
+}
+
+
+variable "pipeline_stack_version" {
+  type        = string
+  description = "Version number of the sam deploy pipeline stack to use. Must be a semantic version formatted like the following: v2.7.1"
+}
+
+variable "container_signer_stack_version" {
+  type        = string
+  description = "Version number of the container signer stack to use. Must be a semantic version formatted like the following: v2.7.1"
+}
+
+variable "transit_gateway_role_stack_version" {
+  type        = string
+  description = "Version number of the transit gateway role stack to use. Must be a semantic version formatted like the following: v2.7.1"
+}
+
+variable "vpc_stack_version" {
+  type        = string
+  description = "Version number of the vpc stack to use. Must be a semantic version formatted like the following: v2.7.1"
+}
