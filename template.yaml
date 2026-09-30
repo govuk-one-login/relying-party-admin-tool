@@ -733,6 +733,22 @@ Resources:
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
       DeletionProtectionEnabled: true
+      ResourcePolicy:
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                AWS: !Ref TestRoleArn
+              Action:
+                - "dynamodb:Query"
+                - "dynamodb:DescribeTable"
+                - "dynamodb:PutItem"
+                - "dynamodb:DeleteItem"
+                - "dynamodb:GetItem"
+                - "dynamodb:Scan"
+                - "dynamodb:UpdateItem"
+              Resource: "*"
       Tags:
         - Key: Name
           Value: ServicesTable
@@ -752,6 +768,14 @@ Resources:
             Principal:
               AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
             Action: kms:*
+            Resource: "*"
+          - Sid: AllowAccessToEncryptionKey
+            Effect: Allow
+            Principal:
+              AWS: !Ref TestRoleArn
+            Action:
+              - kms:Decrypt
+              - kms:Encrypt
             Resource: "*"
           - Sid: AllowDynamodbAccessToEncryptionKey
             Effect: Allow
@@ -944,6 +968,14 @@ Resources:
               AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
             Action: kms:*
             Resource: "*"
+          - Sid: AllowAccessToEncryptionKey
+            Effect: Allow
+            Principal:
+              AWS: !Ref TestRoleArn
+            Action:
+              - kms:Decrypt
+              - kms:Encrypt
+            Resource: "*"
           - Sid: AllowDynamodbAccessToEncryptionKey
             Effect: Allow
             Principal:
@@ -983,6 +1015,22 @@ Resources:
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
       DeletionProtectionEnabled: true
+      ResourcePolicy:
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                AWS: !Ref TestRoleArn
+              Action:
+                - "dynamodb:Query"
+                - "dynamodb:DescribeTable"
+                - "dynamodb:PutItem"
+                - "dynamodb:DeleteItem"
+                - "dynamodb:GetItem"
+                - "dynamodb:Scan"
+                - "dynamodb:UpdateItem"
+              Resource: "*"
       Tags:
         - Key: Name
           Value: UserPermissionsTable
