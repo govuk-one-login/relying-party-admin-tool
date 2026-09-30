@@ -1,7 +1,7 @@
 # See https://govukverify.atlassian.net/wiki/spaces/PLAT/pages/3059908609/How+to+deploy+a+SAM+application+with+secure+pipelines
 resource "aws_cloudformation_stack" "main_pipeline_stack" {
   name         = "${var.environment}-rpat-pipeline"
-  template_url = "https://template-storage-templatebucket-1upzyw6v9cs42.s3.amazonaws.com/sam-deploy-pipeline/template.yaml"
+  template_url = "https://template-storage-templatebucket-1upzyw6v9cs42.s3.amazonaws.com/sam-deploy-pipeline/template-${var.pipeline_stack_version}.yaml"
 
   parameters = {
     SAMStackName                    = "${var.environment}-rpat-deploy"
