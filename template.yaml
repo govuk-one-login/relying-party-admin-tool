@@ -811,6 +811,8 @@ Resources:
       AttributeDefinitions:
         - AttributeName: "id"
           AttributeType: "S"
+        - AttributeName: "userId" # must match USER_IDENTIFIER_IDX_ATTRIBUTE in ../src/utils/session-store.ts
+          AttributeType: "S"
       KeySchema:
         - AttributeName: "id"
           KeyType: "HASH"
@@ -821,6 +823,13 @@ Resources:
       # checkov:skip=CKV_AWS_28: Ignored enable Dynamodb point in time recovery as it is only a short-term cache
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: false
+      GlobalSecondaryIndexes:
+        - IndexName: "users-sessions" # must match index name in ../src/utils/session-store.ts
+          KeySchema:
+            - AttributeName: "userId" # must match USER_IDENTIFIER_IDX_ATTRIBUTE in ../src/utils/session-store.ts
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: KEYS_ONLY
       SSESpecification:
         KMSMasterKeyId: !Ref SessionsTableEncryptionKey
         SSEEnabled: true

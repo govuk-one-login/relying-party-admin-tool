@@ -18,6 +18,7 @@ declare global {
 
 declare module "express-session" {
   interface SessionData {
+    userId?: string;
     newClientConfig?: CoreClientConfig;
     changedClientConfig?: CoreClientConfig & AdditionalClientConfig;
     currentClientConfig: ClientConfig;
