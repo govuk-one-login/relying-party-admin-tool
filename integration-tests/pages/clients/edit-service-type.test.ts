@@ -46,4 +46,18 @@ describe("Integration:: edit service type", () => {
       expect(res.statusCode).toBe(200);
     }
   );
+
+  integrationTest(
+    "should redirect to forbidden when csrf not present",
+    async ({ request }) => {
+      const res = await request
+        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE))
+        .type("form")
+        .send({
+          "service-type": "MANDATORY",
+        });
+      expect(res.header.location).toBe("/forbidden");
+      expect(res.statusCode).toBe(302);
+    }
+  );
 });

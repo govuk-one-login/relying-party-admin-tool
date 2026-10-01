@@ -46,4 +46,18 @@ describe("Integration:: edit jar validation required", () => {
       expect(res.statusCode).toBe(200);
     }
   );
+
+  integrationTest(
+    "should redirect to forbidden when csrf not present",
+    async ({ request }) => {
+      const res = await request
+        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED))
+        .type("form")
+        .send({
+          "jar-validation-required": "true",
+        });
+      expect(res.header.location).toBe("/forbidden");
+      expect(res.statusCode).toBe(302);
+    }
+  );
 });

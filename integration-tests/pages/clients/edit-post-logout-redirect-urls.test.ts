@@ -46,4 +46,18 @@ describe("Integration:: edit post logout redirect urls", () => {
       expect(res.statusCode).toBe(200);
     }
   );
+
+  integrationTest(
+    "should redirect to forbidden when csrf not present",
+    async ({ request }) => {
+      const res = await request
+        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS))
+        .type("form")
+        .send({
+          "post-logout-redirect-urls": ["test-url.com"],
+        });
+      expect(res.header.location).toBe("/forbidden");
+      expect(res.statusCode).toBe(302);
+    }
+  );
 });

@@ -46,4 +46,18 @@ describe("Integration:: edit backchannel logout url", () => {
       expect(res.statusCode).toBe(200);
     }
   );
+
+  integrationTest(
+    "should redirect to forbidden when csrf not present",
+    async ({ request }) => {
+      const res = await request
+        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL))
+        .type("form")
+        .send({
+          "backchannel-logout-url": "test-url.com",
+        });
+      expect(res.header.location).toBe("/forbidden");
+      expect(res.statusCode).toBe(302);
+    }
+  );
 });

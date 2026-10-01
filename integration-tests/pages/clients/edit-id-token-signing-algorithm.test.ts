@@ -46,4 +46,20 @@ describe("Integration:: edit id token signing algorithm", () => {
       expect(res.statusCode).toBe(200);
     }
   );
+
+  integrationTest(
+    "should redirect to forbidden when csrf not present",
+    async ({ request }) => {
+      const res = await request
+        .post(
+          getServicePaths(PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM)
+        )
+        .type("form")
+        .send({
+          "id-token-signing-algorithm": "ES256",
+        });
+      expect(res.header.location).toBe("/forbidden");
+      expect(res.statusCode).toBe(302);
+    }
+  );
 });

@@ -43,4 +43,18 @@ describe("Integration:: edit is active", () => {
     );
     expect(res.statusCode).toBe(200);
   });
+
+  integrationTest(
+    "should redirect to forbidden when csrf not present",
+    async ({ request }) => {
+      const res = await request
+        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_IS_ACTIVE))
+        .type("form")
+        .send({
+          "is-active": "true",
+        });
+      expect(res.header.location).toBe("/forbidden");
+      expect(res.statusCode).toBe(302);
+    }
+  );
 });
