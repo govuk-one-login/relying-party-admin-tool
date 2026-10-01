@@ -163,7 +163,10 @@ Then("the footer shows with correct urls", async ({ page }) => {
   ).toBeVisible();
   await expect(
     inlineList.getByRole("link", { name: "Accessibility", exact: true })
-  ).toHaveAttribute("href", "http://localhost:3000/accessibility");
+  ).toHaveAttribute(
+    "href",
+    `${PRODUCT_PAGE_BASE_URL[process.env.ENVIRONMENT ?? "local"]}/accessibility`
+  );
   await expect(
     inlineList.getByRole("link", { name: "Privacy", exact: true })
   ).toBeVisible();
