@@ -6,3 +6,7 @@ export const getServicePaths = (pathName: string): string => {
     [":clientId"]: "1",
   });
 };
+
+export function testComponent(componentId: string): string {
+  return `[data-test-id='${componentId}']`;
+}

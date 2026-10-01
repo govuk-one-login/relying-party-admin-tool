@@ -1,12 +1,10 @@
 import { PATH_NAMES } from "../../../src/app.constants.js";
-import { integrationTest, setupAllTables } from "../../base.js";
-import { getServicePaths } from "../../helpers/urls.js";
+import { integrationTest } from "../../base.js";
+import { getServicePaths } from "../../helpers/helpers.js";
 import { User } from "../../../src/models/user.js";
 import { UserPermission } from "../../../src/models/permissions.js";
 import { Relation } from "../../../src/models/relation.js";
 import { Service } from "../../../src/models/service.js";
-
-setupAllTables();
 
 describe("Integration:: edit channel", () => {
   integrationTest.beforeEach(

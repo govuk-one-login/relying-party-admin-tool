@@ -15,7 +15,6 @@ import {
 } from "@aws-sdk/client-dynamodb";
 
 describe("user permissions data store tests", () => {
-  setupUserPermissionsTable();
   integrationTest(
     "should get user from table by ID if user exists",
     async ({ addUserToDynamo }) => {

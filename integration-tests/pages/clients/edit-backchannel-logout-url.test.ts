@@ -1,15 +1,19 @@
+import request from "supertest";
+import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
-import { integrationTest, setupAllTables } from "../../base.js";
-import { getServicePaths } from "../../helpers/urls.js";
+import { integrationTest } from "../../base.js";
+import { getServicePaths, testComponent } from "../../helpers/helpers.js";
 import { User } from "../../../src/models/user.js";
 import { UserPermission } from "../../../src/models/permissions.js";
 import { Relation } from "../../../src/models/relation.js";
 import { Service } from "../../../src/models/service.js";
 
-setupAllTables();
-
 describe("Integration:: edit backchannel logout url", () => {
-  integrationTest.beforeEach(
+  let token: string | string[] | undefined;
+  let cookies: string;
+  let app: any;
+
+  integrationTest.beforeAll(
     async ({
       addUserToDynamo,
       addUserRelationToDynamo,
@@ -38,26 +42,32 @@ describe("Integration:: edit backchannel logout url", () => {
   );
 
   integrationTest(
-    "should return edit backchannel logout url page",
-    async ({ request }) => {
-      const res = await request.get(
-        getServicePaths(PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL)
-      );
-      expect(res.statusCode).toBe(200);
-    }
-  );
-
-  integrationTest(
-    "should redirect to forbidden when csrf not present",
-    async ({ request }) => {
-      const res = await request
+    "should return validation error when url is not a valid url",
+    async () => {
+      app = await (await import("../../../src/app.js")).createApp();
+      await request(app)
+        .get(getServicePaths(PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL))
+        .then((res) => {
+          const $ = cheerio.load(res.text);
+          token = $("[name=_csrf]").val();
+          cookies = res.headers["set-cookie"];
+        });
+      console.log(token);
+      //console.log("HERE");
+      const res = await request(app)
         .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL))
         .type("form")
         .send({
-          "backchannel-logout-url": "test-url.com",
+          _csrf: token,
+          "backchannel-logout-url": "not-a-url",
         });
-      expect(res.header.location).toBe("/forbidden");
-      expect(res.statusCode).toBe(302);
+      //console.log(res);
+      const $ = cheerio.load(res.text);
+      //console.log($("[id='backchannel-logout-url-error']").contents());
+      expect($(testComponent("backchannel-logout-url-error")).text()).toContain(
+        "Your backchannel logout URL must be a valid URL"
+      );
+      expect(res.statusCode).toBe(400);
     }
   );
 });

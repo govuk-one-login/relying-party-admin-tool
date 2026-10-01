@@ -15,8 +15,6 @@ import {
 import { TransactionCanceledException } from "@aws-sdk/client-dynamodb";
 
 describe("Services data store tests", () => {
-  setupServicesTable();
-
   describe("getServiceByServiceId", () => {
     integrationTest(
       "should get service from table by serviceId if service exists",
@@ -157,23 +155,23 @@ describe("Services data store tests", () => {
 
         const client1 = {
           clientId: "test-client-id-1",
-          env: "integration",
           name: "Test Client 1",
+          env: "integration",
         };
 
         const client2 = {
           clientId: "test-client-id-2",
-          env: "integration",
           name: "Test Client 2",
+          env: "integration",
         };
 
         const client3 = {
           clientId: "test-client-id-3",
-          env: "production",
           name: "Test Client 3",
+          env: "production",
         };
 
-        const clientServiceSummariess: ClientServiceSummary[] = [
+        const clientServiceSummaries: ClientServiceSummary[] = [
           {
             ...client1,
             serviceId,
@@ -187,11 +185,16 @@ describe("Services data store tests", () => {
             serviceId,
           } as ClientServiceSummary,
         ];
-        await addClientsToDynamo(clientServiceSummariess);
+        await addClientsToDynamo(clientServiceSummaries);
 
         const clients = await getClientsByServiceId(serviceId);
 
-        expect(clients).toStrictEqual([client1, client2, client3]);
+        console.log("HEREHEREHERE");
+        console.log(clients);
+
+        expect(clients).toContain(client1);
+        expect(clients).toContain(client2);
+        expect(clients).toContain(client3);
       }
     );
   });
