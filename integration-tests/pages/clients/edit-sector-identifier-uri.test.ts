@@ -9,13 +9,11 @@ import { Service } from "../../../src/models/service.js";
 setupAllTables();
 
 describe("Integration:: edit sector identifier uri", () => {
-  integrationTest(
-    "should return edit sector identifier uri page",
+  integrationTest.beforeEach(
     async ({
       addUserToDynamo,
       addUserRelationToDynamo,
       addServiceToDynamo,
-      request,
     }) => {
       const existingUser: User = {
         id: "userId",
@@ -36,13 +34,15 @@ describe("Integration:: edit sector identifier uri", () => {
         name: "Test service",
       };
       await addServiceToDynamo(existingService);
+    }
+  );
 
+  integrationTest(
+    "should return edit sector identifier uri page",
+    async ({ request }) => {
       const res = await request.get(
         getServicePaths(PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI)
       );
-      if (res.statusCode !== 200) {
-        console.error("Express Error Body:", res.text);
-      }
       expect(res.statusCode).toBe(200);
     }
   );

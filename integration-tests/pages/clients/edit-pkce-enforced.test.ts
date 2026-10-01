@@ -9,13 +9,11 @@ import { Service } from "../../../src/models/service.js";
 setupAllTables();
 
 describe("Integration:: edit pkce enforced", () => {
-  integrationTest(
-    "should return edit pkce enforced page",
+  integrationTest.beforeEach(
     async ({
       addUserToDynamo,
       addUserRelationToDynamo,
       addServiceToDynamo,
-      request,
     }) => {
       const existingUser: User = {
         id: "userId",
@@ -36,13 +34,15 @@ describe("Integration:: edit pkce enforced", () => {
         name: "Test service",
       };
       await addServiceToDynamo(existingService);
+    }
+  );
 
+  integrationTest(
+    "should return edit pkce enforced page",
+    async ({ request }) => {
       const res = await request.get(
         getServicePaths(PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED)
       );
-      if (res.statusCode !== 200) {
-        console.error("Express Error Body:", res.text);
-      }
       expect(res.statusCode).toBe(200);
     }
   );

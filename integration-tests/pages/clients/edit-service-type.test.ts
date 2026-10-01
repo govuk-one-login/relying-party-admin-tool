@@ -9,13 +9,11 @@ import { Service } from "../../../src/models/service.js";
 setupAllTables();
 
 describe("Integration:: edit service type", () => {
-  integrationTest(
-    "should return edit service type page",
+  integrationTest.beforeEach(
     async ({
       addUserToDynamo,
       addUserRelationToDynamo,
       addServiceToDynamo,
-      request,
     }) => {
       const existingUser: User = {
         id: "userId",
@@ -36,13 +34,15 @@ describe("Integration:: edit service type", () => {
         name: "Test service",
       };
       await addServiceToDynamo(existingService);
+    }
+  );
 
+  integrationTest(
+    "should return edit service type page",
+    async ({ request }) => {
       const res = await request.get(
         getServicePaths(PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE)
       );
-      if (res.statusCode !== 200) {
-        console.error("Express Error Body:", res.text);
-      }
       expect(res.statusCode).toBe(200);
     }
   );

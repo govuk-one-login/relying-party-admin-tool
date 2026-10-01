@@ -9,13 +9,11 @@ import { Service } from "../../../src/models/service.js";
 setupAllTables();
 
 describe("Integration:: edit channel", () => {
-  integrationTest(
-    "should return edit channel page",
+  integrationTest.beforeEach(
     async ({
       addUserToDynamo,
       addUserRelationToDynamo,
       addServiceToDynamo,
-      request,
     }) => {
       const existingUser: User = {
         id: "userId",
@@ -36,14 +34,13 @@ describe("Integration:: edit channel", () => {
         name: "Test service",
       };
       await addServiceToDynamo(existingService);
-
-      const res = await request.get(
-        getServicePaths(PATH_NAMES.CLIENT_EDIT_CHANNEL)
-      );
-      if (res.statusCode !== 200) {
-        console.error("Express Error Body:", res.text);
-      }
-      expect(res.statusCode).toBe(200);
     }
   );
+
+  integrationTest("should return edit channel page", async ({ request }) => {
+    const res = await request.get(
+      getServicePaths(PATH_NAMES.CLIENT_EDIT_CHANNEL)
+    );
+    expect(res.statusCode).toBe(200);
+  });
 });

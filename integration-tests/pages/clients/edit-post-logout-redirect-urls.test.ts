@@ -9,13 +9,11 @@ import { Service } from "../../../src/models/service.js";
 setupAllTables();
 
 describe("Integration:: edit post logout redirect urls", () => {
-  integrationTest(
-    "should return edit post logout redirect urls page",
+  integrationTest.beforeEach(
     async ({
       addUserToDynamo,
       addUserRelationToDynamo,
       addServiceToDynamo,
-      request,
     }) => {
       const existingUser: User = {
         id: "userId",
@@ -36,13 +34,15 @@ describe("Integration:: edit post logout redirect urls", () => {
         name: "Test service",
       };
       await addServiceToDynamo(existingService);
+    }
+  );
 
+  integrationTest(
+    "should return edit post logout redirect urls page",
+    async ({ request }) => {
       const res = await request.get(
         getServicePaths(PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS)
       );
-      if (res.statusCode !== 200) {
-        console.error("Express Error Body:", res.text);
-      }
       expect(res.statusCode).toBe(200);
     }
   );

@@ -9,13 +9,11 @@ import { Service } from "../../../src/models/service.js";
 setupAllTables();
 
 describe("Integration:: edit jar validation required", () => {
-  integrationTest(
-    "should return edit jar validation required page",
+  integrationTest.beforeEach(
     async ({
       addUserToDynamo,
       addUserRelationToDynamo,
       addServiceToDynamo,
-      request,
     }) => {
       const existingUser: User = {
         id: "userId",
@@ -36,13 +34,15 @@ describe("Integration:: edit jar validation required", () => {
         name: "Test service",
       };
       await addServiceToDynamo(existingService);
+    }
+  );
 
+  integrationTest(
+    "should return edit jar validation required page",
+    async ({ request }) => {
       const res = await request.get(
         getServicePaths(PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED)
       );
-      if (res.statusCode !== 200) {
-        console.error("Express Error Body:", res.text);
-      }
       expect(res.statusCode).toBe(200);
     }
   );

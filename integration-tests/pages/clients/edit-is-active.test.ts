@@ -9,13 +9,11 @@ import { Service } from "../../../src/models/service.js";
 setupAllTables();
 
 describe("Integration:: edit is active", () => {
-  integrationTest(
-    "should return edit is active page",
+  integrationTest.beforeEach(
     async ({
       addUserToDynamo,
       addUserRelationToDynamo,
       addServiceToDynamo,
-      request,
     }) => {
       const existingUser: User = {
         id: "userId",
@@ -36,14 +34,13 @@ describe("Integration:: edit is active", () => {
         name: "Test service",
       };
       await addServiceToDynamo(existingService);
-
-      const res = await request.get(
-        getServicePaths(PATH_NAMES.CLIENT_EDIT_IS_ACTIVE)
-      );
-      if (res.statusCode !== 200) {
-        console.error("Express Error Body:", res.text);
-      }
-      expect(res.statusCode).toBe(200);
     }
   );
+
+  integrationTest("should return edit is active page", async ({ request }) => {
+    const res = await request.get(
+      getServicePaths(PATH_NAMES.CLIENT_EDIT_IS_ACTIVE)
+    );
+    expect(res.statusCode).toBe(200);
+  });
 });
