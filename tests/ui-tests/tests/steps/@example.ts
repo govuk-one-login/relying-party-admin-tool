@@ -3,6 +3,15 @@ import { bdd } from "./fixtures";
 
 const { Then } = bdd;
 
+export const PRODUCT_PAGE_BASE_URL: Record<string, string> = {
+  local: "http://localhost:3000",
+  dev: "https://development.sign-in.service.gov.uk",
+  build: "https://build.sign-in.service.gov.uk",
+  staging: "https://staging.sign-in.service.gov.uk",
+  integration: "https://integration.sign-in.service.gov.uk",
+  production: "https://sign-in.service.gov.uk",
+};
+
 Then("the header links to the home page", async ({ page }) => {
   await expect(page.getByText("One Login Admin").first()).toBeVisible();
   await page.getByText("One Login Admin").first().click();
@@ -17,25 +26,37 @@ Then("the navigation bar shows with correct urls", async ({ page }) => {
   ).toBeVisible();
   await expect(
     locator.getByRole("link", { name: "About", exact: true })
-  ).toHaveAttribute("href", "http://localhost:3000/about");
+  ).toHaveAttribute(
+    "href",
+    `${PRODUCT_PAGE_BASE_URL[process.env.ENVIRONMENT ?? "local"]}/about`
+  );
   await expect(
     locator.getByRole("link", { name: "Documentation", exact: true })
   ).toBeVisible();
   await expect(
     locator.getByRole("link", { name: "Documentation", exact: true })
-  ).toHaveAttribute("href", "http://localhost:3000/documentation");
+  ).toHaveAttribute(
+    "href",
+    `${PRODUCT_PAGE_BASE_URL[process.env.ENVIRONMENT ?? "local"]}/documentation`
+  );
   await expect(
     locator.getByRole("link", { name: "Support", exact: true })
   ).toBeVisible();
   await expect(
     locator.getByRole("link", { name: "Support", exact: true })
-  ).toHaveAttribute("href", "http://localhost:3000/support");
+  ).toHaveAttribute(
+    "href",
+    `${PRODUCT_PAGE_BASE_URL[process.env.ENVIRONMENT ?? "local"]}/support`
+  );
   await expect(
     locator.getByRole("link", { name: "Get started", exact: true })
   ).toBeVisible();
   await expect(
     locator.getByRole("link", { name: "Get started", exact: true })
-  ).toHaveAttribute("href", "http://localhost:3000/get-started");
+  ).toHaveAttribute(
+    "href",
+    `${PRODUCT_PAGE_BASE_URL[process.env.ENVIRONMENT ?? "local"]}/get-started`
+  );
   await expect(
     locator.getByRole("link", { name: "Sign in", exact: true })
   ).toBeVisible();
@@ -71,13 +92,19 @@ Then("the footer shows with correct urls", async ({ page }) => {
       name: "About GOV.UK One Login",
       exact: true,
     })
-  ).toHaveAttribute("href", "http://localhost:3000/about");
+  ).toHaveAttribute(
+    "href",
+    `${PRODUCT_PAGE_BASE_URL[process.env.ENVIRONMENT ?? "local"]}/about`
+  );
   await expect(
     aboutList.getByRole("link", { name: "Documentation", exact: true })
   ).toBeVisible();
   await expect(
     aboutList.getByRole("link", { name: "Documentation", exact: true })
-  ).toHaveAttribute("href", "http://localhost:3000/documentation");
+  ).toHaveAttribute(
+    "href",
+    `${PRODUCT_PAGE_BASE_URL[process.env.ENVIRONMENT ?? "local"]}/documentation`
+  );
   await expect(
     aboutList.getByRole("link", { name: "Blog", exact: true })
   ).toBeVisible();
@@ -102,7 +129,10 @@ Then("the footer shows with correct urls", async ({ page }) => {
   ).toBeVisible();
   await expect(
     supportList.getByRole("link", { name: "Contact us", exact: true })
-  ).toHaveAttribute("href", "http://localhost:3000/support");
+  ).toHaveAttribute(
+    "href",
+    `${PRODUCT_PAGE_BASE_URL[process.env.ENVIRONMENT ?? "local"]}/support`
+  );
   await expect(
     supportList.getByRole("link", { name: "Chat to us on Slack", exact: true })
   ).toBeVisible();
