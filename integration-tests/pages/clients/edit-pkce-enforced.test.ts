@@ -2,7 +2,7 @@ import request, { Response } from "supertest";
 import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
-import { getServicePaths } from "../../helpers/helpers.js";
+import { getServicePaths, testComponent } from "../../helpers/helpers.js";
 import { User } from "../../../src/models/user.js";
 import { UserPermission } from "../../../src/models/permissions.js";
 import { Relation } from "../../../src/models/relation.js";
@@ -82,6 +82,38 @@ describe("Integration:: edit pkce enforced", () => {
           "pkce-enforced": "true",
         });
       expect(res.header.location).toBe("/forbidden");
+      expect(res.statusCode).toBe(302);
+    }
+  );
+
+  integrationTest(
+    "should return validation error when pkce enforced is empty",
+    async () => {
+      const res = await requestAgent
+        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED))
+        .type("form")
+        .send({
+          _csrf: token,
+        });
+      const $ = cheerio.load(res.text);
+      expect($(testComponent("pkce-enforced-error")).text()).toContain(
+        "Select an option"
+      );
+      expect(res.statusCode).toBe(400);
+    }
+  );
+
+  integrationTest(
+    "should redirect to /clients when valid pkce enforced option",
+    async () => {
+      const res = await requestAgent
+        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED))
+        .type("form")
+        .send({
+          _csrf: token,
+          "pkce-enforced": "true",
+        })
+        .expect("Location", getServicePaths(PATH_NAMES.CLIENT));
       expect(res.statusCode).toBe(302);
     }
   );
