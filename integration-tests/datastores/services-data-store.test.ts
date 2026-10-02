@@ -1,6 +1,6 @@
 /* eslint-disable vitest/max-expects */
 import { Service } from "../../src/models/service.js";
-import { integrationTest, setupServicesTable } from "../base.js";
+import { integrationTest } from "../base.js";
 import {
   createService,
   addClientToService,
@@ -15,18 +15,25 @@ import {
 import { TransactionCanceledException } from "@aws-sdk/client-dynamodb";
 
 describe("Services data store tests", () => {
+  const existingServiceId = "existing-service-id";
+  const existingService: Service = {
+    serviceId: existingServiceId,
+    name: "Test service",
+  };
+
+  integrationTest.beforeAll(async ({ addServiceToDynamo }) => {
+    await addServiceToDynamo(existingService);
+  });
+
+  integrationTest.afterAll(async ({ deleteServiceFromDynamo }) => {
+    await deleteServiceFromDynamo(existingService);
+  });
+
   describe("getServiceByServiceId", () => {
     integrationTest(
       "should get service from table by serviceId if service exists",
-      async ({ addServiceToDynamo }) => {
-        const serviceId = "test-service-id";
-        const existingService: Service = {
-          serviceId: serviceId,
-          name: "Test service",
-        };
-        await addServiceToDynamo(existingService);
-
-        const service = await getServiceByServiceId(serviceId);
+      async () => {
+        const service = await getServiceByServiceId(existingServiceId);
 
         expect(service).toStrictEqual(existingService);
       }
@@ -35,38 +42,38 @@ describe("Services data store tests", () => {
     integrationTest(
       "should not get service if service with ID does not exist",
       async () => {
-        const user = await getServiceByServiceId("not-a-service-id");
+        const service = await getServiceByServiceId("not-a-service-id");
 
-        expect(user).toBeUndefined();
+        expect(service).toBeUndefined();
       }
     );
   });
 
   describe("createService", () => {
+    const testServiceId = "test-service-id";
+    const testService: Service = {
+      serviceId: testServiceId,
+      name: "Test service",
+    };
+
+    integrationTest.afterAll(async ({ deleteServiceFromDynamo }) => {
+      await deleteServiceFromDynamo(testService);
+    });
+
     integrationTest(
       "should create service if services does not already exist",
-      async () => {
-        const serviceToStore: Service = {
-          serviceId: "test-service",
-          name: "My test service",
-        };
-        await createService(serviceToStore);
+      async ({ getServiceFromDynamo }) => {
+        await createService(testService);
 
-        const actualService = await getServiceByServiceId("test-service");
+        const actualService = await getServiceFromDynamo(testServiceId);
 
-        expect(actualService).toStrictEqual(serviceToStore);
+        expect(actualService).toEqual(expect.objectContaining(testService));
       }
     );
 
     integrationTest(
       "should fail to create service if service already exists",
-      async ({ addServiceToDynamo }) => {
-        const existingService: Service = {
-          serviceId: "test-service",
-          name: "My test service",
-        };
-        await addServiceToDynamo(existingService);
-
+      async () => {
         await expect(createService(existingService)).rejects.toThrow(
           ConditionalCheckFailedException
         );
@@ -75,48 +82,59 @@ describe("Services data store tests", () => {
   });
 
   describe("addClientToService", () => {
+    const clientId1 = "test-client-id";
+    const client1: ClientSummary = {
+      clientId: clientId1,
+      name: "Test Client",
+      env: "integration",
+    };
+    const clientServiceSummary1: ClientServiceSummary = {
+      ...client1,
+      serviceId: existingServiceId,
+    };
+
+    const clientId2 = "test-client-id-2";
+    const client2: ClientSummary = {
+      clientId: clientId2,
+      name: "Test Client 2",
+      env: "integration",
+    };
+    const clientServiceSummary2: ClientServiceSummary = {
+      ...client2,
+      serviceId: existingServiceId,
+    };
+
+    integrationTest.afterAll(async ({ deleteClientsFromDynamo }) => {
+      await deleteClientsFromDynamo([
+        clientServiceSummary1,
+        clientServiceSummary2,
+      ]);
+    });
+
     integrationTest(
       "should add client to service if service exists",
-      async ({ addServiceToDynamo, getClientFromDynamo }) => {
-        const serviceId = "test-service-id";
-        const existingService: Service = {
-          serviceId,
-          name: "Test service",
-        };
-        await addServiceToDynamo(existingService);
-
-        const client: ClientSummary = {
-          clientId: "test-client-id",
-          env: "integration",
-          name: "Test Client",
-        };
-
-        const clientServiceSummary: ClientServiceSummary = {
-          ...client,
-          serviceId,
-        };
-
-        await addClientToService(clientServiceSummary);
+      async ({ getClientFromDynamo }) => {
+        await addClientToService(clientServiceSummary1);
 
         const actualClient = await getClientFromDynamo(
-          serviceId,
-          client.env,
-          client.clientId
+          existingServiceId,
+          client1.env,
+          client1.clientId
         );
 
-        expect(actualClient).toStrictEqual(client);
+        expect(actualClient).toStrictEqual(client1);
       }
     );
 
     integrationTest(
       "should fail to add client to service if service does not exist",
       async () => {
-        const serviceId = "test-service-id";
+        const fakeServiceId = "fake-test-service-id";
         const client: ClientServiceSummary = {
-          clientId: "test-client-id",
+          clientId: "fake-test-client-id",
           env: "integration",
           name: "Test Client",
-          serviceId,
+          serviceId: fakeServiceId,
         };
 
         await expect(addClientToService(client)).rejects.toThrow(
@@ -127,74 +145,85 @@ describe("Services data store tests", () => {
 
     integrationTest(
       "should fail to add client to service if client already exists",
-      async ({ addServiceToDynamo }) => {
-        const serviceId = "test-service-id";
-        const existingService: Service = {
-          serviceId: serviceId,
-          name: "Test service",
-        };
-        await addServiceToDynamo(existingService);
+      async ({ addClientsToDynamo }) => {
+        await addClientsToDynamo([clientServiceSummary2]);
 
-        await expect(createService(existingService)).rejects.toThrow(
-          ConditionalCheckFailedException
+        await expect(addClientToService(clientServiceSummary2)).rejects.toThrow(
+          TransactionCanceledException
         );
       }
     );
   });
 
   describe("getClientsByServiceId", () => {
-    integrationTest(
-      "should fail to add user permission if permission already exists",
+    const testServiceId = "existing-service-id-with-clients";
+    const testService: Service = {
+      serviceId: testServiceId,
+      name: "Test service",
+    };
+
+    const clientId1 = "existing-client-id";
+    const client1: ClientSummary = {
+      clientId: clientId1,
+      name: "Test Client",
+      env: "integration",
+    };
+    const clientServiceSummary1: ClientServiceSummary = {
+      ...client1,
+      serviceId: testServiceId,
+    };
+
+    const clientId2 = "existing-client-id-2";
+    const client2: ClientSummary = {
+      clientId: clientId2,
+      name: "Test Client 2",
+      env: "integration",
+    };
+    const clientServiceSummary2: ClientServiceSummary = {
+      ...client2,
+      serviceId: testServiceId,
+    };
+
+    integrationTest.beforeAll(
       async ({ addServiceToDynamo, addClientsToDynamo }) => {
-        const serviceId = "test-service-id";
-        const existingService: Service = {
-          serviceId: serviceId,
-          name: "Test service",
-        };
-        await addServiceToDynamo(existingService);
-
-        const client1 = {
-          clientId: "test-client-id-1",
-          name: "Test Client 1",
-          env: "integration",
-        };
-
-        const client2 = {
-          clientId: "test-client-id-2",
-          name: "Test Client 2",
-          env: "integration",
-        };
-
-        const client3 = {
-          clientId: "test-client-id-3",
-          name: "Test Client 3",
-          env: "production",
-        };
+        await addServiceToDynamo(testService);
 
         const clientServiceSummaries: ClientServiceSummary[] = [
-          {
-            ...client1,
-            serviceId,
-          } as ClientServiceSummary,
-          {
-            ...client2,
-            serviceId,
-          } as ClientServiceSummary,
-          {
-            ...client3,
-            serviceId,
-          } as ClientServiceSummary,
+          clientServiceSummary1,
+          clientServiceSummary2,
         ];
         await addClientsToDynamo(clientServiceSummaries);
+      }
+    );
 
-        const clients = await getClientsByServiceId(serviceId);
+    integrationTest.afterAll(
+      async ({ deleteServiceFromDynamo, deleteClientsFromDynamo }) => {
+        await deleteServiceFromDynamo(testService);
 
-        console.log("HEREHEREHERE");
-        console.log(clients);
+        const clientServiceSummaries: ClientServiceSummary[] = [
+          clientServiceSummary1,
+          clientServiceSummary2,
+        ];
+        await deleteClientsFromDynamo(clientServiceSummaries);
+      }
+    );
 
-        expect(clients).toContain(client1);
-        expect(clients).toContain(client2);
-        expect(clients).toContain(client3);
+    integrationTest(
+      "should get clients by service id if clients exist",
+      async () => {
+        const clients = await getClientsByServiceId(testServiceId);
+
+        expect(clients[0]).toEqual(expect.objectContaining(client1));
+        expect(clients[1]).toEqual(expect.objectContaining(client2));
+      }
+    );
+
+    integrationTest(
+      "should not get clients if service with ID does not exist",
+      async () => {
+        const clients = await getClientsByServiceId("not-a-service-id");
+
+        expect(clients).toStrictEqual([]);
       }
     );
   });

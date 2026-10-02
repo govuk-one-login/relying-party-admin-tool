@@ -31,36 +31,24 @@ export interface TestFixtures {
   dynamoDocClient: DynamoDBDocument;
   tables: Table[];
   addUserToDynamo: (user: User) => Promise<void>;
-  addUserRelationToDynamo: (relation: Relation) => Promise<void>;
   getUserFromDynamo: (
     userId: string
   ) => Promise<{ id: string; name: string; email: string } | undefined>;
+  deleteUserFromDynamo: (user: User) => Promise<void>;
+  addUserRelationToDynamo: (relation: Relation) => Promise<void>;
   userPermissionExistsInDynamo: (relation: Relation) => Promise<boolean>;
+  deleteUserRelationFromDynamo: (relation: Relation) => Promise<void>;
   addServiceToDynamo: (service: Service) => Promise<void>;
   getServiceFromDynamo: (serviceId: string) => Promise<any>;
+  deleteServiceFromDynamo: (service: Service) => Promise<void>;
   addClientsToDynamo: (clients: ClientServiceSummary[]) => Promise<void>;
   getClientFromDynamo: (
     serviceId: string,
     env: "production" | "integration",
     clientId: string
   ) => Promise<ClientSummary>;
+  deleteClientsFromDynamo: (clients: ClientServiceSummary[]) => Promise<void>;
 }
-
-export const setupUserPermissionsTable = () => {
-  integrationTest.override("tables", [Table.USER_PERMISSIONS]);
-};
-
-export const setupServicesTable = () => {
-  integrationTest.override("tables", [Table.SERVICES]);
-};
-
-export const setupAllTables = () => {
-  integrationTest.override("tables", [
-    Table.USER_PERMISSIONS,
-    Table.SERVICES,
-    Table.SESSION,
-  ]);
-};
 
 export const integrationTest = test.extend<TestFixtures>({
   dynamoClient: [
@@ -94,7 +82,7 @@ export const integrationTest = test.extend<TestFixtures>({
     async ({ dynamoDocClient }, use) => {
       await use(async (user: User) => {
         await dynamoDocClient.put({
-          TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
+          TableName: `${process.env.ENVIRONMENT}-user-permissions`,
           Item: {
             subject: `user:${user.id}`,
             email: user.email,
@@ -107,28 +95,11 @@ export const integrationTest = test.extend<TestFixtures>({
     { scope: "file" },
   ],
 
-  addUserRelationToDynamo: [
-    async ({ dynamoDocClient }, use) => {
-      await use(async (relation: Relation) => {
-        await dynamoDocClient.put({
-          TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
-          Item: {
-            subject: `user:${relation.userId}`,
-            sk: `relation#${relation.object}#${relation.relation}`,
-            object: `${relation.object}`,
-            relation: `${relation.relation}`,
-          },
-        });
-      });
-    },
-    { scope: "file" },
-  ],
-
   getUserFromDynamo: async ({ dynamoDocClient }, use) => {
     await use(async (userId: string) => {
       const item = (
         await dynamoDocClient.get({
-          TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
+          TableName: `${process.env.ENVIRONMENT}-user-permissions`,
           Key: { subject: `user:${userId}`, sk: "user" },
         })
       ).Item;
@@ -141,11 +112,43 @@ export const integrationTest = test.extend<TestFixtures>({
     });
   },
 
+  deleteUserFromDynamo: [
+    async ({ dynamoDocClient }, use) => {
+      await use(async (user: User) => {
+        await dynamoDocClient.delete({
+          TableName: `${process.env.ENVIRONMENT}-user-permissions`,
+          Key: {
+            subject: `user:${user.id}`,
+            sk: "user",
+          },
+        });
+      });
+    },
+    { scope: "file" },
+  ],
+
+  addUserRelationToDynamo: [
+    async ({ dynamoDocClient }, use) => {
+      await use(async (relation: Relation) => {
+        await dynamoDocClient.put({
+          TableName: `${process.env.ENVIRONMENT}-user-permissions`,
+          Item: {
+            subject: `user:${relation.userId}`,
+            sk: `relation#${relation.object}#${relation.relation}`,
+            object: `${relation.object}`,
+            relation: `${relation.relation}`,
+          },
+        });
+      });
+    },
+    { scope: "file" },
+  ],
+
   userPermissionExistsInDynamo: async ({ dynamoDocClient }, use) => {
     await use(async (relation: Relation) => {
       const item = (
         await dynamoDocClient.get({
-          TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
+          TableName: `${process.env.ENVIRONMENT}-user-permissions`,
           Key: {
             subject: `user:${relation.userId}`,
             sk: `relation#${relation.object}#${relation.relation}`,
@@ -156,11 +159,26 @@ export const integrationTest = test.extend<TestFixtures>({
     });
   },
 
+  deleteUserRelationFromDynamo: [
+    async ({ dynamoDocClient }, use) => {
+      await use(async (relation: Relation) => {
+        await dynamoDocClient.delete({
+          TableName: `${process.env.ENVIRONMENT}-user-permissions`,
+          Key: {
+            subject: `user:${relation.userId}`,
+            sk: `relation#${relation.object}#${relation.relation}`,
+          },
+        });
+      });
+    },
+    { scope: "file" },
+  ],
+
   addServiceToDynamo: [
     async ({ dynamoDocClient }, use) => {
       await use(async (service: Service) => {
         await dynamoDocClient.put({
-          TableName: `${process.env.VITEST_WORKER_ID}-services`,
+          TableName: `${process.env.ENVIRONMENT}-services`,
           Item: {
             serviceId: service.serviceId,
             name: service.name,
@@ -176,29 +194,47 @@ export const integrationTest = test.extend<TestFixtures>({
     await use(async (serviceId: string) => {
       return (
         await dynamoDocClient.get({
-          TableName: `${process.env.VITEST_WORKER_ID}-services`,
-          Key: { serviceId: serviceId },
+          TableName: `${process.env.ENVIRONMENT}-services`,
+          Key: { serviceId: serviceId, sk: "service" },
         })
       ).Item;
     });
   },
 
-  addClientsToDynamo: async ({ dynamoDocClient }, use) => {
-    await use(async (clients: ClientServiceSummary[]) => {
-      for (const client of clients) {
-        await dynamoDocClient.put({
-          TableName: `${process.env.VITEST_WORKER_ID}-services`,
-          Item: {
-            serviceId: client.serviceId,
-            name: client.name,
-            sk: `client#${client.env}#${client.clientId}`,
-            env: client.env,
-            clientId: client.clientId,
+  deleteServiceFromDynamo: [
+    async ({ dynamoDocClient }, use) => {
+      await use(async (service: Service) => {
+        await dynamoDocClient.delete({
+          TableName: `${process.env.ENVIRONMENT}-services`,
+          Key: {
+            serviceId: service.serviceId,
+            sk: "service",
           },
         });
-      }
-    });
-  },
+      });
+    },
+    { scope: "file" },
+  ],
+
+  addClientsToDynamo: [
+    async ({ dynamoDocClient }, use) => {
+      await use(async (clients: ClientServiceSummary[]) => {
+        for (const client of clients) {
+          await dynamoDocClient.put({
+            TableName: `${process.env.ENVIRONMENT}-services`,
+            Item: {
+              serviceId: client.serviceId,
+              name: client.name,
+              sk: `client#${client.env}#${client.clientId}`,
+              env: client.env,
+              clientId: client.clientId,
+            },
+          });
+        }
+      });
+    },
+    { scope: "file" },
+  ],
 
   getClientFromDynamo: async ({ dynamoDocClient }, use) => {
     await use(
@@ -209,7 +245,7 @@ export const integrationTest = test.extend<TestFixtures>({
       ): Promise<ClientSummary> => {
         const item = (
           await dynamoDocClient.get({
-            TableName: `${process.env.VITEST_WORKER_ID}-services`,
+            TableName: `${process.env.ENVIRONMENT}-services`,
             Key: {
               serviceId: serviceId,
               sk: `client#${env}#${clientId}`,
@@ -225,81 +261,79 @@ export const integrationTest = test.extend<TestFixtures>({
       }
     );
   },
+
+  deleteClientsFromDynamo: [
+    async ({ dynamoDocClient }, use) => {
+      await use(async (clients: ClientServiceSummary[]) => {
+        for (const client of clients) {
+          await dynamoDocClient.delete({
+            TableName: `${process.env.ENVIRONMENT}-services`,
+            Key: {
+              serviceId: client.serviceId,
+              sk: `client#${client.env}#${client.clientId}`,
+            },
+          });
+        }
+      });
+    },
+    { scope: "file" },
+  ],
 });
 
 integrationTest.beforeAll(async ({ dynamoClient, tables }) => {
   if (tables.includes(Table.USER_PERMISSIONS)) {
-    await createUserPermissionsTable(dynamoClient);
+    await createUserPermissionsTableIfNotExists(dynamoClient);
     logger.info("Creating user permissions table");
   }
   if (tables.includes(Table.SERVICES)) {
-    await createServicesTable(dynamoClient);
+    await createServicesTableIfNotExists(dynamoClient);
     logger.info("Creating services table");
   }
   if (tables.includes(Table.SESSION)) {
-    await createSessionTable(dynamoClient);
+    await createSessionTableIfNotExists(dynamoClient);
     logger.info("Creating session table");
   }
 });
 
-integrationTest.afterAll(async ({ dynamoClient, tables }) => {
+const createUserPermissionsTableIfNotExists = async (
+  dynamoClient: DynamoDBClient
+) => {
+  const command = new CreateTableCommand({
+    TableName: `${process.env.ENVIRONMENT}-user-permissions`,
+    AttributeDefinitions: [
+      {
+        AttributeName: "subject",
+        AttributeType: "S",
+      },
+      {
+        AttributeName: "sk",
+        AttributeType: "S",
+      },
+    ],
+    KeySchema: [
+      {
+        AttributeName: "subject",
+        KeyType: "HASH",
+      },
+      {
+        AttributeName: "sk",
+        KeyType: "RANGE",
+      },
+    ],
+    BillingMode: "PAY_PER_REQUEST",
+  });
   try {
-    if (tables.includes(Table.USER_PERMISSIONS)) {
-      await deleteUserPermissionsTable(dynamoClient);
-      logger.info("Deleting user permissions table");
+    await dynamoClient.send(command);
+  } catch (err: any) {
+    if (err.name !== "ResourceInUseException") {
+      throw err;
     }
-    if (tables.includes(Table.SERVICES)) {
-      await deleteServicesTable(dynamoClient);
-      logger.info("Deleting services table");
-    }
-    if (tables.includes(Table.SESSION)) {
-      await deleteSessionTable(dynamoClient);
-      logger.info("Deleting session table");
-    }
-  } catch {
-    logger.info("Table does not exist");
   }
-});
-
-const createUserPermissionsTable = async (dynamoClient: DynamoDBClient) => {
-  const command = new CreateTableCommand({
-    TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
-    AttributeDefinitions: [
-      {
-        AttributeName: "subject",
-        AttributeType: "S",
-      },
-      {
-        AttributeName: "sk",
-        AttributeType: "S",
-      },
-    ],
-    KeySchema: [
-      {
-        AttributeName: "subject",
-        KeyType: "HASH",
-      },
-      {
-        AttributeName: "sk",
-        KeyType: "RANGE",
-      },
-    ],
-    BillingMode: "PAY_PER_REQUEST",
-  });
-  await dynamoClient.send(command);
 };
 
-const deleteUserPermissionsTable = async (dynamoClient: DynamoDBClient) => {
-  const command = new DeleteTableCommand({
-    TableName: `${process.env.VITEST_WORKER_ID}-user-permissions`,
-  });
-
-  await dynamoClient.send(command);
-};
-
-const createServicesTable = async (dynamoClient: DynamoDBClient) => {
+const createServicesTableIfNotExists = async (dynamoClient: DynamoDBClient) => {
   const command = new CreateTableCommand({
-    TableName: `${process.env.VITEST_WORKER_ID}-services`,
+    TableName: `${process.env.ENVIRONMENT}-services`,
     AttributeDefinitions: [
       {
         AttributeName: "serviceId",
@@ -322,20 +356,18 @@ const createServicesTable = async (dynamoClient: DynamoDBClient) => {
     ],
     BillingMode: "PAY_PER_REQUEST",
   });
-  await dynamoClient.send(command);
+  try {
+    await dynamoClient.send(command);
+  } catch (err: any) {
+    if (err.name !== "ResourceInUseException") {
+      throw err;
+    }
+  }
 };
 
-const deleteServicesTable = async (dynamoClient: DynamoDBClient) => {
-  const command = new DeleteTableCommand({
-    TableName: `${process.env.VITEST_WORKER_ID}-services`,
-  });
-
-  await dynamoClient.send(command);
-};
-
-const createSessionTable = async (dynamoClient: DynamoDBClient) => {
+const createSessionTableIfNotExists = async (dynamoClient: DynamoDBClient) => {
   const command = new CreateTableCommand({
-    TableName: `${process.env.VITEST_WORKER_ID}-frontend-sessions`,
+    TableName: `${process.env.ENVIRONMENT}-frontend-sessions`,
     AttributeDefinitions: [
       {
         AttributeName: "id",
@@ -350,13 +382,11 @@ const createSessionTable = async (dynamoClient: DynamoDBClient) => {
     ],
     BillingMode: "PAY_PER_REQUEST",
   });
-  await dynamoClient.send(command);
-};
-
-const deleteSessionTable = async (dynamoClient: DynamoDBClient) => {
-  const command = new DeleteTableCommand({
-    TableName: `${process.env.VITEST_WORKER_ID}-frontend-sessions`,
-  });
-
-  await dynamoClient.send(command);
+  try {
+    await dynamoClient.send(command);
+  } catch (err: any) {
+    if (err.name !== "ResourceInUseException") {
+      throw err;
+    }
+  }
 };
