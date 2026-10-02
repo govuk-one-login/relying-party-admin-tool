@@ -1,12 +1,11 @@
 import { User } from "../models/user.js";
-import { Relation } from "../models/relation.js";
 import { dynamoDocClient } from "../utils/dynamo.js";
 
-export const tableName = `${process.env.ENVIRONMENT ?? "test"}-user-permissions`;
+export const userPermissionsTableName = `${process.env.ENVIRONMENT ?? "test"}-user-permissions`;
 
 export const getUser = async (id: string): Promise<User | undefined> => {
   const result = await dynamoDocClient.get({
-    TableName: tableName,
+    TableName: userPermissionsTableName,
     Key: { subject: `user:${id}`, sk: "user" },
   });
   if (!result.Item) {
@@ -24,7 +23,7 @@ export const getServicesWithRelationForUser = async (
   relation: string
 ): Promise<string[]> => {
   const result = await dynamoDocClient.query({
-    TableName: tableName,
+    TableName: userPermissionsTableName,
     KeyConditionExpression: "subject = :pk AND begins_with(sk, :prefix)",
     FilterExpression: "relation = :relation",
     ExpressionAttributeValues: {
@@ -45,7 +44,7 @@ export const getServicesWithRelationForUser = async (
 
 export const createUser = async (user: User): Promise<void> => {
   await dynamoDocClient.put({
-    TableName: tableName,
+    TableName: userPermissionsTableName,
     Item: {
       subject: `user:${user.id}`,
       sk: "user",
@@ -53,31 +52,5 @@ export const createUser = async (user: User): Promise<void> => {
       name: user.name,
     },
     ConditionExpression: "attribute_not_exists(subject)",
-  });
-};
-
-export const addUserPermission = async (relation: Relation): Promise<void> => {
-  await dynamoDocClient.transactWrite({
-    TransactItems: [
-      {
-        ConditionCheck: {
-          TableName: tableName,
-          Key: { subject: `user:${relation.userId}`, sk: "user" },
-          ConditionExpression: "attribute_exists(subject)",
-        },
-      },
-      {
-        Put: {
-          TableName: tableName,
-          Item: {
-            subject: `user:${relation.userId}`,
-            sk: `relation#${relation.object}#${relation.relation}`,
-            object: relation.object,
-            relation: relation.relation,
-          },
-          ConditionExpression: "attribute_not_exists(sk)",
-        },
-      },
-    ],
   });
 };

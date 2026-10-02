@@ -11,3 +11,24 @@ aws dynamodb delete-item \
         "serviceId": {"S": "12345"},
         "sk": {"S": "service"}
     }'
+
+aws dynamodb delete-item \
+    --table-name local-user-permissions \
+    --key '{
+        "subject": {"S": "user:userId"},
+        "sk": {"S": "relation#service:12345#reader"}
+    }'
+
+aws dynamodb delete-item \
+    --table-name local-user-permissions \
+    --key '{
+        "subject": {"S": "user:userId"},
+        "sk": {"S": "relation#service:12345#writer_int"}
+    }'
+
+aws dynamodb delete-item \
+    --table-name local-user-permissions \
+    --key '{
+        "subject": {"S": "user:userId"},
+        "sk": {"S": "relation#service:12345#manager"}
+    }'

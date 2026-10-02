@@ -16,7 +16,7 @@ const TEST_USER = {
   name: "Test User",
 };
 
-describe("user permissions store tests", () => {
+describe("User permissions data store tests", () => {
   const mockDynamo = mockClient(DynamoDBDocument);
 
   beforeEach(() => {

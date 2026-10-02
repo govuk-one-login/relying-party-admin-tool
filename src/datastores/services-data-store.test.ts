@@ -20,7 +20,7 @@ const TEST_INT_CLIENT = {
   name: "Test Int Client 1",
 };
 
-describe("Services store tests", () => {
+describe("Services data store tests", () => {
   const mockDynamo = mockClient(DynamoDBDocument);
 
   beforeEach(() => {

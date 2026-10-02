@@ -28,6 +28,10 @@ export const setupServicesTable = () => {
   integrationTest.override("tables", [Table.SERVICES]);
 };
 
+export const setupAllTables = () => {
+  integrationTest.override("tables", [Table.USER_PERMISSIONS, Table.SERVICES]);
+};
+
 export const integrationTest = test
   .extend("dynamoClient", async () => {
     return new DynamoDBClient({
@@ -121,7 +125,7 @@ export const integrationTest = test
       return (
         await dynamoDocClient.get({
           TableName: `${process.env.VITEST_WORKER_ID}-services`,
-          Key: { serviceId: serviceId },
+          Key: { serviceId: serviceId, sk: "service" },
         })
       ).Item;
     };
