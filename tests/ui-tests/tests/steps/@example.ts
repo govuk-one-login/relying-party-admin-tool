@@ -12,6 +12,15 @@ export const PRODUCT_PAGE_BASE_URL: Record<string, string> = {
   production: "https://sign-in.service.gov.uk",
 };
 
+const APPLICATION_DOMAIN: Record<string, string> = {
+  local: "http://localhost:3000",
+  dev: "https://manage.development.sign-in.service.gov.uk",
+  build: "https://manage.build.sign-in.service.gov.uk",
+  staging: "https://manage.staging.sign-in.service.gov.uk",
+  integration: "https://manage.integration.sign-in.service.gov.uk",
+  production: "https://manage.sign-in.service.gov.uk",
+};
+
 Then("the header links to the home page", async ({ page }) => {
   await expect(page.getByText("One Login Admin").first()).toBeVisible();
   await page.getByText("One Login Admin").first().click();
@@ -181,7 +190,10 @@ Then("the footer shows with correct urls", async ({ page }) => {
   ).toBeVisible();
   await expect(
     inlineList.getByRole("link", { name: "Cookies", exact: true })
-  ).toHaveAttribute("href", "http://localhost:3000/cookies");
+  ).toHaveAttribute(
+    "href",
+    `${APPLICATION_DOMAIN[process.env.ENVIRONMENT ?? "local"]}/cookies`
+  );
 
   await expect(
     page.getByRole("link", { name: "Government Digital Service", exact: true })
