@@ -1,97 +1,193 @@
-import { integrationTest, setupUserPermissionsTable } from "./base.js";
+import { integrationTest } from "./base.js";
 import { User } from "../src/models/user.js";
 import {
+  addUserPermission,
   createUser,
   getServicesWithRelationForUser,
   getUser,
 } from "../src/datastores/user-permissions-data-store.js";
 import { Relation } from "../src/models/relation.js";
 import { UserPermission } from "../src/models/permissions.js";
-import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
+import {
+  ConditionalCheckFailedException,
+  TransactionCanceledException,
+} from "@aws-sdk/client-dynamodb";
+import { randomUUID } from "crypto";
 
 describe("user permissions data store tests", () => {
-  setupUserPermissionsTable();
-  integrationTest(
-    "should get user from table by ID if user exists",
-    async ({ addUserToDynamo }) => {
-      const existingUser: User = {
-        id: "test-user-id",
-        name: "Test User",
-        email: "test@user.com",
-      };
-      await addUserToDynamo(existingUser);
+  const userId = randomUUID();
+  const testUser: User = {
+    id: userId,
+    name: "Test User",
+    email: "test@user.com",
+  };
 
-      const user = await getUser("test-user-id");
+  describe("getUser", () => {
+    integrationTest.beforeAll(async ({ addUserToDynamo }) => {
+      await addUserToDynamo(testUser);
+    });
 
-      expect(user).toStrictEqual(existingUser);
-    }
-  );
+    integrationTest.afterAll(async ({ deleteUserFromDynamo }) => {
+      await deleteUserFromDynamo(testUser);
+    });
 
-  integrationTest(
-    "should not get user if user with ID does not exist",
-    async () => {
-      const user = await getUser("not-a-user-id");
+    integrationTest(
+      "should get user from table by ID if user exists",
+      async () => {
+        const user = await getUser(userId);
 
-      expect(user).toBeUndefined();
-    }
-  );
+        expect(user).toStrictEqual(testUser);
+      }
+    );
 
-  integrationTest(
-    "should get services with relation from table by ID if user exists",
-    async ({ addUserRelationToDynamo }) => {
-      const relationServiceId1 = "1";
-      const existingRelation1: Relation = {
-        userId: "test-user-id",
-        object: `service:${relationServiceId1}`,
-        relation: UserPermission.READER,
-      };
-      const relationServiceId2 = "2";
-      const existingRelation2: Relation = {
-        userId: "test-user-id",
-        object: `service:${relationServiceId2}`,
-        relation: UserPermission.READER,
-      };
+    integrationTest(
+      "should not get user if user with ID does not exist",
+      async () => {
+        const user = await getUser("not-a-user-id");
+
+        expect(user).toBeUndefined();
+      }
+    );
+  });
+
+  describe("getServicesWithRelationForUser", () => {
+    const relationServiceId1 = randomUUID();
+    const existingRelation1: Relation = {
+      userId,
+      object: `service:${relationServiceId1}`,
+      relation: UserPermission.READER,
+    };
+    const relationServiceId2 = randomUUID();
+    const existingRelation2: Relation = {
+      userId,
+      object: `service:${relationServiceId2}`,
+      relation: UserPermission.READER,
+    };
+
+    integrationTest.beforeAll(async ({ addUserRelationToDynamo }) => {
       await addUserRelationToDynamo(existingRelation1);
       await addUserRelationToDynamo(existingRelation2);
+    });
 
-      const relation = await getServicesWithRelationForUser(
-        "test-user-id",
-        UserPermission.READER
-      );
+    integrationTest.afterAll(async ({ deleteUserRelationFromDynamo }) => {
+      await deleteUserRelationFromDynamo(existingRelation1);
+      await deleteUserRelationFromDynamo(existingRelation2);
+    });
 
-      expect(relation).toStrictEqual([relationServiceId1, relationServiceId2]);
-    }
-  );
+    integrationTest(
+      "should get services with relation from table by ID if user exists",
+      async () => {
+        const services = await getServicesWithRelationForUser(
+          userId,
+          UserPermission.READER
+        );
 
-  integrationTest(
-    "should create user if user does not exist",
-    async ({ getUserFromDynamo }) => {
-      const expectedUser: User = {
-        id: "test-user-id",
-        name: "Test User",
-        email: "test@email.com",
-      };
-      await createUser(expectedUser);
+        expect(services).toContainEqual(relationServiceId1);
+        expect(services).toContainEqual(relationServiceId2);
+      }
+    );
 
-      const actualUser = await getUserFromDynamo(expectedUser.id);
+    integrationTest(
+      "should not return services with relation from table by ID if user does not exists",
+      async () => {
+        const services = await getServicesWithRelationForUser(
+          "user-that-does-not-exist",
+          UserPermission.READER
+        );
 
-      expect(expectedUser).toStrictEqual(actualUser);
-    }
-  );
+        expect(services).toStrictEqual([]);
+      }
+    );
+  });
 
-  integrationTest(
-    "should fail to create user if user already exists with id",
-    async ({ addUserToDynamo }) => {
-      const existingUser: User = {
-        id: "test-user-id",
-        name: "Test User",
-        email: "test@email.com",
-      };
-      await addUserToDynamo(existingUser);
+  describe("createUser", () => {
+    integrationTest.afterEach(async ({ deleteUserFromDynamo }) => {
+      await deleteUserFromDynamo(testUser);
+    });
 
-      await expect(createUser(existingUser)).rejects.toThrow(
-        ConditionalCheckFailedException
-      );
-    }
-  );
+    integrationTest(
+      "should create user if user does not exist",
+      async ({ getUserFromDynamo }) => {
+        await createUser(testUser);
+
+        const actualUser = await getUserFromDynamo(userId);
+
+        expect(testUser).toStrictEqual(actualUser);
+      }
+    );
+
+    integrationTest(
+      "should fail to create user if user already exists with id",
+      async ({ addUserToDynamo }) => {
+        await addUserToDynamo(testUser);
+
+        await expect(createUser(testUser)).rejects.toThrow(
+          ConditionalCheckFailedException
+        );
+      }
+    );
+  });
+
+  describe("addUserPermission", () => {
+    const relation: Relation = {
+      userId,
+      object: `service:${randomUUID()}`,
+      relation: UserPermission.READER,
+    };
+    const existingRelation: Relation = {
+      userId,
+      object: `service:${randomUUID()}`,
+      relation: UserPermission.WRITER_INT,
+    };
+
+    integrationTest.beforeAll(
+      async ({ addUserToDynamo, addUserRelationToDynamo }) => {
+        await addUserToDynamo(testUser);
+        await addUserRelationToDynamo(existingRelation);
+      }
+    );
+
+    integrationTest.afterAll(
+      async ({ deleteUserFromDynamo, deleteUserRelationFromDynamo }) => {
+        await deleteUserFromDynamo(testUser);
+        await deleteUserRelationFromDynamo(relation);
+        await deleteUserRelationFromDynamo(existingRelation);
+      }
+    );
+
+    integrationTest(
+      "should add user permission if user exists",
+      async ({ userPermissionExistsInDynamo }) => {
+        await addUserPermission(relation);
+
+        await expect(userPermissionExistsInDynamo(relation)).resolves.toBe(
+          true
+        );
+      }
+    );
+
+    integrationTest(
+      "should fail to add user permission if user does not exist",
+      async () => {
+        const relation: Relation = {
+          userId: "user-that-does-not-exist",
+          object: `service:${randomUUID()}`,
+          relation: UserPermission.READER,
+        };
+
+        await expect(addUserPermission(relation)).rejects.toThrow(
+          TransactionCanceledException
+        );
+      }
+    );
+
+    integrationTest(
+      "should fail to add user permission if permission already exists",
+      async () => {
+        await expect(addUserPermission(existingRelation)).rejects.toThrow(
+          TransactionCanceledException
+        );
+      }
+    );
+  });
 });

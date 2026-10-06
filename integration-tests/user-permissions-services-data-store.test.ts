@@ -1,51 +1,79 @@
 /* eslint-disable vitest/max-expects */
-import { integrationTest, setupAllTables } from "./base.js";
+import { integrationTest } from "./base.js";
 import { User } from "../src/models/user.js";
 import { UserPermission } from "../src/models/permissions.js";
 import { TransactionCanceledException } from "@aws-sdk/client-dynamodb";
 import { createNewServiceWithManagerUserPermissions } from "../src/datastores/user-permissions-services-data-store.js";
 import { Service } from "../src/models/service.js";
+import { randomUUID } from "crypto";
 
-const userId = "test-user-id";
+const existingUserId = randomUUID();
 const existingUser: User = {
-  id: userId,
+  id: existingUserId,
   name: "Test User",
   email: "test@user.com",
 };
-const serviceId = "test-service-id";
+const serviceId = randomUUID();
 const newService: Service = {
   serviceId: serviceId,
   name: "Test service",
 };
 const readerUserRelation = {
-  userId,
+  userId: existingUserId,
   object: `service:${serviceId}`,
   relation: UserPermission.READER,
 };
 const writerIntUserRelation = {
-  userId,
+  userId: existingUserId,
   object: `service:${serviceId}`,
   relation: UserPermission.WRITER_INT,
 };
 const managerUserRelation = {
-  userId,
+  userId: existingUserId,
   object: `service:${serviceId}`,
   relation: UserPermission.MANAGER,
 };
+const existingServiceId = randomUUID();
+const existingService: Service = {
+  serviceId: existingServiceId,
+  name: "Test service",
+};
+const existingUserIdWithExistingRelation = randomUUID();
+const existingReaderUserRelation = {
+  userId: existingUserIdWithExistingRelation,
+  object: `service:${existingServiceId}`,
+  relation: UserPermission.READER,
+};
 
 describe("user permissions data store tests", () => {
-  setupAllTables();
+  integrationTest.beforeAll(async ({ addUserToDynamo, addServiceToDynamo }) => {
+    await addUserToDynamo(existingUser);
+    await addServiceToDynamo(existingService);
+  });
+
+  integrationTest.afterAll(
+    async ({
+      deleteUserFromDynamo,
+      deleteServiceFromDynamo,
+      deleteUserRelationFromDynamo,
+    }) => {
+      await deleteUserFromDynamo(existingUser);
+      await deleteServiceFromDynamo(existingService);
+      await deleteServiceFromDynamo(newService);
+      await deleteUserRelationFromDynamo(readerUserRelation);
+      await deleteUserRelationFromDynamo(writerIntUserRelation);
+      await deleteUserRelationFromDynamo(managerUserRelation);
+      await deleteUserRelationFromDynamo(existingReaderUserRelation);
+    }
+  );
 
   integrationTest(
     "should create service and add user permission if user exists",
-    async ({
-      addUserToDynamo,
-      getServiceFromDynamo,
-      userPermissionExistsInDynamo,
-    }) => {
-      await addUserToDynamo(existingUser);
-
-      await createNewServiceWithManagerUserPermissions(newService, userId);
+    async ({ getServiceFromDynamo, userPermissionExistsInDynamo }) => {
+      await createNewServiceWithManagerUserPermissions(
+        newService,
+        existingUserId
+      );
 
       const actualService = await getServiceFromDynamo(serviceId);
 
@@ -68,23 +96,36 @@ describe("user permissions data store tests", () => {
 
   integrationTest(
     "should fail to add user permission and fail to create service if user does not exist",
-    async ({ getServiceFromDynamo, userPermissionExistsInDynamo }) => {
+    async () => {
       await expect(
-        createNewServiceWithManagerUserPermissions(newService, userId)
+        createNewServiceWithManagerUserPermissions(newService, "fake-user-id")
       ).rejects.toThrow(TransactionCanceledException);
+    }
+  );
 
-      const actualService = await getServiceFromDynamo("test-service");
+  integrationTest(
+    "should fail to add user permission and fail to create service if service already exists",
+    async () => {
+      await expect(
+        createNewServiceWithManagerUserPermissions(
+          existingService,
+          existingUserId
+        )
+      ).rejects.toThrow(TransactionCanceledException);
+    }
+  );
 
-      expect(actualService).toBeUndefined();
+  integrationTest(
+    "should fail to add user permission and fail to create service if user permissions already exists",
+    async ({ addUserRelationToDynamo }) => {
+      await addUserRelationToDynamo(existingReaderUserRelation);
+
       await expect(
-        userPermissionExistsInDynamo(readerUserRelation)
-      ).resolves.toBe(false);
-      await expect(
-        userPermissionExistsInDynamo(writerIntUserRelation)
-      ).resolves.toBe(false);
-      await expect(
-        userPermissionExistsInDynamo(managerUserRelation)
-      ).resolves.toBe(false);
+        createNewServiceWithManagerUserPermissions(
+          existingService,
+          existingUserIdWithExistingRelation
+        )
+      ).rejects.toThrow(TransactionCanceledException);
     }
   );
 });

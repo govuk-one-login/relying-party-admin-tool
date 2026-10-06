@@ -1,6 +1,6 @@
 /* eslint-disable vitest/max-expects */
 import { Service } from "../src/models/service.js";
-import { integrationTest, setupServicesTable } from "./base.js";
+import { integrationTest } from "./base.js";
 import {
   addClientToService,
   getServiceByServiceId,
@@ -8,22 +8,28 @@ import {
 } from "../src/datastores/services-data-store.js";
 import { ClientServiceSummary, ClientSummary } from "../src/models/client.js";
 import { TransactionCanceledException } from "@aws-sdk/client-dynamodb";
+import { randomUUID } from "crypto";
 
 describe("Services data store tests", () => {
-  setupServicesTable();
+  const existingServiceId = randomUUID();
+  const existingService: Service = {
+    serviceId: existingServiceId,
+    name: "Test service",
+  };
+
+  integrationTest.beforeAll(async ({ addServiceToDynamo }) => {
+    await addServiceToDynamo(existingService);
+  });
+
+  integrationTest.afterAll(async ({ deleteServiceFromDynamo }) => {
+    await deleteServiceFromDynamo(existingService);
+  });
 
   describe("getServiceByServiceId", () => {
     integrationTest(
       "should get service from table by serviceId if service exists",
-      async ({ addServiceToDynamo }) => {
-        const serviceId = "test-service-id";
-        const existingService: Service = {
-          serviceId: serviceId,
-          name: "Test service",
-        };
-        await addServiceToDynamo(existingService);
-
-        const service = await getServiceByServiceId(serviceId);
+      async () => {
+        const service = await getServiceByServiceId(existingServiceId);
 
         expect(service).toStrictEqual(existingService);
       }
@@ -32,56 +38,67 @@ describe("Services data store tests", () => {
     integrationTest(
       "should not get service if service with ID does not exist",
       async () => {
-        const user = await getServiceByServiceId("not-a-service-id");
+        const service = await getServiceByServiceId("not-a-service-id");
 
-        expect(user).toBeUndefined();
+        expect(service).toBeUndefined();
       }
     );
   });
 
   describe("addClientToService", () => {
+    const clientId1 = randomUUID();
+    const client1: ClientSummary = {
+      clientId: clientId1,
+      name: "Test Client",
+      env: "integration",
+    };
+    const clientServiceSummary1: ClientServiceSummary = {
+      ...client1,
+      serviceId: existingServiceId,
+    };
+
+    const clientId2 = randomUUID();
+    const client2: ClientSummary = {
+      clientId: clientId2,
+      name: "Test Client 2",
+      env: "integration",
+    };
+    const clientServiceSummary2: ClientServiceSummary = {
+      ...client2,
+      serviceId: existingServiceId,
+    };
+
+    integrationTest.afterAll(async ({ deleteClientsFromDynamo }) => {
+      await deleteClientsFromDynamo([
+        clientServiceSummary1,
+        clientServiceSummary2,
+      ]);
+    });
+
     integrationTest(
       "should add client to service if service exists",
-      async ({ addServiceToDynamo, getClientFromDynamo }) => {
-        const serviceId = "test-service-id";
-        const existingService: Service = {
-          serviceId,
-          name: "Test service",
-        };
-        await addServiceToDynamo(existingService);
-
-        const client: ClientSummary = {
-          clientId: "test-client-id",
-          env: "integration",
-          name: "Test Client",
-        };
-
-        const clientServiceSummary: ClientServiceSummary = {
-          ...client,
-          serviceId,
-        };
-
-        await addClientToService(clientServiceSummary);
+      async ({ getClientFromDynamo }) => {
+        await addClientToService(clientServiceSummary1);
 
         const actualClient = await getClientFromDynamo(
-          serviceId,
-          client.env,
-          client.clientId
+          existingServiceId,
+          client1.env,
+          client1.clientId
         );
 
-        expect(actualClient).toStrictEqual(client);
+        expect(actualClient).toStrictEqual(client1);
       }
     );
 
     integrationTest(
       "should fail to add client to service if service does not exist",
       async () => {
-        const serviceId = "test-service-id";
+        const fakeServiceId = "fake-test-service-id";
         const client: ClientServiceSummary = {
-          clientId: "test-client-id",
+          clientId: "fake-test-client-id",
           env: "integration",
           name: "Test Client",
-          serviceId,
+          serviceId: fakeServiceId,
         };
 
         await expect(addClientToService(client)).rejects.toThrow(
@@ -92,22 +109,10 @@ describe("Services data store tests", () => {
 
     integrationTest(
       "should fail to add client to service if client already exists",
-      async ({ addServiceToDynamo, addClientsToDynamo }) => {
-        const serviceId = "test-service-id";
-        const existingService: Service = {
-          serviceId,
-          name: "Test service",
-        };
-        await addServiceToDynamo(existingService);
-        const existingClient: ClientServiceSummary = {
-          clientId: "test-client-id",
-          env: "integration",
-          name: "Test Client",
-          serviceId,
-        };
-        await addClientsToDynamo([existingClient]);
+      async ({ addClientsToDynamo }) => {
+        await addClientsToDynamo([clientServiceSummary2]);
 
-        await expect(addClientToService(existingClient)).rejects.toThrow(
+        await expect(addClientToService(clientServiceSummary2)).rejects.toThrow(
           TransactionCanceledException
         );
       }
@@ -115,53 +120,74 @@ describe("Services data store tests", () => {
   });
 
   describe("getClientsByServiceId", () => {
-    integrationTest(
-      "should get clients by service id",
+    const testServiceIdWithClients = randomUUID();
+    const testServiceWithClients: Service = {
+      serviceId: testServiceIdWithClients,
+      name: "Test service",
+    };
+
+    const clientId1 = randomUUID();
+    const client1: ClientSummary = {
+      clientId: clientId1,
+      name: "Test Client",
+      env: "integration",
+    };
+    const clientServiceSummary1: ClientServiceSummary = {
+      ...client1,
+      serviceId: testServiceIdWithClients,
+    };
+
+    const clientId2 = randomUUID();
+    const client2: ClientSummary = {
+      clientId: clientId2,
+      name: "Test Client 2",
+      env: "integration",
+    };
+    const clientServiceSummary2: ClientServiceSummary = {
+      ...client2,
+      serviceId: testServiceIdWithClients,
+    };
+
+    integrationTest.beforeAll(
       async ({ addServiceToDynamo, addClientsToDynamo }) => {
-        const serviceId = "test-service-id";
-        const existingService: Service = {
-          serviceId: serviceId,
-          name: "Test service",
-        };
-        await addServiceToDynamo(existingService);
+        await addServiceToDynamo(testServiceWithClients);
 
-        const client1 = {
-          clientId: "test-client-id-1",
-          env: "integration",
-          name: "Test Client 1",
-        };
-
-        const client2 = {
-          clientId: "test-client-id-2",
-          env: "integration",
-          name: "Test Client 2",
-        };
-
-        const client3 = {
-          clientId: "test-client-id-3",
-          env: "production",
-          name: "Test Client 3",
-        };
-
-        const clientServiceSummariess: ClientServiceSummary[] = [
-          {
-            ...client1,
-            serviceId,
-          } as ClientServiceSummary,
-          {
-            ...client2,
-            serviceId,
-          } as ClientServiceSummary,
-          {
-            ...client3,
-            serviceId,
-          } as ClientServiceSummary,
+        const clientServiceSummaries: ClientServiceSummary[] = [
+          clientServiceSummary1,
+          clientServiceSummary2,
         ];
-        await addClientsToDynamo(clientServiceSummariess);
+        await addClientsToDynamo(clientServiceSummaries);
+      }
+    );
 
-        const clients = await getClientsByServiceId(serviceId);
+    integrationTest.afterAll(
+      async ({ deleteServiceFromDynamo, deleteClientsFromDynamo }) => {
+        await deleteServiceFromDynamo(testServiceWithClients);
 
-        expect(clients).toStrictEqual([client1, client2, client3]);
+        const clientServiceSummaries: ClientServiceSummary[] = [
+          clientServiceSummary1,
+          clientServiceSummary2,
+        ];
+        await deleteClientsFromDynamo(clientServiceSummaries);
+      }
+    );
+
+    integrationTest(
+      "should get clients by service id if clients exist",
+      async () => {
+        const clients = await getClientsByServiceId(testServiceIdWithClients);
+
+        expect(clients).toContainEqual(expect.objectContaining(client1));
+        expect(clients).toContainEqual(expect.objectContaining(client2));
+      }
+    );
+
+    integrationTest(
+      "should not get clients if service with ID does not exist",
+      async () => {
+        const clients = await getClientsByServiceId("not-a-service-id");
+
+        expect(clients).toStrictEqual([]);
       }
     );
   });
