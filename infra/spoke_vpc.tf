@@ -9,7 +9,7 @@ resource "aws_cloudformation_stack" "spoke_vpc_stack" {
 
 
     # Egress Testing
-    TestEgress = "No"
+    DeployEgressTestLambda = "No"
 
     # Allowed AWS Service VPC Endpoints
     VpcLinkEnabled           = "Yes"
