@@ -72,3 +72,5 @@ AllowedDomains                = contains(["dev", "build"], var.environment) ? "*
 - Run the deploy to dev GHA manually for your branch, and tick the `Push test image` box.
 
 The test step in the pipeline should run now! To revert the pipeline changes just revert the changes you made to `pipelines.tf` and deploy them to dev again.
+
+hello world!
