@@ -2,7 +2,7 @@ import request, { Response } from "supertest";
 import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
-import { getServicePaths } from "../../helpers/helpers.js";
+import { getServicePaths, testComponent } from "../../helpers/helpers.js";
 import { User } from "../../../src/models/user.js";
 import { UserPermission } from "../../../src/models/permissions.js";
 import { Relation } from "../../../src/models/relation.js";
@@ -82,6 +82,56 @@ describe("Integration:: edit service type", () => {
           "service-type": "MANDATORY",
         });
       expect(res.header.location).toBe("/forbidden");
+      expect(res.statusCode).toBe(302);
+    }
+  );
+
+  integrationTest(
+    "should return validation error when service type is empty",
+    async () => {
+      const res = await requestAgent
+        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE))
+        .type("form")
+        .send({
+          _csrf: token,
+        });
+      const $ = cheerio.load(res.text);
+      expect($(testComponent("service-type-error")).text()).toContain(
+        "Service type is required"
+      );
+      expect(res.statusCode).toBe(400);
+    }
+  );
+
+  integrationTest(
+    "should return validation error when service type is an invalid service type",
+    async () => {
+      const res = await requestAgent
+        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE))
+        .type("form")
+        .send({
+          _csrf: token,
+          "service-type": "invalid-service-type",
+        });
+      const $ = cheerio.load(res.text);
+      expect($(testComponent("service-type-error")).text()).toContain(
+        'Invalid service type provided: "invalid-service-type"'
+      );
+      expect(res.statusCode).toBe(400);
+    }
+  );
+
+  integrationTest(
+    "should redirect to /clients when valid service type",
+    async () => {
+      const res = await requestAgent
+        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE))
+        .type("form")
+        .send({
+          _csrf: token,
+          "service-type": "MANDATORY",
+        })
+        .expect("Location", getServicePaths(PATH_NAMES.CLIENT));
       expect(res.statusCode).toBe(302);
     }
   );
