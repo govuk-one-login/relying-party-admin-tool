@@ -2,7 +2,7 @@ import request, { Response } from "supertest";
 import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
-import { getServicePaths } from "../../helpers/helpers.js";
+import { getServicePaths, testComponent } from "../../helpers/helpers.js";
 import { User } from "../../../src/models/user.js";
 import { UserPermission } from "../../../src/models/permissions.js";
 import { Relation } from "../../../src/models/relation.js";
@@ -87,6 +87,64 @@ describe("Integration:: edit id token signing algorithm", () => {
           "id-token-signing-algorithm": "ES256",
         });
       expect(res.header.location).toBe("/forbidden");
+      expect(res.statusCode).toBe(302);
+    }
+  );
+
+  integrationTest(
+    "should return validation error when algorithm is empty",
+    async () => {
+      const res = await requestAgent
+        .post(
+          getServicePaths(PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM)
+        )
+        .type("form")
+        .send({
+          _csrf: token,
+        });
+      const $ = cheerio.load(res.text);
+      expect(
+        $(testComponent("id-token-signing-algorithm-error")).text()
+      ).toContain("ID token signing algorithm is required");
+      expect(res.statusCode).toBe(400);
+    }
+  );
+
+  integrationTest(
+    "should return validation error when algorithm is an invalid algorithm",
+    async () => {
+      const res = await requestAgent
+        .post(
+          getServicePaths(PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM)
+        )
+        .type("form")
+        .send({
+          _csrf: token,
+          "id-token-signing-algorithm": "invalid-algorithm",
+        });
+      const $ = cheerio.load(res.text);
+      expect(
+        $(testComponent("id-token-signing-algorithm-error")).text()
+      ).toContain(
+        'Invalid ID token signing algorithm provided: "invalid-algorithm"'
+      );
+      expect(res.statusCode).toBe(400);
+    }
+  );
+
+  integrationTest(
+    "should redirect to /clients when valid id token signing algorithm",
+    async () => {
+      const res = await requestAgent
+        .post(
+          getServicePaths(PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM)
+        )
+        .type("form")
+        .send({
+          _csrf: token,
+          "id-token-signing-algorithm": "ES256",
+        })
+        .expect("Location", getServicePaths(PATH_NAMES.CLIENT));
       expect(res.statusCode).toBe(302);
     }
   );
