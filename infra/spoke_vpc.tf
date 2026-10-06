@@ -1,7 +1,7 @@
 resource "aws_cloudformation_stack" "spoke_vpc_stack" {
   # See https://govukverify.atlassian.net/wiki/x/YoGDVgE
   name         = "spoke-vpc"
-  template_url = "https://template-storage-templatebucket-1upzyw6v9cs42.s3.eu-west-2.amazonaws.com/spoke-vpc/template.yaml"
+  template_url = "https://template-storage-templatebucket-1upzyw6v9cs42.s3.eu-west-2.amazonaws.com/vpc/template.yaml"
 
   parameters = merge({
     IpamPool         = var.transit_gateway_ipam_pool
