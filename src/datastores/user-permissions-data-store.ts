@@ -1,3 +1,4 @@
+import { Relation } from "../models/relation.js";
 import { User } from "../models/user.js";
 import { dynamoDocClient } from "../utils/dynamo.js";
 
@@ -52,5 +53,31 @@ export const createUser = async (user: User): Promise<void> => {
       name: user.name,
     },
     ConditionExpression: "attribute_not_exists(subject)",
+  });
+};
+
+export const addUserPermission = async (relation: Relation): Promise<void> => {
+  await dynamoDocClient.transactWrite({
+    TransactItems: [
+      {
+        ConditionCheck: {
+          TableName: userPermissionsTableName,
+          Key: { subject: `user:${relation.userId}`, sk: "user" },
+          ConditionExpression: "attribute_exists(subject)",
+        },
+      },
+      {
+        Put: {
+          TableName: userPermissionsTableName,
+          Item: {
+            subject: `user:${relation.userId}`,
+            sk: `relation#${relation.object}#${relation.relation}`,
+            object: relation.object,
+            relation: relation.relation,
+          },
+          ConditionExpression: "attribute_not_exists(sk)",
+        },
+      },
+    ],
   });
 };
