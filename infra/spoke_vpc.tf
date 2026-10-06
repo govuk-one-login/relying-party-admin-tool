@@ -4,8 +4,8 @@ resource "aws_cloudformation_stack" "spoke_vpc_stack" {
   template_url = "https://template-storage-templatebucket-1upzyw6v9cs42.s3.eu-west-2.amazonaws.com/vpc/template.yaml"
 
   parameters = merge({
-    VpcType          = "Spoke"
-    Environment      = var.environment
+    VpcType     = "Spoke"
+    Environment = var.environment
 
 
     # Egress Testing
@@ -52,7 +52,7 @@ resource "aws_cloudformation_stack" "spoke_vpc_stack" {
     }, var.environment == "production" ? {
     # Disaster Recovery
     // Only set this value in production environments.
-    UseDisasterRecovery              = var.use_dr_transit_gateway ? "Yes" : "No"
+    UseDisasterRecovery = var.use_dr_transit_gateway ? "Yes" : "No"
   } : {})
 
   capabilities = ["CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
