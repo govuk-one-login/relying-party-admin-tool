@@ -6,6 +6,7 @@ resource "aws_cloudformation_stack" "spoke_vpc_stack" {
   parameters = merge({
     IpamPool         = var.transit_gateway_ipam_pool
     TransitGatewayId = var.transit_gateway_id
+    VpcType          = "Spoke"
 
 
     # Egress Testing
