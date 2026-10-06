@@ -24,7 +24,8 @@
     "tflint:fix": "tflint --init && tflint --recursive --format compact --chdir infra --fix",
     "watch-node": "nodemon -r dotenv/config --inspect=0.0.0.0:3000 dist/server.js",
     "watch-sass": "sass --load-path=node_modules/govuk-frontend/dist/govuk --watch src/assets/scss/application.scss dist/public/style.css",
-    "watch-ts": "tsc -w"
+    "watch-ts": "tsc -w",
+    "validate-clients": "node dist/scripts/validate-client-registry.js"
   },
   "overrides": {
     "nanoid": "^3.3.18"
