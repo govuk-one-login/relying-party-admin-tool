@@ -18,6 +18,8 @@ export enum Table {
   USER_PERMISSIONS,
   // eslint-disable-next-line no-unused-vars
   SERVICES,
+  // eslint-disable-next-line no-unused-vars
+  SESSION,
 }
 
 export const setupUserPermissionsTable = () => {
@@ -29,7 +31,11 @@ export const setupServicesTable = () => {
 };
 
 export const setupAllTables = () => {
-  integrationTest.override("tables", [Table.USER_PERMISSIONS, Table.SERVICES]);
+  integrationTest.override("tables", [
+    Table.USER_PERMISSIONS,
+    Table.SERVICES,
+    Table.SESSION,
+  ]);
 };
 
 export const integrationTest = test
@@ -179,6 +185,10 @@ integrationTest.beforeEach(async ({ dynamoClient, tables }) => {
     await createServicesTable(dynamoClient);
     logger.info("Creating services table");
   }
+  if (tables.includes(Table.SESSION)) {
+    await createSessionTable(dynamoClient);
+    logger.info("Creating session table");
+  }
 });
 
 integrationTest.afterEach(async ({ dynamoClient, tables }) => {
@@ -190,6 +200,10 @@ integrationTest.afterEach(async ({ dynamoClient, tables }) => {
     if (tables.includes(Table.SERVICES)) {
       await deleteServicesTable(dynamoClient);
       logger.info("Deleting services table");
+    }
+    if (tables.includes(Table.SESSION)) {
+      await deleteSessionTable(dynamoClient);
+      logger.info("Deleting session table");
     }
   } catch {
     logger.info("Table does not exist");
@@ -263,6 +277,34 @@ const createServicesTable = async (dynamoClient: DynamoDBClient) => {
 const deleteServicesTable = async (dynamoClient: DynamoDBClient) => {
   const command = new DeleteTableCommand({
     TableName: `${process.env.VITEST_WORKER_ID}-services`,
+  });
+
+  await dynamoClient.send(command);
+};
+
+const createSessionTable = async (dynamoClient: DynamoDBClient) => {
+  const command = new CreateTableCommand({
+    TableName: `${process.env.VITEST_WORKER_ID}-frontend-sessions`,
+    AttributeDefinitions: [
+      {
+        AttributeName: "id",
+        AttributeType: "S",
+      },
+    ],
+    KeySchema: [
+      {
+        AttributeName: "id",
+        KeyType: "HASH",
+      },
+    ],
+    BillingMode: "PAY_PER_REQUEST",
+  });
+  await dynamoClient.send(command);
+};
+
+const deleteSessionTable = async (dynamoClient: DynamoDBClient) => {
+  const command = new DeleteTableCommand({
+    TableName: `${process.env.VITEST_WORKER_ID}-frontend-sessions`,
   });
 
   await dynamoClient.send(command);
