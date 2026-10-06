@@ -73,7 +73,7 @@ repos:
         entry: bash
         args:
           - -c
-          - terraform fmt -check
+          - terraform fmt -recursive -check || terraform fmt -recursive -write
         language: system
         pass_filenames: false
         files: "^infra/"
