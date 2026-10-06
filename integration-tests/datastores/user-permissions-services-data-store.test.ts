@@ -1,10 +1,10 @@
 /* eslint-disable vitest/max-expects */
-import { integrationTest } from "./base.js";
-import { User } from "../src/models/user.js";
-import { UserPermission } from "../src/models/permissions.js";
+import { integrationTest } from "../base.js";
+import { User } from "../../src/models/user.js";
+import { UserPermission } from "../../src/models/permissions.js";
 import { TransactionCanceledException } from "@aws-sdk/client-dynamodb";
-import { createNewServiceWithManagerUserPermissions } from "../src/datastores/user-permissions-services-data-store.js";
-import { Service } from "../src/models/service.js";
+import { createNewServiceWithManagerUserPermissions } from "../../src/datastores/user-permissions-services-data-store.js";
+import { Service } from "../../src/models/service.js";
 import { randomUUID } from "crypto";
 
 const existingUserId = randomUUID();

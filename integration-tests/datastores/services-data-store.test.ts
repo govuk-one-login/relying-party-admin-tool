@@ -1,12 +1,15 @@
 /* eslint-disable vitest/max-expects */
-import { Service } from "../src/models/service.js";
-import { integrationTest } from "./base.js";
+import { Service } from "../../src/models/service.js";
+import { integrationTest } from "../base.js";
 import {
   addClientToService,
   getServiceByServiceId,
   getClientsByServiceId,
-} from "../src/datastores/services-data-store.js";
-import { ClientServiceSummary, ClientSummary } from "../src/models/client.js";
+} from "../../src/datastores/services-data-store.js";
+import {
+  ClientServiceSummary,
+  ClientSummary,
+} from "../../src/models/client.js";
 import { TransactionCanceledException } from "@aws-sdk/client-dynamodb";
 import { randomUUID } from "crypto";
 
