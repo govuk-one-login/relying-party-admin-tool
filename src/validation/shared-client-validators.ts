@@ -2,6 +2,7 @@ import crypto from "crypto";
 import {
   ADDITIONAL_VALID_CHANNELS,
   ADDITIONAL_VALID_SCOPES,
+  ALL_VALID_LOCS,
   PROHIBITED_REDIRECT_URI_QUERY_PARAMETER_NAMES,
   PROHIBITED_REDIRECT_URI_SCHEMES,
   VALID_CHANNELS,
@@ -71,9 +72,9 @@ export const jwksUrlValidator = validUrlValidator("JWKS URL").and(
   productionUrlValidator("JWKS URL")
 );
 
-export const publicKeyValidator = rule((jwks: string) => {
+export const publicKeyValidator = rule((publicKey: string) => {
   try {
-    crypto.createPublicKey(jwks);
+    crypto.createPublicKey(publicKey);
     return true;
   } catch {
     return false;
@@ -163,5 +164,10 @@ export const serviceTypeValidator = requiredValidator(
 
 export const validLevelOfConfidenceValidator = listLimitedValidValuesValidator(
   VALID_LOCS,
+  "level of confidence"
+).and(notEmptyListValidator("You must select one level of confidence"));
+
+export const allLevelOfConfidencesValidator = listLimitedValidValuesValidator(
+  ALL_VALID_LOCS,
   "level of confidence"
 ).and(notEmptyListValidator("You must select one level of confidence"));
