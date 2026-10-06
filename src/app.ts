@@ -1,5 +1,4 @@
 import express, { Application } from "express";
-
 import { indexRouter } from "./routes/index.js";
 import { fileURLToPath } from "url";
 import path, { dirname } from "path";
@@ -11,6 +10,7 @@ import {
   getSessionExpiry,
   getSessionSecret,
   getVitalSignsIntervalSeconds,
+  isDeployedEnv,
   isLocalEnv,
 } from "./config.js";
 import { Server } from "http";
@@ -43,7 +43,7 @@ const APP_VIEWS = [
 
 const createApp = async (): Promise<express.Application> => {
   const app: express.Application = express();
-  const isDeployedEnvironment = !isLocalEnv();
+  const isDeployedEnvironment = isDeployedEnv();
 
   app.enable("trust proxy");
 

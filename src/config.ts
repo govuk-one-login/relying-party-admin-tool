@@ -8,6 +8,12 @@ export const isLocalEnv = (): boolean => {
   return getEnv() === "local";
 };
 
+export const isDeployedEnv = (): boolean => {
+  return ["dev", "build", "staging", "integration", "production"].includes(
+    getEnv()
+  );
+};
+
 export const isProductionEnv = (): boolean => {
   return getEnv() === "production";
 };
