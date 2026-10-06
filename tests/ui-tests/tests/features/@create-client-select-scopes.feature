@@ -15,5 +15,6 @@ Feature: Create a new client - select scopes page
     Given I go to the "create client - select scopes" page
     And the page has finished loading
     And I check the checkbox: "email"
+    And I check the checkbox: "phone"
     And I click the "Continue" button
     Then I am taken to the "create client - support identity verification" page
