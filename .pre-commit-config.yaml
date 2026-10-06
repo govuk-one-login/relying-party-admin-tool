@@ -66,3 +66,14 @@ repos:
         language: system
         pass_filenames: false
         files: ^.*\.ts$
+  - repo: local
+    hooks:
+      - id: format-terraform
+        name: Format Teraform
+        entry: bash
+        args:
+          - -c
+          - terraform fmt -check
+        language: system
+        pass_filenames: false
+        files: "^infra/"

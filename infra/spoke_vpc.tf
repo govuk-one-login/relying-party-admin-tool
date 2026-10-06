@@ -1,15 +1,15 @@
 resource "aws_cloudformation_stack" "spoke_vpc_stack" {
   # See https://govukverify.atlassian.net/wiki/x/YoGDVgE
   name         = "spoke-vpc"
-  template_url = "https://template-storage-templatebucket-1upzyw6v9cs42.s3.eu-west-2.amazonaws.com/spoke-vpc/template.yaml"
+  template_url = "https://template-storage-templatebucket-1upzyw6v9cs42.s3.eu-west-2.amazonaws.com/vpc/template.yaml"
 
   parameters = merge({
-    IpamPool         = var.transit_gateway_ipam_pool
-    TransitGatewayId = var.transit_gateway_id
+    VpcType     = "Spoke"
+    Environment = var.environment
 
 
     # Egress Testing
-    TestEgress = "No"
+    DeployEgressTestLambda = "No"
 
     # Allowed AWS Service VPC Endpoints
     VpcLinkEnabled           = "Yes"
@@ -52,8 +52,7 @@ resource "aws_cloudformation_stack" "spoke_vpc_stack" {
     }, var.environment == "production" ? {
     # Disaster Recovery
     // Only set this value in production environments.
-    DisasterRecoveryTransitGatewayId = var.transit_gateway_dr_id
-    UseDisasterRecovery              = var.use_dr_transit_gateway ? "Yes" : "No"
+    UseDisasterRecovery = var.use_dr_transit_gateway ? "Yes" : "No"
   } : {})
 
   capabilities = ["CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
