@@ -2,7 +2,7 @@ import request, { Response } from "supertest";
 import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
-import { getServicePaths } from "../../helpers/helpers.js";
+import { getServicePaths, testComponent } from "../../helpers/helpers.js";
 import { User } from "../../../src/models/user.js";
 import { UserPermission } from "../../../src/models/permissions.js";
 import { Relation } from "../../../src/models/relation.js";
@@ -82,6 +82,56 @@ describe("Integration:: edit sector identifier uri", () => {
           "sector-identifier-uri": "test-url.com",
         });
       expect(res.header.location).toBe("/forbidden");
+      expect(res.statusCode).toBe(302);
+    }
+  );
+
+  integrationTest(
+    "should return validation error when uri is not a valid uri",
+    async () => {
+      const res = await requestAgent
+        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI))
+        .type("form")
+        .send({
+          _csrf: token,
+          "sector-identifier-uri": "not-a-uri",
+        });
+      const $ = cheerio.load(res.text);
+      expect($(testComponent("sector-identifier-uri-error")).text()).toContain(
+        "Your sector identifier URI must be a valid URL"
+      );
+      expect(res.statusCode).toBe(400);
+    }
+  );
+
+  integrationTest(
+    "should return validation error when uri is empty",
+    async () => {
+      const res = await requestAgent
+        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI))
+        .type("form")
+        .send({
+          _csrf: token,
+        });
+      const $ = cheerio.load(res.text);
+      expect($(testComponent("sector-identifier-uri-error")).text()).toContain(
+        "Enter a sector identifier URI"
+      );
+      expect(res.statusCode).toBe(400);
+    }
+  );
+
+  integrationTest(
+    "should redirect to /clients when valid sector identifier uri",
+    async () => {
+      const res = await requestAgent
+        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI))
+        .type("form")
+        .send({
+          _csrf: token,
+          "sector-identifier-uri": "http://url.com",
+        })
+        .expect("Location", getServicePaths(PATH_NAMES.CLIENT));
       expect(res.statusCode).toBe(302);
     }
   );
