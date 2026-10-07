@@ -68,7 +68,7 @@
     "@types/nunjucks": "^3.2.6",
     "@types/overload-protection": "^1.2.4",
     "@types/supertest": "^7.2.1",
-    "@vitest/coverage-v8": "^4.1.8",
+    "@vitest/coverage-v8": "^5.0.2",
     "aws-sdk-client-mock": "^4.1.0",
     "aws-sdk-client-mock-vitest": "^7.1.0",
     "eslint": "^10.4.0",
