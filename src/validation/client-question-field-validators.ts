@@ -160,6 +160,13 @@ const postLogoutRedirectUrlInputValidator = when(
     )
 );
 
+export const maxAgeEnabledFieldValidator = new FieldValidator(
+  requiredValidator("Select an option").adaptedFrom(
+    (req: Request) => req.body["max-age-enabled"]
+  ),
+  "max-age-enabled"
+);
+
 export const pkceEnforcedFieldValidator = new FieldValidator(
   requiredValidator("Select an option").adaptedFrom(
     (req: Request) => req.body["pkce-enforced"]

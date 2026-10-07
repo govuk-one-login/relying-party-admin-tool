@@ -46,6 +46,11 @@ import {
 } from "../components/clients/edit-pkce-enforced/edit-pkce-enforced-controller.js";
 import { validateEditPKCEEnforcedRequest } from "../components/clients/edit-pkce-enforced/edit-pkce-enforced-validation.js";
 import { checkIntegrationWriterPermissionsMiddleware } from "../middleware/permissions-check-middleware.js";
+import {
+  editMaxAgeEnabledGet,
+  editMaxAgeEnabledPost,
+} from "../components/clients/edit-max-age-enabled/edit-max-age-enabled-controller.js";
+import { validateEditMaxAgeEnabledRequest } from "../components/clients/edit-max-age-enabled/edit-max-age-enabled-validation.js";
 
 const router = express.Router();
 
@@ -101,6 +106,14 @@ router.post(
   PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED,
   validateEditJarValidationRequiredRequest(),
   editJarValidationRequiredPost()
+);
+
+router.get(PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED, editMaxAgeEnabledGet());
+
+router.post(
+  PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED,
+  validateEditMaxAgeEnabledRequest(),
+  editMaxAgeEnabledPost()
 );
 
 router.get(PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED, editPKCEEnforcedGet());
