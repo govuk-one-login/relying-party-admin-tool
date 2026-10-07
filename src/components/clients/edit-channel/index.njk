@@ -54,6 +54,7 @@
         },
         items: radioOptions,
         errorMessage: {
+          attributes: { "data-test-id": "channel-error"},
           text: errors["channel"].text
         } if (errors["channel"])
       })
