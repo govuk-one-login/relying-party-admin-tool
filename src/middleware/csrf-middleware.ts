@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 
-export function csrfMiddleware(
+export const csrfMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
-): void {
+): void => {
   res.locals.csrfToken = req.csrfToken ? req.csrfToken() : undefined;
   next();
-}
+};

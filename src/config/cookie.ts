@@ -13,10 +13,10 @@ import { CookieOptions } from "express-session";
  * Server-side session lifetime is controlled separately by the session
  * store's TTL, regardless of whether the cookie itself is session-scoped.
  */
-export function getSessionCookieOptions(
+export const getSessionCookieOptions = (
   isProdEnv: boolean,
   maxAge?: number
-): CookieOptions {
+): CookieOptions => {
   const options: CookieOptions = {
     secure: isProdEnv,
   };
@@ -26,4 +26,4 @@ export function getSessionCookieOptions(
   }
 
   return options;
-}
+};

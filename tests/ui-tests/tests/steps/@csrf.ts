@@ -1,13 +1,12 @@
-import { expect } from "@playwright/test";
 import type { Page } from "@playwright/test";
 import { bdd } from "./fixtures.js";
 
-const { Given, Then } = bdd;
+const { Given } = bdd;
 
-async function submitFormWithModifiedCsrf(
+const submitFormWithModifiedCsrf = async (
   page: Page,
   csrfValue: string | null
-): Promise<number> {
+): Promise<number> => {
   if (csrfValue === null) {
     await page.locator('input[name="_csrf"]').evaluate((el) => {
       el.remove();
@@ -24,7 +23,7 @@ async function submitFormWithModifiedCsrf(
   ]);
 
   return response.status();
-}
+};
 
 Given(
   "I tamper with the CSRF token and submit the form",

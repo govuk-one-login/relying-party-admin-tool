@@ -3,12 +3,12 @@ import { describe, it, expect } from "vitest";
 import { helmetConfiguration } from "./helmet.js";
 import { Request, Response } from "express";
 
-function getNonceFunction(
+const getNonceFunction = (
   entries: any[]
   // eslint-disable-next-line no-unused-vars
-): (req: Request, res: Response) => string {
+): ((req: Request, res: Response) => string) => {
   return entries.find((item) => typeof item === "function");
-}
+};
 
 describe("helmet config", () => {
   it("should have contentSecurityPolicy defined", () => {
