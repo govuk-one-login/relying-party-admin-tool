@@ -22,6 +22,8 @@ npm run dynamodblocal:up # This only needs to be done once
 npm run test:integration
 ```
 
+If you are getting a `CredentialsProviderError: The SSO session associated with this profile has expired. To refresh this SSO session run aws sso login with the corresponding profile. ` error, run `unset AWS_PROFILE` and then `npm run dynamodblocal:up`.
+
 ## Running the application locally
 
 Copy the file `.env.example` to `.env`.
