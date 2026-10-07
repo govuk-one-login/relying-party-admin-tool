@@ -1,5 +1,6 @@
 const TABLE_NAME = `${process.env.ENVIRONMENT}-client-registry`;
 
+import { paginateScan } from "@aws-sdk/lib-dynamodb";
 import { dynamoDocClient } from "../utils/dynamo.js";
 import { Invalid, ValidationResult } from "../utils/types.js";
 import {
@@ -111,13 +112,20 @@ export type ClientValidationResult = {
 };
 
 const fetchClients = async (): Promise<ClientRegistry[]> => {
-  return (
-    ((
-      await dynamoDocClient.scan({
-        TableName: TABLE_NAME,
-      })
-    ).Items as ClientRegistry[]) || []
+  const paginator = paginateScan(
+    {
+      client: dynamoDocClient,
+    },
+    {
+      TableName: TABLE_NAME,
+    }
   );
+
+  let clients: ClientRegistry[] = [];
+  for await (const page of paginator) {
+    clients = clients.concat((page?.Items as ClientRegistry[]) || []);
+  }
+  return clients;
 };
 
 // Extra validations (not yet added to this repo!)
