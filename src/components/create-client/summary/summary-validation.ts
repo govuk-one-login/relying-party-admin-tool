@@ -12,7 +12,7 @@ import {
   tokenAuthenticationMethodSummaryFieldValidator,
 } from "../../../validation/create-client-summary-field-validators.js";
 
-export function validateCreateClientRequest(): ValidationChainFunc {
+export const validateCreateClientRequest = (): ValidationChainFunc => {
   return [
     validateFieldsMiddleware(
       "create-client/summary/index.njk",
@@ -20,7 +20,7 @@ export function validateCreateClientRequest(): ValidationChainFunc {
       postValidationLocals
     ),
   ];
-}
+};
 
 const summaryFieldValidators = clientNameSummaryFieldValidator
   .and(clientAuthenticationMethodSummaryFieldValidator)

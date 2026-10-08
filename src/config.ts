@@ -42,10 +42,10 @@ export const getTestServiceId = (): string | undefined => {
   return process.env.TEST_SERVICE_ID;
 };
 
-export function getAwsRegion(): string {
+export const getAwsRegion = (): string => {
   return process.env.AWS_REGION ?? "eu-west-2";
-}
+};
 
-export function getDynamoDBLocalBaseUrl(): string {
+export const getDynamoDBLocalBaseUrl = (): string => {
   return process.env.DYNAMO_ENDPOINT ?? "http://127.0.0.1:8001";
-}
+};

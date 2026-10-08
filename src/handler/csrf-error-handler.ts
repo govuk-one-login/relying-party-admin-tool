@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { PATH_NAMES } from "../app.constants.js";
 
-export function csrfErrorHandler(
+export const csrfErrorHandler = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: any,
   req: Request,
   res: Response,
   next: NextFunction
-): void {
+): void => {
   if (res.headersSent) {
     void next();
     return;
@@ -21,4 +21,4 @@ export function csrfErrorHandler(
   } else {
     void next(error);
   }
-}
+};

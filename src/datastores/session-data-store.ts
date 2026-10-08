@@ -14,7 +14,7 @@ const PREFIX = "sess:";
 
 let sessionStoreInstance: Store | null = null;
 
-export function getSessionStore(): Store {
+export const getSessionStore = (): Store => {
   if (!sessionStoreInstance) {
     sessionStoreInstance = new DynamoDBSessionStore({
       client: dynamoClient,
@@ -34,4 +34,4 @@ export function getSessionStore(): Store {
   }
 
   return sessionStoreInstance!;
-}
+};

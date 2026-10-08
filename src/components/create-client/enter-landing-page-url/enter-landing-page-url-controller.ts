@@ -5,13 +5,13 @@ import { populateUrlRoute } from "../../../utils/populate-url-route.js";
 import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
 
 export const createClientEnterLandingPageUrlGet = (): ExpressRouteFunc => {
-  return async function (_req: Request, res: Response) {
+  return async (_req: Request, res: Response) => {
     res.render("create-client/enter-landing-page-url/index.njk");
   };
 };
 
 export const createClientEnterLandingPageUrlPost = (): ExpressRouteFunc => {
-  return async function (req: Request, res: Response) {
+  return async (req: Request, res: Response) => {
     req.session.newClientConfig = {
       ...req.session.newClientConfig,
       landingPageUrl: req.body["landing-page-url"],
