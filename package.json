@@ -58,7 +58,7 @@
     "overload-protection": "^1.2.3",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0",
-    "sass": "^1.100.0",
+    "sass": "^1.105.1",
     "supertest": "^7.3.0",
     "vitest": "^4.1.11"
   },
