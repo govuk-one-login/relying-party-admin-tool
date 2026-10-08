@@ -46,7 +46,7 @@
     "csrf-sync": "^4.2.1",
     "dompurify": "^3.4.16",
     "dotenv": "^17.4.2",
-    "eslint-plugin-playwright": "^2.10.4",
+    "eslint-plugin-playwright": "^2.12.0",
     "express": "~5.2.1",
     "express-session": "^1.19.0",
     "govuk-frontend": "^6.1.0",
