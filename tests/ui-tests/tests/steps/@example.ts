@@ -183,7 +183,7 @@ Then("the footer shows with correct urls", async ({ page }) => {
     inlineList.getByRole("link", { name: "Cookies", exact: true })
   ).toHaveAttribute(
     "href",
-    `${PRODUCT_PAGE_BASE_URL[process.env.ENVIRONMENT ?? "local"]}/cookies`
+    `/cookies`
   );
 
   await expect(
