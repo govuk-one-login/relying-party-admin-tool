@@ -2,6 +2,7 @@ export const PATH_NAMES = {
   ROOT: "/",
   "403_ERROR": "/forbidden",
   "500_ERROR": "/error",
+  COOKIES: "/cookies",
   HEALTHCHECK: "/healthcheck",
   SERVICES: "/services",
   CREATE_SERVICE: "/services/create",

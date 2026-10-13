@@ -10,6 +10,7 @@ const pageNameToPath: Record<string, string> = {
   "403 error": "/forbidden",
   "404 error": "/random-page",
   "500 error": "/error",
+  "Cookies": "/cookies",
   services: "/services",
   "create service": "/services/create",
   "service with clients": "/services/1",
