@@ -243,6 +243,16 @@ describe("shared client validator tests", () => {
       expect(result.isValid).toBe(true);
     });
 
+    it("should fail validation when valid private key", async () => {
+      const privateKey =
+        "-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgQCdQ5ikBNzPwBNy+wJU4PE7HF04U7+4NTJV/N7LP0fs37LGEZR8\nPIXbEJ9XpBfeXcCIOmL/oGcri5G5pBjDhyVvfk4mS+x35rVo70ZZNg71ZtEGcSMS\ne4efuxB/h/+4vVlhMgE6TjtkqXNTaLjHCjqwOEhRjXqmX0tmaDA3Z489wQIDAQAB\nAoGAAL5vHGeBe+IWtXaGfkxKF9N8hWWwBHkL8eguTZvRBUfRmqo+n4/RukWL22hF\nTKH45SwRh9AEbOpOGCi0jUg4Xxq32yIKepFykyrYjKmFhvrUGXRrW0oHzrnF9hIl\nlJ5jJxXzKHf5M0oR+IQfrwo+MRIoWKpmYy1+pI+ssoQF8gECQQDq4qTz+OYBNFYY\nEJ2xOk+16iNDW2sy1hBI6uvSPN2OfLVzH4s2yb4aLNT3T+ynnHtP1pH2i4PSW7vp\nl2Ggr+gxAkEAq2asXuDmMIjS5/W5zv8s1FidYfYjqTur3pYD7jQvcR2E2RslEsMw\nPvUUqWY9iuQkGnlTnlKUm/LsTAJhkaPakQJBAKEZA5PFkVMgJzBoLQ/B86vMQ5VO\nHS8HvLGWVlminz677+NerifMpJLlTse0zJaE79ppS0EynR3pBvAGgNIp8/ECQDwx\nH2Fma5ApzJ8nHSyDUlP0Frj7PoTE7tOJLTIu42Y+7pNrw/Y107CYUrw2qnAnNEKT\nzvivmX62raL3xxnlR/ECQBmTYNJj4N29Hx1dxTpnMcgNii2H+1LrnvTCm0lkWkYp\n5W2Eb44mjLw+57TFk1TJOKLdtE69zbio7uLAPTNCZ8Y=\n-----END RSA PRIVATE KEY-----"; // pragma: allowlist secret
+
+      const result = await publicKeyValidator.validate(privateKey);
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors(["Please enter a valid public key"]);
+    });
+
     it("should fail validation when invalid public key", async () => {
       const publicKey = "not-a-key";
 
@@ -252,6 +262,7 @@ describe("shared client validator tests", () => {
       expect(result).toHaveInvalidErrors([
         "Please enter a valid PEM key",
         "Please enter a valid RSA public key",
+        "Please enter a valid public key",
       ]);
     });
 
