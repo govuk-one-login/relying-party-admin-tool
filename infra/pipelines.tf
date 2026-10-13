@@ -15,7 +15,7 @@ resource "aws_cloudformation_stack" "main_pipeline_stack" {
     SlackNotificationType           = var.environment == "dev" ? "None" : "Failures"
     ProgrammaticPermissionsBoundary = "True"
     TestImageRepositoryNames        = contains(["build"], var.environment) ? var.repository_name : ""
-    TestImageRepositoryUri          = contains(["build"], var.environment) ? aws_cloudformation_stack.test_image_ecr_stack.outputs["TestRunnerImageEcrRepositoryUri"] : "none"
+    TestImageRepositoryUri          = contains(["build"], var.environment) ? aws_cloudformation_stack.test_image_ecr_stack[0].outputs["TestRunnerImageEcrRepositoryUri"] : "none"
     RunTestContainerInVPC           = contains(["build"], var.environment) ? "True" : "False"
     IncludePromotion                = contains(["build", "staging"], var.environment) ? "Yes" : "No"
     AllowedAccounts                 = join(",", var.allowed_promotion_accounts)

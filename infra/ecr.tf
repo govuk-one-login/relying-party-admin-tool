@@ -11,6 +11,7 @@ resource "aws_cloudformation_stack" "ecr_stack" {
 }
 
 resource "aws_cloudformation_stack" "test_image_ecr_stack" {
+  count        = contains(["dev", "build"], var.environment) ? 1 : 0
   name         = "${var.environment}-rpat-test-image-ecr"
   template_url = "https://template-storage-templatebucket-1upzyw6v9cs42.s3.amazonaws.com/test-image-repository/template-${var.test_image_repository_stack_version}.yaml"
   parameters = {
