@@ -26,3 +26,28 @@ resource "aws_cloudformation_stack" "main_pipeline_stack" {
   capabilities = ["CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
   depends_on   = [aws_cloudformation_stack.spoke_vpc_stack, aws_cloudformation_stack.build_notifications_stack]
 }
+
+
+resource "aws_cloudformation_stack" "oidc_stub_pipeline" {
+  count        = var.create_build_stacks ? 1 : 0 // Only deploy in dev/build
+  name         = "${var.environment}-oidc-stub-pipeline"
+  template_url = "https://template-storage-templatebucket-1upzyw6v9cs42.s3.amazonaws.com/sam-deploy-pipeline/template-${var.pipeline_stack_version}.yaml"
+
+  parameters = {
+    SAMStackName                    = "${var.environment}-oidc-stub-deploy"
+    Environment                     = var.environment
+    VpcStackName                    = "spoke-vpc"
+    SigningProfileArn               = aws_cloudformation_stack.signer_stack[0].outputs["SigningProfileArn"]
+    SigningProfileVersionArn        = aws_cloudformation_stack.signer_stack[0].outputs["SigningProfileVersionArn"]
+    GitHubRepositoryName            = "oidc-development-stub"
+    BuildNotificationStackName      = "build-notifications"
+    SlackNotificationType           = var.environment == "dev" ? "None" : "Failures"
+    ProgrammaticPermissionsBoundary = "True"
+    IncludePromotion                = "No"
+    AllowedServiceOne               = "DynamoDB"
+    AllowedServiceTwo               = "Lambda"
+  }
+
+  capabilities = ["CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
+  depends_on   = [aws_cloudformation_stack.spoke_vpc_stack, aws_cloudformation_stack.build_notifications_stack]
+}

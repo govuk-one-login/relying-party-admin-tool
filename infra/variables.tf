@@ -138,3 +138,8 @@ variable "vpc_stack_version" {
   type        = string
   description = "Version number of the vpc stack to use. Must be a semantic version formatted like the following: v2.7.1"
 }
+
+variable "signer_stack_version" {
+  type        = string
+  description = "Version number of the signer stack to use. Must be a semantic version formatted like the following: v2.7.1"
+}
