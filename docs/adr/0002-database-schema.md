@@ -14,26 +14,27 @@ While DynamoDB is much more restrictive in how it can be queried (in comparison 
 
 ##### Schema
 
-| Column | Description | Format |
-|--------|-------------|--------|
-| serviceId | Service ID | {serviceId} |
-| sk | Literal ‘service’ for service entries, or a client tuple with environment and client ID. | `service` / `client#{environment}#{clientId}` |
-| name | service/client name | <free text> |
-| env | environment | `production` / `integration` |
-| clientId | Client ID | {clientId} |
+| Column    | Description                                                                              | Format                                        |
+| --------- | ---------------------------------------------------------------------------------------- | --------------------------------------------- |
+| serviceId | Service ID                                                                               | {serviceId}                                   |
+| sk        | Literal ‘service’ for service entries, or a client tuple with environment and client ID. | `service` / `client#{environment}#{clientId}` |
+| name      | service/client name                                                                      | <free text>                                   |
+| env       | environment                                                                              | `production` / `integration`                  |
+| clientId  | Client ID                                                                                | {clientId}                                    |
 
 ##### Example
 
-| serviceId | sk | env | clientId | name |
-|-----------|----|-----|----------|------|
-| 1 | service | <free text> | <free text> | Find a Tender |
-| 1 | client#production#1 | production | 1 | Production |
-| 1 | client#integration#2 | integration | 2 | UAT |
-| 1 | client#integration#3 | integration | 3 | Staging |
-| 2 | service | <free text> | <free text> | HMRC |
-| 2 | client#int#4 | integration | 4 | Test |
+| serviceId | sk                   | env         | clientId    | name          |
+| --------- | -------------------- | ----------- | ----------- | ------------- |
+| 1         | service              | <free text> | <free text> | Find a Tender |
+| 1         | client#production#1  | production  | 1           | Production    |
+| 1         | client#integration#2 | integration | 2           | UAT           |
+| 1         | client#integration#3 | integration | 3           | Staging       |
+| 2         | service              | <free text> | <free text> | HMRC          |
+| 2         | client#int#4         | integration | 4           | Test          |
 
 With this schema, we can query:
+
 - services and clients by serviceId
 - services by serviceId
 - clients by serviceId
@@ -43,28 +44,29 @@ With this schema, we can query:
 
 ##### Schema
 
-| Column | Description | Format |
-|--------|-------------|--------|
-| subject | User (or in future, group) ID | `user:{userId}` |
-| sk | Literal ‘user’ for user entries, or a relation tuple with object and permission. | `user` / `relation#service:{serviceId}#{relation}` |
-| object | Service ID | `service:{serviceId}` |
-| relation | Permission (or in future, group membership or other structure) | `reader` / `writer_int` / `writer_prod` / `manager` |
-| email | Email address | <email> |
+| Column   | Description                                                                      | Format                                              |
+| -------- | -------------------------------------------------------------------------------- | --------------------------------------------------- |
+| subject  | User (or in future, group) ID                                                    | `user:{userId}`                                     |
+| sk       | Literal ‘user’ for user entries, or a relation tuple with object and permission. | `user` / `relation#service:{serviceId}#{relation}`  |
+| object   | Service ID                                                                       | `service:{serviceId}`                               |
+| relation | Permission (or in future, group membership or other structure)                   | `reader` / `writer_int` / `writer_prod` / `manager` |
+| email    | Email address                                                                    | <email>                                             |
 
 ##### Example
 
-| subject | sk | object | relation | email |
-|---------|----|--------|----------|-------|
-| user:1 | user | <free text> | <free text> | alice@example.com |
-| user:1 | relation#service:1#reader | service:1 | reader | <free text> |
-| user:1 | relation#service:2#manager | service:2 | manager | <free text> |
-| user:2 | user | <free text>| <free text> | bob@example.com |
-| user:2 | relation#service:1#reader | service:1 | reader | <free text> |
-| user:2 | relation#service:3#writer_int | service:3 | writer_int | <free text> |
-| user:3 | user | <free text> | <free text> | carl@example.com |
-| user:3 | relation#service:*#reader | service:* | reader | <free text> |
+| subject | sk                            | object      | relation    | email             |
+| ------- | ----------------------------- | ----------- | ----------- | ----------------- |
+| user:1  | user                          | <free text> | <free text> | alice@example.com |
+| user:1  | relation#service:1#reader     | service:1   | reader      | <free text>       |
+| user:1  | relation#service:2#manager    | service:2   | manager     | <free text>       |
+| user:2  | user                          | <free text> | <free text> | bob@example.com   |
+| user:2  | relation#service:1#reader     | service:1   | reader      | <free text>       |
+| user:2  | relation#service:3#writer_int | service:3   | writer_int  | <free text>       |
+| user:3  | user                          | <free text> | <free text> | carl@example.com  |
+| user:3  | relation#service:\*#reader    | service:\*  | reader      | <free text>       |
 
 With this schema, we can query:
+
 - users and permissions by userId
 - users by userId
 - permissions by userId

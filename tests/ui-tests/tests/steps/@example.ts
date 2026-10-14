@@ -181,10 +181,7 @@ Then("the footer shows with correct urls", async ({ page }) => {
   ).toBeVisible();
   await expect(
     inlineList.getByRole("link", { name: "Cookies", exact: true })
-  ).toHaveAttribute(
-    "href",
-    `/cookies`
-  );
+  ).toHaveAttribute("href", `/cookies`);
 
   await expect(
     page.getByRole("link", { name: "Government Digital Service", exact: true })
