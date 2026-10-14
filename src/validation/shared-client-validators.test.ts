@@ -234,22 +234,37 @@ describe("shared client validator tests", () => {
   });
 
   describe("public key validator", () => {
-    it("should pass validation when valid pem key", async () => {
+    it("should pass validation when valid rsa key", async () => {
       const validPublicKey =
-        "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYWLbZirhZ9Vn9HYOFKK9LKKug+/S\nNMRVsji1V7qruuB594ffFuQnoVDh8ahfwji90zMwQUWrJjMUhoMxQDIWcw==\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
+        "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDQk36HYw2tjwb1H88zL3dfPu2X\ngG7svnZgC660jop/Fi49dOOC8uX7u5WuaQP/ncUMHpR1M+av1bCn1NERXYyZ0TLO\nARZOO8fY5gJ5lLbQBngSUiSTTzjAZcQtypjosFLRkEyIMcXQxFc3Dk42mfhJiRFl\nffrIxtcLe1nxq4dRDQIDAQAB\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
 
       const result = await publicKeyValidator.validate(validPublicKey);
 
       expect(result.isValid).toBe(true);
     });
 
-    it("should fail validation when invalid pem key", async () => {
+    it("should fail validation when invalid public key", async () => {
       const publicKey = "not-a-key";
 
       const result = await publicKeyValidator.validate(publicKey);
 
       expect(result).toBeInvalid();
-      expect(result).toHaveInvalidErrors(["Please enter a valid PEM key"]);
+      expect(result).toHaveInvalidErrors([
+        "Please enter a valid PEM key",
+        "Please enter a valid RSA public key",
+      ]);
+    });
+
+    it("should fail validation when valid key is not an RSA key", async () => {
+      const publicKey =
+        "-----BEGIN PUBLIC KEY-----\nMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAElr7n+HAN7io+Nzl7PqWNy5a4DrOYNkWA\nK4kkf3FSnx7fThZCdwP4m/PI5xIxoxlhJX4eHmaKm8S6c2oWxtt1YQ==\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
+
+      const result = await publicKeyValidator.validate(publicKey);
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        "Please enter a valid RSA public key",
+      ]);
     });
   });
 

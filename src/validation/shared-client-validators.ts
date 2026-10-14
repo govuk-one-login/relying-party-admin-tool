@@ -71,14 +71,26 @@ export const jwksUrlValidator = validUrlValidator("JWKS URL").and(
   productionUrlValidator("JWKS URL")
 );
 
-export const publicKeyValidator = rule((jwks: string) => {
+export const publicKeyValidator = rule((publicKeyString: string) => {
   try {
-    crypto.createPublicKey(jwks);
+    crypto.createPublicKey(publicKeyString);
     return true;
   } catch {
     return false;
   }
-}, "Please enter a valid PEM key");
+}, "Please enter a valid PEM key").and(
+  rule((publicKeyString: string) => {
+    try {
+      const publicKey = crypto.createPublicKey(publicKeyString);
+      if (publicKey.asymmetricKeyType !== "rsa") {
+        return false;
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  }, "Please enter a valid RSA public key")
+);
 
 export const idTokenSigningAlgorithmValidator = requiredValidator(
   "ID token signing algorithm is required"
