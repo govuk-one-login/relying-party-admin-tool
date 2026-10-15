@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   AttributeValue,
   DeleteItemCommand,
@@ -6,6 +5,7 @@ import {
   GetItemCommand,
   PutItemCommand,
   UpdateItemCommand,
+  UpdateItemOutput,
 } from "@aws-sdk/client-dynamodb";
 import { SessionData, Store } from "express-session";
 
@@ -37,7 +37,7 @@ export interface DynamoDBSessionStoreOptions {
   /**
    * Optional mapper invoked with the session object being written, returning
    * extra DynamoDB attributes to store alongside the session (e.g. a GSI
-   * hash key). Returning an empty object omits any extra attributes.
+   * hash key). Returning an empty object omits unknown extra attributes.
    */
   extraAttributes?: (sess: SessionData) => Record<string, AttributeValue>;
 }
@@ -76,7 +76,7 @@ export class DynamoDBSessionStore extends Store {
 
   get = (
     sid: string,
-    callback: (err: any, session?: SessionData | null) => void
+    callback: (err: unknown, session?: SessionData | null) => void
   ): void => {
     this.client
       .send(
@@ -115,7 +115,7 @@ export class DynamoDBSessionStore extends Store {
   set = (
     sid: string,
     session: SessionData,
-    callback?: (err?: any) => void
+    callback?: (err?: unknown) => void
   ): void => {
     const item: Record<string, AttributeValue> = {
       [this.hashKey]: { S: this.key(sid) },
@@ -130,7 +130,7 @@ export class DynamoDBSessionStore extends Store {
       .catch((err) => callback?.(err));
   };
 
-  destroy = (sid: string, callback?: (err?: any) => void): void => {
+  destroy = (sid: string, callback?: (err?: unknown) => void): void => {
     this.client
       .send(
         new DeleteItemCommand({
@@ -145,7 +145,7 @@ export class DynamoDBSessionStore extends Store {
   touch = (
     sid: string,
     session: SessionData,
-    callback?: (err?: any, data?: { expires: string }) => void
+    callback?: (err?: unknown, data?: { expires: string }) => void
   ): void => {
     const expires = this.expiresAt(session);
 
@@ -159,7 +159,7 @@ export class DynamoDBSessionStore extends Store {
           ReturnValues: "UPDATED_NEW",
         })
       )
-      .then((result) => {
+      .then((result: UpdateItemOutput) => {
         callback?.(null, { expires: result.Attributes?.expires?.N as string });
       })
       .catch((err) => callback?.(err));
