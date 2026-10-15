@@ -59,8 +59,8 @@ export class DynamoDBSessionStore extends Store {
     this.hashKey = options.hashKey ?? "id";
     this.prefix = options.prefix ?? "sess:";
     this.defaultTtlSeconds = options.defaultTtlSeconds ?? DEFAULT_TTL_SECONDS;
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    this.extraAttributes = options.extraAttributes ?? (() => ({}));
+    this.extraAttributes =
+      options.extraAttributes ?? ((): Record<string, AttributeValue> => ({}));
   }
 
   private key(sid: string): string {
