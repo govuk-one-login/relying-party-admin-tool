@@ -51,6 +51,11 @@ import {
   editMaxAgeEnabledPost,
 } from "../components/clients/edit-max-age-enabled/edit-max-age-enabled-controller.js";
 import { validateEditMaxAgeEnabledRequest } from "../components/clients/edit-max-age-enabled/edit-max-age-enabled-validation.js";
+import {
+  editPermitMissingNonceGet,
+  editPermitMissingNoncePost,
+} from "../components/clients/edit-permit-missing-nonce/edit-permit-missing-nonce-controller.js";
+import { validateEditPermitMissingNonceRequest } from "../components/clients/edit-permit-missing-nonce/edit-permit-missing-nonce-validation.js";
 
 const router = express.Router();
 
@@ -114,6 +119,17 @@ router.post(
   PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED,
   validateEditMaxAgeEnabledRequest(),
   editMaxAgeEnabledPost()
+);
+
+router.get(
+  PATH_NAMES.CLIENT_EDIT_PERMIT_MISSING_NONCE,
+  editPermitMissingNonceGet()
+);
+
+router.post(
+  PATH_NAMES.CLIENT_EDIT_PERMIT_MISSING_NONCE,
+  validateEditPermitMissingNonceRequest(),
+  editPermitMissingNoncePost()
 );
 
 router.get(PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED, editPKCEEnforcedGet());

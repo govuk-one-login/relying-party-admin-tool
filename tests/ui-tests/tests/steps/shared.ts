@@ -10,7 +10,7 @@ const pageNameToPath: Record<string, string> = {
   "403 error": "/forbidden",
   "404 error": "/random-page",
   "500 error": "/error",
-  "Cookies": "/cookies",
+  Cookies: "/cookies",
   services: "/services",
   "create service": "/services/create",
   "service with clients": "/services/1",
@@ -26,6 +26,8 @@ const pageNameToPath: Record<string, string> = {
     "/services/1/clients/clientId/edit-jar-validation-required",
   "client - edit max age enabled":
     "/services/1/clients/clientId/edit-max-age-enabled",
+  "client - edit permit missing nonce":
+    "/services/1/clients/clientId/edit-permit-missing-nonce",
   "client - edit pkce enforced":
     "/services/1/clients/clientId/edit-pkce-enforced",
   "client - edit post logout redirect urls":

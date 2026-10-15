@@ -141,6 +141,27 @@ export const enterLandingPageUrlFieldValidator = new FieldValidator(
   "landing-page-url"
 );
 
+export const maxAgeEnabledFieldValidator = new FieldValidator(
+  requiredValidator("Select an option").adaptedFrom(
+    (req: Request) => req.body["max-age-enabled"]
+  ),
+  "max-age-enabled"
+);
+
+export const permitMissingNonceFieldValidator = new FieldValidator(
+  requiredValidator("Select an option").adaptedFrom(
+    (req: Request) => req.body["permit-missing-nonce"]
+  ),
+  "permit-missing-nonce"
+);
+
+export const pkceEnforcedFieldValidator = new FieldValidator(
+  requiredValidator("Select an option").adaptedFrom(
+    (req: Request) => req.body["pkce-enforced"]
+  ),
+  "pkce-enforced"
+);
+
 const postLogoutRedirectUrlInputValidator = when(
   (req: Request) => req.body.action === "add",
   postLogoutRedirectUrlValidator
@@ -158,20 +179,6 @@ const postLogoutRedirectUrlInputValidator = when(
         return true;
       }, "You have already added this redirect URL")
     )
-);
-
-export const maxAgeEnabledFieldValidator = new FieldValidator(
-  requiredValidator("Select an option").adaptedFrom(
-    (req: Request) => req.body["max-age-enabled"]
-  ),
-  "max-age-enabled"
-);
-
-export const pkceEnforcedFieldValidator = new FieldValidator(
-  requiredValidator("Select an option").adaptedFrom(
-    (req: Request) => req.body["pkce-enforced"]
-  ),
-  "pkce-enforced"
 );
 
 export const postLogoutRedirectUrlsFieldValidator = new FieldValidator(

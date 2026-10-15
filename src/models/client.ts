@@ -26,7 +26,8 @@ export interface ClientConfig {
   idTokenSigningAlgorithm: IdTokenSigningAlgorithm;
   isActive: boolean;
   jarValidationRequired: boolean;
-  maxAgeEnabled?: boolean;
+  maxAgeEnabled: boolean;
+  permitMissingNonce: boolean;
   pkceEnforced: boolean;
   postLogoutRedirectUrls: string[];
   sectorIdentifierUri: string;

@@ -1,0 +1,44 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitleName = "Edit permit missing nonce" %}
+
+{% block pageContent %}
+  <form class="form" action="edit-permit-missing-nonce" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+    {{
+      govukRadios({
+        name: "permit-missing-nonce",
+          fieldset: {
+            legend: {
+              text: "Allow missing nonce?",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+        value: permitMissingNonce,
+        items: [
+          {
+            value: "true",
+            text: "Yes"
+          },
+          {
+            value: "false",
+            text: "No"
+          }
+        ],
+        errorMessage: {
+          attributes: { "data-test-id": "permit-missing-nonce-error"},
+          text: errors["permit-missing-nonce"].text
+        } if (errors["permit-missing-nonce"])
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Confirm"
+      })
+    }}
+  </form>
+{% endblock %}
