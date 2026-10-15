@@ -21,14 +21,13 @@ export const getSessionStore = (): Store => {
       tableName,
       prefix: PREFIX,
       defaultTtlSeconds: Math.floor(getSessionExpiry() / 1000),
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-      extraAttributes: (sess) =>
+      extraAttributes: (sess): Record<string, AttributeValue> =>
         sess?.[USER_IDENTIFIER_IDX_ATTRIBUTE]
           ? ({
               [USER_IDENTIFIER_IDX_ATTRIBUTE]: {
                 S: sess[USER_IDENTIFIER_IDX_ATTRIBUTE],
               },
-            } as Record<string, AttributeValue>)
+            })
           : {},
     });
   }
