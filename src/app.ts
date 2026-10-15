@@ -31,6 +31,7 @@ import { csrfSynchronisedProtection } from "./config/csrf.js";
 import { csrfMiddleware } from "./middleware/csrf-middleware.js";
 import { csrfErrorHandler } from "./handler/csrf-error-handler.js";
 import { sanitizeRequestMiddleware } from "./middleware/sanitize-request-middleware.js";
+import { noCacheMiddleware } from "./middleware/no-cache-middleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -113,6 +114,8 @@ const createApp = async (): Promise<express.Application> => {
     engine.addGlobal("response", res);
     next();
   });
+
+  app.use(noCacheMiddleware);
 
   app.use(helmet(helmetConfiguration));
 
