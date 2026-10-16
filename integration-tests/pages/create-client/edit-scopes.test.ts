@@ -2,7 +2,7 @@ import request, { Response } from "supertest";
 import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
-import { getServicePaths } from "../../helpers/helpers.js";
+import { getServicePaths, testComponent } from "../../helpers/helpers.js";
 import { User } from "../../../src/models/user.js";
 import { UserPermission } from "../../../src/models/permissions.js";
 import { Relation } from "../../../src/models/relation.js";
@@ -102,4 +102,47 @@ describe("Integration:: edit scopes", () => {
       expect(res.text).toContain("You do not have access to this page.");
     }
   );
+
+  integrationTest("should fail validation with an invalid scope", async () => {
+    const res = await requestAgent
+      .post(
+        getServicePaths(
+          PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES,
+          existingService.serviceId
+        )
+      )
+      .type("form")
+      .send({
+        _csrf: token,
+        "selected-scopes": "invalid-scope",
+      });
+    const $ = cheerio.load(res.text);
+    expect($(testComponent("selected-scopes-error")).text()).toContain(
+      'Invalid scope provided: "invalid-scope"'
+    );
+    expect(res.statusCode).toBe(400);
+  });
+
+  integrationTest("should redirect to /summary with valid scope", async () => {
+    const res = await requestAgent
+      .post(
+        getServicePaths(
+          PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES,
+          existingService.serviceId
+        )
+      )
+      .type("form")
+      .send({
+        _csrf: token,
+        "selected-scopes": "email",
+      })
+      .expect(
+        "Location",
+        getServicePaths(
+          PATH_NAMES.CREATE_CLIENT_SUMMARY,
+          existingService.serviceId
+        )
+      );
+    expect(res.statusCode).toBe(302);
+  });
 });
