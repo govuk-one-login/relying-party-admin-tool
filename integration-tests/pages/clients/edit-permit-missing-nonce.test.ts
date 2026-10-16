@@ -45,7 +45,12 @@ describe("Integration:: edit permit missing nonce", () => {
       requestAgent = request.agent(app);
 
       await requestAgent
-        .get(getServicePaths(PATH_NAMES.CLIENT_EDIT_PERMIT_MISSING_NONCE))
+        .get(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_PERMIT_MISSING_NONCE,
+            existingService.serviceId
+          )
+        )
         .then((res: Response) => {
           const $ = cheerio.load(res.text);
           token = $("[name=_csrf]").val();
@@ -67,7 +72,10 @@ describe("Integration:: edit permit missing nonce", () => {
 
   integrationTest("should return edit permit missing nonce page", async () => {
     const res = await requestAgent.get(
-      getServicePaths(PATH_NAMES.CLIENT_EDIT_PERMIT_MISSING_NONCE)
+      getServicePaths(
+        PATH_NAMES.CLIENT_EDIT_PERMIT_MISSING_NONCE,
+        existingService.serviceId
+      )
     );
     expect(res.statusCode).toBe(200);
   });
@@ -76,7 +84,12 @@ describe("Integration:: edit permit missing nonce", () => {
     "should redirect to forbidden when csrf not present",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_PERMIT_MISSING_NONCE))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_PERMIT_MISSING_NONCE,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           "permit-missing-nonce": "true",
@@ -90,7 +103,12 @@ describe("Integration:: edit permit missing nonce", () => {
     "should return validation error when permit missing nonce is empty",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_PERMIT_MISSING_NONCE))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_PERMIT_MISSING_NONCE,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
@@ -107,13 +125,21 @@ describe("Integration:: edit permit missing nonce", () => {
     "should redirect to /clients when valid permit missing nonce option",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_PERMIT_MISSING_NONCE))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_PERMIT_MISSING_NONCE,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
           "permit-missing-nonce": "true",
         })
-        .expect("Location", getServicePaths(PATH_NAMES.CLIENT));
+        .expect(
+          "Location",
+          getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
+        );
       expect(res.statusCode).toBe(302);
     }
   );
