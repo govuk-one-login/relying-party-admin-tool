@@ -46,6 +46,8 @@ export const PATH_NAMES = {
     "/services/:serviceId/clients/:clientId/edit-jar-validation-required",
   CLIENT_EDIT_MAX_AGE_ENABLED:
     "/services/:serviceId/clients/:clientId/edit-max-age-enabled",
+  CLIENT_EDIT_PERMIT_MISSING_NONCE:
+    "/services/:serviceId/clients/:clientId/edit-permit-missing-nonce",
   CLIENT_EDIT_PKCE_ENFORCED:
     "/services/:serviceId/clients/:clientId/edit-pkce-enforced",
   CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS:

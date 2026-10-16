@@ -47,6 +47,7 @@ type AdditionalClientConfig = {
   isActive?: boolean;
   jarValidationRequired?: boolean;
   maxAgeEnabled?: boolean;
+  permitMissingNonce?: boolean;
   pkceEnforced?: boolean;
   postLogoutRedirectUrls?: string[];
   sectorIdentifierUri?: string;
