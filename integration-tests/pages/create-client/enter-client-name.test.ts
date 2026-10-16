@@ -2,7 +2,7 @@ import request, { Response } from "supertest";
 import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
-import { getServicePaths } from "../../helpers/helpers.js";
+import { getServicePaths, testComponent } from "../../helpers/helpers.js";
 import { User } from "../../../src/models/user.js";
 import { UserPermission } from "../../../src/models/permissions.js";
 import { Relation } from "../../../src/models/relation.js";
@@ -100,6 +100,55 @@ describe("Integration:: enter client name", () => {
         });
       expect(res.statusCode).toBe(403);
       expect(res.text).toContain("You do not have access to this page.");
+    }
+  );
+
+  integrationTest(
+    "should fail validation when name begins with a colon",
+    async () => {
+      const res = await requestAgent
+        .post(
+          getServicePaths(
+            PATH_NAMES.CREATE_CLIENT_ENTER_CLIENT_NAME,
+            existingService.serviceId
+          )
+        )
+        .type("form")
+        .send({
+          _csrf: token,
+          "client-name": ":my client",
+        });
+      const $ = cheerio.load(res.text);
+      expect($(testComponent("client-name-error")).text()).toContain(
+        "Your client name cannot start with ':'"
+      );
+      expect(res.statusCode).toBe(400);
+    }
+  );
+
+  integrationTest(
+    "should redirect to /select-client-authentication-method when client name is valid",
+    async () => {
+      const res = await requestAgent
+        .post(
+          getServicePaths(
+            PATH_NAMES.CREATE_CLIENT_ENTER_CLIENT_NAME,
+            existingService.serviceId
+          )
+        )
+        .type("form")
+        .send({
+          _csrf: token,
+          "client-name": "my client",
+        })
+        .expect(
+          "Location",
+          getServicePaths(
+            PATH_NAMES.CREATE_CLIENT_SELECT_CLIENT_AUTHENTICATION,
+            existingService.serviceId
+          )
+        );
+      expect(res.statusCode).toBe(302);
     }
   );
 });
