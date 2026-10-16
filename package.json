@@ -28,7 +28,8 @@
     "watch-ts": "tsc -w",
     "watch-sass": "sass --load-path=node_modules/govuk-frontend/dist/govuk --watch src/assets/scss/application.scss dist/public/style.css",
     "dynamodblocal:up": "docker compose -f dynamodb.local.yml up -d",
-    "dynamodblocal:down": "docker compose -f dynamodb.local.yml down"
+    "dynamodblocal:down": "docker compose -f dynamodb.local.yml down",
+    "validate-clients": "node dist/scripts/validate-client-registry.js"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.1075.0",
