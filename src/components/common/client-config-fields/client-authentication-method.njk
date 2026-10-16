@@ -32,8 +32,9 @@
             text: "JWKS endpoint URL"
           },
           errorMessage: {
-          text: errors["jwks-endpoint"].text
-        } if (errors["jwks-endpoint"])
+            attributes: { "data-test-id": "jwks-endpoint-error"},
+            text: errors["jwks-endpoint"].text
+          } if (errors["jwks-endpoint"])
         })
       }}
     {% endset -%}
@@ -52,8 +53,9 @@
             text: "Public key"
           },
           errorMessage: {
-          text: errors["public-key"].text
-        } if (errors["public-key"])
+            attributes: { "data-test-id": "public-key-error"},
+            text: errors["public-key"].text
+          } if (errors["public-key"])
         })
       }}
     {% endset -%}
@@ -72,8 +74,9 @@
             text: "Client secret"
           },
           errorMessage: {
-          text: errors["client-secret"].text
-        } if (errors["client-secret"])
+            attributes: { "data-test-id": "client-secret-error"},
+            text: errors["client-secret"].text
+          } if (errors["client-secret"])
         })
       }}
     {% endset -%}
@@ -124,6 +127,7 @@
           }
         ],
         errorMessage: {
+          attributes: { "data-test-id": "client-authentication-method-error"},
           text: errors["client-authentication-method"].text
         } if (errors["client-authentication-method"])
       })
