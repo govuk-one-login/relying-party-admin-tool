@@ -19,7 +19,7 @@ export const isProductionEnv = (): boolean => {
 };
 
 export const getLogLevel = (): string => {
-  return process.env.LOGS_LEVEL || "debug";
+  return process.env.LOGS_LEVEL || "info";
 };
 
 export const getVitalSignsIntervalSeconds = (): number => {
