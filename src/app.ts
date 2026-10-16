@@ -59,7 +59,10 @@ const createApp = async (): Promise<express.Application> => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
+  // Define the healthcheck and static routes first
+  // Do not define a route or middleware before these unless there's a very good reason
   app.use(healthcheckRouter);
+  app.use(jwksRouter);
 
   app.use(
     "/assets",
@@ -128,7 +131,6 @@ const createApp = async (): Promise<express.Application> => {
   app.use(servicesRouter);
   app.use(createClientRouter);
   app.use(editClientRouter);
-  app.use(jwksRouter);
 
   // Router for all previously used URLs, that we want to redirect on
   // No URL left behind policy
