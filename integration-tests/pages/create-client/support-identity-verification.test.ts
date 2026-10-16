@@ -2,12 +2,13 @@ import request, { Response } from "supertest";
 import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
-import { getServicePaths } from "../../helpers/helpers.js";
+import { getServicePaths, testComponent } from "../../helpers/helpers.js";
 import { User } from "../../../src/models/user.js";
 import { UserPermission } from "../../../src/models/permissions.js";
 import { Relation } from "../../../src/models/relation.js";
 import { Service } from "../../../src/models/service.js";
 import { randomUUID } from "crypto";
+import { Request } from "express";
 
 describe("Integration:: support identity verification", () => {
   let token: string | string[] | undefined;
@@ -105,4 +106,173 @@ describe("Integration:: support identity verification", () => {
       expect(res.text).toContain("You do not have access to this page.");
     }
   );
+
+  integrationTest(
+    "should fail validation when support identity verification is empty",
+    async () => {
+      const res = await requestAgent
+        .post(
+          getServicePaths(
+            PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT,
+            existingService.serviceId
+          )
+        )
+        .type("form")
+        .send({
+          _csrf: token,
+        });
+      const $ = cheerio.load(res.text);
+      expect(
+        $(testComponent("support-identity-verification-error")).text()
+      ).toContain("Choose an option to support identity verification or not");
+      expect(res.statusCode).toBe(400);
+    }
+  );
+
+  integrationTest(
+    "should redirect to /select-claims when support identity verification is true",
+    async () => {
+      const res = await requestAgent
+        .post(
+          getServicePaths(
+            PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT,
+            existingService.serviceId
+          )
+        )
+        .type("form")
+        .send({
+          _csrf: token,
+          "support-identity-verification": "true",
+        })
+        .expect(
+          "Location",
+          getServicePaths(
+            PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS,
+            existingService.serviceId
+          )
+        );
+      expect(res.statusCode).toBe(302);
+    }
+  );
+
+  integrationTest(
+    "should redirect to /summary when support identity verification is false",
+    async () => {
+      const res = await requestAgent
+        .post(
+          getServicePaths(
+            PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT,
+            existingService.serviceId
+          )
+        )
+        .type("form")
+        .send({
+          _csrf: token,
+          "support-identity-verification": "false",
+        })
+        .expect(
+          "Location",
+          getServicePaths(
+            PATH_NAMES.CREATE_CLIENT_SUMMARY,
+            existingService.serviceId
+          )
+        );
+      expect(res.statusCode).toBe(302);
+    }
+  );
+
+  describe("client secret is set", () => {
+    let clientSecretApp: any;
+    let clientSecretRequestAgent: any;
+    let clientSecretToken: string | string[] | undefined;
+
+    integrationTest.beforeAll(async () => {
+      vi.restoreAllMocks();
+      vi.resetModules();
+
+      const noCacheMiddleware =
+        await import("../../../src/middleware/no-cache-middleware.js");
+      vi.spyOn(noCacheMiddleware, "noCacheMiddleware").mockImplementation(
+        async (req: any, res: any, next: any): Promise<void> => {
+          req.session.newClientConfig = {
+            clientAuthenticationMethod: "CLIENT_SECRET",
+          };
+          return next();
+        }
+      );
+
+      clientSecretApp = await (await import("../../../src/app.js")).createApp();
+
+      clientSecretRequestAgent = request.agent(clientSecretApp);
+
+      await clientSecretRequestAgent
+        .get(
+          getServicePaths(
+            PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT,
+            existingService.serviceId
+          )
+        )
+        .then((res: Response) => {
+          const $ = cheerio.load(res.text);
+          clientSecretToken = $("[name=_csrf]").val();
+        });
+    });
+
+    integrationTest.afterAll(async () => {
+      vi.restoreAllMocks();
+      vi.resetModules();
+      clientSecretApp = undefined;
+    });
+
+    integrationTest(
+      "should return validation error when support identity verification is true and client secret is set",
+      async () => {
+        const res = await clientSecretRequestAgent
+          .post(
+            getServicePaths(
+              PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT,
+              existingService.serviceId
+            )
+          )
+          .type("form")
+          .send({
+            _csrf: clientSecretToken,
+            "support-identity-verification": "true",
+          });
+        const $ = cheerio.load(res.text);
+        expect(
+          $(testComponent("support-identity-verification-error")).text()
+        ).toContain(
+          "Identity verification cannot be supported if client secret is used as authentication method"
+        );
+        expect(res.statusCode).toBe(400);
+      }
+    );
+
+    integrationTest(
+      "should redirect to /summary when support identity verification is false and client secret is set",
+      async () => {
+        const res = await clientSecretRequestAgent
+          .post(
+            getServicePaths(
+              PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT,
+              existingService.serviceId
+            )
+          )
+          .type("form")
+          .send({
+            _csrf: clientSecretToken,
+            "support-identity-verification": "false",
+          })
+          .expect(
+            "Location",
+            getServicePaths(
+              PATH_NAMES.CREATE_CLIENT_SUMMARY,
+              existingService.serviceId
+            )
+          );
+        expect(res.statusCode).toBe(302);
+      }
+    );
+  });
 });

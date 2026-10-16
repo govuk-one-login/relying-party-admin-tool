@@ -36,8 +36,9 @@
           }
         ],
         errorMessage: {
-        text: errors["support-identity-verification"].text
-      } if (errors["support-identity-verification"])
+          attributes: { "data-test-id": "support-identity-verification-error"},
+          text: errors["support-identity-verification"].text
+        } if (errors["support-identity-verification"])
       })
     }}
 
