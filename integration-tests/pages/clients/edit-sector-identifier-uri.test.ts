@@ -45,7 +45,12 @@ describe("Integration:: edit sector identifier uri", () => {
       requestAgent = request.agent(app);
 
       await requestAgent
-        .get(getServicePaths(PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI))
+        .get(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI,
+            existingService.serviceId
+          )
+        )
         .then((res: Response) => {
           const $ = cheerio.load(res.text);
           token = $("[name=_csrf]").val();
@@ -67,7 +72,10 @@ describe("Integration:: edit sector identifier uri", () => {
 
   integrationTest("should return edit sector identifier uri page", async () => {
     const res = await requestAgent.get(
-      getServicePaths(PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI)
+      getServicePaths(
+        PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI,
+        existingService.serviceId
+      )
     );
     expect(res.statusCode).toBe(200);
   });
@@ -76,7 +84,12 @@ describe("Integration:: edit sector identifier uri", () => {
     "should redirect to forbidden when csrf not present",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           "sector-identifier-uri": "test-url.com",
@@ -90,7 +103,12 @@ describe("Integration:: edit sector identifier uri", () => {
     "should return validation error when uri is not a valid uri",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
@@ -108,16 +126,21 @@ describe("Integration:: edit sector identifier uri", () => {
     "should return validation error when uri is empty",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
         });
       const $ = cheerio.load(res.text);
+      expect(res.statusCode).toBe(400);
       expect($(testComponent("sector-identifier-uri-error")).text()).toContain(
         "Enter a sector identifier URI"
       );
-      expect(res.statusCode).toBe(400);
     }
   );
 
@@ -125,13 +148,21 @@ describe("Integration:: edit sector identifier uri", () => {
     "should redirect to /clients when valid sector identifier uri",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_SECTOR_IDENTIFIER_URI,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
           "sector-identifier-uri": "http://url.com",
         })
-        .expect("Location", getServicePaths(PATH_NAMES.CLIENT));
+        .expect(
+          "Location",
+          getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
+        );
       expect(res.statusCode).toBe(302);
     }
   );

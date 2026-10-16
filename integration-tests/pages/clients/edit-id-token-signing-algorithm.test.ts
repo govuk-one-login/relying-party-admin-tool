@@ -45,7 +45,12 @@ describe("Integration:: edit id token signing algorithm", () => {
       requestAgent = request.agent(app);
 
       await requestAgent
-        .get(getServicePaths(PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM))
+        .get(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM,
+            existingService.serviceId
+          )
+        )
         .then((res: Response) => {
           const $ = cheerio.load(res.text);
           token = $("[name=_csrf]").val();
@@ -69,7 +74,10 @@ describe("Integration:: edit id token signing algorithm", () => {
     "should return edit id token signing algorithm page",
     async () => {
       const res = await requestAgent.get(
-        getServicePaths(PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM)
+        getServicePaths(
+          PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM,
+          existingService.serviceId
+        )
       );
       expect(res.statusCode).toBe(200);
     }
@@ -80,7 +88,10 @@ describe("Integration:: edit id token signing algorithm", () => {
     async () => {
       const res = await requestAgent
         .post(
-          getServicePaths(PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM)
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM,
+            existingService.serviceId
+          )
         )
         .type("form")
         .send({
@@ -96,7 +107,10 @@ describe("Integration:: edit id token signing algorithm", () => {
     async () => {
       const res = await requestAgent
         .post(
-          getServicePaths(PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM)
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM,
+            existingService.serviceId
+          )
         )
         .type("form")
         .send({
@@ -115,7 +129,10 @@ describe("Integration:: edit id token signing algorithm", () => {
     async () => {
       const res = await requestAgent
         .post(
-          getServicePaths(PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM)
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM,
+            existingService.serviceId
+          )
         )
         .type("form")
         .send({
@@ -137,14 +154,20 @@ describe("Integration:: edit id token signing algorithm", () => {
     async () => {
       const res = await requestAgent
         .post(
-          getServicePaths(PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM)
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM,
+            existingService.serviceId
+          )
         )
         .type("form")
         .send({
           _csrf: token,
           "id-token-signing-algorithm": "ES256",
         })
-        .expect("Location", getServicePaths(PATH_NAMES.CLIENT));
+        .expect(
+          "Location",
+          getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
+        );
       expect(res.statusCode).toBe(302);
     }
   );

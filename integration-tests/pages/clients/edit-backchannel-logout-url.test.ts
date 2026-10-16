@@ -45,7 +45,12 @@ describe("Integration:: edit backchannel logout url", () => {
       requestAgent = request.agent(app);
 
       await requestAgent
-        .get(getServicePaths(PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL))
+        .get(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,
+            existingService.serviceId
+          )
+        )
         .then((res: Response) => {
           const $ = cheerio.load(res.text);
           token = $("[name=_csrf]").val();
@@ -69,7 +74,10 @@ describe("Integration:: edit backchannel logout url", () => {
     "should return edit backchannel logout url page",
     async () => {
       const res = await requestAgent.get(
-        getServicePaths(PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL)
+        getServicePaths(
+          PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,
+          existingService.serviceId
+        )
       );
       expect(res.statusCode).toBe(200);
     }
@@ -79,7 +87,12 @@ describe("Integration:: edit backchannel logout url", () => {
     "should redirect to forbidden when csrf not present",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           "backchannel-logout-url": "http://url.com",
@@ -93,7 +106,12 @@ describe("Integration:: edit backchannel logout url", () => {
     "should return validation error when url is not a valid url",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
@@ -111,13 +129,18 @@ describe("Integration:: edit backchannel logout url", () => {
     "should redirect to /clients when valid backchannel url",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
           "backchannel-logout-url": "http://url.com",
-        })
-        .expect("Location", getServicePaths(PATH_NAMES.CLIENT));
+        });
+      expect("Location", getServicePaths(PATH_NAMES.CLIENT));
       expect(res.statusCode).toBe(302);
     }
   );
@@ -126,12 +149,20 @@ describe("Integration:: edit backchannel logout url", () => {
     "should redirect to /clients when backchannel url is empty",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
         })
-        .expect("Location", getServicePaths(PATH_NAMES.CLIENT));
+        .expect(
+          "Location",
+          getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
+        );
       expect(res.statusCode).toBe(302);
     }
   );

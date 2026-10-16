@@ -5,6 +5,7 @@ import { validateServiceRequest } from "../components/create-service/create-serv
 import { createServicePost } from "../components/create-service/create-service-controller.js";
 import { servicesGet } from "../components/services/services-controller.js";
 import { checkReaderPermissionsMiddleware } from "../middleware/permissions-check-middleware.js";
+import { serviceExistsMiddleware } from "../middleware/check-service-exists-middleware.js";
 
 const router = express.Router();
 
@@ -20,6 +21,11 @@ router.post(
   createServicePost()
 );
 
-router.get(PATH_NAMES.SERVICE, checkReaderPermissionsMiddleware, serviceGet());
+router.get(
+  PATH_NAMES.SERVICE,
+  serviceExistsMiddleware,
+  checkReaderPermissionsMiddleware,
+  serviceGet()
+);
 
 export { router as servicesRouter };

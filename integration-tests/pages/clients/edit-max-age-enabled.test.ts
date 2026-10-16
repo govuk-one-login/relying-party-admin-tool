@@ -45,7 +45,12 @@ describe("Integration:: edit max age enabled", () => {
       requestAgent = request.agent(app);
 
       await requestAgent
-        .get(getServicePaths(PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED))
+        .get(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED,
+            existingService.serviceId
+          )
+        )
         .then((res: Response) => {
           const $ = cheerio.load(res.text);
           token = $("[name=_csrf]").val();
@@ -67,7 +72,10 @@ describe("Integration:: edit max age enabled", () => {
 
   integrationTest("should return edit max age enabled page", async () => {
     const res = await requestAgent.get(
-      getServicePaths(PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED)
+      getServicePaths(
+        PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED,
+        existingService.serviceId
+      )
     );
     expect(res.statusCode).toBe(200);
   });
@@ -76,7 +84,12 @@ describe("Integration:: edit max age enabled", () => {
     "should redirect to forbidden when csrf not present",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           "max-age-enabled": "true",
@@ -90,7 +103,12 @@ describe("Integration:: edit max age enabled", () => {
     "should return validation error when max age enabled is empty",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
@@ -107,13 +125,21 @@ describe("Integration:: edit max age enabled", () => {
     "should redirect to /clients when valid max age enabled option",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
           "max-age-enabled": "true",
         })
-        .expect("Location", getServicePaths(PATH_NAMES.CLIENT));
+        .expect(
+          "Location",
+          getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
+        );
       expect(res.statusCode).toBe(302);
     }
   );

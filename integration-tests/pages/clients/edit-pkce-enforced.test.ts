@@ -45,7 +45,12 @@ describe("Integration:: edit pkce enforced", () => {
       requestAgent = request.agent(app);
 
       await requestAgent
-        .get(getServicePaths(PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED))
+        .get(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED,
+            existingService.serviceId
+          )
+        )
         .then((res: Response) => {
           const $ = cheerio.load(res.text);
           token = $("[name=_csrf]").val();
@@ -67,7 +72,10 @@ describe("Integration:: edit pkce enforced", () => {
 
   integrationTest("should return edit pkce enforced page", async () => {
     const res = await requestAgent.get(
-      getServicePaths(PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED)
+      getServicePaths(
+        PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED,
+        existingService.serviceId
+      )
     );
     expect(res.statusCode).toBe(200);
   });
@@ -76,7 +84,12 @@ describe("Integration:: edit pkce enforced", () => {
     "should redirect to forbidden when csrf not present",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           "pkce-enforced": "true",
@@ -90,7 +103,12 @@ describe("Integration:: edit pkce enforced", () => {
     "should return validation error when pkce enforced is empty",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
@@ -107,13 +125,21 @@ describe("Integration:: edit pkce enforced", () => {
     "should redirect to /clients when valid pkce enforced option",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_PKCE_ENFORCED,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
           "pkce-enforced": "true",
         })
-        .expect("Location", getServicePaths(PATH_NAMES.CLIENT));
+        .expect(
+          "Location",
+          getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
+        );
       expect(res.statusCode).toBe(302);
     }
   );
