@@ -735,23 +735,25 @@ Resources:
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
       DeletionProtectionEnabled: true
-      ResourcePolicy:
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Principal:
-                AWS: !Ref TestRoleArn
-              Action:
-                - "dynamodb:Query"
-                - "dynamodb:DescribeTable"
-                - "dynamodb:PutItem"
-                - "dynamodb:DeleteItem"
-                - "dynamodb:GetItem"
-                - "dynamodb:Scan"
-                - "dynamodb:UpdateItem"
-                - "dynamodb:ConditionCheckItem"
-              Resource: "*"
+      ResourcePolicy: !If
+        - TestRoleExists
+        - PolicyDocument: 
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Principal:
+                  AWS: !Ref TestRoleArn
+                Action:
+                  - "dynamodb:Query"
+                  - "dynamodb:DescribeTable"
+                  - "dynamodb:PutItem"
+                  - "dynamodb:DeleteItem"
+                  - "dynamodb:GetItem"
+                  - "dynamodb:Scan"
+                  - "dynamodb:UpdateItem"
+                  - "dynamodb:ConditionCheckItem"
+                Resource: "*"
+        - !Ref AWS::NoValue
       Tags:
         - Key: Name
           Value: ServicesTable
@@ -772,14 +774,17 @@ Resources:
               AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
             Action: kms:*
             Resource: "*"
-          - Sid: AllowAccessToEncryptionKey
-            Effect: Allow
-            Principal:
-              AWS: !Ref TestRoleArn
-            Action:
-              - kms:Decrypt
-              - kms:Encrypt
-            Resource: "*"
+          - !If
+            - TestRoleExists 
+            - Sid: AllowAccessToEncryptionKey
+              Effect: Allow
+              Principal:
+                AWS: !Ref TestRoleArn
+              Action:
+                - kms:Decrypt
+                - kms:Encrypt
+              Resource: "*"
+            - !Ref AWS::NoValue
           - Sid: AllowDynamodbAccessToEncryptionKey
             Effect: Allow
             Principal:
@@ -941,14 +946,17 @@ Resources:
               AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
             Action: kms:*
             Resource: "*"
-          - Sid: AllowAccessToEncryptionKey
-            Effect: Allow
-            Principal:
-              AWS: !Ref TestRoleArn
-            Action:
-              - kms:Decrypt
-              - kms:Encrypt
-            Resource: "*"
+          - !If
+            - TestRoleExists 
+            - Sid: AllowAccessToEncryptionKey
+              Effect: Allow
+              Principal:
+                AWS: !Ref TestRoleArn
+              Action:
+                - kms:Decrypt
+                - kms:Encrypt
+              Resource: "*"
+            - !Ref AWS::NoValue
           - Sid: AllowDynamodbAccessToEncryptionKey
             Effect: Allow
             Principal:
@@ -988,23 +996,25 @@ Resources:
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
       DeletionProtectionEnabled: true
-      ResourcePolicy:
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Principal:
-                AWS: !Ref TestRoleArn
-              Action:
-                - "dynamodb:Query"
-                - "dynamodb:DescribeTable"
-                - "dynamodb:PutItem"
-                - "dynamodb:DeleteItem"
-                - "dynamodb:GetItem"
-                - "dynamodb:Scan"
-                - "dynamodb:UpdateItem"
-                - "dynamodb:ConditionCheckItem"
-              Resource: "*"
+      ResourcePolicy: !If
+        - TestRoleExists
+        - PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Principal:
+                  AWS: !Ref TestRoleArn
+                Action:
+                  - "dynamodb:Query"
+                  - "dynamodb:DescribeTable"
+                  - "dynamodb:PutItem"
+                  - "dynamodb:DeleteItem"
+                  - "dynamodb:GetItem"
+                  - "dynamodb:Scan"
+                  - "dynamodb:UpdateItem"
+                  - "dynamodb:ConditionCheckItem"
+                Resource: "*"
+        - !Ref AWS::NoValue 
       Tags:
         - Key: Name
           Value: UserPermissionsTable
