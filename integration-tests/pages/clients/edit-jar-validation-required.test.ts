@@ -45,7 +45,12 @@ describe("Integration:: edit jar validation required", () => {
       requestAgent = request.agent(app);
 
       await requestAgent
-        .get(getServicePaths(PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED))
+        .get(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED,
+            existingService.serviceId
+          )
+        )
         .then((res: Response) => {
           const $ = cheerio.load(res.text);
           token = $("[name=_csrf]").val();
@@ -69,7 +74,10 @@ describe("Integration:: edit jar validation required", () => {
     "should return edit jar validation required page",
     async () => {
       const res = await requestAgent.get(
-        getServicePaths(PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED)
+        getServicePaths(
+          PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED,
+          existingService.serviceId
+        )
       );
       expect(res.statusCode).toBe(200);
     }
@@ -79,7 +87,12 @@ describe("Integration:: edit jar validation required", () => {
     "should redirect to forbidden when csrf not present",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           "jar-validation-required": "true",
@@ -93,7 +106,12 @@ describe("Integration:: edit jar validation required", () => {
     "should return validation error when jar validation required is empty",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
@@ -110,13 +128,21 @@ describe("Integration:: edit jar validation required", () => {
     "should redirect to /clients when valid jar validation required option",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
           "jar-validation-required": "true",
         })
-        .expect("Location", getServicePaths(PATH_NAMES.CLIENT));
+        .expect(
+          "Location",
+          getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
+        );
       expect(res.statusCode).toBe(302);
     }
   );

@@ -78,11 +78,13 @@ import {
   createClientEditScopesGet,
   createClientEditScopesPost,
 } from "../components/create-client/scopes/edit-scopes/edit-scopes-controller.js";
+import { serviceExistsMiddleware } from "../middleware/check-service-exists-middleware.js";
 
 const router = express.Router();
 
 router.use(
   PATH_NAMES.CREATE_CLIENT,
+  serviceExistsMiddleware,
   checkIntegrationWriterPermissionsMiddleware
 );
 

@@ -45,7 +45,12 @@ describe("Integration:: edit is active", () => {
       requestAgent = request.agent(app);
 
       await requestAgent
-        .get(getServicePaths(PATH_NAMES.CLIENT_EDIT_IS_ACTIVE))
+        .get(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_IS_ACTIVE,
+            existingService.serviceId
+          )
+        )
         .then((res: Response) => {
           const $ = cheerio.load(res.text);
           token = $("[name=_csrf]").val();
@@ -67,7 +72,10 @@ describe("Integration:: edit is active", () => {
 
   integrationTest("should return edit is active page", async () => {
     const res = await requestAgent.get(
-      getServicePaths(PATH_NAMES.CLIENT_EDIT_IS_ACTIVE)
+      getServicePaths(
+        PATH_NAMES.CLIENT_EDIT_IS_ACTIVE,
+        existingService.serviceId
+      )
     );
     expect(res.statusCode).toBe(200);
   });
@@ -76,7 +84,12 @@ describe("Integration:: edit is active", () => {
     "should redirect to forbidden when csrf not present",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_IS_ACTIVE))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_IS_ACTIVE,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           "is-active": "true",
@@ -90,7 +103,12 @@ describe("Integration:: edit is active", () => {
     "should return validation error when is active is empty",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_IS_ACTIVE))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_IS_ACTIVE,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
@@ -107,13 +125,21 @@ describe("Integration:: edit is active", () => {
     "should redirect to /clients when valid is active option",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_IS_ACTIVE))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_IS_ACTIVE,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
           "is-active": "true",
         })
-        .expect("Location", getServicePaths(PATH_NAMES.CLIENT));
+        .expect(
+          "Location",
+          getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
+        );
       expect(res.statusCode).toBe(302);
     }
   );

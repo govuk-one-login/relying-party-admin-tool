@@ -51,11 +51,13 @@ import {
   editMaxAgeEnabledPost,
 } from "../components/clients/edit-max-age-enabled/edit-max-age-enabled-controller.js";
 import { validateEditMaxAgeEnabledRequest } from "../components/clients/edit-max-age-enabled/edit-max-age-enabled-validation.js";
+import { serviceExistsMiddleware } from "../middleware/check-service-exists-middleware.js";
 
 const router = express.Router();
 
 router.use(
   PATH_NAMES.CLIENT_EDIT_BASE_URL,
+  serviceExistsMiddleware,
   checkIntegrationWriterPermissionsMiddleware
 );
 
