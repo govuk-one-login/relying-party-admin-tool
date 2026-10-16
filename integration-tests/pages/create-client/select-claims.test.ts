@@ -2,7 +2,7 @@ import request, { Response } from "supertest";
 import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
-import { getServicePaths } from "../../helpers/helpers.js";
+import { getServicePaths, testComponent } from "../../helpers/helpers.js";
 import { User } from "../../../src/models/user.js";
 import { UserPermission } from "../../../src/models/permissions.js";
 import { Relation } from "../../../src/models/relation.js";
@@ -100,6 +100,57 @@ describe("Integration:: select claims", () => {
         });
       expect(res.statusCode).toBe(403);
       expect(res.text).toContain("You do not have access to this page.");
+    }
+  );
+
+  integrationTest(
+    "should fail validation when invalid claim added",
+    async () => {
+      const res = await requestAgent
+        .post(
+          getServicePaths(
+            PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS,
+            existingService.serviceId
+          )
+        )
+        .type("form")
+        .send({
+          _csrf: token,
+          "selected-claims": ["not-a-claim"],
+        });
+      const $ = cheerio.load(res.text);
+      expect($(testComponent("selected-claims-error")).text()).toContain(
+        'Invalid claim provided: "not-a-claim"'
+      );
+      expect(res.statusCode).toBe(400);
+    }
+  );
+
+  integrationTest(
+    "should redirect to /enter-landing-page-url with valid claims",
+    async () => {
+      const res = await requestAgent
+        .post(
+          getServicePaths(
+            PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS,
+            existingService.serviceId
+          )
+        )
+        .type("form")
+        .send({
+          _csrf: token,
+          "selected-claims": [
+            "https://vocab.account.gov.uk/v1/coreIdentityJWT",
+          ],
+        })
+        .expect(
+          "Location",
+          getServicePaths(
+            PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL,
+            existingService.serviceId
+          )
+        );
+      expect(res.statusCode).toBe(302);
     }
   );
 });
