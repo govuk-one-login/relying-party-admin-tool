@@ -97,8 +97,8 @@ describe("Integration:: edit id token signing algorithm", () => {
         .send({
           "id-token-signing-algorithm": "ES256",
         });
-      expect(res.header.location).toBe("/forbidden");
-      expect(res.statusCode).toBe(302);
+      expect(res.statusCode).toBe(403);
+      expect(res.text).toContain("You do not have access to this page.");
     }
   );
 

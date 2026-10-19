@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { csrfErrorHandler } from "./csrf-error-handler.js";
-import { PATH_NAMES } from "../app.constants.js";
 
 describe("csrf-error-handler", () => {
   let req: Partial<Request>;
@@ -16,6 +15,8 @@ describe("csrf-error-handler", () => {
     res = {
       redirect: vi.fn(() => {}),
       headersSent: false,
+      render: vi.fn(),
+      status: vi.fn(),
     };
     next = vi.fn(() => {});
   });
@@ -32,7 +33,7 @@ describe("csrf-error-handler", () => {
       csrfErrorHandler(error, req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledTimes(1);
-      expect(res.redirect).not.toHaveBeenCalled();
+      expect(res.render).not.toHaveBeenCalled();
     });
 
     it("should redirect to 403 page when CSRF token is invalid", () => {
@@ -42,10 +43,11 @@ describe("csrf-error-handler", () => {
 
       expect((req as any).log.info).toHaveBeenCalledTimes(1);
       expect((req as any).log.info).toHaveBeenCalledWith(
-        "Failed CSRF validation, redirecting to 403 page.  Original error: invalid csrf token"
+        "Failed CSRF validation, rendering to 403 page.  Original error: invalid csrf token"
       );
-      expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith(PATH_NAMES["403_ERROR"]);
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.render).toHaveBeenCalledTimes(1);
+      expect(res.render).toHaveBeenCalledWith("common/errors/403.njk");
       expect(next).not.toHaveBeenCalled();
     });
 
@@ -56,7 +58,7 @@ describe("csrf-error-handler", () => {
 
       expect(next).toHaveBeenCalledTimes(1);
       expect(next).toHaveBeenCalledWith(error);
-      expect(res.redirect).not.toHaveBeenCalled();
+      expect(res.render).not.toHaveBeenCalled();
       expect((req as any).log.info).not.toHaveBeenCalled();
     });
   });

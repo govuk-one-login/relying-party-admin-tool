@@ -94,8 +94,8 @@ describe("Integration:: edit service type", () => {
         .send({
           "service-type": "MANDATORY",
         });
-      expect(res.header.location).toBe("/forbidden");
-      expect(res.statusCode).toBe(302);
+      expect(res.statusCode).toBe(403);
+      expect(res.text).toContain("You do not have access to this page.");
     }
   );
 
