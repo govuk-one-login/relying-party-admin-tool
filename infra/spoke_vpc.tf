@@ -17,6 +17,7 @@ resource "aws_cloudformation_stack" "spoke_vpc_stack" {
     CloudWatchLogsApiEnabled = "Yes"
     SecretsManagerApiEnabled = "Yes" # pragma: allowlist secret
     KMSApiEnabled            = "Yes"
+    ExecuteApiGatewayEnabled = "Yes"
 
     # Disabled services
     DynamoDBApiEnabled            = "Yes"
@@ -35,7 +36,6 @@ resource "aws_cloudformation_stack" "spoke_vpc_stack" {
     FirehoseApiEnabled            = "No"
     EventsApiEnabled              = "No"
     StatesApiEnabled              = "No"
-    ExecuteApiGatewayEnabled      = "No"
     TextractApiEnabled            = "No"
     SESSmtpEnabled                = "No"
     SSMParametersStoreEnabled     = "No"
