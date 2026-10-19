@@ -56,6 +56,7 @@ export const serviceGet = (): ExpressRouteFunc => {
       );
 
       return res.render("service/index.njk", {
+        serviceId,
         hasIntegrationWriterPermissions,
         ...(hasManagerPermissions && { sideNavItems }),
         service,
