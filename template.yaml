@@ -77,9 +77,11 @@ Mappings:
     dev:
       serviceDomain: "development.sign-in.service.gov.uk"
       sessionExpiry: "7200000"
+      rpConfigApiUrl: "3x6eix5jh5-vpce-0f43ae202e51377a9.execute-api.eu-west-2.amazonaws.com/dev"
     build:
       serviceDomain: "build.sign-in.service.gov.uk"
       sessionExpiry: "7200000"
+      rpConfigApiUrl: "tswjyvjfd5-vpce-029ffda6b9282f5c2.execute-api.eu-west-2.amazonaws.com/build"
     staging:
       serviceDomain: "staging.sign-in.service.gov.uk"
       sessionExpiry: "7200000"
@@ -232,6 +234,13 @@ Resources:
                 ]
             - Name: "OIDC_SIGNING_KEY_ALIAS"
               Value: !Sub "alias/${Environment}-oidc-signing-key-alias"
+            - Name: "RP_CONFIG_API"
+              Value:
+                !FindInMap [
+                  EnvironmentConfiguration,
+                  !Ref Environment,
+                  rpConfigApiUrl,
+                ]
           Secrets:
             - Name: "SESSION_SECRET"
               ValueFrom: !Ref SessionSecret
@@ -737,7 +746,7 @@ Resources:
       DeletionProtectionEnabled: true
       ResourcePolicy: !If
         - TestRoleExists
-        - PolicyDocument: 
+        - PolicyDocument:
             Version: "2012-10-17"
             Statement:
               - Effect: Allow
@@ -775,7 +784,7 @@ Resources:
             Action: kms:*
             Resource: "*"
           - !If
-            - TestRoleExists 
+            - TestRoleExists
             - Sid: AllowAccessToEncryptionKey
               Effect: Allow
               Principal:
@@ -947,7 +956,7 @@ Resources:
             Action: kms:*
             Resource: "*"
           - !If
-            - TestRoleExists 
+            - TestRoleExists
             - Sid: AllowAccessToEncryptionKey
               Effect: Allow
               Principal:
@@ -1014,7 +1023,7 @@ Resources:
                   - "dynamodb:UpdateItem"
                   - "dynamodb:ConditionCheckItem"
                 Resource: "*"
-        - !Ref AWS::NoValue 
+        - !Ref AWS::NoValue
       Tags:
         - Key: Name
           Value: UserPermissionsTable
