@@ -45,7 +45,12 @@ describe("Integration:: edit service type", () => {
       requestAgent = request.agent(app);
 
       await requestAgent
-        .get(getServicePaths(PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE))
+        .get(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE,
+            existingService.serviceId
+          )
+        )
         .then((res: Response) => {
           const $ = cheerio.load(res.text);
           token = $("[name=_csrf]").val();
@@ -67,7 +72,10 @@ describe("Integration:: edit service type", () => {
 
   integrationTest("should return edit service type page", async () => {
     const res = await requestAgent.get(
-      getServicePaths(PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE)
+      getServicePaths(
+        PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE,
+        existingService.serviceId
+      )
     );
     expect(res.statusCode).toBe(200);
   });
@@ -76,7 +84,12 @@ describe("Integration:: edit service type", () => {
     "should redirect to forbidden when csrf not present",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           "service-type": "MANDATORY",
@@ -90,7 +103,12 @@ describe("Integration:: edit service type", () => {
     "should return validation error when service type is empty",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
@@ -107,7 +125,12 @@ describe("Integration:: edit service type", () => {
     "should return validation error when service type is an invalid service type",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
@@ -125,13 +148,21 @@ describe("Integration:: edit service type", () => {
     "should redirect to /clients when valid service type",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
           "service-type": "MANDATORY",
         })
-        .expect("Location", getServicePaths(PATH_NAMES.CLIENT));
+        .expect(
+          "Location",
+          getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
+        );
       expect(res.statusCode).toBe(302);
     }
   );

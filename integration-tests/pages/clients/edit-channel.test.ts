@@ -45,7 +45,12 @@ describe("Integration:: edit channel", () => {
       requestAgent = request.agent(app);
 
       await requestAgent
-        .get(getServicePaths(PATH_NAMES.CLIENT_EDIT_CHANNEL))
+        .get(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_CHANNEL,
+            existingService.serviceId
+          )
+        )
         .then((res: Response) => {
           const $ = cheerio.load(res.text);
           token = $("[name=_csrf]").val();
@@ -67,7 +72,7 @@ describe("Integration:: edit channel", () => {
 
   integrationTest("should return edit channel page", async () => {
     const res = await requestAgent.get(
-      getServicePaths(PATH_NAMES.CLIENT_EDIT_CHANNEL)
+      getServicePaths(PATH_NAMES.CLIENT_EDIT_CHANNEL, existingService.serviceId)
     );
     expect(res.statusCode).toBe(200);
   });
@@ -76,7 +81,12 @@ describe("Integration:: edit channel", () => {
     "should redirect to forbidden when csrf not present",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_CHANNEL))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_CHANNEL,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           channel: "web",
@@ -90,7 +100,12 @@ describe("Integration:: edit channel", () => {
     "should return validation error when channel is empty",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_CHANNEL))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_CHANNEL,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
@@ -107,7 +122,12 @@ describe("Integration:: edit channel", () => {
     "should return validation error when channel is an invalid channel",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_CHANNEL))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_CHANNEL,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
@@ -125,13 +145,21 @@ describe("Integration:: edit channel", () => {
     "should redirect to /clients when valid channel",
     async () => {
       const res = await requestAgent
-        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_CHANNEL))
+        .post(
+          getServicePaths(
+            PATH_NAMES.CLIENT_EDIT_CHANNEL,
+            existingService.serviceId
+          )
+        )
         .type("form")
         .send({
           _csrf: token,
           channel: "web",
-        })
-        .expect("Location", getServicePaths(PATH_NAMES.CLIENT));
+        });
+      expect(
+        "Location",
+        getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
+      );
       expect(res.statusCode).toBe(302);
     }
   );

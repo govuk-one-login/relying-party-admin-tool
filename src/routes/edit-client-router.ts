@@ -56,11 +56,13 @@ import {
   editPermitMissingNoncePost,
 } from "../components/clients/edit-permit-missing-nonce/edit-permit-missing-nonce-controller.js";
 import { validateEditPermitMissingNonceRequest } from "../components/clients/edit-permit-missing-nonce/edit-permit-missing-nonce-validation.js";
+import { serviceExistsMiddleware } from "../middleware/check-service-exists-middleware.js";
 
 const router = express.Router();
 
 router.use(
   PATH_NAMES.CLIENT_EDIT_BASE_URL,
+  serviceExistsMiddleware,
   checkIntegrationWriterPermissionsMiddleware
 );
 
