@@ -1,6 +1,7 @@
 import { Service } from "../models/service.js";
 import { ClientServiceSummary, ClientSummary } from "../models/client.js";
 import { dynamoDocClient } from "../utils/dynamo.js";
+import { ClientEnvironment } from "../models/client-environment.js";
 
 export const servicesTableName = `${process.env.ENVIRONMENT ?? "test"}-services`;
 
@@ -42,6 +43,28 @@ export const getAllClientsByServiceId = async (
       env: serviceClientRelation["env"],
     };
   });
+};
+
+export const getClientForService = async (
+  serviceId: string,
+  clientId: string,
+  env: ClientEnvironment
+): Promise<ClientServiceSummary | undefined> => {
+  const result = await dynamoDocClient.get({
+    TableName: servicesTableName,
+    Key: {
+      serviceId,
+      sk: `client#${env}#${clientId}`,
+    },
+  });
+
+  if (!result.Item) {
+    return;
+  }
+
+  delete result.Item.sk;
+
+  return result.Item as ClientServiceSummary;
 };
 
 export const addClientToService = async (

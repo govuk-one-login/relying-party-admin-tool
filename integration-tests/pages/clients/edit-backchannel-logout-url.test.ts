@@ -2,7 +2,11 @@ import request, { Response } from "supertest";
 import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
-import { getServicePaths, testComponent } from "../../helpers/helpers.js";
+import {
+  createTestClient,
+  getServicePaths,
+  testComponent,
+} from "../../helpers/helpers.js";
 import { User } from "../../../src/models/user.js";
 import { UserPermission } from "../../../src/models/permissions.js";
 import { Relation } from "../../../src/models/relation.js";
@@ -20,6 +24,8 @@ describe("Integration:: edit backchannel logout url", () => {
     email: "test@user.com",
   };
   const serviceId = randomUUID();
+  const clientId = randomUUID();
+
   const existingRelation: Relation = {
     userId: existingUserId,
     object: `service:${serviceId}`,
@@ -30,15 +36,19 @@ describe("Integration:: edit backchannel logout url", () => {
     name: "Test service",
   };
 
+  const existingClient = createTestClient(serviceId, clientId);
+
   integrationTest.beforeAll(
     async ({
       addUserToDynamo,
       addUserRelationToDynamo,
       addServiceToDynamo,
+      addClientsToDynamo,
     }) => {
       await addUserToDynamo(existingUser);
       await addUserRelationToDynamo(existingRelation);
       await addServiceToDynamo(existingService);
+      await addClientsToDynamo([existingClient]);
 
       app = await (await import("../../../src/app.js")).createApp();
 
@@ -48,7 +58,8 @@ describe("Integration:: edit backchannel logout url", () => {
         .get(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,
-            existingService.serviceId
+            existingService.serviceId,
+            existingClient.clientId
           )
         )
         .then((res: Response) => {
@@ -63,10 +74,12 @@ describe("Integration:: edit backchannel logout url", () => {
       deleteUserFromDynamo,
       deleteUserRelationFromDynamo,
       deleteServiceFromDynamo,
+      deleteClientsFromDynamo,
     }) => {
       await deleteUserFromDynamo(existingUser);
       await deleteUserRelationFromDynamo(existingRelation);
       await deleteServiceFromDynamo(existingService);
+      await deleteClientsFromDynamo([existingClient]);
     }
   );
 
@@ -76,7 +89,8 @@ describe("Integration:: edit backchannel logout url", () => {
       const res = await requestAgent.get(
         getServicePaths(
           PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,
-          existingService.serviceId
+          existingService.serviceId,
+          existingClient.clientId
         )
       );
       expect(res.statusCode).toBe(200);
@@ -90,7 +104,8 @@ describe("Integration:: edit backchannel logout url", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,
-            existingService.serviceId
+            existingService.serviceId,
+            existingClient.clientId
           )
         )
         .type("form")
@@ -109,7 +124,8 @@ describe("Integration:: edit backchannel logout url", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,
-            existingService.serviceId
+            existingService.serviceId,
+            existingClient.clientId
           )
         )
         .type("form")
@@ -132,7 +148,8 @@ describe("Integration:: edit backchannel logout url", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,
-            existingService.serviceId
+            existingService.serviceId,
+            existingClient.clientId
           )
         )
         .type("form")
@@ -152,7 +169,8 @@ describe("Integration:: edit backchannel logout url", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL,
-            existingService.serviceId
+            existingService.serviceId,
+            existingClient.clientId
           )
         )
         .type("form")
@@ -161,7 +179,11 @@ describe("Integration:: edit backchannel logout url", () => {
         })
         .expect(
           "Location",
-          getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
+          getServicePaths(
+            PATH_NAMES.CLIENT,
+            existingService.serviceId,
+            existingClient.clientId
+          )
         );
       expect(res.statusCode).toBe(302);
     }

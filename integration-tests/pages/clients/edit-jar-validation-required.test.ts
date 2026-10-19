@@ -2,7 +2,11 @@ import request, { Response } from "supertest";
 import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
-import { getServicePaths, testComponent } from "../../helpers/helpers.js";
+import {
+  createTestClient,
+  getServicePaths,
+  testComponent,
+} from "../../helpers/helpers.js";
 import { User } from "../../../src/models/user.js";
 import { UserPermission } from "../../../src/models/permissions.js";
 import { Relation } from "../../../src/models/relation.js";
@@ -20,6 +24,7 @@ describe("Integration:: edit jar validation required", () => {
     email: "test@user.com",
   };
   const serviceId = randomUUID();
+  const clientId = randomUUID();
   const existingRelation: Relation = {
     userId: existingUserId,
     object: `service:${serviceId}`,
@@ -29,16 +34,19 @@ describe("Integration:: edit jar validation required", () => {
     serviceId: serviceId,
     name: "Test service",
   };
+  const existingClient = createTestClient(serviceId, clientId);
 
   integrationTest.beforeAll(
     async ({
       addUserToDynamo,
       addUserRelationToDynamo,
       addServiceToDynamo,
+      addClientsToDynamo,
     }) => {
       await addUserToDynamo(existingUser);
       await addUserRelationToDynamo(existingRelation);
       await addServiceToDynamo(existingService);
+      await addClientsToDynamo([existingClient]);
 
       app = await (await import("../../../src/app.js")).createApp();
 
@@ -48,7 +56,8 @@ describe("Integration:: edit jar validation required", () => {
         .get(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED,
-            existingService.serviceId
+            existingService.serviceId,
+            existingClient.clientId
           )
         )
         .then((res: Response) => {
@@ -76,7 +85,8 @@ describe("Integration:: edit jar validation required", () => {
       const res = await requestAgent.get(
         getServicePaths(
           PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED,
-          existingService.serviceId
+          existingService.serviceId,
+          existingClient.clientId
         )
       );
       expect(res.statusCode).toBe(200);
@@ -90,7 +100,8 @@ describe("Integration:: edit jar validation required", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED,
-            existingService.serviceId
+            existingService.serviceId,
+            existingClient.clientId
           )
         )
         .type("form")
@@ -109,7 +120,8 @@ describe("Integration:: edit jar validation required", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED,
-            existingService.serviceId
+            existingService.serviceId,
+            existingClient.clientId
           )
         )
         .type("form")
@@ -131,7 +143,8 @@ describe("Integration:: edit jar validation required", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_JAR_VALIDATION_REQUIRED,
-            existingService.serviceId
+            existingService.serviceId,
+            existingClient.clientId
           )
         )
         .type("form")
@@ -141,7 +154,11 @@ describe("Integration:: edit jar validation required", () => {
         })
         .expect(
           "Location",
-          getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
+          getServicePaths(
+            PATH_NAMES.CLIENT,
+            existingService.serviceId,
+            existingClient.clientId
+          )
         );
       expect(res.statusCode).toBe(302);
     }

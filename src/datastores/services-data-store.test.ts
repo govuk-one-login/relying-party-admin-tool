@@ -6,8 +6,10 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import {
   getAllClientsByServiceId,
+  getClientForService,
   getServiceByServiceId,
 } from "./services-data-store.js";
+import { ClientEnvironment } from "../models/client-environment.js";
 
 const TABLE_PREFIX = "test";
 const TEST_SERVICE = {
@@ -120,6 +122,55 @@ describe("Services data store tests", () => {
       const result = await getAllClientsByServiceId(serviceId);
 
       expect(result).toHaveLength(0);
+    });
+  });
+
+  describe("getClientForService", () => {
+    it("should get a client related to a serviceId when client exists in dynamo", async () => {
+      const serviceId = "test-service-id";
+
+      mockDynamo
+        .on(GetCommand, {
+          TableName: `${TABLE_PREFIX}-services`,
+          Key: {},
+        })
+        .resolves({
+          Item: {
+            serviceId: serviceId,
+            sk: `client#${TEST_INT_CLIENT.env}#${TEST_INT_CLIENT.clientId}`,
+            env: TEST_INT_CLIENT.env,
+            clientId: TEST_INT_CLIENT.clientId,
+            name: TEST_INT_CLIENT.name,
+          },
+        });
+
+      const result = await getClientForService(
+        serviceId,
+        TEST_INT_CLIENT.clientId,
+        TEST_INT_CLIENT.env as ClientEnvironment
+      );
+
+      expect(result).toStrictEqual({ ...TEST_INT_CLIENT, serviceId });
+    });
+
+    it("should get no client if client does not exist with serviceId", async () => {
+      const serviceId = "not-a-service-id";
+      mockDynamo
+        .on(GetCommand, {
+          TableName: `${TABLE_PREFIX}-services`,
+          Key: {},
+        })
+        .resolves({
+          Item: undefined,
+        });
+
+      const result = await getClientForService(
+        serviceId,
+        TEST_INT_CLIENT.clientId,
+        TEST_INT_CLIENT.env as ClientEnvironment
+      );
+
+      expect(result).toBeUndefined();
     });
   });
 });
