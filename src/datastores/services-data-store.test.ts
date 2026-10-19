@@ -5,7 +5,7 @@ import {
   QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
 import {
-  getClientsByServiceId,
+  getAllClientsByServiceId,
   getServiceByServiceId,
 } from "./services-data-store.js";
 
@@ -97,7 +97,7 @@ describe("Services data store tests", () => {
           ],
         });
 
-      const result = await getClientsByServiceId(serviceId);
+      const result = await getAllClientsByServiceId(serviceId);
 
       expect(result).toStrictEqual([TEST_INT_CLIENT]);
     });
@@ -117,7 +117,7 @@ describe("Services data store tests", () => {
         })
         .resolves({ Items: [] });
 
-      const result = await getClientsByServiceId(serviceId);
+      const result = await getAllClientsByServiceId(serviceId);
 
       expect(result).toHaveLength(0);
     });

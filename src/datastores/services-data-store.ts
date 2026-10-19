@@ -20,7 +20,7 @@ export const getServiceByServiceId = async (
   } as Service;
 };
 
-export const getClientsByServiceId = async (
+export const getAllClientsByServiceId = async (
   serviceId: string
 ): Promise<ClientSummary[]> => {
   const result = await dynamoDocClient.query({

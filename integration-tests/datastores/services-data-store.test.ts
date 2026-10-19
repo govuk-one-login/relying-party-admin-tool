@@ -4,7 +4,7 @@ import { integrationTest } from "../base.js";
 import {
   addClientToService,
   getServiceByServiceId,
-  getClientsByServiceId,
+  getAllClientsByServiceId,
 } from "../../src/datastores/services-data-store.js";
 import {
   ClientServiceSummary,
@@ -178,7 +178,9 @@ describe("Services data store tests", () => {
     integrationTest(
       "should get clients by service id if clients exist",
       async () => {
-        const clients = await getClientsByServiceId(testServiceIdWithClients);
+        const clients = await getAllClientsByServiceId(
+          testServiceIdWithClients
+        );
 
         expect(clients).toContainEqual(expect.objectContaining(client1));
         expect(clients).toContainEqual(expect.objectContaining(client2));
@@ -188,7 +190,7 @@ describe("Services data store tests", () => {
     integrationTest(
       "should not get clients if service with ID does not exist",
       async () => {
-        const clients = await getClientsByServiceId("not-a-service-id");
+        const clients = await getAllClientsByServiceId("not-a-service-id");
 
         expect(clients).toStrictEqual([]);
       }
