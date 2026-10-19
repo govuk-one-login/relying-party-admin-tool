@@ -77,9 +77,11 @@ Mappings:
     dev:
       serviceDomain: "development.sign-in.service.gov.uk"
       sessionExpiry: "7200000"
+      rpConfigApiId: 3x6eix5jh5
     build:
       serviceDomain: "build.sign-in.service.gov.uk"
       sessionExpiry: "7200000"
+      rpConfigApiId: tswjyvjfd5
     staging:
       serviceDomain: "staging.sign-in.service.gov.uk"
       sessionExpiry: "7200000"
@@ -232,6 +234,17 @@ Resources:
                 ]
             - Name: "OIDC_SIGNING_KEY_ALIAS"
               Value: !Sub "alias/${Environment}-oidc-signing-key-alias"
+            - Name: "RP_CONFIG_API"
+              Value: !Sub
+                - "${ApiId}-${VpceId}.execute-api.eu-west-2.amazonaws.com/${Environment}"
+                - ApiId:
+                    !FindInMap [
+                      EnvironmentConfiguration,
+                      !Ref Environment,
+                      rpConfigApiId,
+                    ]
+                  VpceId: !ImportValue
+                    Fn::Sub: "${VpcStackName}-ExecuteApiGatewayEndpointId"
           Secrets:
             - Name: "SESSION_SECRET"
               ValueFrom: !Ref SessionSecret
