@@ -27,21 +27,31 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check ESLint and Prettier
-        run: npm run lint
+      - name: Get pre-commit python version
+        id: get-python-version
+        run: |
+          RAW_VERSION=$(yq '.default_language_version.python' .pre-commit-config.yaml)
+          CLEAN_VERSION=$(echo "$RAW_VERSION" | sed 's/[a-zA-Z]//g')
+          echo "version=${CLEAN_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ steps.get-python-version.outputs.version }}
+
+      - name: Install pre-commit
+        run: pip install pre-commit
 
       - name: Set up tflint
         uses: terraform-linters/setup-tflint@6ffdbaa3be476b3431f7275c26966ef32ff60337
-
-      - name: Lint Terraform
-        run: npm run tflint
-
-      - name: Setup SAM
-        if: github.actor != 'dependabot[bot]'
-        uses: aws-actions/setup-sam@89ddb14d60e682855e3fea4be85b3c56485de310 # v3
         with:
-          use-installer: true
+          cache: true
 
-      - name: Run SAM validate + cfnlint
-        if: github.actor != 'dependabot[bot]'
-        run: sam validate -t template.yaml --region eu-west-2 --lint
+      - name: Cache pre-commit environments
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v 6.1.0
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml', '.github/workflows/validation.yml') }}-${{ runner.os }}
+
+      - name: Run pre-commit checks
+        run: pre-commit run --all-files --show-diff-on-failure --color=always
