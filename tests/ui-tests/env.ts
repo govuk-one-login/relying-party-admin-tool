@@ -1,5 +1,9 @@
-import "dotenv/config";
 import * as v from "valibot";
+import { loadEnvFile } from "node:process";
+
+try {
+  loadEnvFile(".env");
+} catch (err) {}
 
 const boolish = v.pipe(
   v.unknown(),
