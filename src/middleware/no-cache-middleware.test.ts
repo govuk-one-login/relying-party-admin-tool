@@ -22,7 +22,10 @@ describe("no-cache-middleware", () => {
     it("should set Cache-Control header with no-cache directives", () => {
       noCacheMiddleware(req as Request, res as Response, next);
 
-      expect(res.set).toHaveBeenCalledExactlyOnceWith("Cache-Control", "no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0");
+      expect(res.set).toHaveBeenCalledExactlyOnceWith(
+        "Cache-Control",
+        "no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0"
+      );
       expect(next).toHaveBeenCalledExactlyOnceWith();
     });
   });

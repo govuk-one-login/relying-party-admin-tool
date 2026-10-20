@@ -737,7 +737,7 @@ Resources:
       DeletionProtectionEnabled: true
       ResourcePolicy: !If
         - TestRoleExists
-        - PolicyDocument: 
+        - PolicyDocument:
             Version: "2012-10-17"
             Statement:
               - Effect: Allow
@@ -775,7 +775,7 @@ Resources:
             Action: kms:*
             Resource: "*"
           - !If
-            - TestRoleExists 
+            - TestRoleExists
             - Sid: AllowAccessToEncryptionKey
               Effect: Allow
               Principal:
@@ -947,7 +947,7 @@ Resources:
             Action: kms:*
             Resource: "*"
           - !If
-            - TestRoleExists 
+            - TestRoleExists
             - Sid: AllowAccessToEncryptionKey
               Effect: Allow
               Principal:
@@ -1014,7 +1014,7 @@ Resources:
                   - "dynamodb:UpdateItem"
                   - "dynamodb:ConditionCheckItem"
                 Resource: "*"
-        - !Ref AWS::NoValue 
+        - !Ref AWS::NoValue
       Tags:
         - Key: Name
           Value: UserPermissionsTable
