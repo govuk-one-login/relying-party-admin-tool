@@ -94,8 +94,8 @@ describe("Integration:: edit permit missing nonce", () => {
         .send({
           "permit-missing-nonce": "true",
         });
-      expect(res.header.location).toBe("/forbidden");
-      expect(res.statusCode).toBe(302);
+      expect(res.statusCode).toBe(403);
+      expect(res.text).toContain("You do not have access to this page.");
     }
   );
 

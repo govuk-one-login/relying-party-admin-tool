@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { PATH_NAMES } from "../app.constants.js";
+import { HTTP_STATUS_CODES } from "../app.constants.js";
 
 export const csrfErrorHandler = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,9 +15,10 @@ export const csrfErrorHandler = (
 
   if (error.code === "EBADCSRFTOKEN") {
     req.log.info(
-      `Failed CSRF validation, redirecting to 403 page.  Original error: ${error.message}`
+      `Failed CSRF validation, rendering to 403 page.  Original error: ${error.message}`
     );
-    res.redirect(PATH_NAMES["403_ERROR"]);
+    res.status(HTTP_STATUS_CODES.FORBIDDEN);
+    res.render("common/errors/403.njk");
   } else {
     void next(error);
   }
