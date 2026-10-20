@@ -66,7 +66,6 @@ repos:
           - npm run lint:fix
         language: system
         pass_filenames: false
-        files: ^.*\.ts$
   - repo: local
     hooks:
       - id: format-terraform
