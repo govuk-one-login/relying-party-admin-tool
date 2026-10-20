@@ -2,7 +2,7 @@ import request, { Response } from "supertest";
 import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
-import { getServicePaths } from "../../helpers/helpers.js";
+import { getServicePaths, testComponent } from "../../helpers/helpers.js";
 import { User } from "../../../src/models/user.js";
 import { UserPermission } from "../../../src/models/permissions.js";
 import { Relation } from "../../../src/models/relation.js";
@@ -105,4 +105,279 @@ describe("Integration:: select levels of confidence", () => {
       expect(res.text).toContain("You do not have access to this page.");
     }
   );
+
+  describe("identity verification is supported", () => {
+    let identityVerificationSupportedApp: any;
+    let identityVerificationSupportedRequestAgent: any;
+    let identityVerificationSupportedToken: string | string[] | undefined;
+
+    integrationTest.beforeAll(async () => {
+      vi.restoreAllMocks();
+      vi.resetModules();
+
+      const checkServiceExistsMiddleware =
+        await import("../../../src/middleware/check-service-exists-middleware.js");
+      vi.spyOn(
+        checkServiceExistsMiddleware,
+        "serviceExistsMiddleware"
+      ).mockImplementation(function async(
+        req: any,
+        res: any,
+        next: any
+      ): Promise<void> {
+        req.session.newClientConfig = {
+          isIdentityVerificationSupported: true,
+        };
+        return next();
+      });
+
+      identityVerificationSupportedApp = await (
+        await import("../../../src/app.js")
+      ).createApp();
+
+      identityVerificationSupportedRequestAgent = request.agent(
+        identityVerificationSupportedApp
+      );
+
+      await identityVerificationSupportedRequestAgent
+        .get(
+          getServicePaths(
+            PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT,
+            existingService.serviceId
+          )
+        )
+        .then((res: Response) => {
+          const $ = cheerio.load(res.text);
+          identityVerificationSupportedToken = $("[name=_csrf]").val();
+        });
+    });
+
+    integrationTest.afterAll(async () => {
+      vi.restoreAllMocks();
+      vi.resetModules();
+      identityVerificationSupportedApp = undefined;
+    });
+
+    integrationTest(
+      "should fail validation with empty level-of-confidence",
+      async () => {
+        const res = await identityVerificationSupportedRequestAgent
+          .post(
+            getServicePaths(
+              PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
+              existingService.serviceId
+            )
+          )
+          .type("form")
+          .send({
+            _csrf: identityVerificationSupportedToken,
+          });
+        const $ = cheerio.load(res.text);
+        expect($(testComponent("selected-locs-error")).text()).toContain(
+          "You must select one level of confidence"
+        );
+        expect(res.statusCode).toBe(400);
+      }
+    );
+
+    integrationTest(
+      "should fail validation with an invalid level-of-confidence",
+      async () => {
+        const res = await identityVerificationSupportedRequestAgent
+          .post(
+            getServicePaths(
+              PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
+              existingService.serviceId
+            )
+          )
+          .type("form")
+          .send({
+            _csrf: identityVerificationSupportedToken,
+            "selected-locs": ["P2", "invalid-loc"],
+          });
+        const $ = cheerio.load(res.text);
+        expect($(testComponent("selected-locs-error")).text()).toContain(
+          'Invalid level of confidence provided: "invalid-loc"'
+        );
+        expect(res.statusCode).toBe(400);
+      }
+    );
+
+    integrationTest(
+      "should redirect to /summary with valid level-of-confidence",
+      async () => {
+        const res = await identityVerificationSupportedRequestAgent
+          .post(
+            getServicePaths(
+              PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
+              existingService.serviceId
+            )
+          )
+          .type("form")
+          .send({
+            _csrf: identityVerificationSupportedToken,
+            "selected-locs": "P2",
+          })
+          .expect(
+            "Location",
+            getServicePaths(
+              PATH_NAMES.CREATE_CLIENT_SUMMARY,
+              existingService.serviceId
+            )
+          );
+        expect(res.statusCode).toBe(302);
+      }
+    );
+
+    integrationTest(
+      "should redirect to /summary with valid levels-of-confidence",
+      async () => {
+        const res = await identityVerificationSupportedRequestAgent
+          .post(
+            getServicePaths(
+              PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
+              existingService.serviceId
+            )
+          )
+          .type("form")
+          .send({
+            _csrf: identityVerificationSupportedToken,
+            "selected-locs": ["P0", "P2"],
+          })
+          .expect(
+            "Location",
+            getServicePaths(
+              PATH_NAMES.CREATE_CLIENT_SUMMARY,
+              existingService.serviceId
+            )
+          );
+        expect(res.statusCode).toBe(302);
+      }
+    );
+  });
+
+  describe("identity verification is not supported", () => {
+    let identityVerificationNotSupportedApp: any;
+    let identityVerificationNotSupportedRequestAgent: any;
+    let identityVerificationNotSupportedToken: string | string[] | undefined;
+
+    integrationTest.beforeAll(async () => {
+      vi.restoreAllMocks();
+      vi.resetModules();
+
+      const checkServiceExistsMiddleware =
+        await import("../../../src/middleware/check-service-exists-middleware.js");
+      vi.spyOn(
+        checkServiceExistsMiddleware,
+        "serviceExistsMiddleware"
+      ).mockImplementation(function async(
+        req: any,
+        res: any,
+        next: any
+      ): Promise<void> {
+        req.session.newClientConfig = {
+          isIdentityVerificationSupported: "true",
+        };
+        return next();
+      });
+
+      identityVerificationNotSupportedApp = await (
+        await import("../../../src/app.js")
+      ).createApp();
+
+      identityVerificationNotSupportedRequestAgent = request.agent(
+        identityVerificationNotSupportedApp
+      );
+
+      await identityVerificationNotSupportedRequestAgent
+        .get(
+          getServicePaths(
+            PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT,
+            existingService.serviceId
+          )
+        )
+        .then((res: Response) => {
+          const $ = cheerio.load(res.text);
+          identityVerificationNotSupportedToken = $("[name=_csrf]").val();
+        });
+    });
+
+    integrationTest.afterAll(async () => {
+      vi.restoreAllMocks();
+      vi.resetModules();
+      identityVerificationNotSupportedApp = undefined;
+    });
+
+    integrationTest(
+      "should fail validation with P1 level of confidence",
+      async () => {
+        const res = await identityVerificationNotSupportedRequestAgent
+          .post(
+            getServicePaths(
+              PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
+              existingService.serviceId
+            )
+          )
+          .type("form")
+          .send({
+            _csrf: identityVerificationNotSupportedToken,
+            "selected-locs": "P1",
+          });
+        const $ = cheerio.load(res.text);
+        expect($(testComponent("selected-locs-error")).text()).toContain(
+          "Identity verification must be supported"
+        );
+        expect(res.statusCode).toBe(400);
+      }
+    );
+
+    integrationTest(
+      "should fail validation with P2 level of confidence",
+      async () => {
+        const res = await identityVerificationNotSupportedRequestAgent
+          .post(
+            getServicePaths(
+              PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
+              existingService.serviceId
+            )
+          )
+          .type("form")
+          .send({
+            _csrf: identityVerificationNotSupportedToken,
+            "selected-locs": "P2",
+          });
+        const $ = cheerio.load(res.text);
+        expect($(testComponent("selected-locs-error")).text()).toContain(
+          "Identity verification must be supported"
+        );
+        expect(res.statusCode).toBe(400);
+      }
+    );
+
+    integrationTest(
+      "should redirect to /summary with P0 level of confidence",
+      async () => {
+        const res = await identityVerificationNotSupportedRequestAgent
+          .post(
+            getServicePaths(
+              PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
+              existingService.serviceId
+            )
+          )
+          .type("form")
+          .send({
+            _csrf: identityVerificationNotSupportedToken,
+            "selected-locs": "P0",
+          })
+          .expect(
+            "Location",
+            getServicePaths(
+              PATH_NAMES.CREATE_CLIENT_SUMMARY,
+              existingService.serviceId
+            )
+          );
+        expect(res.statusCode).toBe(302);
+      }
+    );
+  });
 });
