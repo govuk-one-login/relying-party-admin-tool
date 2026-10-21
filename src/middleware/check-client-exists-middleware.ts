@@ -10,6 +10,7 @@ export const checkClientExistsForEnvMiddleware =
     const clientId = req.params.clientId;
 
     if (typeof serviceId !== "string" || typeof clientId !== "string") {
+      req.log.warn("Invalid service or client ID in path params");
       res.status(HTTP_STATUS_CODES.FORBIDDEN);
       return res.render("common/errors/403.njk");
     }
@@ -21,6 +22,7 @@ export const checkClientExistsForEnvMiddleware =
     );
 
     if (!clientFromService) {
+      req.log.warn("Service Client summary not found");
       res.status(HTTP_STATUS_CODES.FORBIDDEN);
       return res.render("common/errors/403.njk");
     }
