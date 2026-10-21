@@ -1,4 +1,3 @@
-import { Request } from "express";
 import {
   clientNameInputFieldValidator,
   redirectUrlsFieldValidator,
@@ -28,42 +27,33 @@ import { RequestBuilder } from "../utils/test-utils/builders.js";
 describe("create client field validators", () => {
   describe("backchannelLogoutUrlFieldValidator", () => {
     it("should pass validation with valid URL", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "backchannel-logout-url": "http://url.com",
         })
         .build();
 
-      const result = await backchannelLogoutUrlFieldValidator.validate(
-        req as Request
-      );
+      const result = await backchannelLogoutUrlFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should pass validation when empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder().withBody({}).build();
+      const req = new RequestBuilder().withBody({}).build();
 
-      const result = await backchannelLogoutUrlFieldValidator.validate(
-        req as Request
-      );
+      const result = await backchannelLogoutUrlFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when URL is invalid", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "backchannel-logout-url": "not-a-url",
         })
         .build();
 
-      const result = await backchannelLogoutUrlFieldValidator.validate(
-        req as Request
-      );
+      const result = await backchannelLogoutUrlFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -86,42 +76,33 @@ describe("create client field validators", () => {
       });
 
       it("should pass validation with valid https URL", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             "backchannel-logout-url": "https://url.com",
           })
           .build();
 
-        const result = await backchannelLogoutUrlFieldValidator.validate(
-          req as Request
-        );
+        const result = await backchannelLogoutUrlFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
 
       it("should pass validation when empty", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder().withBody({}).build();
+        const req = new RequestBuilder().withBody({}).build();
 
-        const result = await backchannelLogoutUrlFieldValidator.validate(
-          req as Request
-        );
+        const result = await backchannelLogoutUrlFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
 
       it("should fail validation when URL is invalid", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             "backchannel-logout-url": "not-a-url",
           })
           .build();
 
-        const result = await backchannelLogoutUrlFieldValidator.validate(
-          req as Request
-        );
+        const result = await backchannelLogoutUrlFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -135,16 +116,13 @@ describe("create client field validators", () => {
       });
 
       it("should fail validation when URL is http", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             "backchannel-logout-url": "http://url.com",
           })
           .build();
 
-        const result = await backchannelLogoutUrlFieldValidator.validate(
-          req as Request
-        );
+        const result = await backchannelLogoutUrlFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -158,16 +136,13 @@ describe("create client field validators", () => {
       });
 
       it("should fail validation when URL is localhost", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             "backchannel-logout-url": "https://localhost:3000",
           })
           .build();
 
-        const result = await backchannelLogoutUrlFieldValidator.validate(
-          req as Request
-        );
+        const result = await backchannelLogoutUrlFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -184,23 +159,21 @@ describe("create client field validators", () => {
 
   describe("channelFieldValidator", () => {
     it("should pass validation when an option is selected", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           channel: "web",
         })
         .build();
 
-      const result = await channelFieldValidator.validate(req as Request);
+      const result = await channelFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when channel is empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder().withBody({}).build();
+      const req = new RequestBuilder().withBody({}).build();
 
-      const result = await channelFieldValidator.validate(req as Request);
+      const result = await channelFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -212,14 +185,13 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when invalid channel", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           channel: "invalid-channel",
         })
         .build();
 
-      const result = await channelFieldValidator.validate(req as Request);
+      const result = await channelFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -235,17 +207,14 @@ describe("create client field validators", () => {
 
   describe("clientAuthenticationInputFieldValidatorChain", () => {
     it("should fail validation when client authentication method is empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "client-authentication-method": "",
         })
         .build();
 
       const result =
-        await clientAuthenticationInputFieldValidatorChain.validate(
-          req as Request
-        );
+        await clientAuthenticationInputFieldValidatorChain.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -259,8 +228,7 @@ describe("create client field validators", () => {
     });
 
     it("should pass validation when client authentication method is JWKS and valid url", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "client-authentication-method": "JWKS",
           "jwks-endpoint": "https://url.com",
@@ -268,16 +236,13 @@ describe("create client field validators", () => {
         .build();
 
       const result =
-        await clientAuthenticationInputFieldValidatorChain.validate(
-          req as Request
-        );
+        await clientAuthenticationInputFieldValidatorChain.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when client authentication method is JWKS and invalid url", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "client-authentication-method": "JWKS",
           "jwks-endpoint": "not-a-url",
@@ -285,9 +250,7 @@ describe("create client field validators", () => {
         .build();
 
       const result =
-        await clientAuthenticationInputFieldValidatorChain.validate(
-          req as Request
-        );
+        await clientAuthenticationInputFieldValidatorChain.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -299,8 +262,7 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when client authentication method is JWKS and empty jwks endpoint", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "client-authentication-method": "JWKS",
           "jwks-endpoint": "",
@@ -308,9 +270,7 @@ describe("create client field validators", () => {
         .build();
 
       const result =
-        await clientAuthenticationInputFieldValidatorChain.validate(
-          req as Request
-        );
+        await clientAuthenticationInputFieldValidatorChain.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -322,8 +282,7 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when client authentication method is not JWKS and valid url", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "client-authentication-method": "STATIC",
           "jwks-endpoint": "https://url.com",
@@ -331,9 +290,7 @@ describe("create client field validators", () => {
         .build();
 
       const result =
-        await clientAuthenticationInputFieldValidatorChain.validate(
-          req as Request
-        );
+        await clientAuthenticationInputFieldValidatorChain.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -345,10 +302,9 @@ describe("create client field validators", () => {
     });
 
     it("should pass validation when client authentication method is STATIC and valid pem key", async () => {
-      let req: Partial<Request>;
       const validPublicKey =
         "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDQk36HYw2tjwb1H88zL3dfPu2X\ngG7svnZgC660jop/Fi49dOOC8uX7u5WuaQP/ncUMHpR1M+av1bCn1NERXYyZ0TLO\nARZOO8fY5gJ5lLbQBngSUiSTTzjAZcQtypjosFLRkEyIMcXQxFc3Dk42mfhJiRFl\nffrIxtcLe1nxq4dRDQIDAQAB\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "client-authentication-method": "STATIC",
           "public-key": validPublicKey,
@@ -356,16 +312,13 @@ describe("create client field validators", () => {
         .build();
 
       const result =
-        await clientAuthenticationInputFieldValidatorChain.validate(
-          req as Request
-        );
+        await clientAuthenticationInputFieldValidatorChain.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when client authentication method is STATIC and invalid pem key", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "client-authentication-method": "STATIC",
           "public-key": "not-a-key",
@@ -373,9 +326,7 @@ describe("create client field validators", () => {
         .build();
 
       const result =
-        await clientAuthenticationInputFieldValidatorChain.validate(
-          req as Request
-        );
+        await clientAuthenticationInputFieldValidatorChain.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -387,11 +338,10 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when client authentication method is STATIC and valid private key", async () => {
-      let req: Partial<Request>;
       const privateKey =
         "-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgQCdQ5ikBNzPwBNy+wJU4PE7HF04U7+4NTJV/N7LP0fs37LGEZR8\nPIXbEJ9XpBfeXcCIOmL/oGcri5G5pBjDhyVvfk4mS+x35rVo70ZZNg71ZtEGcSMS\ne4efuxB/h/+4vVlhMgE6TjtkqXNTaLjHCjqwOEhRjXqmX0tmaDA3Z489wQIDAQAB\nAoGAAL5vHGeBe+IWtXaGfkxKF9N8hWWwBHkL8eguTZvRBUfRmqo+n4/RukWL22hF\nTKH45SwRh9AEbOpOGCi0jUg4Xxq32yIKepFykyrYjKmFhvrUGXRrW0oHzrnF9hIl\nlJ5jJxXzKHf5M0oR+IQfrwo+MRIoWKpmYy1+pI+ssoQF8gECQQDq4qTz+OYBNFYY\nEJ2xOk+16iNDW2sy1hBI6uvSPN2OfLVzH4s2yb4aLNT3T+ynnHtP1pH2i4PSW7vp\nl2Ggr+gxAkEAq2asXuDmMIjS5/W5zv8s1FidYfYjqTur3pYD7jQvcR2E2RslEsMw\nPvUUqWY9iuQkGnlTnlKUm/LsTAJhkaPakQJBAKEZA5PFkVMgJzBoLQ/B86vMQ5VO\nHS8HvLGWVlminz677+NerifMpJLlTse0zJaE79ppS0EynR3pBvAGgNIp8/ECQDwx\nH2Fma5ApzJ8nHSyDUlP0Frj7PoTE7tOJLTIu42Y+7pNrw/Y107CYUrw2qnAnNEKT\nzvivmX62raL3xxnlR/ECQBmTYNJj4N29Hx1dxTpnMcgNii2H+1LrnvTCm0lkWkYp\n5W2Eb44mjLw+57TFk1TJOKLdtE69zbio7uLAPTNCZ8Y=\n-----END RSA PRIVATE KEY-----"; // pragma: allowlist secret
 
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "client-authentication-method": "STATIC",
           "public-key": privateKey,
@@ -399,9 +349,7 @@ describe("create client field validators", () => {
         .build();
 
       const result =
-        await clientAuthenticationInputFieldValidatorChain.validate(
-          req as Request
-        );
+        await clientAuthenticationInputFieldValidatorChain.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -413,10 +361,9 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when client authentication method is STATIC and valid non-rsa key", async () => {
-      let req: Partial<Request>;
       const publicKey =
         "-----BEGIN PUBLIC KEY-----\nMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAElr7n+HAN7io+Nzl7PqWNy5a4DrOYNkWA\nK4kkf3FSnx7fThZCdwP4m/PI5xIxoxlhJX4eHmaKm8S6c2oWxtt1YQ==\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "client-authentication-method": "STATIC",
           "public-key": publicKey,
@@ -424,9 +371,7 @@ describe("create client field validators", () => {
         .build();
 
       const result =
-        await clientAuthenticationInputFieldValidatorChain.validate(
-          req as Request
-        );
+        await clientAuthenticationInputFieldValidatorChain.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -440,8 +385,7 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when client authentication method is STATIC and empty public key", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "client-authentication-method": "STATIC",
           "public-key": "",
@@ -449,9 +393,7 @@ describe("create client field validators", () => {
         .build();
 
       const result =
-        await clientAuthenticationInputFieldValidatorChain.validate(
-          req as Request
-        );
+        await clientAuthenticationInputFieldValidatorChain.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -463,10 +405,9 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when client authentication method is not STATIC and valid pem key", async () => {
-      let req: Partial<Request>;
       const validPublicKey =
         "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYWLbZirhZ9Vn9HYOFKK9LKKug+/S\nNMRVsji1V7qruuB594ffFuQnoVDh8ahfwji90zMwQUWrJjMUhoMxQDIWcw==\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "client-authentication-method": "CLIENT_SECRET",
           "public-key": validPublicKey,
@@ -474,9 +415,7 @@ describe("create client field validators", () => {
         .build();
 
       const result =
-        await clientAuthenticationInputFieldValidatorChain.validate(
-          req as Request
-        );
+        await clientAuthenticationInputFieldValidatorChain.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -488,8 +427,7 @@ describe("create client field validators", () => {
     });
 
     it("should pass validation when client authentication method is CLIENT_SECRET and valid client secret", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "client-authentication-method": "CLIENT_SECRET",
           "client-secret": "client-secret", // pragma: allowlist secret
@@ -497,16 +435,13 @@ describe("create client field validators", () => {
         .build();
 
       const result =
-        await clientAuthenticationInputFieldValidatorChain.validate(
-          req as Request
-        );
+        await clientAuthenticationInputFieldValidatorChain.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when client authentication method is CLIENT_SECRET and empty client secret", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "client-authentication-method": "CLIENT_SECRET",
           "client-secret": "",
@@ -514,9 +449,7 @@ describe("create client field validators", () => {
         .build();
 
       const result =
-        await clientAuthenticationInputFieldValidatorChain.validate(
-          req as Request
-        );
+        await clientAuthenticationInputFieldValidatorChain.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -528,8 +461,7 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when client authentication method is not CLIENT_SECRET and valid client secret", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "client-authentication-method": "JWKS",
           "client-secret": "client-secret", // pragma: allowlist secret
@@ -537,9 +469,7 @@ describe("create client field validators", () => {
         .build();
 
       const result =
-        await clientAuthenticationInputFieldValidatorChain.validate(
-          req as Request
-        );
+        await clientAuthenticationInputFieldValidatorChain.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -553,31 +483,25 @@ describe("create client field validators", () => {
 
   describe("clientNameFieldValidator", () => {
     it("should pass validation with valid client name", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           name: "my client",
         })
         .build();
 
-      const result = await clientNameInputFieldValidator.validate(
-        req as Request
-      );
+      const result = await clientNameInputFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when name is empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           name: "",
         })
         .build();
 
-      const result = await clientNameInputFieldValidator.validate(
-        req as Request
-      );
+      const result = await clientNameInputFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -589,17 +513,14 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when name exceeds 255 characters", async () => {
-      let req: Partial<Request>;
       const longName = "a".repeat(256);
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           name: longName,
         })
         .build();
 
-      const result = await clientNameInputFieldValidator.validate(
-        req as Request
-      );
+      const result = await clientNameInputFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -613,16 +534,13 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when name has non-ascii characters", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           name: "🆕 client",
         })
         .build();
 
-      const result = await clientNameInputFieldValidator.validate(
-        req as Request
-      );
+      const result = await clientNameInputFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -636,16 +554,13 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when name begins with a colon", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           name: ":my client",
         })
         .build();
 
-      const result = await clientNameInputFieldValidator.validate(
-        req as Request
-      );
+      const result = await clientNameInputFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -661,8 +576,7 @@ describe("create client field validators", () => {
 
   describe("selectClaimsFieldValidator", () => {
     it("should pass validation with valid claims", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "selected-claims": [
             "https://vocab.account.gov.uk/v1/coreIdentityJWT",
@@ -670,33 +584,31 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectClaimsFieldValidator.validate(req as Request);
+      const result = await selectClaimsFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should pass validation when claims are empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "selected-claims": [],
         })
         .build();
 
-      const result = await selectClaimsFieldValidator.validate(req as Request);
+      const result = await selectClaimsFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when invalid claim added", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "selected-claims": ["not-a-claim"],
         })
         .build();
 
-      const result = await selectClaimsFieldValidator.validate(req as Request);
+      const result = await selectClaimsFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -712,27 +624,23 @@ describe("create client field validators", () => {
 
   describe("supportIdentityVerificationFieldValidator", () => {
     it("should pass validation when an option is selected", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "support-identity-verification": "true",
         })
         .build();
 
-      const result = await supportIdentityVerificationFieldValidator.validate(
-        req as Request
-      );
+      const result =
+        await supportIdentityVerificationFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when support identity verification is empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder().withBody({}).build();
+      const req = new RequestBuilder().withBody({}).build();
 
-      const result = await supportIdentityVerificationFieldValidator.validate(
-        req as Request
-      );
+      const result =
+        await supportIdentityVerificationFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -746,8 +654,7 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when support identity verification is true and client secret is set", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withSessionnewClientConfig({
           clientAuthenticationMethod: "CLIENT_SECRET",
         })
@@ -756,9 +663,8 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await supportIdentityVerificationFieldValidator.validate(
-        req as Request
-      );
+      const result =
+        await supportIdentityVerificationFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -772,8 +678,7 @@ describe("create client field validators", () => {
     });
 
     it("should pass validation when support identity verification is false and client secret is set", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withSessionnewClientConfig({
           clientAuthenticationMethod: "CLIENT_SECRET",
         })
@@ -782,9 +687,8 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await supportIdentityVerificationFieldValidator.validate(
-        req as Request
-      );
+      const result =
+        await supportIdentityVerificationFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
@@ -792,27 +696,21 @@ describe("create client field validators", () => {
 
   describe("idTokenSigningAlgorithmFieldValidator", () => {
     it("should pass validation when an option is selected", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "id-token-signing-algorithm": "ES256",
         })
         .build();
 
-      const result = await idTokenSigningAlgorithmFieldValidator.validate(
-        req as Request
-      );
+      const result = await idTokenSigningAlgorithmFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when id token signing algorithm is empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder().withBody({}).build();
+      const req = new RequestBuilder().withBody({}).build();
 
-      const result = await idTokenSigningAlgorithmFieldValidator.validate(
-        req as Request
-      );
+      const result = await idTokenSigningAlgorithmFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -826,16 +724,13 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when invalid id token signing algorithm", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "id-token-signing-algorithm": "invalid-algorithm",
         })
         .build();
 
-      const result = await idTokenSigningAlgorithmFieldValidator.validate(
-        req as Request
-      );
+      const result = await idTokenSigningAlgorithmFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -851,23 +746,21 @@ describe("create client field validators", () => {
 
   describe("isActiveFieldValidator", () => {
     it("should pass validation when an option is selected", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "is-active": "true",
         })
         .build();
 
-      const result = await isActiveFieldValidator.validate(req as Request);
+      const result = await isActiveFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when is active is empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder().withBody({}).build();
+      const req = new RequestBuilder().withBody({}).build();
 
-      const result = await isActiveFieldValidator.validate(req as Request);
+      const result = await isActiveFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -881,27 +774,21 @@ describe("create client field validators", () => {
 
   describe("jarValidationRequiredFieldValidator", () => {
     it("should pass validation when an option is selected", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "jar-validation-required": "true",
         })
         .build();
 
-      const result = await jarValidationRequiredFieldValidator.validate(
-        req as Request
-      );
+      const result = await jarValidationRequiredFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when jar validation required is empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder().withBody({}).build();
+      const req = new RequestBuilder().withBody({}).build();
 
-      const result = await jarValidationRequiredFieldValidator.validate(
-        req as Request
-      );
+      const result = await jarValidationRequiredFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -915,42 +802,33 @@ describe("create client field validators", () => {
 
   describe("enterLandingPageUrlFieldValidator", () => {
     it("should pass validation with valid URL", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "landing-page-url": "http://url.com",
         })
         .build();
 
-      const result = await enterLandingPageUrlFieldValidator.validate(
-        req as Request
-      );
+      const result = await enterLandingPageUrlFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should pass validation when empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder().withBody({}).build();
+      const req = new RequestBuilder().withBody({}).build();
 
-      const result = await enterLandingPageUrlFieldValidator.validate(
-        req as Request
-      );
+      const result = await enterLandingPageUrlFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when URL is invalid", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "landing-page-url": "not-a-url",
         })
         .build();
 
-      const result = await enterLandingPageUrlFieldValidator.validate(
-        req as Request
-      );
+      const result = await enterLandingPageUrlFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -973,42 +851,33 @@ describe("create client field validators", () => {
       });
 
       it("should pass validation with valid https URL", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             "landing-page-url": "https://url.com",
           })
           .build();
 
-        const result = await enterLandingPageUrlFieldValidator.validate(
-          req as Request
-        );
+        const result = await enterLandingPageUrlFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
 
       it("should pass validation when empty", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder().withBody({}).build();
+        const req = new RequestBuilder().withBody({}).build();
 
-        const result = await enterLandingPageUrlFieldValidator.validate(
-          req as Request
-        );
+        const result = await enterLandingPageUrlFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
 
       it("should fail validation when URL is invalid", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             "landing-page-url": "not-a-url",
           })
           .build();
 
-        const result = await enterLandingPageUrlFieldValidator.validate(
-          req as Request
-        );
+        const result = await enterLandingPageUrlFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1022,16 +891,13 @@ describe("create client field validators", () => {
       });
 
       it("should fail validation when URL is http", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             "landing-page-url": "http://url.com",
           })
           .build();
 
-        const result = await enterLandingPageUrlFieldValidator.validate(
-          req as Request
-        );
+        const result = await enterLandingPageUrlFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1045,16 +911,13 @@ describe("create client field validators", () => {
       });
 
       it("should fail validation when URL is localhost", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             "landing-page-url": "https://localhost:3000",
           })
           .build();
 
-        const result = await enterLandingPageUrlFieldValidator.validate(
-          req as Request
-        );
+        const result = await enterLandingPageUrlFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1071,23 +934,21 @@ describe("create client field validators", () => {
 
   describe("maxAgeEnabledFieldValidator", () => {
     it("should pass validation when an option is selected", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "max-age-enabled": "true",
         })
         .build();
 
-      const result = await maxAgeEnabledFieldValidator.validate(req as Request);
+      const result = await maxAgeEnabledFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when max age enabled is empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder().withBody({}).build();
+      const req = new RequestBuilder().withBody({}).build();
 
-      const result = await maxAgeEnabledFieldValidator.validate(req as Request);
+      const result = await maxAgeEnabledFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -1101,27 +962,21 @@ describe("create client field validators", () => {
 
   describe("permitMissingNonceFieldValidator", () => {
     it("should pass validation when an option is selected", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "permit-missing-nonce": "true",
         })
         .build();
 
-      const result = await permitMissingNonceFieldValidator.validate(
-        req as Request
-      );
+      const result = await permitMissingNonceFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when permit missing nonce is empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder().withBody({}).build();
+      const req = new RequestBuilder().withBody({}).build();
 
-      const result = await permitMissingNonceFieldValidator.validate(
-        req as Request
-      );
+      const result = await permitMissingNonceFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -1135,23 +990,21 @@ describe("create client field validators", () => {
 
   describe("pkceEnforcedFieldValidator", () => {
     it("should pass validation when an option is selected", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "pkce-enforced": "true",
         })
         .build();
 
-      const result = await pkceEnforcedFieldValidator.validate(req as Request);
+      const result = await pkceEnforcedFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when PKCE enforced is empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder().withBody({}).build();
+      const req = new RequestBuilder().withBody({}).build();
 
-      const result = await pkceEnforcedFieldValidator.validate(req as Request);
+      const result = await pkceEnforcedFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -1166,32 +1019,26 @@ describe("create client field validators", () => {
   describe("postLogoutRedirectUrlsFieldValidator", () => {
     describe("post logout redirect url input", () => {
       it("should pass validation with valid redirect url", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "add",
             "post-logout-redirect-url-input": "http://url.com",
           })
           .build();
 
-        const result = await postLogoutRedirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await postLogoutRedirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
 
       it("should fail validation when redirect url input is empty", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "add",
           })
           .build();
 
-        const result = await postLogoutRedirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await postLogoutRedirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1203,17 +1050,14 @@ describe("create client field validators", () => {
       });
 
       it("should fail validation when redirect url input is empty string", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "add",
             "post-logout-redirect-url-input": " ",
           })
           .build();
 
-        const result = await postLogoutRedirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await postLogoutRedirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1225,17 +1069,14 @@ describe("create client field validators", () => {
       });
 
       it("should fail validation when redirect url input is not a URL", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "add",
             "post-logout-redirect-url-input": "not-a-url",
           })
           .build();
 
-        const result = await postLogoutRedirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await postLogoutRedirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1249,8 +1090,7 @@ describe("create client field validators", () => {
       });
 
       it("should fail validation when redirect url already exists in the table", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "add",
             "post-logout-redirect-url-input": "http://url.com",
@@ -1258,9 +1098,7 @@ describe("create client field validators", () => {
           })
           .build();
 
-        const result = await postLogoutRedirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await postLogoutRedirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1276,48 +1114,39 @@ describe("create client field validators", () => {
 
     describe("post logout redirect url table", () => {
       it("should pass validation with one valid redirect url", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "continue",
             "post-logout-redirect-urls": "http://url.com",
           })
           .build();
 
-        const result = await postLogoutRedirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await postLogoutRedirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
 
       it("should pass validation with valid redirect urls", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "continue",
             "post-logout-redirect-urls": ["http://url.com", "http://url2.com"],
           })
           .build();
 
-        const result = await postLogoutRedirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await postLogoutRedirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
 
       it("should pass validation when table is empty", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "continue",
           })
           .build();
 
-        const result = await postLogoutRedirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await postLogoutRedirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
@@ -1326,36 +1155,33 @@ describe("create client field validators", () => {
 
   describe("rateLimitFieldValidator", () => {
     it("should pass validation with valid rate limit", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "rate-limit": "10",
         })
         .build();
 
-      const result = await rateLimitFieldValidator.validate(req as Request);
+      const result = await rateLimitFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should pass validation when empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder().withBody({}).build();
+      const req = new RequestBuilder().withBody({}).build();
 
-      const result = await rateLimitFieldValidator.validate(req as Request);
+      const result = await rateLimitFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when a negative number", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "rate-limit": "-1",
         })
         .build();
 
-      const result = await rateLimitFieldValidator.validate(req as Request);
+      const result = await rateLimitFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -1369,14 +1195,13 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when a decimal", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "rate-limit": "1.5",
         })
         .build();
 
-      const result = await rateLimitFieldValidator.validate(req as Request);
+      const result = await rateLimitFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -1388,14 +1213,13 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when over the max limit", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "rate-limit": "51",
         })
         .build();
 
-      const result = await rateLimitFieldValidator.validate(req as Request);
+      const result = await rateLimitFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -1409,14 +1233,13 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when not a number", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "rate-limit": "test",
         })
         .build();
 
-      const result = await rateLimitFieldValidator.validate(req as Request);
+      const result = await rateLimitFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -1431,32 +1254,26 @@ describe("create client field validators", () => {
   describe("redirectUrlsFieldValidator", () => {
     describe("redirect url input", () => {
       it("should pass validation with valid redirect url", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "add",
             "redirect-url-input": "http://url.com",
           })
           .build();
 
-        const result = await redirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await redirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
 
       it("should fail validation when redirect url input is empty", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "add",
           })
           .build();
 
-        const result = await redirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await redirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1468,17 +1285,14 @@ describe("create client field validators", () => {
       });
 
       it("should fail validation when redirect url input is empty string", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "add",
             "redirect-url-input": " ",
           })
           .build();
 
-        const result = await redirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await redirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1490,17 +1304,14 @@ describe("create client field validators", () => {
       });
 
       it("should fail validation when redirect url input is not a URL", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "add",
             "redirect-url-input": "not-a-url",
           })
           .build();
 
-        const result = await redirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await redirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1514,8 +1325,7 @@ describe("create client field validators", () => {
       });
 
       it("should fail validation when redirect url already exists in the table", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "add",
             "redirect-url-input": "http://url.com",
@@ -1523,9 +1333,7 @@ describe("create client field validators", () => {
           })
           .build();
 
-        const result = await redirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await redirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1539,17 +1347,14 @@ describe("create client field validators", () => {
       });
 
       it("should fail validation when redirect url contains an invalid query parameter", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "add",
             "redirect-url-input": "http://url.com?response",
           })
           .build();
 
-        const result = await redirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await redirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1563,17 +1368,14 @@ describe("create client field validators", () => {
       });
 
       it("should fail validation when redirect url contains an invalid scheme", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "add",
             "redirect-url-input": "javascript://url.com",
           })
           .build();
 
-        const result = await redirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await redirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1589,48 +1391,39 @@ describe("create client field validators", () => {
 
     describe("redirect url table", () => {
       it("should pass validation with one valid redirect url", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "continue",
             "redirect-urls": "http://url.com",
           })
           .build();
 
-        const result = await redirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await redirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
 
       it("should pass validation with valid redirect urls", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "continue",
             "redirect-urls": ["http://url.com", "http://url2.com"],
           })
           .build();
 
-        const result = await redirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await redirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
 
       it("should fail validation when table is empty", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             action: "continue",
           })
           .build();
 
-        const result = await redirectUrlsFieldValidator.validate(
-          req as Request
-        );
+        const result = await redirectUrlsFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1647,53 +1440,49 @@ describe("create client field validators", () => {
 
   describe("scopesFieldValidator", () => {
     it("should pass validation with valid scope", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "selected-scopes": "email",
         })
         .build();
 
-      const result = await scopesFieldValidator.validate(req as Request);
+      const result = await scopesFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should pass validation with valid scopes", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "selected-scopes": ["email", "phone"],
         })
         .build();
 
-      const result = await scopesFieldValidator.validate(req as Request);
+      const result = await scopesFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should pass validation with empty scopes", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "selected-scopes": "",
         })
         .build();
 
-      const result = await scopesFieldValidator.validate(req as Request);
+      const result = await scopesFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation with an invalid scope", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "selected-scopes": ["email", "invalid-scope"],
         })
         .build();
 
-      const result = await scopesFieldValidator.validate(req as Request);
+      const result = await scopesFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -1708,53 +1497,49 @@ describe("create client field validators", () => {
 
     describe("allScopesFieldValidator", () => {
       it("should pass validation with valid scope", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             "selected-scopes": "email",
           })
           .build();
 
-        const result = await allScopesFieldValidator.validate(req as Request);
+        const result = await allScopesFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
 
       it("should pass validation with valid scopes", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             "selected-scopes": ["email", "am"],
           })
           .build();
 
-        const result = await allScopesFieldValidator.validate(req as Request);
+        const result = await allScopesFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
 
       it("should pass validation with empty scopes", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             "selected-scopes": "",
           })
           .build();
 
-        const result = await allScopesFieldValidator.validate(req as Request);
+        const result = await allScopesFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
 
       it("should fail validation with an invalid scope", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             "selected-scopes": ["email", "invalid-scope"],
           })
           .build();
 
-        const result = await allScopesFieldValidator.validate(req as Request);
+        const result = await allScopesFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1771,27 +1556,21 @@ describe("create client field validators", () => {
 
   describe("sectorIdentifierUriFieldValidator", () => {
     it("should pass validation with valid URI", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "sector-identifier-uri": "http://url.com",
         })
         .build();
 
-      const result = await sectorIdentifierUriFieldValidator.validate(
-        req as Request
-      );
+      const result = await sectorIdentifierUriFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder().withBody({}).build();
+      const req = new RequestBuilder().withBody({}).build();
 
-      const result = await sectorIdentifierUriFieldValidator.validate(
-        req as Request
-      );
+      const result = await sectorIdentifierUriFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -1803,16 +1582,13 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when URI is invalid", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "sector-identifier-uri": "not-a-uri",
         })
         .build();
 
-      const result = await sectorIdentifierUriFieldValidator.validate(
-        req as Request
-      );
+      const result = await sectorIdentifierUriFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -1835,27 +1611,21 @@ describe("create client field validators", () => {
       });
 
       it("should pass validation with valid https URI", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             "sector-identifier-uri": "https://url.com",
           })
           .build();
 
-        const result = await sectorIdentifierUriFieldValidator.validate(
-          req as Request
-        );
+        const result = await sectorIdentifierUriFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
 
       it("should fail validation when empty", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder().withBody({}).build();
+        const req = new RequestBuilder().withBody({}).build();
 
-        const result = await sectorIdentifierUriFieldValidator.validate(
-          req as Request
-        );
+        const result = await sectorIdentifierUriFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1867,16 +1637,13 @@ describe("create client field validators", () => {
       });
 
       it("should fail validation when URI is invalid", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             "sector-identifier-uri": "not-a-uri",
           })
           .build();
 
-        const result = await sectorIdentifierUriFieldValidator.validate(
-          req as Request
-        );
+        const result = await sectorIdentifierUriFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1890,31 +1657,25 @@ describe("create client field validators", () => {
       });
 
       it("should pass validation when URI is http", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             "sector-identifier-uri": "http://url.com",
           })
           .build();
 
-        const result = await sectorIdentifierUriFieldValidator.validate(
-          req as Request
-        );
+        const result = await sectorIdentifierUriFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
 
       it("should fail validation when URI is localhost", async () => {
-        let req: Partial<Request>;
-        req = new RequestBuilder()
+        const req = new RequestBuilder()
           .withBody({
             "sector-identifier-uri": "https://localhost:3000",
           })
           .build();
 
-        const result = await sectorIdentifierUriFieldValidator.validate(
-          req as Request
-        );
+        const result = await sectorIdentifierUriFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -1931,23 +1692,21 @@ describe("create client field validators", () => {
 
   describe("serviceTypeFieldValidator", () => {
     it("should pass validation when an option is selected", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "service-type": "MANDATORY",
         })
         .build();
 
-      const result = await serviceTypeFieldValidator.validate(req as Request);
+      const result = await serviceTypeFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when service type is empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder().withBody({}).build();
+      const req = new RequestBuilder().withBody({}).build();
 
-      const result = await serviceTypeFieldValidator.validate(req as Request);
+      const result = await serviceTypeFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -1959,14 +1718,13 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation when invalid service type", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "service-type": "invalid-service-type",
         })
         .build();
 
-      const result = await serviceTypeFieldValidator.validate(req as Request);
+      const result = await serviceTypeFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -1982,8 +1740,7 @@ describe("create client field validators", () => {
 
   describe("selectLevelsOfConfidenceFieldValidator", () => {
     it("should pass validation with valid level-of-confidence", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "selected-locs": "P0",
         })
@@ -1992,16 +1749,13 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectLevelOfConfidenceFieldValidator.validate(
-        req as Request
-      );
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should pass validation with valid levels-of-confidence", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "selected-locs": ["P0", "P1"],
         })
@@ -2010,16 +1764,13 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectLevelOfConfidenceFieldValidator.validate(
-        req as Request
-      );
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should not pass validation with empty level-of-confidence", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "selected-locs": "",
         })
@@ -2028,16 +1779,13 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectLevelOfConfidenceFieldValidator.validate(
-        req as Request
-      );
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
     });
 
     it("should fail validation with an invalid level-of-confidence", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "selected-locs": ["P0", "invalid-loc"],
         })
@@ -2046,9 +1794,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectLevelOfConfidenceFieldValidator.validate(
-        req as Request
-      );
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -2062,8 +1808,7 @@ describe("create client field validators", () => {
     });
 
     it("should pass validation with P0 and identity verification not supported", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "selected-locs": "P0",
         })
@@ -2072,16 +1817,13 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectLevelOfConfidenceFieldValidator.validate(
-        req as Request
-      );
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation with identity verification not supported for P1", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "selected-locs": ["P1"],
         })
@@ -2090,9 +1832,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectLevelOfConfidenceFieldValidator.validate(
-        req as Request
-      );
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -2106,8 +1846,7 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation with identity verification not support for P2", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "selected-locs": ["P2"],
         })
@@ -2116,9 +1855,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectLevelOfConfidenceFieldValidator.validate(
-        req as Request
-      );
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -2132,16 +1869,13 @@ describe("create client field validators", () => {
     });
 
     it("should fail validation with identity verification not set", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           "selected-locs": ["P1", "P2"],
         })
         .build();
 
-      const result = await selectLevelOfConfidenceFieldValidator.validate(
-        req as Request
-      );
+      const result = await selectLevelOfConfidenceFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 

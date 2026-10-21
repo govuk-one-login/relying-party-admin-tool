@@ -35,11 +35,11 @@ export class RequestBuilder {
     return this;
   }
 
-  build(): Partial<Request> {
+  build(): Request {
     return {
       body: this.body,
       session: this.session as Session,
       log: this.log as Logger,
-    };
+    } as Request;
   }
 }

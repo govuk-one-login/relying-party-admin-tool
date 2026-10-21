@@ -1,4 +1,3 @@
-import { Request } from "express";
 import { enterServiceNameFieldValidator } from "./service-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
@@ -6,31 +5,25 @@ import { RequestBuilder } from "../utils/test-utils/builders.js";
 describe("create service field validators", () => {
   describe("enterServiceNameFieldValidator", () => {
     it("should pass validation with valid service name", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           name: "my service",
         })
         .build();
 
-      const result = await enterServiceNameFieldValidator.validate(
-        req as Request
-      );
+      const result = await enterServiceNameFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
 
     it("should fail validation when name is empty", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           name: "",
         })
         .build();
 
-      const result = await enterServiceNameFieldValidator.validate(
-        req as Request
-      );
+      const result = await enterServiceNameFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -42,17 +35,14 @@ describe("create service field validators", () => {
     });
 
     it("should fail validation when name exceeds 255 characters", async () => {
-      let req: Partial<Request>;
       const longName = "a".repeat(256);
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           name: longName,
         })
         .build();
 
-      const result = await enterServiceNameFieldValidator.validate(
-        req as Request
-      );
+      const result = await enterServiceNameFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -66,16 +56,13 @@ describe("create service field validators", () => {
     });
 
     it("should fail validation when name has non-ascii characters", async () => {
-      let req: Partial<Request>;
-      req = new RequestBuilder()
+      const req = new RequestBuilder()
         .withBody({
           name: "🆕 service",
         })
         .build();
 
-      const result = await enterServiceNameFieldValidator.validate(
-        req as Request
-      );
+      const result = await enterServiceNameFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 

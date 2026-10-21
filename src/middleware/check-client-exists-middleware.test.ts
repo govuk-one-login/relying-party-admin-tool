@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { getClientForService } from "../datastores/services-data-store.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
 import { ClientEnvironment } from "../models/client-environment.js";
@@ -31,7 +31,7 @@ describe("check client exists middleware", () => {
       env: ClientEnvironment.INTEGRATION,
     });
 
-    const req = new RequestBuilder().build() as Request;
+    const req = new RequestBuilder().build();
     req.params = {
       serviceId,
       clientId,
@@ -50,7 +50,7 @@ describe("check client exists middleware", () => {
     const serviceId = "1234";
     vi.mocked(getClientForService).mockResolvedValue(undefined);
 
-    const req = new RequestBuilder().build() as Request;
+    const req = new RequestBuilder().build();
     req.params = {
       serviceId,
     };
@@ -80,7 +80,7 @@ describe("check client exists middleware", () => {
       env: ClientEnvironment.INTEGRATION,
     });
 
-    const req = new RequestBuilder().build() as Request;
+    const req = new RequestBuilder().build();
     req.params = {
       serviceId: ["1", "2"],
     };
@@ -110,7 +110,7 @@ describe("check client exists middleware", () => {
       env: ClientEnvironment.INTEGRATION,
     });
 
-    const req = new RequestBuilder().build() as Request;
+    const req = new RequestBuilder().build();
     req.params = {
       serviceId,
       clientId: ["3", "4"],
