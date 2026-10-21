@@ -2,32 +2,24 @@ import request, { Response } from "supertest";
 import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
-import { getServicePaths, testComponent } from "../../helpers/helpers.js";
-import { User } from "../../../src/models/user.js";
-import { UserPermission } from "../../../src/models/permissions.js";
-import { Relation } from "../../../src/models/relation.js";
-import { Service } from "../../../src/models/service.js";
+import {
+  createTestRelation,
+  createTestService,
+  createTestUser,
+  getServicePaths,
+  testComponent,
+} from "../../helpers/helpers.js";
 import { randomUUID } from "crypto";
 
 describe("Integration:: select levels of confidence", () => {
   let app: any;
   let requestAgent: any;
   const existingUserId = randomUUID();
-  const existingUser: User = {
-    id: existingUserId,
-    name: "Test User",
-    email: "test@user.com",
-  };
   const serviceId = randomUUID();
-  const existingRelation: Relation = {
-    userId: existingUserId,
-    object: `service:${serviceId}`,
-    relation: UserPermission.WRITER_INT,
-  };
-  const existingService: Service = {
-    serviceId: serviceId,
-    name: "Test service",
-  };
+
+  const existingService = createTestService(serviceId);
+  const existingUser = createTestUser(existingUserId);
+  const existingRelation = createTestRelation(serviceId, existingUserId);
 
   integrationTest.beforeAll(
     async ({
@@ -67,7 +59,7 @@ describe("Integration:: select levels of confidence", () => {
       const res = await requestAgent.get(
         getServicePaths(
           PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
-          existingService.serviceId
+          serviceId
         )
       );
       expect(res.statusCode).toBe(200);
@@ -81,7 +73,7 @@ describe("Integration:: select levels of confidence", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -125,7 +117,7 @@ describe("Integration:: select levels of confidence", () => {
         .get(
           getServicePaths(
             PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT,
-            existingService.serviceId
+            serviceId
           )
         )
         .then((res: Response) => {
@@ -147,7 +139,7 @@ describe("Integration:: select levels of confidence", () => {
           .post(
             getServicePaths(
               PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
-              existingService.serviceId
+              serviceId
             )
           )
           .type("form")
@@ -169,7 +161,7 @@ describe("Integration:: select levels of confidence", () => {
           .post(
             getServicePaths(
               PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
-              existingService.serviceId
+              serviceId
             )
           )
           .type("form")
@@ -179,10 +171,7 @@ describe("Integration:: select levels of confidence", () => {
           })
           .expect(
             "Location",
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
+            getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId)
           );
         expect(res.statusCode).toBe(302);
       }
@@ -221,7 +210,7 @@ describe("Integration:: select levels of confidence", () => {
         .get(
           getServicePaths(
             PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT,
-            existingService.serviceId
+            serviceId
           )
         )
         .then((res: Response) => {
@@ -243,7 +232,7 @@ describe("Integration:: select levels of confidence", () => {
           .post(
             getServicePaths(
               PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
-              existingService.serviceId
+              serviceId
             )
           )
           .type("form")
@@ -266,7 +255,7 @@ describe("Integration:: select levels of confidence", () => {
           .post(
             getServicePaths(
               PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
-              existingService.serviceId
+              serviceId
             )
           )
           .type("form")
@@ -276,10 +265,7 @@ describe("Integration:: select levels of confidence", () => {
           })
           .expect(
             "Location",
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
+            getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId)
           );
         expect(res.statusCode).toBe(302);
       }
