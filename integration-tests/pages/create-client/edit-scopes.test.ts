@@ -2,11 +2,13 @@ import request, { Response } from "supertest";
 import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
-import { getServicePaths, testComponent } from "../../helpers/helpers.js";
-import { User } from "../../../src/models/user.js";
-import { UserPermission } from "../../../src/models/permissions.js";
-import { Relation } from "../../../src/models/relation.js";
-import { Service } from "../../../src/models/service.js";
+import {
+  createTestRelation,
+  createTestService,
+  createTestUser,
+  getServicePaths,
+  testComponent,
+} from "../../helpers/helpers.js";
 import { randomUUID } from "crypto";
 
 describe("Integration:: edit scopes", () => {
@@ -14,21 +16,11 @@ describe("Integration:: edit scopes", () => {
   let app: any;
   let requestAgent: any;
   const existingUserId = randomUUID();
-  const existingUser: User = {
-    id: existingUserId,
-    name: "Test User",
-    email: "test@user.com",
-  };
   const serviceId = randomUUID();
-  const existingRelation: Relation = {
-    userId: existingUserId,
-    object: `service:${serviceId}`,
-    relation: UserPermission.WRITER_INT,
-  };
-  const existingService: Service = {
-    serviceId: serviceId,
-    name: "Test service",
-  };
+
+  const existingService = createTestService(serviceId);
+  const existingUser = createTestUser(existingUserId);
+  const existingRelation = createTestRelation(serviceId, existingUserId);
 
   integrationTest.beforeAll(
     async ({
@@ -45,12 +37,7 @@ describe("Integration:: edit scopes", () => {
       requestAgent = request.agent(app);
 
       await requestAgent
-        .get(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES,
-            existingService.serviceId
-          )
-        )
+        .get(getServicePaths(PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES, serviceId))
         .then((res: Response) => {
           const $ = cheerio.load(res.text);
           token = $("[name=_csrf]").val();
@@ -76,10 +63,7 @@ describe("Integration:: edit scopes", () => {
 
   integrationTest("should return edit scopes page", async () => {
     const res = await requestAgent.get(
-      getServicePaths(
-        PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES,
-        existingService.serviceId
-      )
+      getServicePaths(PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES, serviceId)
     );
     expect(res.statusCode).toBe(200);
   });
@@ -88,12 +72,7 @@ describe("Integration:: edit scopes", () => {
     "should redirect to forbidden when csrf not present",
     async () => {
       const res = await requestAgent
-        .post(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES,
-            existingService.serviceId
-          )
-        )
+        .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES, serviceId))
         .type("form")
         .send({
           "selected-scopes": ["email"],
@@ -105,12 +84,7 @@ describe("Integration:: edit scopes", () => {
 
   integrationTest("should fail validation with an invalid scope", async () => {
     const res = await requestAgent
-      .post(
-        getServicePaths(
-          PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES,
-          existingService.serviceId
-        )
-      )
+      .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES, serviceId))
       .type("form")
       .send({
         _csrf: token,
@@ -125,12 +99,7 @@ describe("Integration:: edit scopes", () => {
 
   integrationTest("should redirect to /summary with valid scope", async () => {
     const res = await requestAgent
-      .post(
-        getServicePaths(
-          PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES,
-          existingService.serviceId
-        )
-      )
+      .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES, serviceId))
       .type("form")
       .send({
         _csrf: token,
@@ -138,10 +107,7 @@ describe("Integration:: edit scopes", () => {
       })
       .expect(
         "Location",
-        getServicePaths(
-          PATH_NAMES.CREATE_CLIENT_SUMMARY,
-          existingService.serviceId
-        )
+        getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId)
       );
     expect(res.statusCode).toBe(302);
   });
