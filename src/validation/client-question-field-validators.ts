@@ -14,6 +14,7 @@ import {
   allChannelsValidator,
   validLevelOfConfidenceValidator,
   allScopesValidator,
+  rateLimitValidator,
 } from "./shared-client-validators.js";
 import { FieldValidator, optional, rule, when } from "./validator.js";
 import {
@@ -213,6 +214,13 @@ const redirectUrlTableValidator = when(
 export const redirectUrlsFieldValidator = new FieldValidator(
   redirectUrlInputValidator.and(redirectUrlTableValidator),
   "redirect-url-input"
+);
+
+export const rateLimitFieldValidator = new FieldValidator(
+  rateLimitValidator.adaptedFrom(
+    (req: Request) => req.body["rate-limit"] || undefined
+  ),
+  "rate-limit"
 );
 
 export const scopesFieldValidator = new FieldValidator(

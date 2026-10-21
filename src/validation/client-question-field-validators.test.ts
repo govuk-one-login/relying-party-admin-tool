@@ -20,6 +20,7 @@ import {
   allScopesFieldValidator,
   maxAgeEnabledFieldValidator,
   permitMissingNonceFieldValidator,
+  rateLimitFieldValidator,
 } from "./client-question-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
@@ -1320,6 +1321,110 @@ describe("create client field validators", () => {
 
         expect(result.isValid).toBe(true);
       });
+    });
+  });
+
+  describe("rateLimitFieldValidator", () => {
+    it("should pass validation with valid rate limit", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "rate-limit": "10",
+        })
+        .build();
+
+      const result = await rateLimitFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should pass validation when empty", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder().withBody({}).build();
+
+      const result = await rateLimitFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when a negative number", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "rate-limit": "-1",
+        })
+        .build();
+
+      const result = await rateLimitFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Rate limit must be a positive number"
+      );
+    });
+
+    it("should fail validation when a decimal", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "rate-limit": "1.5",
+        })
+        .build();
+
+      const result = await rateLimitFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe("Rate limit must be a whole number");
+    });
+
+    it("should fail validation when over the max limit", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "rate-limit": "51",
+        })
+        .build();
+
+      const result = await rateLimitFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Rate limit must be below the max limit of 50"
+      );
+    });
+
+    it("should fail validation when not a number", async () => {
+      let req: Partial<Request>;
+      req = new RequestBuilder()
+        .withBody({
+          "rate-limit": "test",
+        })
+        .build();
+
+      const result = await rateLimitFieldValidator.validate(req as Request);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(4);
+      expect(errorsArray[0].text[0]).toBe("Rate limit must be a number");
     });
   });
 

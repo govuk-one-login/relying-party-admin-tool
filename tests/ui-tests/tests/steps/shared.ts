@@ -32,6 +32,7 @@ const pageNameToPath: Record<string, string> = {
     "/services/1/clients/clientId/edit-pkce-enforced",
   "client - edit post logout redirect urls":
     "/services/1/clients/clientId/edit-post-logout-redirect-urls",
+  "client - edit rate limit": "/services/1/clients/clientId/edit-rate-limit",
   "client - edit sector identifier uri":
     "/services/1/clients/clientId/edit-sector-identifier-uri",
   "client - edit service type":

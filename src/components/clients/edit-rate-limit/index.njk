@@ -1,0 +1,39 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% set pageTitleName = "Edit rate limit" %}
+
+{% block pageContent %}
+  <form class="form" action="edit-rate-limit" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+    {{
+      govukInput({
+        name: "rate-limit",
+        value: rateLimit,
+          label: {
+            text: "What is your rate limit?",
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          classes: "govuk-input--width-10",
+          hint: {
+            text: "This is the max number of users per minute"
+          },
+          inputmode: "numeric",
+          spellcheck: false,
+        errorMessage: {
+          attributes: { "data-test-id": "rate-limit-error"},
+          text: errors["rate-limit"].text
+        } if (errors["rate-limit"])
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Confirm"
+      })
+    }}
+  </form>
+{% endblock %}

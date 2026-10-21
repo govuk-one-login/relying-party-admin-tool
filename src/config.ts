@@ -49,3 +49,7 @@ export const getAwsRegion = (): string => {
 export const getDynamoDBLocalBaseUrl = (): string => {
   return process.env.DYNAMO_ENDPOINT ?? "http://127.0.0.1:8001";
 };
+
+export const getIntegrationClientMaxRateLimit = (): number => {
+  return Number(process.env.INT_CLIENT_MAX_RATE_LIMIT) || 50;
+};
