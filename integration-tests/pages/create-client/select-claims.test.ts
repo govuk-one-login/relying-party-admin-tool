@@ -3,32 +3,18 @@ import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
 import { getServicePaths, testComponent } from "../../helpers/helpers.js";
-import { User } from "../../../src/models/user.js";
-import { UserPermission } from "../../../src/models/permissions.js";
-import { Relation } from "../../../src/models/relation.js";
-import { Service } from "../../../src/models/service.js";
 import { randomUUID } from "crypto";
+import {
+  setUpTestWithExistingUserAndService,
+  teardownTestWithExistingUserAndService,
+} from "../../helpers/test-setup.js";
 
 describe("Integration:: select claims", () => {
   let token: string | string[] | undefined;
   let app: any;
   let requestAgent: any;
   const existingUserId = randomUUID();
-  const existingUser: User = {
-    id: existingUserId,
-    name: "Test User",
-    email: "test@user.com",
-  };
   const serviceId = randomUUID();
-  const existingRelation: Relation = {
-    userId: existingUserId,
-    object: `service:${serviceId}`,
-    relation: UserPermission.WRITER_INT,
-  };
-  const existingService: Service = {
-    serviceId: serviceId,
-    name: "Test service",
-  };
 
   integrationTest.beforeAll(
     async ({
@@ -36,21 +22,20 @@ describe("Integration:: select claims", () => {
       addUserRelationToDynamo,
       addServiceToDynamo,
     }) => {
-      await addUserToDynamo(existingUser);
-      await addUserRelationToDynamo(existingRelation);
-      await addServiceToDynamo(existingService);
+      await setUpTestWithExistingUserAndService(
+        addUserToDynamo,
+        addUserRelationToDynamo,
+        addServiceToDynamo,
+        existingUserId,
+        serviceId
+      );
 
       app = await (await import("../../../src/app.js")).createApp();
 
       requestAgent = request.agent(app);
 
       await requestAgent
-        .get(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS,
-            existingService.serviceId
-          )
-        )
+        .get(getServicePaths(PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS, serviceId))
         .then((res: Response) => {
           const $ = cheerio.load(res.text);
           token = $("[name=_csrf]").val();
@@ -64,9 +49,13 @@ describe("Integration:: select claims", () => {
       deleteUserRelationFromDynamo,
       deleteServiceFromDynamo,
     }) => {
-      await deleteUserFromDynamo(existingUser);
-      await deleteUserRelationFromDynamo(existingRelation);
-      await deleteServiceFromDynamo(existingService);
+      await teardownTestWithExistingUserAndService(
+        deleteUserFromDynamo,
+        deleteUserRelationFromDynamo,
+        deleteServiceFromDynamo,
+        existingUserId,
+        serviceId
+      );
 
       vi.restoreAllMocks();
       vi.resetModules();
@@ -76,10 +65,7 @@ describe("Integration:: select claims", () => {
 
   integrationTest("should return select claims page", async () => {
     const res = await requestAgent.get(
-      getServicePaths(
-        PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS,
-        existingService.serviceId
-      )
+      getServicePaths(PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS, serviceId)
     );
     expect(res.statusCode).toBe(200);
   });
@@ -89,10 +75,7 @@ describe("Integration:: select claims", () => {
     async () => {
       const res = await requestAgent
         .post(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS,
-            existingService.serviceId
-          )
+          getServicePaths(PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS, serviceId)
         )
         .type("form")
         .send({
@@ -108,10 +91,7 @@ describe("Integration:: select claims", () => {
     async () => {
       const res = await requestAgent
         .post(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS,
-            existingService.serviceId
-          )
+          getServicePaths(PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS, serviceId)
         )
         .type("form")
         .send({
@@ -131,10 +111,7 @@ describe("Integration:: select claims", () => {
     async () => {
       const res = await requestAgent
         .post(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS,
-            existingService.serviceId
-          )
+          getServicePaths(PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS, serviceId)
         )
         .type("form")
         .send({
@@ -147,7 +124,7 @@ describe("Integration:: select claims", () => {
           "Location",
           getServicePaths(
             PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL,
-            existingService.serviceId
+            serviceId
           )
         );
       expect(res.statusCode).toBe(302);
@@ -159,10 +136,7 @@ describe("Integration:: select claims", () => {
     async () => {
       const res = await requestAgent
         .post(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS,
-            existingService.serviceId
-          )
+          getServicePaths(PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS, serviceId)
         )
         .type("form")
         .send({
@@ -172,7 +146,7 @@ describe("Integration:: select claims", () => {
           "Location",
           getServicePaths(
             PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL,
-            existingService.serviceId
+            serviceId
           )
         );
       expect(res.statusCode).toBe(302);

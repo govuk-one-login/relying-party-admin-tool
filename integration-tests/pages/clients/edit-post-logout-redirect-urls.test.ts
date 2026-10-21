@@ -3,32 +3,18 @@ import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
 import { getServicePaths, testComponent } from "../../helpers/helpers.js";
-import { User } from "../../../src/models/user.js";
-import { UserPermission } from "../../../src/models/permissions.js";
-import { Relation } from "../../../src/models/relation.js";
-import { Service } from "../../../src/models/service.js";
 import { randomUUID } from "crypto";
+import {
+  setUpTestWithExistingUserAndService,
+  teardownTestWithExistingUserAndService,
+} from "../../helpers/test-setup.js";
 
 describe("Integration:: edit post logout redirect urls", () => {
   let token: string | string[] | undefined;
   let app: any;
   let requestAgent: any;
   const existingUserId = randomUUID();
-  const existingUser: User = {
-    id: existingUserId,
-    name: "Test User",
-    email: "test@user.com",
-  };
   const serviceId = randomUUID();
-  const existingRelation: Relation = {
-    userId: existingUserId,
-    object: `service:${serviceId}`,
-    relation: UserPermission.WRITER_INT,
-  };
-  const existingService: Service = {
-    serviceId: serviceId,
-    name: "Test service",
-  };
 
   integrationTest.beforeAll(
     async ({
@@ -36,9 +22,13 @@ describe("Integration:: edit post logout redirect urls", () => {
       addUserRelationToDynamo,
       addServiceToDynamo,
     }) => {
-      await addUserToDynamo(existingUser);
-      await addUserRelationToDynamo(existingRelation);
-      await addServiceToDynamo(existingService);
+      await setUpTestWithExistingUserAndService(
+        addUserToDynamo,
+        addUserRelationToDynamo,
+        addServiceToDynamo,
+        existingUserId,
+        serviceId
+      );
 
       app = await (await import("../../../src/app.js")).createApp();
 
@@ -48,7 +38,7 @@ describe("Integration:: edit post logout redirect urls", () => {
         .get(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
-            existingService.serviceId
+            serviceId
           )
         )
         .then((res: Response) => {
@@ -64,9 +54,17 @@ describe("Integration:: edit post logout redirect urls", () => {
       deleteUserRelationFromDynamo,
       deleteServiceFromDynamo,
     }) => {
-      await deleteUserFromDynamo(existingUser);
-      await deleteUserRelationFromDynamo(existingRelation);
-      await deleteServiceFromDynamo(existingService);
+      await teardownTestWithExistingUserAndService(
+        deleteUserFromDynamo,
+        deleteUserRelationFromDynamo,
+        deleteServiceFromDynamo,
+        existingUserId,
+        serviceId
+      );
+
+      vi.restoreAllMocks();
+      vi.resetModules();
+      app = undefined;
     }
   );
 
@@ -76,7 +74,7 @@ describe("Integration:: edit post logout redirect urls", () => {
       const res = await requestAgent.get(
         getServicePaths(
           PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
-          existingService.serviceId
+          serviceId
         )
       );
       expect(res.statusCode).toBe(200);
@@ -90,7 +88,7 @@ describe("Integration:: edit post logout redirect urls", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -109,7 +107,7 @@ describe("Integration:: edit post logout redirect urls", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -133,7 +131,7 @@ describe("Integration:: edit post logout redirect urls", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -156,7 +154,7 @@ describe("Integration:: edit post logout redirect urls", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -181,7 +179,7 @@ describe("Integration:: edit post logout redirect urls", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -193,7 +191,7 @@ describe("Integration:: edit post logout redirect urls", () => {
       expect(res.req.path).toBe(
         getServicePaths(
           PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
-          existingService.serviceId
+          serviceId
         )
       );
     }
@@ -206,7 +204,7 @@ describe("Integration:: edit post logout redirect urls", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -215,10 +213,7 @@ describe("Integration:: edit post logout redirect urls", () => {
           action: "continue",
           "post-logout-redirect-urls": "http://url.com",
         });
-      expect(
-        "Location",
-        getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
-      );
+      expect("Location", getServicePaths(PATH_NAMES.CLIENT, serviceId));
       expect(res.statusCode).toBe(302);
     }
   );
@@ -230,7 +225,7 @@ describe("Integration:: edit post logout redirect urls", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -240,10 +235,7 @@ describe("Integration:: edit post logout redirect urls", () => {
           "post-logout-redirect-urls": ["http://url.com", "http://url2.com"],
         });
       expect(res.statusCode).toBe(302);
-      expect(
-        "Location",
-        getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
-      );
+      expect("Location", getServicePaths(PATH_NAMES.CLIENT, serviceId));
       expect(res.statusCode).toBe(302);
     }
   );
@@ -255,7 +247,7 @@ describe("Integration:: edit post logout redirect urls", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -263,10 +255,7 @@ describe("Integration:: edit post logout redirect urls", () => {
           _csrf: token,
           action: "continue",
         });
-      expect(
-        "Location",
-        getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
-      );
+      expect("Location", getServicePaths(PATH_NAMES.CLIENT, serviceId));
       expect(res.statusCode).toBe(302);
     }
   );

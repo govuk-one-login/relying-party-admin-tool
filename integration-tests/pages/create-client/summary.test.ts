@@ -3,33 +3,19 @@ import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
 import { getServicePaths, testComponent } from "../../helpers/helpers.js";
-import { User } from "../../../src/models/user.js";
-import { UserPermission } from "../../../src/models/permissions.js";
-import { Relation } from "../../../src/models/relation.js";
-import { Service } from "../../../src/models/service.js";
 import { randomUUID } from "crypto";
 import { defaultBaseClientValues } from "../../helpers/default-client-values.js";
+import {
+  setUpTestWithExistingUserAndService,
+  teardownTestWithExistingUserAndService,
+} from "../../helpers/test-setup.js";
 
 describe("Integration:: create client summary", () => {
   let token: string | string[] | undefined;
   let app: any;
   let requestAgent: any;
   const existingUserId = randomUUID();
-  const existingUser: User = {
-    id: existingUserId,
-    name: "Test User",
-    email: "test@user.com",
-  };
   const serviceId = randomUUID();
-  const existingRelation: Relation = {
-    userId: existingUserId,
-    object: `service:${serviceId}`,
-    relation: UserPermission.WRITER_INT,
-  };
-  const existingService: Service = {
-    serviceId: serviceId,
-    name: "Test service",
-  };
 
   integrationTest.beforeAll(
     async ({
@@ -37,21 +23,20 @@ describe("Integration:: create client summary", () => {
       addUserRelationToDynamo,
       addServiceToDynamo,
     }) => {
-      await addUserToDynamo(existingUser);
-      await addUserRelationToDynamo(existingRelation);
-      await addServiceToDynamo(existingService);
+      await setUpTestWithExistingUserAndService(
+        addUserToDynamo,
+        addUserRelationToDynamo,
+        addServiceToDynamo,
+        existingUserId,
+        serviceId
+      );
 
       app = await (await import("../../../src/app.js")).createApp();
 
       requestAgent = request.agent(app);
 
       await requestAgent
-        .get(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_SUMMARY,
-            existingService.serviceId
-          )
-        )
+        .get(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
         .then((res: Response) => {
           const $ = cheerio.load(res.text);
           token = $("[name=_csrf]").val();
@@ -65,18 +50,23 @@ describe("Integration:: create client summary", () => {
       deleteUserRelationFromDynamo,
       deleteServiceFromDynamo,
     }) => {
-      await deleteUserFromDynamo(existingUser);
-      await deleteUserRelationFromDynamo(existingRelation);
-      await deleteServiceFromDynamo(existingService);
+      await teardownTestWithExistingUserAndService(
+        deleteUserFromDynamo,
+        deleteUserRelationFromDynamo,
+        deleteServiceFromDynamo,
+        existingUserId,
+        serviceId
+      );
+
+      vi.restoreAllMocks();
+      vi.resetModules();
+      app = undefined;
     }
   );
 
   integrationTest("should return create client summary page", async () => {
     const res = await requestAgent.get(
-      getServicePaths(
-        PATH_NAMES.CREATE_CLIENT_SUMMARY,
-        existingService.serviceId
-      )
+      getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId)
     );
     expect(res.statusCode).toBe(200);
   });
@@ -85,12 +75,7 @@ describe("Integration:: create client summary", () => {
     "should redirect to forbidden when csrf not present",
     async () => {
       const res = await requestAgent
-        .post(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_SUMMARY,
-            existingService.serviceId
-          )
-        )
+        .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
         .type("form")
         .send();
       expect(res.statusCode).toBe(403);
@@ -102,12 +87,7 @@ describe("Integration:: create client summary", () => {
     "should fail validation when all client fields are empty",
     async () => {
       const res = await requestAgent
-        .post(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_SUMMARY,
-            existingService.serviceId
-          )
-        )
+        .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
         .type("form")
         .send({
           _csrf: token,
@@ -169,24 +149,14 @@ describe("Integration:: create client summary", () => {
         jwksUrlRequestAgent = request.agent(jwksUrlApp);
 
         await jwksUrlRequestAgent
-          .get(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .get(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .then((res: Response) => {
             const $ = cheerio.load(res.text);
             jwksUrlToken = $("[name=_csrf]").val();
           });
 
         const res = await jwksUrlRequestAgent
-          .post(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .type("form")
           .send({
             _csrf: jwksUrlToken,
@@ -225,24 +195,14 @@ describe("Integration:: create client summary", () => {
         jwksUrlRequestAgent = request.agent(jwksUrlApp);
 
         await jwksUrlRequestAgent
-          .get(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .get(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .then((res: Response) => {
             const $ = cheerio.load(res.text);
             jwksUrlToken = $("[name=_csrf]").val();
           });
 
         const res = await jwksUrlRequestAgent
-          .post(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .type("form")
           .send({
             _csrf: jwksUrlToken,
@@ -280,24 +240,14 @@ describe("Integration:: create client summary", () => {
         jwksUrlRequestAgent = request.agent(jwksUrlApp);
 
         await jwksUrlRequestAgent
-          .get(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .get(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .then((res: Response) => {
             const $ = cheerio.load(res.text);
             jwksUrlToken = $("[name=_csrf]").val();
           });
 
         const res = await jwksUrlRequestAgent
-          .post(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .type("form")
           .send({
             _csrf: jwksUrlToken,
@@ -337,34 +287,21 @@ describe("Integration:: create client summary", () => {
         jwksUrlRequestAgent = request.agent(jwksUrlApp);
 
         await jwksUrlRequestAgent
-          .get(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .get(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .then((res: Response) => {
             const $ = cheerio.load(res.text);
             jwksUrlToken = $("[name=_csrf]").val();
           });
 
         const res = await jwksUrlRequestAgent
-          .post(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .type("form")
           .send({
             _csrf: jwksUrlToken,
           })
           .expect(
             "Location",
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUCCESS,
-              existingService.serviceId
-            )
+            getServicePaths(PATH_NAMES.CREATE_CLIENT_SUCCESS, serviceId)
           );
         expect(res.statusCode).toBe(302);
       }
@@ -411,24 +348,14 @@ describe("Integration:: create client summary", () => {
         publicKeyRequestAgent = request.agent(publicKeyApp);
 
         await publicKeyRequestAgent
-          .get(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .get(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .then((res: Response) => {
             const $ = cheerio.load(res.text);
             publicKeyToken = $("[name=_csrf]").val();
           });
 
         const res = await publicKeyRequestAgent
-          .post(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .type("form")
           .send({
             _csrf: publicKeyToken,
@@ -470,24 +397,14 @@ describe("Integration:: create client summary", () => {
         publicKeyRequestAgent = request.agent(publicKeyApp);
 
         await publicKeyRequestAgent
-          .get(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .get(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .then((res: Response) => {
             const $ = cheerio.load(res.text);
             publicKeyToken = $("[name=_csrf]").val();
           });
 
         const res = await publicKeyRequestAgent
-          .post(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .type("form")
           .send({
             _csrf: publicKeyToken,
@@ -528,24 +445,14 @@ describe("Integration:: create client summary", () => {
         publicKeyRequestAgent = request.agent(publicKeyApp);
 
         await publicKeyRequestAgent
-          .get(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .get(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .then((res: Response) => {
             const $ = cheerio.load(res.text);
             publicKeyToken = $("[name=_csrf]").val();
           });
 
         const res = await publicKeyRequestAgent
-          .post(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .type("form")
           .send({
             _csrf: publicKeyToken,
@@ -588,34 +495,21 @@ describe("Integration:: create client summary", () => {
         publicKeyRequestAgent = request.agent(publicKeyApp);
 
         await publicKeyRequestAgent
-          .get(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .get(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .then((res: Response) => {
             const $ = cheerio.load(res.text);
             publicKeyToken = $("[name=_csrf]").val();
           });
 
         const res = await publicKeyRequestAgent
-          .post(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .type("form")
           .send({
             _csrf: publicKeyToken,
           })
           .expect(
             "Location",
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUCCESS,
-              existingService.serviceId
-            )
+            getServicePaths(PATH_NAMES.CREATE_CLIENT_SUCCESS, serviceId)
           );
         expect(res.statusCode).toBe(302);
       }
@@ -664,24 +558,14 @@ describe("Integration:: create client summary", () => {
         clientSecretRequestAgent = request.agent(clientSecretApp);
 
         await clientSecretRequestAgent
-          .get(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .get(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .then((res: Response) => {
             const $ = cheerio.load(res.text);
             clientSecretToken = $("[name=_csrf]").val();
           });
 
         const res = await clientSecretRequestAgent
-          .post(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .type("form")
           .send({
             _csrf: clientSecretToken,
@@ -722,24 +606,14 @@ describe("Integration:: create client summary", () => {
         clientSecretRequestAgent = request.agent(clientSecretApp);
 
         await clientSecretRequestAgent
-          .get(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .get(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .then((res: Response) => {
             const $ = cheerio.load(res.text);
             clientSecretToken = $("[name=_csrf]").val();
           });
 
         const res = await clientSecretRequestAgent
-          .post(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .type("form")
           .send({
             _csrf: clientSecretToken,
@@ -779,24 +653,14 @@ describe("Integration:: create client summary", () => {
         clientSecretRequestAgent = request.agent(clientSecretApp);
 
         await clientSecretRequestAgent
-          .get(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .get(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .then((res: Response) => {
             const $ = cheerio.load(res.text);
             clientSecretToken = $("[name=_csrf]").val();
           });
 
         const res = await clientSecretRequestAgent
-          .post(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .type("form")
           .send({
             _csrf: clientSecretToken,
@@ -838,34 +702,21 @@ describe("Integration:: create client summary", () => {
         clientSecretRequestAgent = request.agent(clientSecretApp);
 
         await clientSecretRequestAgent
-          .get(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .get(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .then((res: Response) => {
             const $ = cheerio.load(res.text);
             clientSecretToken = $("[name=_csrf]").val();
           });
 
         const res = await clientSecretRequestAgent
-          .post(
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUMMARY,
-              existingService.serviceId
-            )
-          )
+          .post(getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId))
           .type("form")
           .send({
             _csrf: clientSecretToken,
           })
           .expect(
             "Location",
-            getServicePaths(
-              PATH_NAMES.CREATE_CLIENT_SUCCESS,
-              existingService.serviceId
-            )
+            getServicePaths(PATH_NAMES.CREATE_CLIENT_SUCCESS, serviceId)
           );
         expect(res.statusCode).toBe(302);
       }

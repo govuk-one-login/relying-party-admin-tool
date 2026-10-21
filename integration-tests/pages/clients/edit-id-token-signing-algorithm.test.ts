@@ -3,32 +3,18 @@ import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
 import { getServicePaths, testComponent } from "../../helpers/helpers.js";
-import { User } from "../../../src/models/user.js";
-import { UserPermission } from "../../../src/models/permissions.js";
-import { Relation } from "../../../src/models/relation.js";
-import { Service } from "../../../src/models/service.js";
 import { randomUUID } from "crypto";
+import {
+  setUpTestWithExistingUserAndService,
+  teardownTestWithExistingUserAndService,
+} from "../../helpers/test-setup.js";
 
 describe("Integration:: edit id token signing algorithm", () => {
   let token: string | string[] | undefined;
   let app: any;
   let requestAgent: any;
   const existingUserId = randomUUID();
-  const existingUser: User = {
-    id: existingUserId,
-    name: "Test User",
-    email: "test@user.com",
-  };
   const serviceId = randomUUID();
-  const existingRelation: Relation = {
-    userId: existingUserId,
-    object: `service:${serviceId}`,
-    relation: UserPermission.WRITER_INT,
-  };
-  const existingService: Service = {
-    serviceId: serviceId,
-    name: "Test service",
-  };
 
   integrationTest.beforeAll(
     async ({
@@ -36,9 +22,13 @@ describe("Integration:: edit id token signing algorithm", () => {
       addUserRelationToDynamo,
       addServiceToDynamo,
     }) => {
-      await addUserToDynamo(existingUser);
-      await addUserRelationToDynamo(existingRelation);
-      await addServiceToDynamo(existingService);
+      await setUpTestWithExistingUserAndService(
+        addUserToDynamo,
+        addUserRelationToDynamo,
+        addServiceToDynamo,
+        existingUserId,
+        serviceId
+      );
 
       app = await (await import("../../../src/app.js")).createApp();
 
@@ -48,7 +38,7 @@ describe("Integration:: edit id token signing algorithm", () => {
         .get(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM,
-            existingService.serviceId
+            serviceId
           )
         )
         .then((res: Response) => {
@@ -64,9 +54,17 @@ describe("Integration:: edit id token signing algorithm", () => {
       deleteUserRelationFromDynamo,
       deleteServiceFromDynamo,
     }) => {
-      await deleteUserFromDynamo(existingUser);
-      await deleteUserRelationFromDynamo(existingRelation);
-      await deleteServiceFromDynamo(existingService);
+      await teardownTestWithExistingUserAndService(
+        deleteUserFromDynamo,
+        deleteUserRelationFromDynamo,
+        deleteServiceFromDynamo,
+        existingUserId,
+        serviceId
+      );
+
+      vi.restoreAllMocks();
+      vi.resetModules();
+      app = undefined;
     }
   );
 
@@ -76,7 +74,7 @@ describe("Integration:: edit id token signing algorithm", () => {
       const res = await requestAgent.get(
         getServicePaths(
           PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM,
-          existingService.serviceId
+          serviceId
         )
       );
       expect(res.statusCode).toBe(200);
@@ -90,7 +88,7 @@ describe("Integration:: edit id token signing algorithm", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -109,7 +107,7 @@ describe("Integration:: edit id token signing algorithm", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -131,7 +129,7 @@ describe("Integration:: edit id token signing algorithm", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -156,7 +154,7 @@ describe("Integration:: edit id token signing algorithm", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -164,10 +162,7 @@ describe("Integration:: edit id token signing algorithm", () => {
           _csrf: token,
           "id-token-signing-algorithm": "ES256",
         })
-        .expect(
-          "Location",
-          getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
-        );
+        .expect("Location", getServicePaths(PATH_NAMES.CLIENT, serviceId));
       expect(res.statusCode).toBe(302);
     }
   );

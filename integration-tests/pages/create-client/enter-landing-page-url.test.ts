@@ -3,32 +3,18 @@ import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
 import { getServicePaths, testComponent } from "../../helpers/helpers.js";
-import { User } from "../../../src/models/user.js";
-import { UserPermission } from "../../../src/models/permissions.js";
-import { Relation } from "../../../src/models/relation.js";
-import { Service } from "../../../src/models/service.js";
 import { randomUUID } from "crypto";
+import {
+  setUpTestWithExistingUserAndService,
+  teardownTestWithExistingUserAndService,
+} from "../../helpers/test-setup.js";
 
 describe("Integration:: enter landing page url", () => {
   let token: string | string[] | undefined;
   let app: any;
   let requestAgent: any;
   const existingUserId = randomUUID();
-  const existingUser: User = {
-    id: existingUserId,
-    name: "Test User",
-    email: "test@user.com",
-  };
   const serviceId = randomUUID();
-  const existingRelation: Relation = {
-    userId: existingUserId,
-    object: `service:${serviceId}`,
-    relation: UserPermission.WRITER_INT,
-  };
-  const existingService: Service = {
-    serviceId: serviceId,
-    name: "Test service",
-  };
 
   integrationTest.beforeAll(
     async ({
@@ -36,9 +22,13 @@ describe("Integration:: enter landing page url", () => {
       addUserRelationToDynamo,
       addServiceToDynamo,
     }) => {
-      await addUserToDynamo(existingUser);
-      await addUserRelationToDynamo(existingRelation);
-      await addServiceToDynamo(existingService);
+      await setUpTestWithExistingUserAndService(
+        addUserToDynamo,
+        addUserRelationToDynamo,
+        addServiceToDynamo,
+        existingUserId,
+        serviceId
+      );
 
       app = await (await import("../../../src/app.js")).createApp();
 
@@ -48,7 +38,7 @@ describe("Integration:: enter landing page url", () => {
         .get(
           getServicePaths(
             PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL,
-            existingService.serviceId
+            serviceId
           )
         )
         .then((res: Response) => {
@@ -64,9 +54,13 @@ describe("Integration:: enter landing page url", () => {
       deleteUserRelationFromDynamo,
       deleteServiceFromDynamo,
     }) => {
-      await deleteUserFromDynamo(existingUser);
-      await deleteUserRelationFromDynamo(existingRelation);
-      await deleteServiceFromDynamo(existingService);
+      await teardownTestWithExistingUserAndService(
+        deleteUserFromDynamo,
+        deleteUserRelationFromDynamo,
+        deleteServiceFromDynamo,
+        existingUserId,
+        serviceId
+      );
 
       vi.restoreAllMocks();
       vi.resetModules();
@@ -78,7 +72,7 @@ describe("Integration:: enter landing page url", () => {
     const res = await requestAgent.get(
       getServicePaths(
         PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL,
-        existingService.serviceId
+        serviceId
       )
     );
     expect(res.statusCode).toBe(200);
@@ -91,7 +85,7 @@ describe("Integration:: enter landing page url", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -110,7 +104,7 @@ describe("Integration:: enter landing page url", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -133,7 +127,7 @@ describe("Integration:: enter landing page url", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -145,7 +139,7 @@ describe("Integration:: enter landing page url", () => {
           "Location",
           getServicePaths(
             PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
-            existingService.serviceId
+            serviceId
           )
         );
       expect(res.statusCode).toBe(302);
@@ -159,7 +153,7 @@ describe("Integration:: enter landing page url", () => {
         .post(
           getServicePaths(
             PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL,
-            existingService.serviceId
+            serviceId
           )
         )
         .type("form")
@@ -170,7 +164,7 @@ describe("Integration:: enter landing page url", () => {
           "Location",
           getServicePaths(
             PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
-            existingService.serviceId
+            serviceId
           )
         );
       expect(res.statusCode).toBe(302);

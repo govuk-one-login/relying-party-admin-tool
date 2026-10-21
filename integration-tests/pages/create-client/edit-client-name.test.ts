@@ -3,32 +3,18 @@ import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
 import { getServicePaths, testComponent } from "../../helpers/helpers.js";
-import { User } from "../../../src/models/user.js";
-import { UserPermission } from "../../../src/models/permissions.js";
-import { Relation } from "../../../src/models/relation.js";
-import { Service } from "../../../src/models/service.js";
 import { randomUUID } from "crypto";
+import {
+  setUpTestWithExistingUserAndService,
+  teardownTestWithExistingUserAndService,
+} from "../../helpers/test-setup.js";
 
 describe("Integration:: edit client name", () => {
   let token: string | string[] | undefined;
   let app: any;
   let requestAgent: any;
   const existingUserId = randomUUID();
-  const existingUser: User = {
-    id: existingUserId,
-    name: "Test User",
-    email: "test@user.com",
-  };
   const serviceId = randomUUID();
-  const existingRelation: Relation = {
-    userId: existingUserId,
-    object: `service:${serviceId}`,
-    relation: UserPermission.WRITER_INT,
-  };
-  const existingService: Service = {
-    serviceId: serviceId,
-    name: "Test service",
-  };
 
   integrationTest.beforeAll(
     async ({
@@ -36,9 +22,13 @@ describe("Integration:: edit client name", () => {
       addUserRelationToDynamo,
       addServiceToDynamo,
     }) => {
-      await addUserToDynamo(existingUser);
-      await addUserRelationToDynamo(existingRelation);
-      await addServiceToDynamo(existingService);
+      await setUpTestWithExistingUserAndService(
+        addUserToDynamo,
+        addUserRelationToDynamo,
+        addServiceToDynamo,
+        existingUserId,
+        serviceId
+      );
 
       app = await (await import("../../../src/app.js")).createApp();
 
@@ -46,10 +36,7 @@ describe("Integration:: edit client name", () => {
 
       await requestAgent
         .get(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME,
-            existingService.serviceId
-          )
+          getServicePaths(PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME, serviceId)
         )
         .then((res: Response) => {
           const $ = cheerio.load(res.text);
@@ -64,9 +51,13 @@ describe("Integration:: edit client name", () => {
       deleteUserRelationFromDynamo,
       deleteServiceFromDynamo,
     }) => {
-      await deleteUserFromDynamo(existingUser);
-      await deleteUserRelationFromDynamo(existingRelation);
-      await deleteServiceFromDynamo(existingService);
+      await teardownTestWithExistingUserAndService(
+        deleteUserFromDynamo,
+        deleteUserRelationFromDynamo,
+        deleteServiceFromDynamo,
+        existingUserId,
+        serviceId
+      );
 
       vi.restoreAllMocks();
       vi.resetModules();
@@ -76,10 +67,7 @@ describe("Integration:: edit client name", () => {
 
   integrationTest("should return edit client name page", async () => {
     const res = await requestAgent.get(
-      getServicePaths(
-        PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME,
-        existingService.serviceId
-      )
+      getServicePaths(PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME, serviceId)
     );
     expect(res.statusCode).toBe(200);
   });
@@ -89,10 +77,7 @@ describe("Integration:: edit client name", () => {
     async () => {
       const res = await requestAgent
         .post(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME,
-            existingService.serviceId
-          )
+          getServicePaths(PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME, serviceId)
         )
         .type("form")
         .send({
@@ -106,10 +91,7 @@ describe("Integration:: edit client name", () => {
   integrationTest("should fail validation when name is empty", async () => {
     const res = await requestAgent
       .post(
-        getServicePaths(
-          PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME,
-          existingService.serviceId
-        )
+        getServicePaths(PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME, serviceId)
       )
       .type("form")
       .send({
@@ -129,10 +111,7 @@ describe("Integration:: edit client name", () => {
       const longName = "a".repeat(256);
       const res = await requestAgent
         .post(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME,
-            existingService.serviceId
-          )
+          getServicePaths(PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME, serviceId)
         )
         .type("form")
         .send({
@@ -152,10 +131,7 @@ describe("Integration:: edit client name", () => {
     async () => {
       const res = await requestAgent
         .post(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME,
-            existingService.serviceId
-          )
+          getServicePaths(PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME, serviceId)
         )
         .type("form")
         .send({
@@ -175,10 +151,7 @@ describe("Integration:: edit client name", () => {
     async () => {
       const res = await requestAgent
         .post(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME,
-            existingService.serviceId
-          )
+          getServicePaths(PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME, serviceId)
         )
         .type("form")
         .send({
@@ -198,10 +171,7 @@ describe("Integration:: edit client name", () => {
     async () => {
       const res = await requestAgent
         .post(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME,
-            existingService.serviceId
-          )
+          getServicePaths(PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME, serviceId)
         )
         .type("form")
         .send({
@@ -210,10 +180,7 @@ describe("Integration:: edit client name", () => {
         })
         .expect(
           "Location",
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_SUMMARY,
-            existingService.serviceId
-          )
+          getServicePaths(PATH_NAMES.CREATE_CLIENT_SUMMARY, serviceId)
         );
       expect(res.statusCode).toBe(302);
     }
