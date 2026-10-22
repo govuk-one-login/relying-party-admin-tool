@@ -594,7 +594,7 @@ Resources:
       GroupId: !GetAtt ApplicationLoadBalancerSecurityGroup.GroupId
       Description: !Sub "Allow HTTP traffic from Cloudfront VPC origin SG"
       SourceSecurityGroupId:
-        Fn::ImportValue: cloudfront-distribution-VpcOriginSecurityGroupId
+        Fn::ImportValue: cloudfront-distribution-VpcOriginSgId
       IpProtocol: tcp
       FromPort: 80
       ToPort: 80
@@ -606,7 +606,7 @@ Resources:
       GroupId: !GetAtt ApplicationLoadBalancerSecurityGroup.GroupId
       Description: !Sub "Allow HTTPs traffic from Cloudfront VPC origin SG"
       SourceSecurityGroupId:
-        Fn::ImportValue: cloudfront-distribution-VpcOriginSecurityGroupId
+        Fn::ImportValue: cloudfront-distribution-VpcOriginSgId
       IpProtocol: tcp
       FromPort: 443
       ToPort: 443
