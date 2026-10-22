@@ -10,9 +10,9 @@ updates:
     target-branch: main
     ignore:
       - dependency-name: "node"
-        versions: ["> 20"]
+        versions: ["> 24"]
       - dependency-name: "@types/node"
-        versions: ["> 20"]
+        versions: ["> 24"]
     groups:
       npm-patch-dependencies:
         update-types:
