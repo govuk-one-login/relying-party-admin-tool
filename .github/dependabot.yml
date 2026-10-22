@@ -10,9 +10,9 @@ updates:
     target-branch: main
     ignore:
       - dependency-name: "node"
-        versions: ["> 20"]
+        versions: ["> 24"]
       - dependency-name: "@types/node"
-        versions: ["> 20"]
+        versions: ["> 24"]
     groups:
       npm-patch-dependencies:
         update-types:
@@ -37,6 +37,9 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
+    target-branch: main
     open-pull-requests-limit: 5
     ignore:
       - dependency-name: "node"
