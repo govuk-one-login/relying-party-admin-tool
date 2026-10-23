@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { getServiceByServiceId } from "../datastores/services-data-store.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
 import { serviceExistsMiddleware } from "./check-service-exists-middleware.js";
@@ -22,7 +22,7 @@ describe("check service exists middleware", () => {
       name: "test-service",
     });
 
-    const req = new RequestBuilder().build() as Request;
+    const req = new RequestBuilder().build();
     req.params = {
       serviceId,
     };
@@ -40,7 +40,7 @@ describe("check service exists middleware", () => {
     const serviceId = "1234";
     vi.mocked(getServiceByServiceId).mockResolvedValue(undefined);
 
-    const req = new RequestBuilder().build() as Request;
+    const req = new RequestBuilder().build();
     req.params = {
       serviceId,
     };
@@ -66,7 +66,7 @@ describe("check service exists middleware", () => {
       name: "test-service",
     });
 
-    const req = new RequestBuilder().build() as Request;
+    const req = new RequestBuilder().build();
     req.params = {
       serviceId: ["1", "2"],
     };

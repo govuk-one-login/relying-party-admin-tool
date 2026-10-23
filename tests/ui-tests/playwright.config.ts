@@ -1,10 +1,10 @@
 import path, { dirname } from "node:path";
-import { fileURLToPath } from "url";
-import dotenv from "dotenv";
+import { fileURLToPath } from "node:url";
 import { defineConfig, devices } from "@playwright/test";
 import { cucumberReporter, defineBddConfig } from "playwright-bdd";
 import { env } from "./env";
 import { getBaseUrl } from "./utils/getBaseUrl";
+import { loadEnvFile } from "node:process";
 
 const testDir = defineBddConfig({
   features: "tests/features/**/*.feature",
@@ -13,7 +13,9 @@ const testDir = defineBddConfig({
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-dotenv.config({ path: path.resolve(__dirname, ".env") });
+try {
+  loadEnvFile(path.resolve(__dirname, ".env"));
+} catch (err) {}
 
 export default defineConfig({
   testDir,

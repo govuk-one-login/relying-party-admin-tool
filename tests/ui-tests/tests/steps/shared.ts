@@ -15,28 +15,29 @@ const pageNameToPath: Record<string, string> = {
   "create service": "/services/create",
   "service with clients": "/services/1",
   "service without clients": "/services/2",
-  client: "/services/1/clients/clientId",
+  client: "/services/1/clients/intClientId1",
   "client - edit backchannel logout url":
-    "/services/1/clients/clientId/edit-backchannel-logout-url",
-  "client - edit channel": "/services/1/clients/clientId/edit-channel",
+    "/services/1/clients/intClientId1/edit-backchannel-logout-url",
+  "client - edit channel": "/services/1/clients/intClientId1/edit-channel",
   "client - edit id token signing algorithm":
-    "/services/1/clients/clientId/edit-id-token-signing-algorithm",
-  "client - edit is active": "/services/1/clients/clientId/edit-is-active",
+    "/services/1/clients/intClientId1/edit-id-token-signing-algorithm",
+  "client - edit is active": "/services/1/clients/intClientId1/edit-is-active",
   "client - edit jar validation required":
-    "/services/1/clients/clientId/edit-jar-validation-required",
+    "/services/1/clients/intClientId1/edit-jar-validation-required",
   "client - edit max age enabled":
-    "/services/1/clients/clientId/edit-max-age-enabled",
+    "/services/1/clients/intClientId1/edit-max-age-enabled",
   "client - edit permit missing nonce":
-    "/services/1/clients/clientId/edit-permit-missing-nonce",
+    "/services/1/clients/intClientId1/edit-permit-missing-nonce",
   "client - edit pkce enforced":
-    "/services/1/clients/clientId/edit-pkce-enforced",
+    "/services/1/clients/intClientId1/edit-pkce-enforced",
   "client - edit post logout redirect urls":
-    "/services/1/clients/clientId/edit-post-logout-redirect-urls",
-  "client - edit rate limit": "/services/1/clients/clientId/edit-rate-limit",
+    "/services/1/clients/intClientId1/edit-post-logout-redirect-urls",
+  "client - edit rate limit":
+    "/services/1/clients/intClientId1/edit-rate-limit",
   "client - edit sector identifier uri":
-    "/services/1/clients/clientId/edit-sector-identifier-uri",
+    "/services/1/clients/intClientId1/edit-sector-identifier-uri",
   "client - edit service type":
-    "/services/1/clients/clientId/edit-service-type",
+    "/services/1/clients/intClientId1/edit-service-type",
   "create client": "/services/1/clients/create",
   "create client - enter client name":
     "/services/1/clients/create/enter-client-name",

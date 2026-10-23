@@ -10,6 +10,7 @@ export const serviceExistsMiddleware = async (
   const serviceId = req.params.serviceId;
 
   if (typeof serviceId !== "string") {
+    req.log.warn("Invalid service ID in path params");
     res.status(HTTP_STATUS_CODES.FORBIDDEN);
     return res.render("common/errors/403.njk");
   }
@@ -17,6 +18,7 @@ export const serviceExistsMiddleware = async (
   const service = await getServiceByServiceId(serviceId);
 
   if (!service) {
+    req.log.warn("Unknown service ID in path params");
     res.status(HTTP_STATUS_CODES.FORBIDDEN);
     return res.render("common/errors/403.njk");
   }

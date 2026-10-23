@@ -1,3 +1,4 @@
+import { ClientEnvironment } from "../../src/models/client-environment.js";
 import { populateUrlRoute } from "../../src/utils/populate-url-route.js";
 
 export const getServicePaths = (
@@ -14,3 +15,10 @@ export const getServicePaths = (
 export function testComponent(componentId: string): string {
   return `[data-test-id='${componentId}']`;
 }
+
+export const createTestClient = (serviceId: string, clientId: string) => ({
+  clientId,
+  name: "Test Client",
+  serviceId,
+  env: ClientEnvironment.INTEGRATION,
+});

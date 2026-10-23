@@ -62,12 +62,15 @@ import {
   editRateLimitPost,
 } from "../components/clients/edit-rate-limit/edit-rate-limit-controller.js";
 import { validateEditRateLimitRequest } from "../components/clients/edit-rate-limit/edit-rate-limit-validation.js";
+import { checkClientExistsForEnvMiddleware } from "../middleware/check-client-exists-middleware.js";
+import { ClientEnvironment } from "../models/client-environment.js";
 
 const router = express.Router();
 
 router.use(
   PATH_NAMES.CLIENT_EDIT_BASE_URL,
   serviceExistsMiddleware,
+  checkClientExistsForEnvMiddleware(ClientEnvironment.INTEGRATION),
   checkIntegrationWriterPermissionsMiddleware
 );
 

@@ -5,7 +5,7 @@ import { PATH_NAMES } from "../../app.constants.js";
 import path from "path";
 import { ClientEnvironment } from "../../models/client-environment.js";
 import { getServiceByServiceId } from "../../datastores/services-data-store.js";
-import { getClientsByServiceId } from "../../datastores/services-data-store.js";
+import { getAllClientsByServiceId } from "../../datastores/services-data-store.js";
 
 export const serviceGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response): Promise<void> => {
@@ -46,7 +46,7 @@ export const serviceGet = (): ExpressRouteFunc => {
         return res.redirect(PATH_NAMES["500_ERROR"]);
       }
 
-      const allClients = await getClientsByServiceId(serviceId);
+      const allClients = await getAllClientsByServiceId(serviceId);
 
       const productionClient = allClients.filter(
         (client) => client.env === "production"
