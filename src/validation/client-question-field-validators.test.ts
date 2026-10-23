@@ -1928,6 +1928,14 @@ describe("create client field validators", () => {
       );
 
       expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "You must select one level of confidence"
+      );
     });
 
     it("should fail validation with an invalid level-of-confidence", async () => {
@@ -1978,7 +1986,7 @@ describe("create client field validators", () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
         .withBody({
-          "selected-locs": ["P1"],
+          "selected-locs": "P1",
         })
         .withSessionnewClientConfig({
           isIdentityVerificationSupported: false,
@@ -2004,7 +2012,7 @@ describe("create client field validators", () => {
       let req: Partial<Request>;
       req = new RequestBuilder()
         .withBody({
-          "selected-locs": ["P2"],
+          "selected-locs": "P2",
         })
         .withSessionnewClientConfig({
           isIdentityVerificationSupported: false,
@@ -2043,7 +2051,7 @@ describe("create client field validators", () => {
       const errorsArray = (result as InvalidField).errors;
 
       expect(errorsArray).length(1);
-      expect(errorsArray[0].text).length(2);
+      expect(errorsArray[0].text).length(1);
       expect(errorsArray[0].text[0]).toBe(
         "Identity verification must be supported"
       );

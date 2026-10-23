@@ -20,6 +20,7 @@
         name: "name",
         value: clientName,
         errorMessage: {
+          attributes: { "data-test-id": "name-error"},
           text: errors["name"].text
         } if (errors["name"])
       })

@@ -3,32 +3,18 @@ import * as cheerio from "cheerio";
 import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
 import { getServicePaths, testComponent } from "../../helpers/helpers.js";
-import { User } from "../../../src/models/user.js";
-import { UserPermission } from "../../../src/models/permissions.js";
-import { Relation } from "../../../src/models/relation.js";
-import { Service } from "../../../src/models/service.js";
 import { randomUUID } from "crypto";
+import {
+  setUpTestWithExistingUserAndService,
+  teardownTestWithExistingUserAndService,
+} from "../../helpers/test-setup.js";
 
 describe("Integration:: edit max age enabled", () => {
   let token: string | string[] | undefined;
   let app: any;
   let requestAgent: any;
   const existingUserId = randomUUID();
-  const existingUser: User = {
-    id: existingUserId,
-    name: "Test User",
-    email: "test@user.com",
-  };
   const serviceId = randomUUID();
-  const existingRelation: Relation = {
-    userId: existingUserId,
-    object: `service:${serviceId}`,
-    relation: UserPermission.WRITER_INT,
-  };
-  const existingService: Service = {
-    serviceId: serviceId,
-    name: "Test service",
-  };
 
   integrationTest.beforeAll(
     async ({
@@ -36,21 +22,20 @@ describe("Integration:: edit max age enabled", () => {
       addUserRelationToDynamo,
       addServiceToDynamo,
     }) => {
-      await addUserToDynamo(existingUser);
-      await addUserRelationToDynamo(existingRelation);
-      await addServiceToDynamo(existingService);
+      await setUpTestWithExistingUserAndService(
+        addUserToDynamo,
+        addUserRelationToDynamo,
+        addServiceToDynamo,
+        existingUserId,
+        serviceId
+      );
 
       app = await (await import("../../../src/app.js")).createApp();
 
       requestAgent = request.agent(app);
 
       await requestAgent
-        .get(
-          getServicePaths(
-            PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED,
-            existingService.serviceId
-          )
-        )
+        .get(getServicePaths(PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED, serviceId))
         .then((res: Response) => {
           const $ = cheerio.load(res.text);
           token = $("[name=_csrf]").val();
@@ -64,18 +49,23 @@ describe("Integration:: edit max age enabled", () => {
       deleteUserRelationFromDynamo,
       deleteServiceFromDynamo,
     }) => {
-      await deleteUserFromDynamo(existingUser);
-      await deleteUserRelationFromDynamo(existingRelation);
-      await deleteServiceFromDynamo(existingService);
+      await teardownTestWithExistingUserAndService(
+        deleteUserFromDynamo,
+        deleteUserRelationFromDynamo,
+        deleteServiceFromDynamo,
+        existingUserId,
+        serviceId
+      );
+
+      vi.restoreAllMocks();
+      vi.resetModules();
+      app = undefined;
     }
   );
 
   integrationTest("should return edit max age enabled page", async () => {
     const res = await requestAgent.get(
-      getServicePaths(
-        PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED,
-        existingService.serviceId
-      )
+      getServicePaths(PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED, serviceId)
     );
     expect(res.statusCode).toBe(200);
   });
@@ -85,10 +75,7 @@ describe("Integration:: edit max age enabled", () => {
     async () => {
       const res = await requestAgent
         .post(
-          getServicePaths(
-            PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED,
-            existingService.serviceId
-          )
+          getServicePaths(PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED, serviceId)
         )
         .type("form")
         .send({
@@ -104,10 +91,7 @@ describe("Integration:: edit max age enabled", () => {
     async () => {
       const res = await requestAgent
         .post(
-          getServicePaths(
-            PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED,
-            existingService.serviceId
-          )
+          getServicePaths(PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED, serviceId)
         )
         .type("form")
         .send({
@@ -126,20 +110,14 @@ describe("Integration:: edit max age enabled", () => {
     async () => {
       const res = await requestAgent
         .post(
-          getServicePaths(
-            PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED,
-            existingService.serviceId
-          )
+          getServicePaths(PATH_NAMES.CLIENT_EDIT_MAX_AGE_ENABLED, serviceId)
         )
         .type("form")
         .send({
           _csrf: token,
           "max-age-enabled": "true",
         })
-        .expect(
-          "Location",
-          getServicePaths(PATH_NAMES.CLIENT, existingService.serviceId)
-        );
+        .expect("Location", getServicePaths(PATH_NAMES.CLIENT, serviceId));
       expect(res.statusCode).toBe(302);
     }
   );

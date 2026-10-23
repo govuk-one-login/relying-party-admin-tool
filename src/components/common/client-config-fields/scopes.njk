@@ -66,6 +66,7 @@
         },
         items: items,
         errorMessage: {
+          attributes: { "data-test-id": "selected-scopes-error"},
           text: errors["selected-scopes"].text
         } if (errors["selected-scopes"])
       })
