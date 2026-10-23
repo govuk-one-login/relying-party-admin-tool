@@ -50,6 +50,7 @@ type AdditionalClientConfig = {
   permitMissingNonce?: boolean;
   pkceEnforced?: boolean;
   postLogoutRedirectUrls?: string[];
+  rateLimit?: number;
   sectorIdentifierUri?: string;
   serviceType?: "OPTIONAL" | "MANDATORY";
 };

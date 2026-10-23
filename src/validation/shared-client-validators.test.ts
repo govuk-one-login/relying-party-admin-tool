@@ -14,6 +14,7 @@ import {
   channelValidator,
   validLevelOfConfidenceValidator,
   allScopesValidator,
+  rateLimitValidator,
 } from "./shared-client-validators.js";
 
 describe("shared client validator tests", () => {
@@ -23,6 +24,12 @@ describe("shared client validator tests", () => {
 
       const result =
         await backchannelLogoutUrlValidator.validate(backchannelLogoutUrl);
+
+      expect(result).toBeValid();
+    });
+
+    it("should pass validation when empty", async () => {
+      const result = await backchannelLogoutUrlValidator.validate(undefined);
 
       expect(result).toBeValid();
     });
@@ -405,6 +412,57 @@ describe("shared client validator tests", () => {
       expect(result).toBeInvalid();
       expect(result).toHaveInvalidErrors([
         'Invalid ID token signing algorithm provided: "invalid-algorithm"',
+      ]);
+    });
+  });
+
+  describe("rate limit validator", () => {
+    it("should pass validation when valid rate limit", async () => {
+      const result = await rateLimitValidator.validate("10");
+
+      expect(result).toBeValid();
+    });
+
+    it("should pass validation when empty", async () => {
+      const result = await rateLimitValidator.validate(undefined);
+
+      expect(result).toBeValid();
+    });
+
+    it("should fail validation when a negative number", async () => {
+      const result = await rateLimitValidator.validate("-1");
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        "Rate limit must be a positive number",
+      ]);
+    });
+
+    it("should fail validation when a decimal", async () => {
+      const result = await rateLimitValidator.validate("1.5");
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors(["Rate limit must be a whole number"]);
+    });
+
+    it("should fail validation when over the max limit", async () => {
+      const result = await rateLimitValidator.validate("51");
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        "Rate limit must be below the max limit of 50",
+      ]);
+    });
+
+    it("should fail validation when not a number", async () => {
+      const result = await rateLimitValidator.validate("test");
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        "Rate limit must be a number",
+        "Rate limit must be a positive number",
+        "Rate limit must be a whole number",
+        "Rate limit must be below the max limit of 50",
       ]);
     });
   });

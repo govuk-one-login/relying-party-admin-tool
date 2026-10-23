@@ -57,6 +57,11 @@ import {
 } from "../components/clients/edit-permit-missing-nonce/edit-permit-missing-nonce-controller.js";
 import { validateEditPermitMissingNonceRequest } from "../components/clients/edit-permit-missing-nonce/edit-permit-missing-nonce-validation.js";
 import { serviceExistsMiddleware } from "../middleware/check-service-exists-middleware.js";
+import {
+  editRateLimitGet,
+  editRateLimitPost,
+} from "../components/clients/edit-rate-limit/edit-rate-limit-controller.js";
+import { validateEditRateLimitRequest } from "../components/clients/edit-rate-limit/edit-rate-limit-validation.js";
 
 const router = express.Router();
 
@@ -151,6 +156,14 @@ router.post(
   PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
   validateEditPostLogoutRedirectUrlsRequest(),
   editPostLogoutRedirectUrlsPost()
+);
+
+router.get(PATH_NAMES.CLIENT_EDIT_RATE_LIMIT, editRateLimitGet());
+
+router.post(
+  PATH_NAMES.CLIENT_EDIT_RATE_LIMIT,
+  validateEditRateLimitRequest(),
+  editRateLimitPost()
 );
 
 router.get(

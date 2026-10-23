@@ -30,6 +30,7 @@ export interface ClientConfig {
   permitMissingNonce: boolean;
   pkceEnforced: boolean;
   postLogoutRedirectUrls: string[];
+  rateLimit?: number;
   sectorIdentifierUri: string;
   serviceType: ServiceType;
 }

@@ -6,3 +6,4 @@ process.env.AWS_SECRET_ACCESS_KEY = "test"; // pragma: allowlist secret
 process.env.ENVIRONMENT = process.env.VITEST_WORKER_ID;
 process.env.SESSION_SECRET = "test"; // pragma: allowlist secret
 process.env.SESSION_EXPIRY = "1800000";
+process.env.INT_CLIENT_MAX_RATE_LIMIT = 50;

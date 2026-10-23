@@ -78,19 +78,24 @@ Mappings:
       serviceDomain: "development.sign-in.service.gov.uk"
       sessionExpiry: "7200000"
       rpConfigApiId: 3x6eix5jh5
+      maxRateLimit: 50
     build:
       serviceDomain: "build.sign-in.service.gov.uk"
       sessionExpiry: "7200000"
       rpConfigApiId: tswjyvjfd5
+      maxRateLimit: 50
     staging:
       serviceDomain: "staging.sign-in.service.gov.uk"
       sessionExpiry: "7200000"
+      maxRateLimit: 50
     integration:
       serviceDomain: "integration.sign-in.service.gov.uk"
       sessionExpiry: "7200000"
+      maxRateLimit: 50
     production:
       serviceDomain: "sign-in.service.gov.uk"
       sessionExpiry: "7200000"
+      maxRateLimit: 50
 
 Resources:
   #region Fargate Cluster
@@ -245,6 +250,13 @@ Resources:
                     ]
                   VpceId: !ImportValue
                     Fn::Sub: "${VpcStackName}-ExecuteApiGatewayEndpointId"
+            - Name: "INT_CLIENT_MAX_RATE_LIMIT"
+              Value:
+                !FindInMap [
+                  EnvironmentConfiguration,
+                  !Ref Environment,
+                  maxRateLimit,
+                ]
           Secrets:
             - Name: "SESSION_SECRET"
               ValueFrom: !Ref SessionSecret

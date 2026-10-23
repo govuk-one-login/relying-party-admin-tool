@@ -23,6 +23,7 @@ import {
   validUrlValidator,
 } from "./shared-validators.js";
 import { optional, rule, Validator, when } from "./validator.js";
+import { getIntegrationClientMaxRateLimit } from "../config.js";
 
 export const backchannelLogoutUrlValidator = optional(
   validUrlValidator("backchannel logout URL").and(
@@ -108,11 +109,47 @@ export const idTokenSigningAlgorithmValidator = requiredValidator(
   )
 );
 
+export const validLevelOfConfidenceValidator = listLimitedValidValuesValidator(
+  VALID_LOCS,
+  "level of confidence"
+).and(notEmptyListValidator("You must select one level of confidence"));
+
+export const allLevelOfConfidencesValidator = listLimitedValidValuesValidator(
+  ALL_VALID_LOCS,
+  "level of confidence"
+).and(notEmptyListValidator("You must select one level of confidence"));
+
 export const postLogoutRedirectUrlValidator = requiredValidator(
   "Enter a post logout redirect URL"
 )
   .and(validUrlValidator("post logout redirect URL"))
   .and(productionUrlValidator("post logout redirect URL"));
+
+export const rateLimitValidator = optional(
+  rule(
+    (rateLimit: string) => !isNaN(Number(rateLimit)),
+    "Rate limit must be a number"
+  ).and(
+    rule(
+      (rateLimit: string) => Number(rateLimit) > 0,
+      "Rate limit must be a positive number"
+    )
+      .and(
+        rule(
+          (rateLimit: string) =>
+            Math.floor(Number(rateLimit)).toString() === rateLimit,
+          "Rate limit must be a whole number"
+        )
+      )
+      .and(
+        rule(
+          (rateLimit: string) =>
+            Number(rateLimit) <= getIntegrationClientMaxRateLimit(),
+          `Rate limit must be below the max limit of ${getIntegrationClientMaxRateLimit()}`
+        )
+      )
+  )
+);
 
 const validRedirectUrlQueryParamsValidator = (
   errorMessage: string
@@ -179,13 +216,3 @@ export const sectorIdentifierUriValidator = requiredValidator(
 export const serviceTypeValidator = requiredValidator(
   "Service type is required"
 ).and(limitedValidValuesValidator(VALID_SERVICE_TYPES, "service type"));
-
-export const validLevelOfConfidenceValidator = listLimitedValidValuesValidator(
-  VALID_LOCS,
-  "level of confidence"
-).and(notEmptyListValidator("You must select one level of confidence"));
-
-export const allLevelOfConfidencesValidator = listLimitedValidValuesValidator(
-  ALL_VALID_LOCS,
-  "level of confidence"
-).and(notEmptyListValidator("You must select one level of confidence"));
