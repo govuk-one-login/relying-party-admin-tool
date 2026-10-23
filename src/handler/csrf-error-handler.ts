@@ -2,8 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { HTTP_STATUS_CODES } from "../app.constants.js";
 
 export const csrfErrorHandler = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  error: any,
+  error: { code: string; message?: string },
   req: Request,
   res: Response,
   next: NextFunction

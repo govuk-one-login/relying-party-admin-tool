@@ -5,8 +5,7 @@ import { Request, Response } from "express";
 
 const getNonceFunction = (
   entries: any[]
-  // eslint-disable-next-line no-unused-vars
-): ((req: Request, res: Response) => string) => {
+): ((_req: Request, _res: Response) => string) => {
   return entries.find((item) => typeof item === "function");
 };
 
