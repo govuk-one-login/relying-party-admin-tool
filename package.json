@@ -36,7 +36,7 @@
     "@aws-sdk/lib-dynamodb": "^3.1075.0",
     "@govuk-one-login/frontend-vital-signs": "^0.1.4",
     "csrf-sync": "^4.2.1",
-    "dompurify": "^3.4.16",
+    "dompurify": "^3.4.17",
     "express": "~5.2.1",
     "express-session": "^1.19.0",
     "govuk-frontend": "^6.5.1",
