@@ -390,7 +390,7 @@ describe("create client summary field validators", () => {
     it("should pass validation with valid client name", async () => {
       const req = new RequestBuilder()
         .withSessionnewClientConfig({
-          name: "my client",
+          clientName: "my client",
         })
         .build();
 
@@ -402,7 +402,7 @@ describe("create client summary field validators", () => {
     it("should fail validation when name is empty", async () => {
       const req = new RequestBuilder()
         .withSessionnewClientConfig({
-          name: "",
+          clientName: "",
         })
         .build();
 
@@ -421,7 +421,7 @@ describe("create client summary field validators", () => {
       const longName = "a".repeat(256);
       const req = new RequestBuilder()
         .withSessionnewClientConfig({
-          name: longName,
+          clientName: longName,
         })
         .build();
 
@@ -441,7 +441,7 @@ describe("create client summary field validators", () => {
     it("should fail validation when name has non-ascii characters", async () => {
       const req = new RequestBuilder()
         .withSessionnewClientConfig({
-          name: "🆕 client",
+          clientName: "🆕 client",
         })
         .build();
 
@@ -461,7 +461,7 @@ describe("create client summary field validators", () => {
     it("should fail validation when name begins with a colon", async () => {
       const req = new RequestBuilder()
         .withSessionnewClientConfig({
-          name: ":my client",
+          clientName: ":my client",
         })
         .build();
 

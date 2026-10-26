@@ -9,8 +9,8 @@ import {
   createClientEnterClientNamePost,
 } from "../components/create-client/client-name/enter-client-name/enter-client-name-controller.js";
 import {
-  validateEditClientNameRequest,
-  validateEnterClientNameRequest,
+  validateCreateClientEditClientNameRequest,
+  validateCreateClientEnterClientNameRequest,
 } from "../components/create-client/client-name/validation.js";
 import {
   createClientSelectClientAuthenticationGet,
@@ -99,7 +99,7 @@ router.get(
 
 router.post(
   PATH_NAMES.CREATE_CLIENT_ENTER_CLIENT_NAME,
-  validateEnterClientNameRequest(),
+  validateCreateClientEnterClientNameRequest(),
   createClientEnterClientNamePost()
 );
 
@@ -110,7 +110,7 @@ router.get(
 
 router.post(
   PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME,
-  validateEditClientNameRequest(),
+  validateCreateClientEditClientNameRequest(),
   createClientEditClientNamePost()
 );
 

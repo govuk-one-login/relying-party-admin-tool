@@ -16,12 +16,13 @@
         hint: {
           text: "Your users will see this name when they sign in with GOV.UK One Login."
         },
-        id: "name",
-        name: "name",
+        id: "client-name",
+        name: "client-name",
         value: clientName,
         errorMessage: {
-          text: errors["name"].text
-        } if (errors["name"])
+          attributes: { "data-test-id": "client-name-error"},
+          text: errors["client-name"].text
+        } if (errors["client-name"])
       })
     }}
 
