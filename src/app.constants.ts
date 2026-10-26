@@ -38,6 +38,8 @@ export const PATH_NAMES = {
   CLIENT_EDIT_BACKCHANNEL_LOGOUT_URL:
     "/services/:serviceId/clients/:clientId/edit-backchannel-logout-url",
   CLIENT_EDIT_CHANNEL: "/services/:serviceId/clients/:clientId/edit-channel",
+  CLIENT_EDIT_CLIENT_NAME:
+    "/services/:serviceId/clients/:clientId/edit-client-name",
   CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM:
     "/services/:serviceId/clients/:clientId/edit-id-token-signing-algorithm",
   CLIENT_EDIT_IS_ACTIVE:

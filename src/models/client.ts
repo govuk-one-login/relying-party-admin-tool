@@ -23,6 +23,7 @@ export type ServiceType = (typeof VALID_SERVICE_TYPES)[number];
 export interface ClientConfig {
   backchannelLogoutUrl: string;
   channel: Channel;
+  clientName: string;
   idTokenSigningAlgorithm: IdTokenSigningAlgorithm;
   isActive: boolean;
   jarValidationRequired: boolean;
