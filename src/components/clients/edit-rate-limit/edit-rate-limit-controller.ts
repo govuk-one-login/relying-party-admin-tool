@@ -16,10 +16,9 @@ export const editRateLimitGet = (): ExpressRouteFunc => {
 
 export const editRateLimitPost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
-    console.log(req.body["rate-limit"]);
     req.session.changedClientConfig = {
       ...req.session.changedClientConfig,
-      rateLimit: req.body["rate-limit"], //todo: accepts strings
+      rateLimit: req.body["rate-limit"],
     };
     return saveSessionAndRedirect(
       req,
