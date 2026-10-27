@@ -43,6 +43,7 @@ export interface ClientConfig {
   pkceEnforced: boolean;
   postLogoutRedirectUrls: string[];
   rateLimit?: number;
+  redirectUrls: string[];
   scopes: Scope[];
   sectorIdentifierUri: string;
   serviceType: ServiceType;
