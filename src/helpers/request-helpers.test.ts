@@ -1,8 +1,8 @@
 import { RequestBuilder } from "../utils/test-utils/builders.js";
-import { getListFromRequestBody } from "./request-helpers.js";
+import { getOptionalList } from "./request-helpers.js";
 
 describe("request helpers", () => {
-  describe("getListFromRequestBody", () => {
+  describe("getOptionalList", () => {
     it("should return list when request body has list", async () => {
       const testList = ["item-1", "item-2", "item-3"];
       const req = new RequestBuilder()
@@ -12,7 +12,7 @@ describe("request helpers", () => {
         })
         .build();
 
-      const result = getListFromRequestBody(req, "test-list");
+      const result = getOptionalList(req.body["test-list"]);
 
       expect(result).toStrictEqual(testList);
     });
@@ -20,7 +20,7 @@ describe("request helpers", () => {
     it("should return empty list when request body is empty", async () => {
       const req = new RequestBuilder().withBody({}).build();
 
-      const result = getListFromRequestBody(req, "test-list");
+      const result = getOptionalList(req.body["test-list"]);
 
       expect(result).toStrictEqual([]);
     });
@@ -32,7 +32,7 @@ describe("request helpers", () => {
         })
         .build();
 
-      const result = getListFromRequestBody(req, "test-list");
+      const result = getOptionalList(req.body["test-list"]);
 
       expect(result).toStrictEqual(["item-1"]);
     });
