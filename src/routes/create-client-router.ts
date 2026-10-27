@@ -33,8 +33,8 @@ import {
   createClientSelectScopesPost,
 } from "../components/create-client/scopes/select-scopes/select-scopes-controller.js";
 import {
-  validateEditScopesRequest,
-  validateSelectScopesRequest,
+  validateCreateClientEditScopesRequest,
+  validateCreateClientSelectScopesRequest,
 } from "../components/create-client/scopes/validation.js";
 import {
   createClientIsIdentityVerificationSupportedGet,
@@ -165,7 +165,7 @@ router.get(
 
 router.post(
   PATH_NAMES.CREATE_CLIENT_SELECT_SCOPES,
-  validateSelectScopesRequest(),
+  validateCreateClientSelectScopesRequest(),
   createClientSelectScopesPost()
 );
 
@@ -173,7 +173,7 @@ router.get(PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES, createClientEditScopesGet());
 
 router.post(
   PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES,
-  validateEditScopesRequest(),
+  validateCreateClientEditScopesRequest(),
   createClientEditScopesPost()
 );
 

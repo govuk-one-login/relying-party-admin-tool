@@ -28,6 +28,54 @@
       }
     ])
   %}
+  {% if "am" in scopes %}
+    {%
+      set items = items.concat(
+      [
+        {
+          value: "am",
+          html: "<code class='red-code'>am</code>",
+          checked: true
+        }
+      ])
+    %}
+  {% endif %}
+  {% if "doc-checking-app" in scopes %}
+    {%
+      set items = items.concat(
+      [
+        {
+          value: "doc-checking-app",
+          html: "<code class='red-code'>doc-checking-app</code>",
+          checked: true
+        }
+      ])
+    %}
+  {% endif %}
+  {% if "govuk-account" in scopes %}
+    {%
+      set items = items.concat(
+      [
+        {
+          value: "govuk-account",
+          html: "<code class='red-code'>govuk-account</code>",
+          checked: true
+        }
+      ])
+    %}
+  {% endif %}
+  {% if "offline_access" in scopes %}
+    {%
+      set items = items.concat(
+      [
+        {
+          value: "offline_access",
+          html: "<code class='red-code'>offline_access</code>",
+          checked: true
+        }
+      ])
+    %}
+  {% endif %}
 {% else %}
   {%
     set items = [
@@ -66,6 +114,7 @@
         },
         items: items,
         errorMessage: {
+          attributes: { "data-test-id": "selected-scopes-error"},
           text: errors["selected-scopes"].text
         } if (errors["selected-scopes"])
       })

@@ -1,5 +1,8 @@
 import {
+  ADDITIONAL_VALID_CHANNELS,
+  ADDITIONAL_VALID_SCOPES,
   VALID_CHANNELS,
+  VALID_SCOPES,
   VALID_SERVICE_TYPES,
   VALID_TOKEN_SIGNING_ALGS,
 } from "../app.constants.js";
@@ -14,9 +17,17 @@ export type ClientServiceSummary = {
   serviceId: string;
 } & ClientSummary;
 
-export type Channel = (typeof VALID_CHANNELS)[number];
+export type Channel = (
+  | typeof VALID_CHANNELS
+  | typeof ADDITIONAL_VALID_CHANNELS
+)[number];
 
 export type IdTokenSigningAlgorithm = (typeof VALID_TOKEN_SIGNING_ALGS)[number];
+
+export type Scope = (
+  | typeof VALID_SCOPES
+  | typeof ADDITIONAL_VALID_SCOPES
+)[number];
 
 export type ServiceType = (typeof VALID_SERVICE_TYPES)[number];
 
@@ -32,6 +43,7 @@ export interface ClientConfig {
   pkceEnforced: boolean;
   postLogoutRedirectUrls: string[];
   rateLimit?: number;
+  scopes: Scope[];
   sectorIdentifierUri: string;
   serviceType: ServiceType;
 }
