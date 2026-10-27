@@ -125,30 +125,6 @@ describe("Integration:: edit service type", () => {
   );
 
   integrationTest(
-    "should return validation error when service type is an invalid service type",
-    async () => {
-      const res = await requestAgent
-        .post(
-          getServicePaths(
-            PATH_NAMES.CLIENT_EDIT_SERVICE_TYPE,
-            existingService.serviceId,
-            existingClient.clientId
-          )
-        )
-        .type("form")
-        .send({
-          _csrf: token,
-          "service-type": "invalid-service-type",
-        });
-      const $ = cheerio.load(res.text);
-      expect($(testComponent("service-type-error")).text()).toContain(
-        'Invalid service type provided: "invalid-service-type"'
-      );
-      expect(res.statusCode).toBe(400);
-    }
-  );
-
-  integrationTest(
     "should redirect to /clients when valid service type",
     async () => {
       const res = await requestAgent

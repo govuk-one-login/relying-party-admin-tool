@@ -132,7 +132,7 @@ describe("Integration:: edit jar validation required", () => {
   );
 
   integrationTest(
-    "should redirect to /clients when valid jar validation required option",
+    "should redirect to /clients with valid jar validation required",
     async () => {
       const res = await requestAgent
         .post(
