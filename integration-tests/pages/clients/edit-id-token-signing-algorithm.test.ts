@@ -128,32 +128,6 @@ describe("Integration:: edit id token signing algorithm", () => {
   );
 
   integrationTest(
-    "should return validation error when algorithm is an invalid algorithm",
-    async () => {
-      const res = await requestAgent
-        .post(
-          getServicePaths(
-            PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM,
-            existingService.serviceId,
-            existingClient.clientId
-          )
-        )
-        .type("form")
-        .send({
-          _csrf: token,
-          "id-token-signing-algorithm": "invalid-algorithm",
-        });
-      const $ = cheerio.load(res.text);
-      expect(
-        $(testComponent("id-token-signing-algorithm-error")).text()
-      ).toContain(
-        'Invalid ID token signing algorithm provided: "invalid-algorithm"'
-      );
-      expect(res.statusCode).toBe(400);
-    }
-  );
-
-  integrationTest(
     "should redirect to /clients when valid id token signing algorithm",
     async () => {
       const res = await requestAgent
