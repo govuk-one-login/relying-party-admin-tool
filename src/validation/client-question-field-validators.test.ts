@@ -485,7 +485,7 @@ describe("create client field validators", () => {
     it("should pass validation with valid client name", async () => {
       const req = new RequestBuilder()
         .withBody({
-          name: "my client",
+          "client-name": "my client",
         })
         .build();
 
@@ -497,7 +497,7 @@ describe("create client field validators", () => {
     it("should fail validation when name is empty", async () => {
       const req = new RequestBuilder()
         .withBody({
-          name: "",
+          "client-name": "",
         })
         .build();
 
@@ -516,7 +516,7 @@ describe("create client field validators", () => {
       const longName = "a".repeat(256);
       const req = new RequestBuilder()
         .withBody({
-          name: longName,
+          "client-name": longName,
         })
         .build();
 
@@ -536,7 +536,7 @@ describe("create client field validators", () => {
     it("should fail validation when name has non-ascii characters", async () => {
       const req = new RequestBuilder()
         .withBody({
-          name: "🆕 client",
+          "client-name": "🆕 client",
         })
         .build();
 
@@ -556,7 +556,7 @@ describe("create client field validators", () => {
     it("should fail validation when name begins with a colon", async () => {
       const req = new RequestBuilder()
         .withBody({
-          name: ":my client",
+          "client-name": ":my client",
         })
         .build();
 

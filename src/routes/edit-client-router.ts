@@ -64,6 +64,11 @@ import {
 import { validateEditRateLimitRequest } from "../components/clients/edit-rate-limit/edit-rate-limit-validation.js";
 import { checkClientExistsForEnvMiddleware } from "../middleware/check-client-exists-middleware.js";
 import { ClientEnvironment } from "../models/client-environment.js";
+import {
+  editClientNameGet,
+  editClientNamePost,
+} from "../components/clients/edit-client-name/edit-client-name-controller.js";
+import { validateEditClientNameRequest } from "../components/clients/edit-client-name/validation.js";
 
 const router = express.Router();
 
@@ -91,6 +96,14 @@ router.post(
   PATH_NAMES.CLIENT_EDIT_CHANNEL,
   validateEditChannelRequest(),
   editChannelPost()
+);
+
+router.get(PATH_NAMES.CLIENT_EDIT_CLIENT_NAME, editClientNameGet());
+
+router.post(
+  PATH_NAMES.CLIENT_EDIT_CLIENT_NAME,
+  validateEditClientNameRequest(),
+  editClientNamePost()
 );
 
 router.get(

@@ -11,7 +11,7 @@
   set coreFieldsRowItems = coreFieldsRowItems.concat([
     {
       key: { text: "Client Name" },
-      value: { html: '<div id="name">' + client.name | default("Not set") + '</div>' },
+      value: { html: '<div id="client-name">' + client.clientName | default("Not set") + '</div>' },
       actions: {
         items: [{ href: baseUrl + "/edit-client-name", text: "Change", visuallyHiddenText: "client name" }]
       }

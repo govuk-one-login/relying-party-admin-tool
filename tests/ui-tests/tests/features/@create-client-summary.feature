@@ -9,7 +9,7 @@ Feature: Create a new client - summary page
     And the navigation bar shows
     And the footer shows
     Then the page has the heading: "Check these details before creating your client"
-    And the field: "name" has the value: "Not set"
+    And the field: "client-name" has the value: "Not set"
     And the field: "client-authentication-method" has the value: "Not set"
     And the field: "token-authentication-method" has the value: "Not set"
     And the field: "redirect-urls" has the value: "Not set"
@@ -45,7 +45,7 @@ Feature: Create a new client - summary page
     And I click the "Continue" button
     Then I am taken to the "create client - summary" page
     And the page has finished loading
-    And the field: "name" has the value: "My client"
+    And the field: "client-name" has the value: "My client"
     And the field: "client-authentication-method" has the value: "Client secret"
     And the field: "client-secret" has the value: "client-secret"
     And the field: "token-authentication-method" has the value: "client_secret_post"

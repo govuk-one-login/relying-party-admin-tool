@@ -18,7 +18,7 @@ Feature: Create a new client - edit client name page
     And I enter "My client" into the field "What is the name of your client?"
     And I click the "Continue" button
     Then I am taken to the "create client - summary" page
-    And the field: "name" has the value: "My client"
+    And the field: "client-name" has the value: "My client"
     And I click the change button for: "client name" in the "Core fields" section on the summary page
     Then I am taken to the "create client - edit client name" page
-    And the field input: "name" has the value: "My client"
+    And the field input: "client-name" has the value: "My client"

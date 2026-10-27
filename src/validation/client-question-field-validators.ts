@@ -82,8 +82,10 @@ export const clientAuthenticationInputFieldValidatorChain =
     .and(clientAuthenticationClientSecretInputFieldValidator);
 
 export const clientNameInputFieldValidator = new FieldValidator(
-  clientNameValidator.adaptedFrom((req: Request) => req.body.name as string),
-  "name"
+  clientNameValidator.adaptedFrom(
+    (req: Request) => req.body["client-name"] as string
+  ),
+  "client-name"
 );
 
 export const selectClaimsFieldValidator = new FieldValidator(
