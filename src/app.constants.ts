@@ -56,6 +56,8 @@ export const PATH_NAMES = {
     "/services/:serviceId/clients/:clientId/edit-post-logout-redirect-urls",
   CLIENT_EDIT_RATE_LIMIT:
     "/services/:serviceId/clients/:clientId/edit-rate-limit",
+  CLIENT_EDIT_REDIRECT_URLS:
+    "/services/:serviceId/clients/:clientId/edit-redirect-urls",
   CLIENT_EDIT_SCOPES: "/services/:serviceId/clients/:clientId/edit-scopes",
   CLIENT_EDIT_SECTOR_IDENTIFIER_URI:
     "/services/:serviceId/clients/:clientId/edit-sector-identifier-uri",

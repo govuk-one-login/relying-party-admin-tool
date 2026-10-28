@@ -74,6 +74,11 @@ import {
   editScopesPost,
 } from "../components/clients/edit-scopes/edit-scopes-controller.js";
 import { validateEditScopesRequest } from "../components/clients/edit-scopes/validation.js";
+import {
+  editRedirectUrlsGet,
+  editRedirectUrlsPost,
+} from "../components/clients/edit-redirect-urls/edit-redirect-urls-controller.js";
+import { validateEditRedirectUrlsRequest } from "../components/clients/edit-redirect-urls/validation.js";
 
 const router = express.Router();
 
@@ -185,6 +190,14 @@ router.post(
   PATH_NAMES.CLIENT_EDIT_RATE_LIMIT,
   validateEditRateLimitRequest(),
   editRateLimitPost()
+);
+
+router.get(PATH_NAMES.CLIENT_EDIT_REDIRECT_URLS, editRedirectUrlsGet());
+
+router.post(
+  PATH_NAMES.CLIENT_EDIT_REDIRECT_URLS,
+  validateEditRedirectUrlsRequest(),
+  editRedirectUrlsPost()
 );
 
 router.get(PATH_NAMES.CLIENT_EDIT_SCOPES, editScopesGet());

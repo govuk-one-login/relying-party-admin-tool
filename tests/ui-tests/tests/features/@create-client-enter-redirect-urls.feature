@@ -4,7 +4,7 @@ Feature: Create a new client - enter redirect urls page
     Given I go to the "create client - enter redirect urls" page
     And the page has finished loading
     And the page meets our accessibility standards
-    And the page title is "Enter redirect urls - Admin Tool"
+    And the page title is "Enter redirect URLs - Admin Tool"
     And the header shows
     And the navigation bar shows
     And the footer shows

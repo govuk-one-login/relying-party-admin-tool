@@ -36,6 +36,8 @@ const pageNameToPath: Record<string, string> = {
     "/services/1/clients/intClientId1/edit-post-logout-redirect-urls",
   "client - edit rate limit":
     "/services/1/clients/intClientId1/edit-rate-limit",
+  "client - edit redirect urls":
+    "/services/1/clients/intClientId1/edit-redirect-urls",
   "client - edit scopes": "/services/1/clients/intClientId1/edit-scopes",
   "client - edit sector identifier uri":
     "/services/1/clients/intClientId1/edit-sector-identifier-uri",

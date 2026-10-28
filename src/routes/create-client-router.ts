@@ -25,8 +25,8 @@ import {
   createClientEnterRedirectUrlsPost,
 } from "../components/create-client/redirect-urls/enter-redirect-urls/enter-redirect-urls-controller.js";
 import {
-  validateEditRedirectUrlsRequest,
-  validateEnterRedirectUrlsRequest,
+  validateCreateClientEditRedirectUrlsRequest,
+  validateCreateClientEnterRedirectUrlsRequest,
 } from "../components/create-client/redirect-urls/validation.js";
 import {
   createClientSelectScopesGet,
@@ -143,7 +143,7 @@ router.get(
 
 router.post(
   PATH_NAMES.CREATE_CLIENT_ENTER_REDIRECT_URLS,
-  validateEnterRedirectUrlsRequest(),
+  validateCreateClientEnterRedirectUrlsRequest(),
   createClientEnterRedirectUrlsPost()
 );
 
@@ -154,7 +154,7 @@ router.get(
 
 router.post(
   PATH_NAMES.CREATE_CLIENT_EDIT_REDIRECT_URLS,
-  validateEditRedirectUrlsRequest(),
+  validateCreateClientEditRedirectUrlsRequest(),
   createClientEditRedirectUrlsPost()
 );
 
