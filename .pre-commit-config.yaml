@@ -1,6 +1,5 @@
 default_language_version:
   golang: 1.24.5
-  python: python3.14
 exclude: |
   (?x)^(
       .*/test/.*/.*\.approved.json|
@@ -58,7 +57,17 @@ repos:
         files: "^infra/"
   - repo: local
     hooks:
-      - id: lint-fix
+      - id: format
+        name: format-fix
+        entry: bash
+        args:
+          - -c
+          - npm run format:fix
+        language: system
+        pass_filenames: false
+  - repo: local
+    hooks:
+      - id: lint
         name: lint-fix
         entry: bash
         args:
@@ -66,6 +75,7 @@ repos:
           - npm run lint:fix
         language: system
         pass_filenames: false
+        files: \.ts$
   - repo: local
     hooks:
       - id: format-terraform
