@@ -16,6 +16,7 @@ const defaultVitestRules: Partial<RulesConfig> = {
   "vitest/valid-title": "off",
   "vitest/prefer-describe-function-title": "off",
   "vitest/prefer-lowercase-title": "off",
+  "vitest/prefer-called-with": "off",
   "no-undef": "off",
 };
 export default defineConfig(
