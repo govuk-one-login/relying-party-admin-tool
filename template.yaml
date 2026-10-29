@@ -77,12 +77,12 @@ Mappings:
     dev:
       serviceDomain: "development.sign-in.service.gov.uk"
       sessionExpiry: "7200000"
-      rpConfigApiId: 3x6eix5jh5
+      rpConfigReadWriteApiId: 3x6eix5jh5
       maxRateLimit: 50
     build:
       serviceDomain: "build.sign-in.service.gov.uk"
       sessionExpiry: "7200000"
-      rpConfigApiId: tswjyvjfd5
+      rpConfigReadWriteApiId: tswjyvjfd5
       maxRateLimit: 50
     staging:
       serviceDomain: "staging.sign-in.service.gov.uk"
@@ -239,17 +239,18 @@ Resources:
                 ]
             - Name: "OIDC_SIGNING_KEY_ALIAS"
               Value: !Sub "alias/${Environment}-oidc-signing-key-alias"
-            - Name: "RP_CONFIG_API"
+            - Name: "CLIENT_REGISTRY_READ_WRITE_BASE_URL"
               Value: !Sub
-                - "${ApiId}-${VpceId}.execute-api.eu-west-2.amazonaws.com/${Environment}"
+                - "https://${ApiId}-${VpceId}.execute-api.eu-west-2.amazonaws.com/${Environment}"
                 - ApiId:
                     !FindInMap [
                       EnvironmentConfiguration,
                       !Ref Environment,
-                      rpConfigApiId,
+                      rpConfigReadWriteApiId,
                     ]
                   VpceId: !ImportValue
                     Fn::Sub: "${VpcStackName}-ExecuteApiGatewayEndpointId"
+                  Environment: !Sub ${Environment}
             - Name: "INT_CLIENT_MAX_RATE_LIMIT"
               Value:
                 !FindInMap [
