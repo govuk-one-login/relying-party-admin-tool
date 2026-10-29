@@ -15,7 +15,7 @@ describe("create client summary field validators", () => {
   describe("clientAuthenticationMethodSummaryFieldValidator", () => {
     it("should fail validation when client authentication method is empty", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "",
         })
         .build();
@@ -36,7 +36,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when client authentication method is invalid method", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "invalid-method",
         })
         .build();
@@ -59,7 +59,7 @@ describe("create client summary field validators", () => {
   describe("jwksUrlSummaryFieldValidator", () => {
     it("should pass validation when client authentication method is JWKS and valid url", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "JWKS",
           jwksURL: "https://url.com",
           clientTokenAuthenticationMethod: "private_key_jwt",
@@ -73,7 +73,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when client authentication method is JWKS and invalid url", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "JWKS",
           jwksURL: "not-a-url",
           clientTokenAuthenticationMethod: "private_key_jwt",
@@ -93,7 +93,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when client authentication method is JWKS and empty jwks url", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "JWKS",
           jwksURL: "",
           clientTokenAuthenticationMethod: "private_key_jwt",
@@ -113,7 +113,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when client token authentication method is not private_key_jwt", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "JWKS",
           jwksURL: "https://url.com",
           clientTokenAuthenticationMethod: "client_secret_post",
@@ -135,7 +135,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when client token authentication method is empty", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "JWKS",
           jwksURL: "https://url.com",
         })
@@ -160,7 +160,7 @@ describe("create client summary field validators", () => {
       const validPublicKey =
         "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDQk36HYw2tjwb1H88zL3dfPu2X\ngG7svnZgC660jop/Fi49dOOC8uX7u5WuaQP/ncUMHpR1M+av1bCn1NERXYyZ0TLO\nARZOO8fY5gJ5lLbQBngSUiSTTzjAZcQtypjosFLRkEyIMcXQxFc3Dk42mfhJiRFl\nffrIxtcLe1nxq4dRDQIDAQAB\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "STATIC",
           publicKey: validPublicKey,
           clientTokenAuthenticationMethod: "private_key_jwt",
@@ -174,7 +174,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when client authentication method is STATIC and invalid pem key", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "STATIC",
           publicKey: "not-a-key",
           clientTokenAuthenticationMethod: "private_key_jwt",
@@ -197,7 +197,7 @@ describe("create client summary field validators", () => {
         "-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgQCdQ5ikBNzPwBNy+wJU4PE7HF04U7+4NTJV/N7LP0fs37LGEZR8\nPIXbEJ9XpBfeXcCIOmL/oGcri5G5pBjDhyVvfk4mS+x35rVo70ZZNg71ZtEGcSMS\ne4efuxB/h/+4vVlhMgE6TjtkqXNTaLjHCjqwOEhRjXqmX0tmaDA3Z489wQIDAQAB\nAoGAAL5vHGeBe+IWtXaGfkxKF9N8hWWwBHkL8eguTZvRBUfRmqo+n4/RukWL22hF\nTKH45SwRh9AEbOpOGCi0jUg4Xxq32yIKepFykyrYjKmFhvrUGXRrW0oHzrnF9hIl\nlJ5jJxXzKHf5M0oR+IQfrwo+MRIoWKpmYy1+pI+ssoQF8gECQQDq4qTz+OYBNFYY\nEJ2xOk+16iNDW2sy1hBI6uvSPN2OfLVzH4s2yb4aLNT3T+ynnHtP1pH2i4PSW7vp\nl2Ggr+gxAkEAq2asXuDmMIjS5/W5zv8s1FidYfYjqTur3pYD7jQvcR2E2RslEsMw\nPvUUqWY9iuQkGnlTnlKUm/LsTAJhkaPakQJBAKEZA5PFkVMgJzBoLQ/B86vMQ5VO\nHS8HvLGWVlminz677+NerifMpJLlTse0zJaE79ppS0EynR3pBvAGgNIp8/ECQDwx\nH2Fma5ApzJ8nHSyDUlP0Frj7PoTE7tOJLTIu42Y+7pNrw/Y107CYUrw2qnAnNEKT\nzvivmX62raL3xxnlR/ECQBmTYNJj4N29Hx1dxTpnMcgNii2H+1LrnvTCm0lkWkYp\n5W2Eb44mjLw+57TFk1TJOKLdtE69zbio7uLAPTNCZ8Y=\n-----END RSA PRIVATE KEY-----"; // pragma: allowlist secret
 
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "STATIC",
           publicKey: privateKey,
           clientTokenAuthenticationMethod: "private_key_jwt",
@@ -219,7 +219,7 @@ describe("create client summary field validators", () => {
       const publicKey =
         "-----BEGIN PUBLIC KEY-----\nMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAElr7n+HAN7io+Nzl7PqWNy5a4DrOYNkWA\nK4kkf3FSnx7fThZCdwP4m/PI5xIxoxlhJX4eHmaKm8S6c2oWxtt1YQ==\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "STATIC",
           publicKey: publicKey,
           clientTokenAuthenticationMethod: "private_key_jwt",
@@ -241,7 +241,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when client authentication method is STATIC and empty public key", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "STATIC",
           publicKey: "",
           clientTokenAuthenticationMethod: "private_key_jwt",
@@ -263,7 +263,7 @@ describe("create client summary field validators", () => {
       const validPublicKey =
         "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDQk36HYw2tjwb1H88zL3dfPu2X\ngG7svnZgC660jop/Fi49dOOC8uX7u5WuaQP/ncUMHpR1M+av1bCn1NERXYyZ0TLO\nARZOO8fY5gJ5lLbQBngSUiSTTzjAZcQtypjosFLRkEyIMcXQxFc3Dk42mfhJiRFl\nffrIxtcLe1nxq4dRDQIDAQAB\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "STATIC",
           publicKey: validPublicKey,
           clientTokenAuthenticationMethod: "client_secret_post",
@@ -287,7 +287,7 @@ describe("create client summary field validators", () => {
       const validPublicKey =
         "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDQk36HYw2tjwb1H88zL3dfPu2X\ngG7svnZgC660jop/Fi49dOOC8uX7u5WuaQP/ncUMHpR1M+av1bCn1NERXYyZ0TLO\nARZOO8fY5gJ5lLbQBngSUiSTTzjAZcQtypjosFLRkEyIMcXQxFc3Dk42mfhJiRFl\nffrIxtcLe1nxq4dRDQIDAQAB\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "STATIC",
           publicKey: validPublicKey,
         })
@@ -310,7 +310,7 @@ describe("create client summary field validators", () => {
   describe("clientSecretSummaryFieldValidator", () => {
     it("should pass validation when client authentication method is CLIENT_SECRET and valid client secret", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "CLIENT_SECRET",
           clientSecret: "client-secret", // pragma: allowlist secret
           clientTokenAuthenticationMethod: "client_secret_post",
@@ -324,7 +324,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when client authentication method is CLIENT_SECRET and empty client secret", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "CLIENT_SECRET",
           clientSecret: "",
           clientTokenAuthenticationMethod: "client_secret_post",
@@ -344,7 +344,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when client token authentication method is not client_secret_post", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "CLIENT_SECRET",
           clientSecret: "client-secret", // pragma: allowlist secret
           clientTokenAuthenticationMethod: "private_key_jwt",
@@ -366,7 +366,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when client token authentication method is empty", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "CLIENT_SECRET",
           clientSecret: "client-secret", // pragma: allowlist secret
         })
@@ -389,7 +389,7 @@ describe("create client summary field validators", () => {
   describe("clientNameSummaryFieldValidator", () => {
     it("should pass validation with valid client name", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientName: "my client",
         })
         .build();
@@ -401,7 +401,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when name is empty", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientName: "",
         })
         .build();
@@ -420,7 +420,7 @@ describe("create client summary field validators", () => {
     it("should fail validation when name exceeds 255 characters", async () => {
       const longName = "a".repeat(256);
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientName: longName,
         })
         .build();
@@ -440,7 +440,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when name has non-ascii characters", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientName: "🆕 client",
         })
         .build();
@@ -460,7 +460,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when name begins with a colon", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientName: ":my client",
         })
         .build();
@@ -482,7 +482,7 @@ describe("create client summary field validators", () => {
   describe("redirectUrlsSummaryFieldValidator", () => {
     it("should pass validation with valid redirect url", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           redirectUrls: ["http://url.com"],
         })
         .build();
@@ -494,7 +494,7 @@ describe("create client summary field validators", () => {
 
     it("should pass validation with valid redirect urls", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           redirectUrls: ["http://url.com", "http://url2.com"],
         })
         .build();
@@ -506,7 +506,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when redirect urls is empty", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           redirectUrls: [],
         })
         .build();
@@ -526,7 +526,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when redirect url is not a URL", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           redirectUrls: ["not-a-url"],
         })
         .build();
@@ -546,7 +546,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when redirect url contains an invalid query parameter", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           redirectUrls: ["http://url.com?response"],
         })
         .build();
@@ -566,7 +566,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when redirect url contains an invalid scheme", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           redirectUrls: ["javascript://url.com"],
         })
         .build();
@@ -588,7 +588,7 @@ describe("create client summary field validators", () => {
   describe("scopesSummaryFieldValidator", () => {
     it("should pass validation with valid scope", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           scopes: ["openid"],
         })
         .build();
@@ -600,7 +600,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation without openid scopes", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           scopes: ["email", "phone"],
         })
         .build();
@@ -618,7 +618,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation with empty scopes", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           scopes: [],
         })
         .build();
@@ -636,7 +636,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation with an invalid scope", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           scopes: ["openid", "email", "invalid-scope"],
         })
         .build();
@@ -658,7 +658,7 @@ describe("create client summary field validators", () => {
   describe("tokenAuthenticationMethodSummaryFieldValidator", () => {
     it("should pass validation when client authentication method is CLIENT_SECRET and token authentication method is client_secret_post", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "CLIENT_SECRET",
           clientTokenAuthenticationMethod: "client_secret_post",
         })
@@ -672,7 +672,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when client authentication method is CLIENT_SECRET and token authentication method is empty", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "CLIENT_SECRET",
         })
         .build();
@@ -693,7 +693,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validationwhen client authentication method is CLIENT_SECRET and token authentication method is not client_secret_post", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "CLIENT_SECRET",
           clientTokenAuthenticationMethod: "private_key_jwt",
         })
@@ -715,7 +715,7 @@ describe("create client summary field validators", () => {
 
     it("should pass validation when client authentication method is STATIC and token authentication method is private_key_jwt", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "STATIC",
           clientTokenAuthenticationMethod: "private_key_jwt",
         })
@@ -729,7 +729,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when client authentication method is STATIC and token authentication method is empty", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "STATIC",
         })
         .build();
@@ -750,7 +750,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validationwhen client authentication method is STATIC and token authentication method is not private_key_jwt", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "STATIC",
           clientTokenAuthenticationMethod: "client_secret_post",
         })
@@ -772,7 +772,7 @@ describe("create client summary field validators", () => {
 
     it("should pass validation when client authentication method is JWKS and token authentication method is empty", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "JWKS",
         })
         .build();
