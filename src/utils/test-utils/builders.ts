@@ -25,7 +25,7 @@ export class RequestBuilder {
     return this;
   }
 
-  withSessionnewClientConfig(newClientConfig: object): this {
+  withSessionNewClientConfig(newClientConfig: Record<string, unknown>): this {
     this.session.newClientConfig = newClientConfig;
     return this;
   }
