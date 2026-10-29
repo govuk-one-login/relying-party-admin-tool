@@ -9,7 +9,7 @@ import { Result } from "../models/result.js";
 import { ClientRegistryStorage } from "../ports/client-registry-storage.js";
 import { logger } from "../utils/logger.js";
 
-export class ClientRegistryApiService {
+export class ClientRegistryService {
   private storageService: ClientRegistryStorage;
 
   constructor(storageService: ClientRegistryStorage) {

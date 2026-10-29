@@ -5,7 +5,7 @@ import {
   generateClientRegistryInput,
   generateTestCoreClientConfig,
 } from "../utils/test-utils/test-client-generator.js";
-import { ClientRegistryApiService } from "./client-registry-service.js";
+import { ClientRegistryService } from "./client-registry-service.js";
 import { Result, Success } from "../models/result.js";
 import { ClientRegistryApiClientResponse } from "../models/api.js";
 
@@ -53,7 +53,7 @@ describe("client registry service tests", () => {
     });
 
     // act
-    const clientRegistryApiService = new ClientRegistryApiService(
+    const clientRegistryApiService = new ClientRegistryService(
       clientRepository
     );
     const response = await clientRegistryApiService.addClientToClientRegistry(
@@ -93,7 +93,7 @@ describe("client registry service tests", () => {
     });
 
     // act
-    const clientRegistryApiService = new ClientRegistryApiService(
+    const clientRegistryApiService = new ClientRegistryService(
       clientRepository
     );
     const response = await clientRegistryApiService.addClientToClientRegistry(
@@ -141,7 +141,7 @@ describe("client registry service tests", () => {
     delete expectedOutput["clientJwtPublicKeySource"];
 
     // act
-    const clientRegistryApiService = new ClientRegistryApiService(
+    const clientRegistryApiService = new ClientRegistryService(
       clientRepository
     );
     const response = await clientRegistryApiService.addClientToClientRegistry(
@@ -171,7 +171,7 @@ describe("client registry service tests", () => {
     const config = generateTestCoreClientConfig();
 
     // act
-    const clientRegistryApiService = new ClientRegistryApiService(
+    const clientRegistryApiService = new ClientRegistryService(
       errorStorageService
     );
     const response = await clientRegistryApiService.addClientToClientRegistry(

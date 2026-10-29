@@ -1,4 +1,4 @@
-import { ClientRegistryApiService } from "../../../api/client-registry-service.js";
+import { ClientRegistryService } from "../../../api/client-registry-service.js";
 import { PATH_NAMES } from "../../../app.constants.js";
 import { addClientToService } from "../../../datastores/services-data-store.js";
 import { Result } from "../../../models/result.js";
@@ -26,7 +26,7 @@ vi.mock(import("../../../datastores/services-data-store.js"), () => {
 describe("summary controller tests", () => {
   const mockClientRegistryApi = {
     addClientToClientRegistry: vi.fn(),
-  } as unknown as ClientRegistryApiService;
+  } as unknown as ClientRegistryService;
 
   it("GET renders the summary template with the current client config in the session", async () => {
     // arrange
