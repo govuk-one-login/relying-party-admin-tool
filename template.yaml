@@ -87,10 +87,12 @@ Mappings:
     staging:
       serviceDomain: "staging.sign-in.service.gov.uk"
       sessionExpiry: "7200000"
+      rpConfigReadWriteApiId: 8bcbc4xva4
       maxRateLimit: 50
     integration:
       serviceDomain: "integration.sign-in.service.gov.uk"
       sessionExpiry: "7200000"
+      rpConfigReadWriteApiId: frfh6ep9pa
       maxRateLimit: 50
     production:
       serviceDomain: "sign-in.service.gov.uk"
