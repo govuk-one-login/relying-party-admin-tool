@@ -3,19 +3,19 @@ import { Session, SessionData } from "express-session";
 import { Logger } from "pino";
 
 export class RequestBuilder {
-  private body: object | null = null;
+  private body: Record<string, unknown> | null = null;
   private session: Partial<Session> & Partial<SessionData> = {
     newClientConfig: {},
   };
 
-  private log: object = {
+  private log: Partial<Logger> = {
     debug: vi.fn(() => {}),
     info: vi.fn(() => {}),
     warn: vi.fn(() => {}),
     error: vi.fn(() => {}),
   };
 
-  withBody(body: object): this {
+  withBody(body: Record<string, unknown>): this {
     this.body = body;
     return this;
   }
@@ -30,7 +30,7 @@ export class RequestBuilder {
     return this;
   }
 
-  withLog(log: object): this {
+  withLog(log: Record<string, unknown>): this {
     this.log = log;
     return this;
   }
