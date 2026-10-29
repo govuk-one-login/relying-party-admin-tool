@@ -6,7 +6,14 @@ export class RequestBuilder {
   private body: Record<string, unknown> | null = null;
   private session: Partial<Session> & Partial<SessionData> = {
     newClientConfig: {},
+    save: vi.fn((cb) => {
+      if (cb) {
+        cb();
+      }
+      return {} as Session;
+    }),
   };
+  private params: Record<string, unknown> = {};
 
   private log: Partial<Logger> = {
     debug: vi.fn(() => {}),
@@ -35,11 +42,17 @@ export class RequestBuilder {
     return this;
   }
 
+  withParams(params: Record<string, unknown>): this {
+    this.params = params;
+    return this;
+  }
+
   build(): Request {
     return {
       body: this.body,
       session: this.session as Session,
       log: this.log as Logger,
+      params: this.params,
     } as Request;
   }
 }
