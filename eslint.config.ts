@@ -35,7 +35,7 @@ export default defineConfig(
   eslint.configs.recommended,
   {
     files: ["src/**/*.ts", "src/**/*.js"],
-    ignores: ["src/**/*.test.ts"],
+    ignores: ["src/**/*.test.ts", "src/setup-unit-tests.ts"],
     extends: [...tseslint.configs.recommended],
     rules: {
       "@typescript-eslint/explicit-function-return-type": "error",
