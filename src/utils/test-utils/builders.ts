@@ -1,21 +1,28 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import { Session, SessionData } from "express-session";
 import { Logger } from "pino";
 
 export class RequestBuilder {
-  private body: object | null = null;
+  private body: Record<string, unknown> | null = null;
   private session: Partial<Session> & Partial<SessionData> = {
     newClientConfig: {},
+    save: vi.fn((cb) => {
+      if (cb) {
+        cb();
+      }
+      return {} as Session;
+    }),
   };
+  private params: Record<string, unknown> = {};
 
-  private log: object = {
+  private log: Partial<Logger> = {
     debug: vi.fn(() => {}),
     info: vi.fn(() => {}),
     warn: vi.fn(() => {}),
     error: vi.fn(() => {}),
   };
 
-  withBody(body: object): this {
+  withBody(body: Record<string, unknown>): this {
     this.body = body;
     return this;
   }
@@ -25,13 +32,18 @@ export class RequestBuilder {
     return this;
   }
 
-  withSessionnewClientConfig(newClientConfig: object): this {
+  withSessionNewClientConfig(newClientConfig: Record<string, unknown>): this {
     this.session.newClientConfig = newClientConfig;
     return this;
   }
 
-  withLog(log: object): this {
+  withLog(log: Record<string, unknown>): this {
     this.log = log;
+    return this;
+  }
+
+  withParams(params: Record<string, unknown>): this {
+    this.params = params;
     return this;
   }
 
@@ -40,6 +52,14 @@ export class RequestBuilder {
       body: this.body,
       session: this.session as Session,
       log: this.log as Logger,
+      params: this.params,
     } as Request;
   }
 }
+
+export const mockResponse = (): Response =>
+  ({
+    render: vi.fn(),
+    status: vi.fn(),
+    redirect: vi.fn(),
+  }) as unknown as Response;

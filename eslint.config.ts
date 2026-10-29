@@ -16,6 +16,7 @@ const defaultVitestRules: Partial<RulesConfig> = {
   "vitest/valid-title": "off",
   "vitest/prefer-describe-function-title": "off",
   "vitest/prefer-lowercase-title": "off",
+  "vitest/prefer-called-with": "off",
   "no-undef": "off",
 };
 export default defineConfig(
@@ -35,7 +36,7 @@ export default defineConfig(
   eslint.configs.recommended,
   {
     files: ["src/**/*.ts", "src/**/*.js"],
-    ignores: ["src/**/*.test.ts"],
+    ignores: ["src/**/*.test.ts", "src/setup-unit-tests.ts"],
     extends: [...tseslint.configs.recommended],
     rules: {
       "@typescript-eslint/explicit-function-return-type": "error",
