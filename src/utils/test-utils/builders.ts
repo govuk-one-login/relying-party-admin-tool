@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import { Session, SessionData } from "express-session";
 import { Logger } from "pino";
 
@@ -56,3 +56,10 @@ export class RequestBuilder {
     } as Request;
   }
 }
+
+export const mockResponse = (): Response =>
+  ({
+    render: vi.fn(),
+    status: vi.fn(),
+    redirect: vi.fn(),
+  }) as unknown as Response;
