@@ -79,7 +79,7 @@ import {
   createClientEditScopesPost,
 } from "../components/create-client/scopes/edit-scopes/edit-scopes-controller.js";
 import { serviceExistsMiddleware } from "../middleware/check-service-exists-middleware.js";
-import { ClientRegistryApiService } from "../api/client-registry-service.js";
+import { ClientRegistryService } from "../api/client-registry-service.js";
 import { isDeployedEnv } from "../config.js";
 import { InMemoryClientStorage } from "../adapters/in-memory-client-storage.js";
 import { ApiClientStorageService } from "../adapters/api-client-storage-service.js";
@@ -231,7 +231,7 @@ router.post(
   PATH_NAMES.CREATE_CLIENT_SUMMARY,
   validateCreateClientRequest(),
   createClientSummaryPost(
-    new ClientRegistryApiService(
+    new ClientRegistryService(
       !isDeployedEnv()
         ? new InMemoryClientStorage()
         : new ApiClientStorageService()

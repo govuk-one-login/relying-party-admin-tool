@@ -5,7 +5,7 @@ import { permissionsService } from "../../../services/permissions-service.js";
 import { populateUrlRoute } from "../../../utils/populate-url-route.js";
 import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
 import { ClientEnvironment } from "../../../models/client-environment.js";
-import { ClientRegistryApiService } from "../../../api/client-registry-service.js";
+import { ClientRegistryService } from "../../../api/client-registry-service.js";
 import { addClientToService } from "../../../datastores/services-data-store.js";
 
 export const createClientSummaryGet = (): ExpressRouteFunc => {
@@ -20,7 +20,7 @@ export const createClientSummaryGet = (): ExpressRouteFunc => {
 };
 
 export const createClientSummaryPost = (
-  clientRegistryService: ClientRegistryApiService
+  clientRegistryService: ClientRegistryService
 ): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
     const serviceId = req.params.serviceId as string;
