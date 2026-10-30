@@ -17,7 +17,7 @@ export const createClientEnterRedirectUrlsPost = (): ExpressRouteFunc => {
     return createClientRedirectUrlsPost(
       req,
       res,
-      PATH_NAMES.CREATE_CLIENT_SELECT_SCOPES,
+      PATH_NAMES.CREATE_CLIENT_NEXT,
       "create-client/redirect-urls/enter-redirect-urls/index.njk"
     );
   };

@@ -1,4 +1,4 @@
-export const PATH_NAMES = {
+export const PATH_NAMES = Object.freeze({
   ROOT: "/",
   "403_ERROR": "/forbidden",
   "500_ERROR": "/error",
@@ -9,6 +9,7 @@ export const PATH_NAMES = {
   SERVICE: "/services/:serviceId",
   CLIENT: "/services/:serviceId/clients/:clientId",
   CREATE_CLIENT: "/services/:serviceId/clients/create",
+  CREATE_CLIENT_NEXT: "/services/:serviceId/clients/create/next",
   CREATE_CLIENT_ENTER_CLIENT_NAME:
     "/services/:serviceId/clients/create/enter-client-name",
   CREATE_CLIENT_EDIT_CLIENT_NAME:
@@ -59,7 +60,7 @@ export const PATH_NAMES = {
   CLIENT_EDIT_SERVICE_TYPE:
     "/services/:serviceId/clients/:clientId/edit-service-type",
   OIDC_JWKS: "/.well-known/jwks.json",
-};
+} as const);
 
 export const HTTP_STATUS_CODES = {
   NOT_FOUND: 404,

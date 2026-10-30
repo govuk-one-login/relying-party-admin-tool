@@ -5,8 +5,10 @@ import { populateUrlRoute } from "../../../../utils/populate-url-route.js";
 import { saveSessionAndRedirect } from "../../../../utils/save-session-and-redirect.js";
 
 export const createClientEnterClientNameGet = (): ExpressRouteFunc => {
-  return async (_req: Request, res: Response) => {
-    res.render("create-client/client-name/enter-client-name/index.njk");
+  return async (req: Request, res: Response) => {
+    res.render("create-client/client-name/enter-client-name/index.njk", {
+      clientName: req.session.newClientConfig?.name ?? "",
+    });
   };
 };
 
@@ -19,7 +21,7 @@ export const createClientEnterClientNamePost = (): ExpressRouteFunc => {
     return saveSessionAndRedirect(
       req,
       res,
-      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SELECT_CLIENT_AUTHENTICATION, {
+      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_NEXT, {
         [":serviceId"]: req.params.serviceId as string,
       })
     );

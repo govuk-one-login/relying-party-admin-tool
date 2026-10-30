@@ -6,9 +6,14 @@ import { saveSessionAndRedirect } from "../../../../utils/save-session-and-redir
 
 export const createClientSelectClientAuthenticationGet =
   (): ExpressRouteFunc => {
-    return async (_req: Request, res: Response) => {
+    return async (req: Request, res: Response) => {
       res.render(
-        "create-client/client-authentication-method/select-client-authentication-method/index.njk"
+        "create-client/client-authentication-method/select-client-authentication-method/index.njk",
+        {
+          showClientSecretField:
+            req.session.newClientConfig?.isIdentityVerificationSupported ===
+            false,
+        }
       );
     };
   };
@@ -42,7 +47,7 @@ export const createClientSelectClientAuthenticationPost =
       return saveSessionAndRedirect(
         req,
         res,
-        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_ENTER_REDIRECT_URLS, {
+        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_NEXT, {
           [":serviceId"]: req.params.serviceId as string,
         })
       );
