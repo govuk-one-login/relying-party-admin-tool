@@ -10,7 +10,7 @@ Feature: Create a new client - enter landing page url page
     And the footer shows
     Then the page has the heading: "Enter landing page URL for your client"
 
-  Scenario: Create a new client - enter landing page url page validates the client name
+  Scenario: Create a new client - enter landing page url page validates the url
     Given I go to the "create client - enter landing page url" page
     And the page has finished loading
     And I enter "Not a url" into the field "Enter landing page URL for your client"
