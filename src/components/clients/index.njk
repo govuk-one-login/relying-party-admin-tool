@@ -1,0 +1,253 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitleName = "View client" %}
+
+{% set coreFieldsRowItems = [] %}
+
+{%
+  set coreFieldsRowItems = coreFieldsRowItems.concat([
+    {
+      key: { text: "Client Name" },
+      value: { html: '<div id="client-name">' + client.clientName | default("Not set") + '</div>' }
+    },
+    {
+      key: { text: "Client ID" },
+      value: { html: '<div id="client-id">' + client.clientId | default("Not set") + '</div>' }
+    },
+    {
+      key: {
+        text: "Check user details"
+      },
+      value: {
+        html: '<div id="identity-verification-supported">' + client.identityVerificationSupported | default("Not set") + '</div>'
+      }
+    }
+  ])
+%}
+{% if client.clientJwtPublicKeySource.type == "JWKS" %}
+  {%
+    set coreFieldsRowItems = coreFieldsRowItems.concat([
+      {
+        key: { text: "Client Authentication Method" },
+        value: { html: '<div id="client-authentication-method">Public key URL (JWKS)</div>' }
+      },
+      {
+        key: { text: "JWKS URL" },
+        value: { html: '<div id="jwks-endpoint">' + client.clientJwtPublicKeySource.jwksUrl | default("Not set") + '</div>' }
+      }
+    ])
+  %}
+{% elif client.clientAuthenticationMethod == "STATIC" %}
+  {%
+    set coreFieldsRowItems = coreFieldsRowItems.concat([
+      {
+        key: { text: "Client Authentication Method" },
+        value: { html: '<div id="client-authentication-method">Fixed public key</div>' }
+      },
+      {
+        key: { text: "Public Key" },
+        value: { html: '<div id="public-key">' + client.clientJwtPublicKeySource.jwks | default("Not set") + '</div>' }
+      }
+    ])
+  %}
+{% endif %}
+{% if client.clientTokenAuthMethod.tokenAuthMethod == "client_secret_post" %}
+  {%
+    set coreFieldsRowItems = coreFieldsRowItems.concat([
+      {
+        key: { text: "Client Authentication Method" },
+        value: { html: '<div id="client-authentication-method">Client secret</div>' }
+      },
+      {
+        key: { text: "Client Secret" },
+        value: { html: '<div id="client-secret">' + client.clientTokenAuthMethod.clientSecret | default("Not set") + '</div>' }
+      }
+    ])
+  %}
+{% endif %}
+{%
+  set coreFieldsRowItems = coreFieldsRowItems.concat([
+    {
+      key: { text: "Token Authentication Method" },
+      value: { html: '<div id="token-authentication-method">' + client.clientTokenAuthMethod.tokenAuthMethod | default("Not set") + '</div>' }
+    },
+    {
+      key: { text: "Redirect URLs" },
+      value: {
+        html: '<div id="redirect-urls">' + (client.redirectUrls | join("<br>") if client.redirectUrls else "Not set") + '</div>'
+      }
+    },
+    {
+      key: { text: "Scopes" },
+      value: {
+        html: '<div id="scopes">' + (client.scopes | join("<br>") if client.scopes else "Not set") + '</div>'
+      }
+    },
+    {
+      key: { text: "Sector Identifier URI" },
+      value: {
+        html: '<div id="sector-identifier-uri">' + client.sectorIdentifierUri | default("Not set") + '</div>'
+      }
+    },
+    {
+      key: { text: "Is Active" },
+      value: {
+        html: '<div id="is-active">' + client.isActive | default("Not set") + '</div>'
+      }
+    }
+  ])
+%}
+
+{% block pageContent %}
+  <form class="form" action="summary" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+    <h1 class="govuk-heading-xl">View client details</h1>
+
+    {{
+      govukSummaryList({
+        card: {
+          title: {
+            text: "Core fields"
+          }
+        },
+        rows: coreFieldsRowItems
+      })
+    }}
+
+    {{
+      govukSummaryList({
+        card: {
+          title: {
+            text: "Identity fields"
+          }
+        },
+        firstCellIsHeader: true,
+        head: [],
+        rows: [
+          {
+            key: {
+              text: "Claims"
+            },
+            value: {
+              html: '<div id="claims">' + (client.claims | join("<br>") if client.claims.length > 0 else "Not set") + '</div>'
+            }
+          },
+          {
+            key: {
+              text: "Landing Page URL"
+            },
+            value: {
+              html: '<div id="landing-page-url">' + client.landingPageUrl | default("Not set") + '</div>'
+            }
+          },
+          {
+            key: {
+              text: "Level of Confidence values"
+            },
+            value: {
+              html: '<div id="levels-of-confidence">' + (client.clientLoCs | join("<br>") if client.clientLoCs.length > 0 else "Not set") + '</div>'
+            }
+          }
+        ]
+      })
+    }}
+
+    {{
+      govukSummaryList({
+        card: {
+          title: {
+            text: "Additional fields"
+          }
+        },
+        firstCellIsHeader: true,
+        head: [],
+        rows: [
+          {
+            key: {
+              text: "ID Token Signing Algorithm"
+            },
+            value: {
+              html: '<div id="id-token-signing-algorithm">' + client.idTokenSigningAlgorithm | default("Not set") + '</div>'
+            }
+          },
+          {
+            key: {
+              text: "Post Logout Redirect URLs"
+            },
+            value: {
+              html: '<div id="post-logout-redirect-urls">' + (client.postLogoutRedirectUrls | join("<br>") if client.postLogoutRedirectUrls.length > 0 else "Not set") + '</div>'
+            }
+          },
+          {
+            key: {
+              text: "Backchannel Logout URI"
+            },
+            value: {
+              html: '<div id="backchannel-logout-uri">' + client.backChannelLogoutUri | default("Not set") + '</div>'
+            }
+          },
+          {
+            key: {
+              text: "Service Type"
+            },
+            value: {
+              html: '<div id="service-type">' + client.serviceType | default("Not set") + '</div>'
+            }
+          },
+          {
+            key: {
+              text: "JAR Validation Required"
+            },
+            value: {
+              html: '<div id="jar-validation-required">' + client.jarValidationRequired | default("Not set") + '</div>'
+            }
+          },
+          {
+            key: {
+              text: "Channel"
+            },
+            value: {
+              html: '<div id="channel">' + client.channel | default("web") + '</div>'
+            }
+          },
+          {
+            key: {
+              text: "PKCE Enforced"
+            },
+            value: {
+              html: '<div id="pkce-enforced">' + client.pkceEnforced | default("Not set") + '</div>'
+            }
+          },
+          {
+            key: {
+              text: "Max Age Enabled"
+            },
+            value: {
+              html: '<div id="max-age-enabled">' + client.maxAgeEnabled | default("Not set") + '</div>'
+            }
+          },
+          {
+            key: {
+              text: "Permit missing nonce"
+            },
+            value: {
+              html: '<div id="permit-missing-nonce">' + client.permitMissingNonce | default("Not set") + '</div>'
+            }
+          },
+          {
+            key: {
+              text: "Rate limit"
+            },
+            value: {
+              html: '<div id="rate-limit">' + (client.rateLimit + ' per minute' if client.rateLimit else "Not set") + '</div>'
+            }
+          }
+        ]
+      })
+    }}
+  </form>
+{% endblock %}

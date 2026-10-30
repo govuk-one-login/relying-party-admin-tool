@@ -29,6 +29,7 @@ export const createClientEditClientAuthenticationPost =
           jwksURL: req.body["jwks-endpoint"],
           publicKey: undefined,
           clientSecret: undefined,
+          clientTokenAuthenticationMethod: "private_key_jwt",
         };
       } else if (req.body["client-authentication-method"] === "STATIC") {
         req.session.newClientConfig = {
@@ -37,6 +38,7 @@ export const createClientEditClientAuthenticationPost =
           publicKey: req.body["public-key"],
           jwksURL: undefined,
           clientSecret: undefined,
+          clientTokenAuthenticationMethod: "private_key_jwt",
         };
       } else if (req.body["client-authentication-method"] === "CLIENT_SECRET") {
         req.session.newClientConfig = {
@@ -45,6 +47,7 @@ export const createClientEditClientAuthenticationPost =
           clientSecret: req.body["client-secret"],
           publicKey: undefined,
           jwksURL: undefined,
+          clientTokenAuthenticationMethod: "client_secret_post",
         };
       }
 
