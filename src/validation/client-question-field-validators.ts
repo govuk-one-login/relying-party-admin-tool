@@ -22,7 +22,7 @@ import {
   requiredValidator,
   validUrlValidator,
 } from "./shared-validators.js";
-import { getListFromRequestBody } from "../helpers/request-helpers.js";
+import { getOptionalList } from "../helpers/request-helpers.js";
 
 export const backchannelLogoutUrlFieldValidator = new FieldValidator(
   backchannelLogoutUrlValidator.adaptedFrom(
@@ -90,7 +90,7 @@ export const clientNameInputFieldValidator = new FieldValidator(
 
 export const selectClaimsFieldValidator = new FieldValidator(
   validClaimsValidator.adaptedFrom((req: Request) =>
-    getListFromRequestBody(req, "selected-claims")
+    getOptionalList(req.body["selected-claims"])
   ),
   "selected-claims"
 );
@@ -227,14 +227,14 @@ export const rateLimitFieldValidator = new FieldValidator(
 
 export const scopesFieldValidator = new FieldValidator(
   validScopesValidator.adaptedFrom((req: Request) =>
-    getListFromRequestBody(req, "selected-scopes")
+    getOptionalList(req.body["selected-scopes"])
   ),
   "selected-scopes"
 );
 
 export const allScopesFieldValidator = new FieldValidator(
   allScopesValidator.adaptedFrom((req: Request) =>
-    getListFromRequestBody(req, "selected-scopes")
+    getOptionalList(req.body["selected-scopes"])
   ),
   "selected-scopes"
 );
@@ -253,7 +253,7 @@ export const serviceTypeFieldValidator = new FieldValidator(
 
 export const selectLevelOfConfidenceFieldValidator = new FieldValidator(
   validLevelOfConfidenceValidator
-    .adaptedFrom((req: Request) => getListFromRequestBody(req, "selected-locs"))
+    .adaptedFrom((req: Request) => getOptionalList(req.body["selected-locs"]))
     .and(
       when(
         (req: Request) =>
@@ -269,7 +269,7 @@ export const selectLevelOfConfidenceFieldValidator = new FieldValidator(
             )
           )
           .adaptedFrom((req: Request) =>
-            getListFromRequestBody(req, "selected-locs")
+            getOptionalList(req.body["selected-locs"])
           )
       )
     ),

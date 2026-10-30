@@ -2,13 +2,17 @@ import type { Request } from "express";
 import { ValidationChainFunc } from "../../../types.js";
 import { validateFieldsMiddleware } from "../../../middleware/form-validation-middleware.js";
 import {
+  claimsFieldValidator,
   clientAuthenticationMethodSummaryFieldValidator,
   clientNameSummaryFieldValidator,
   clientSecretSummaryFieldValidator,
   jwksUrlSummaryFieldValidator,
+  landingPageUrlFieldValidator,
+  levelOfConfidenceFieldValidator,
   publicKeySummaryFieldValidator,
   redirectUrlsSummaryFieldValidator,
   scopesSummaryFieldValidator,
+  supportIdentityVerificationFieldValidator,
   tokenAuthenticationMethodSummaryFieldValidator,
 } from "../../../validation/create-client-summary-field-validators.js";
 
@@ -29,7 +33,11 @@ const summaryFieldValidators = clientNameSummaryFieldValidator
   .and(clientSecretSummaryFieldValidator)
   .and(tokenAuthenticationMethodSummaryFieldValidator)
   .and(redirectUrlsSummaryFieldValidator)
-  .and(scopesSummaryFieldValidator);
+  .and(scopesSummaryFieldValidator)
+  .and(claimsFieldValidator)
+  .and(supportIdentityVerificationFieldValidator)
+  .and(landingPageUrlFieldValidator)
+  .and(levelOfConfidenceFieldValidator);
 
 const postValidationLocals = (req: Request): Record<string, unknown> => {
   return { client: req.session.newClientConfig };

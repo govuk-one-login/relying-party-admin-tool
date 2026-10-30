@@ -4,15 +4,20 @@ import {
   jwksUrlValidator,
   publicKeyValidator,
   redirectUrlValidator,
+  validClaimsValidator,
+  validLevelOfConfidenceValidator,
   validScopesValidator,
 } from "./shared-client-validators.js";
-import { FieldValidator, rule, when } from "./validator.js";
+import { FieldValidator, optional, rule, when } from "./validator.js";
 import {
   limitedValidValuesValidator,
   listValidator,
   notEmptyListValidator,
+  productionUrlValidator,
   requiredValidator,
+  validUrlValidator,
 } from "./shared-validators.js";
+import { getOptionalList } from "../helpers/request-helpers.js";
 
 export const clientAuthenticationMethodSummaryFieldValidator =
   new FieldValidator(
@@ -101,11 +106,81 @@ export const clientSecretSummaryFieldValidator = new FieldValidator(
   "client-secret"
 );
 
+export const claimsFieldValidator = new FieldValidator(
+  validClaimsValidator.adaptedFrom((req: Request) =>
+    getOptionalList(req.session.newClientConfig?.claims)
+  ),
+  "claims"
+);
+
 export const clientNameSummaryFieldValidator = new FieldValidator(
   clientNameValidator.adaptedFrom(
     (req: Request) => req.session.newClientConfig?.clientName ?? ""
   ),
   "client-name"
+);
+
+export const supportIdentityVerificationFieldValidator = new FieldValidator(
+  requiredValidator("Choose an option to support identity verification or not")
+    .adaptedFrom((req: Request) =>
+      req.session.newClientConfig?.isIdentityVerificationSupported
+        ? req.session.newClientConfig?.isIdentityVerificationSupported?.toString()
+        : ""
+    )
+    .and(
+      when(
+        (req: Request) =>
+          req.session.newClientConfig?.clientAuthenticationMethod ===
+          "CLIENT_SECRET",
+        rule(
+          (input?: string) => input !== "true",
+          "Identity verification cannot be supported if client secret is used as authentication method"
+        ).adaptedFrom((req: Request) =>
+          req.session.newClientConfig?.isIdentityVerificationSupported
+            ? req.session.newClientConfig?.isIdentityVerificationSupported?.toString()
+            : ""
+        )
+      )
+    ),
+  "support-identity-verification"
+);
+
+export const landingPageUrlFieldValidator = new FieldValidator(
+  optional(
+    validUrlValidator("landing page URL").and(
+      productionUrlValidator("landing page URL")
+    )
+  ).adaptedFrom(
+    (req: Request) => req.session.newClientConfig?.landingPageUrl as string
+  ),
+  "landing-page-url"
+);
+
+export const levelOfConfidenceFieldValidator = new FieldValidator(
+  validLevelOfConfidenceValidator
+    .adaptedFrom((req: Request) =>
+      getOptionalList(req.session.newClientConfig?.loc)
+    )
+    .and(
+      when(
+        (req: Request) =>
+          req.session.newClientConfig?.isIdentityVerificationSupported !== true,
+        rule(
+          (value: string[]) => !value.includes("P1"),
+          "Identity verification must be supported"
+        )
+          .and(
+            rule(
+              (value: string[]) => !value.includes("P2"),
+              "Identity verification must be supported"
+            )
+          )
+          .adaptedFrom((req: Request) =>
+            getOptionalList(req.session.newClientConfig?.loc)
+          )
+      )
+    ),
+  "level-of-confidence"
 );
 
 export const redirectUrlsSummaryFieldValidator = new FieldValidator(
