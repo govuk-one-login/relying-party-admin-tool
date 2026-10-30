@@ -7,7 +7,7 @@ import { saveSessionAndRedirect } from "../../../../utils/save-session-and-redir
 export const createClientEnterClientNameGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
     res.render("create-client/client-name/enter-client-name/index.njk", {
-      clientName: req.session.newClientConfig?.name ?? "",
+      clientName: req.session.newClientConfig?.clientName ?? "",
     });
   };
 };
@@ -16,7 +16,7 @@ export const createClientEnterClientNamePost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
     req.session.newClientConfig = {
       ...req.session.newClientConfig,
-      name: req.body.name,
+      clientName: req.body.name,
     };
     return saveSessionAndRedirect(
       req,

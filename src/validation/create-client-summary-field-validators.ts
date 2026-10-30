@@ -103,7 +103,7 @@ export const clientSecretSummaryFieldValidator = new FieldValidator(
 
 export const clientNameSummaryFieldValidator = new FieldValidator(
   clientNameValidator.adaptedFrom(
-    (req: Request) => req.session.newClientConfig?.name ?? ""
+    (req: Request) => req.session.newClientConfig?.clientName ?? ""
   ),
   "name"
 );

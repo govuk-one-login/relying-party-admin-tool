@@ -8,7 +8,7 @@ export const createClientStateMachine = setup({
     context: CoreClientConfig;
   },
   guards: {
-    hasClientName: ({ context }) => typeof context.name === "string",
+    hasClientName: ({ context }) => typeof context.clientName === "string",
     hasJwksClientAuth: ({ context }) =>
       typeof context.jwksURL === "string" &&
       context.clientTokenAuthenticationMethod === "private_key_jwt",

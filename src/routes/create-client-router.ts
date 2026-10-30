@@ -8,34 +8,22 @@ import {
   createClientEnterClientNameGet,
   createClientEnterClientNamePost,
 } from "../components/create-client/client-name/enter-client-name/enter-client-name-controller.js";
-import {
-  validateEditClientNameRequest,
-  validateEnterClientNameRequest,
-} from "../components/create-client/client-name/validation.js";
+import { validateEnterClientNameRequest } from "../components/create-client/client-name/validation.js";
 import {
   createClientSelectClientAuthenticationGet,
   createClientSelectClientAuthenticationPost,
 } from "../components/create-client/client-authentication-method/select-client-authentication-method/select-client-authentication-method-controller.js";
-import {
-  validateEditClientAuthenticationRequest,
-  validateSelectClientAuthenticationRequest,
-} from "../components/create-client/client-authentication-method/validation.js";
+import { validateSelectClientAuthenticationRequest } from "../components/create-client/client-authentication-method/validation.js";
 import {
   createClientEnterRedirectUrlsGet,
   createClientEnterRedirectUrlsPost,
 } from "../components/create-client/redirect-urls/enter-redirect-urls/enter-redirect-urls-controller.js";
-import {
-  validateEditRedirectUrlsRequest,
-  validateEnterRedirectUrlsRequest,
-} from "../components/create-client/redirect-urls/validation.js";
+import { validateEnterRedirectUrlsRequest } from "../components/create-client/redirect-urls/validation.js";
 import {
   createClientSelectScopesGet,
   createClientSelectScopesPost,
 } from "../components/create-client/scopes/select-scopes/select-scopes-controller.js";
-import {
-  validateEditScopesRequest,
-  validateSelectScopesRequest,
-} from "../components/create-client/scopes/validation.js";
+import { validateSelectScopesRequest } from "../components/create-client/scopes/validation.js";
 import {
   createClientIsIdentityVerificationSupportedGet,
   createClientIsIdentityVerificationSupportedPost,
@@ -56,28 +44,12 @@ import {
   createClientSummaryPost,
 } from "../components/create-client/summary/summary-controller.js";
 import { validateCreateClientRequest } from "../components/create-client/summary/summary-validation.js";
-import {
-  createClientEditClientNameGet,
-  createClientEditClientNamePost,
-} from "../components/create-client/client-name/edit-client-name/edit-client-name-controller.js";
-import {
-  createClientEditClientAuthenticationGet,
-  createClientEditClientAuthenticationPost,
-} from "../components/create-client/client-authentication-method/edit-client-authentication-method/edit-client-authentication-method-controller.js";
-import {
-  createClientEditRedirectUrlsGet,
-  createClientEditRedirectUrlsPost,
-} from "../components/create-client/redirect-urls/edit-redirect-urls/edit-redirect-urls-controller.js";
 import { checkIntegrationWriterPermissionsMiddleware } from "../middleware/permissions-check-middleware.js";
 import {
   createClientSelectLevelsOfConfidenceGet,
   createClientSelectLevelsOfConfidencePost,
 } from "../components/create-client/select-levels-of-confidence/select-levels-of-confidence-controller.js";
 import { validateSelectLevelsOfConfidenceRequest } from "../components/create-client/select-levels-of-confidence/select-levels-of-confidence-validation.js";
-import {
-  createClientEditScopesGet,
-  createClientEditScopesPost,
-} from "../components/create-client/scopes/edit-scopes/edit-scopes-controller.js";
 import { serviceExistsMiddleware } from "../middleware/check-service-exists-middleware.js";
 import { clientNextController } from "../components/create-client/journey/create-client-next-journey-controller.js";
 
@@ -106,17 +78,6 @@ router.post(
 );
 
 router.get(
-  PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME,
-  createClientEditClientNameGet()
-);
-
-router.post(
-  PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_NAME,
-  validateEditClientNameRequest(),
-  createClientEditClientNamePost()
-);
-
-router.get(
   PATH_NAMES.CREATE_CLIENT_SELECT_CLIENT_AUTHENTICATION,
   createClientSelectClientAuthenticationGet()
 );
@@ -125,17 +86,6 @@ router.post(
   PATH_NAMES.CREATE_CLIENT_SELECT_CLIENT_AUTHENTICATION,
   validateSelectClientAuthenticationRequest(),
   createClientSelectClientAuthenticationPost()
-);
-
-router.get(
-  PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_AUTHENTICATION,
-  createClientEditClientAuthenticationGet()
-);
-
-router.post(
-  PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_AUTHENTICATION,
-  validateEditClientAuthenticationRequest(),
-  createClientEditClientAuthenticationPost()
 );
 
 router.get(
@@ -150,17 +100,6 @@ router.post(
 );
 
 router.get(
-  PATH_NAMES.CREATE_CLIENT_EDIT_REDIRECT_URLS,
-  createClientEditRedirectUrlsGet()
-);
-
-router.post(
-  PATH_NAMES.CREATE_CLIENT_EDIT_REDIRECT_URLS,
-  validateEditRedirectUrlsRequest(),
-  createClientEditRedirectUrlsPost()
-);
-
-router.get(
   PATH_NAMES.CREATE_CLIENT_SELECT_SCOPES,
   createClientSelectScopesGet()
 );
@@ -169,14 +108,6 @@ router.post(
   PATH_NAMES.CREATE_CLIENT_SELECT_SCOPES,
   validateSelectScopesRequest(),
   createClientSelectScopesPost()
-);
-
-router.get(PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES, createClientEditScopesGet());
-
-router.post(
-  PATH_NAMES.CREATE_CLIENT_EDIT_SCOPES,
-  validateEditScopesRequest(),
-  createClientEditScopesPost()
 );
 
 router.get(

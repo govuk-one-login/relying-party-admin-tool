@@ -14,17 +14,6 @@ export const validateSelectClientAuthenticationRequest =
     ];
   };
 
-export const validateEditClientAuthenticationRequest =
-  (): ValidationChainFunc => {
-    return [
-      validateFieldsMiddleware(
-        "create-client/client-authentication-method/edit-client-authentication-method/index.njk",
-        clientAuthenticationInputFieldValidatorChain,
-        postValidationLocals
-      ),
-    ];
-  };
-
 const postValidationLocals = (req: Request): Record<string, unknown> => {
   return {
     clientAuthenticationMethod:
