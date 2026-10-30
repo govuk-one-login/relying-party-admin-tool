@@ -4,13 +4,12 @@ import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
 import {
   createTestClient,
+  createTestRelation,
+  createTestService,
+  createTestUser,
   getServicePaths,
   testComponent,
 } from "../../helpers/helpers.js";
-import { User } from "../../../src/models/user.js";
-import { UserPermission } from "../../../src/models/permissions.js";
-import { Relation } from "../../../src/models/relation.js";
-import { Service } from "../../../src/models/service.js";
 import { randomUUID } from "crypto";
 
 describe("Integration:: edit channel", () => {
@@ -18,22 +17,12 @@ describe("Integration:: edit channel", () => {
   let app: any;
   let requestAgent: any;
   const existingUserId = randomUUID();
-  const existingUser: User = {
-    id: existingUserId,
-    name: "Test User",
-    email: "test@user.com",
-  };
   const serviceId = randomUUID();
   const clientId = randomUUID();
-  const existingRelation: Relation = {
-    userId: existingUserId,
-    object: `service:${serviceId}`,
-    relation: UserPermission.WRITER_INT,
-  };
-  const existingService: Service = {
-    serviceId: serviceId,
-    name: "Test service",
-  };
+
+  const existingService = createTestService(serviceId);
+  const existingUser = createTestUser(existingUserId);
+  const existingRelation = createTestRelation(serviceId, existingUserId);
   const existingClient = createTestClient(serviceId, clientId);
 
   integrationTest.beforeAll(
@@ -96,12 +85,7 @@ describe("Integration:: edit channel", () => {
     "should redirect to forbidden when csrf not present",
     async () => {
       const res = await requestAgent
-        .post(
-          getServicePaths(
-            PATH_NAMES.CLIENT_EDIT_CHANNEL,
-            existingService.serviceId
-          )
-        )
+        .post(getServicePaths(PATH_NAMES.CLIENT_EDIT_CHANNEL, serviceId))
         .type("form")
         .send({
           channel: "web",
