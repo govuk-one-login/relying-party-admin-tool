@@ -15,6 +15,13 @@
       actions: {
         items: [{ href: baseUrl + "/edit-client-name", text: "Change", visuallyHiddenText: "client name" }]
       }
+    },
+    {
+      key: { text: "Check user identity" },
+      value: { html: '<div id="identity-verification-supported">' + client.isIdentityVerificationSupported | default("Not set") + '</div>' },
+      actions: {
+        items: [{ href: "/", text: "Change", visuallyHiddenText: "identity verification supported" }]
+      }
     }
   ])
 %}
@@ -136,6 +143,46 @@
         rows: coreFieldsRowItems
       })
     }}
+
+    {% if client.isIdentityVerificationSupported %}
+
+      {{
+        govukSummaryList({
+          card: {
+            title: {
+              text: "Identity fields"
+            }
+          },
+          rows: [
+            {
+              key: { text: "Claims" },
+              value: {
+                html: '<div id="claims">' + (client.claims | join("<br>") if client.claims else "Not set") + '</div>'
+              },
+              actions: {
+                items: [{ href: "/", text: "Change", visuallyHiddenText: "claims" }]
+              }
+            },
+            {
+              key: { text: "Landing Page URL" },
+              value: { html: '<div id="landing-page-url">' + (client.landingPageUrl if client.landingPageUrl.length > 0 else "Not set") + '</div>' },
+              actions: {
+                items: [{ href: "/", text: "Change", visuallyHiddenText: "landing page url" }]
+              }
+            },
+            {
+              key: { text: "Level of Confidence values" },
+              value: {
+                html: '<div id="levels-of-confidence">' + (client.loc | join("<br>") if client.loc else "Not set") + '</div>'
+              },
+              actions: {
+                items: [{ href: "/", text: "Change", visuallyHiddenText: "level of confidence values" }]
+              }
+            }
+          ]
+        })
+      }}
+    {% endif %}
 
     <h2 class="govuk-heading-m">Now create your client</h2>
     {{
