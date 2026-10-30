@@ -12,19 +12,12 @@ export const PATH_NAMES = Object.freeze({
   CREATE_CLIENT_NEXT: "/services/:serviceId/clients/create/next",
   CREATE_CLIENT_ENTER_CLIENT_NAME:
     "/services/:serviceId/clients/create/enter-client-name",
-  CREATE_CLIENT_EDIT_CLIENT_NAME:
-    "/services/:serviceId/clients/create/edit-client-name",
   CREATE_CLIENT_SELECT_CLIENT_AUTHENTICATION:
     "/services/:serviceId/clients/create/select-client-authentication",
-  CREATE_CLIENT_EDIT_CLIENT_AUTHENTICATION:
-    "/services/:serviceId/clients/create/edit-client-authentication",
   CREATE_CLIENT_ENTER_REDIRECT_URLS:
     "/services/:serviceId/clients/create/enter-redirect-urls",
-  CREATE_CLIENT_EDIT_REDIRECT_URLS:
-    "/services/:serviceId/clients/create/edit-redirect-urls",
   CREATE_CLIENT_SELECT_SCOPES:
     "/services/:serviceId/clients/create/select-scopes",
-  CREATE_CLIENT_EDIT_SCOPES: "/services/:serviceId/clients/create/edit-scopes",
   CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT:
     "/services/:serviceId/clients/create/support-identity-verification",
   CREATE_CLIENT_SELECT_CLAIMS:
