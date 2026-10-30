@@ -22,7 +22,7 @@ export const createClientSelectLevelsOfConfidencePost =
       return saveSessionAndRedirect(
         req,
         res,
-        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUMMARY, {
+        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_NEXT, {
           [":serviceId"]: req.params.serviceId as string,
         })
       );

@@ -13,7 +13,7 @@
       key: { text: "Client Name" },
       value: { html: '<div id="client-name">' + client.clientName | default("Not set") + '</div>' },
       actions: {
-        items: [{ href: baseUrl + "/edit-client-name", text: "Change", visuallyHiddenText: "client name" }]
+        items: [{ href: baseUrl + "/enter-client-name", text: "Change", visuallyHiddenText: "client name" }]
       }
     }
   ])
@@ -25,14 +25,14 @@
         key: { text: "Client Authentication Method" },
         value: { html: '<div id="client-authentication-method">Public key URL (JWKS)</div>' },
         actions: {
-          items: [{ href: baseUrl + "/edit-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
+          items: [{ href: baseUrl + "/select-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
         }
       },
       {
         key: { text: "JWKS URL" },
         value: { html: '<div id="jwks-endpoint">' + client.jwksURL + '</div>' },
         actions: {
-          items: [{ href: baseUrl + "/edit-client-authentication", text: "Change", visuallyHiddenText: "jwks url" }]
+          items: [{ href: baseUrl + "/select-client-authentication", text: "Change", visuallyHiddenText: "jwks url" }]
         }
       }
     ])
@@ -44,14 +44,14 @@
         key: { text: "Client Authentication Method" },
         value: { html: '<div id="client-authentication-method">Fixed public key</div>' },
         actions: {
-          items: [{ href: baseUrl + "/edit-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
+          items: [{ href: baseUrl + "/select-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
         }
       },
       {
         key: { text: "Public Key" },
         value: { html: '<div id="public-key">' + client.publicKey + '</div>' },
         actions: {
-          items: [{ href: baseUrl + "/edit-client-authentication", text: "Change", visuallyHiddenText: "public key" }]
+          items: [{ href: baseUrl + "/select-client-authentication", text: "Change", visuallyHiddenText: "public key" }]
         }
       }
     ])
@@ -63,14 +63,14 @@
         key: { text: "Client Authentication Method" },
         value: { html: '<div id="client-authentication-method">Client secret</div>' },
         actions: {
-          items: [{ href: baseUrl + "/edit-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
+          items: [{ href: baseUrl + "/select-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
         }
       },
       {
         key: { text: "Client Secret" },
         value: { html: '<div id="client-secret">' + client.clientSecret + '</div>' },
         actions: {
-          items: [{ href: baseUrl + "/edit-client-authentication", text: "Change", visuallyHiddenText: "client secret" }]
+          items: [{ href: baseUrl + "/select-client-authentication", text: "Change", visuallyHiddenText: "client secret" }]
         }
       }
     ])
@@ -82,7 +82,7 @@
         key: { text: "Client Authentication Method" },
         value: { html: '<div id="client-authentication-method">Not set</div>' },
         actions: {
-          items: [{ href: baseUrl + "/edit-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
+          items: [{ href: baseUrl + "/select-client-authentication", text: "Change", visuallyHiddenText: "client authentication method" }]
         }
       }
     ])
@@ -103,7 +103,7 @@
         html: '<div id="redirect-urls">' + (client.redirectUrls | join("<br>") if client.redirectUrls else "Not set") + '</div>'
       },
       actions: {
-        items: [{ href: baseUrl + "/edit-redirect-urls", text: "Change", visuallyHiddenText: "redirect urls" }]
+        items: [{ href: baseUrl + "/enter-redirect-urls", text: "Change", visuallyHiddenText: "redirect urls" }]
       }
     },
     {
@@ -112,7 +112,7 @@
         html: '<div id="scopes">' + (client.scopes | join("<br>") if client.scopes else "Not set") + '</div>'
       },
       actions: {
-        items: [{ href: baseUrl + "/edit-scopes", text: "Change", visuallyHiddenText: "scopes" }]
+        items: [{ href: baseUrl + "/select-scopes", text: "Change", visuallyHiddenText: "scopes" }]
       }
     }
   ])

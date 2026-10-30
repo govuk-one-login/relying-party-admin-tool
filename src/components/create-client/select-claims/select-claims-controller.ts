@@ -6,8 +6,10 @@ import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect
 import { getListFromRequestBody } from "../../../helpers/request-helpers.js";
 
 export const createClientSelectClaimsGet = (): ExpressRouteFunc => {
-  return async (_req: Request, res: Response) => {
-    res.render("create-client/select-claims/index.njk");
+  return async (req: Request, res: Response) => {
+    res.render("create-client/select-claims/index.njk", {
+      claims: req.session.newClientConfig?.claims || [],
+    });
   };
 };
 
@@ -21,7 +23,7 @@ export const createClientSelectClaimsPost = (): ExpressRouteFunc => {
     return saveSessionAndRedirect(
       req,
       res,
-      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL, {
+      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_NEXT, {
         [":serviceId"]: req.params.serviceId as string,
       })
     );

@@ -79,6 +79,7 @@ import {
   createClientEditScopesPost,
 } from "../components/create-client/scopes/edit-scopes/edit-scopes-controller.js";
 import { serviceExistsMiddleware } from "../middleware/check-service-exists-middleware.js";
+import { clientNextController } from "../components/create-client/journey/create-client-next-journey-controller.js";
 
 const router = express.Router();
 
@@ -88,6 +89,7 @@ router.use(
   checkIntegrationWriterPermissionsMiddleware
 );
 
+router.get(PATH_NAMES.CREATE_CLIENT_NEXT, clientNextController);
 router.get(PATH_NAMES.CREATE_CLIENT, createClientStartGet());
 
 router.post(PATH_NAMES.CREATE_CLIENT, createClientStartPost());

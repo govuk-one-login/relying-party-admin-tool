@@ -6,8 +6,10 @@ import { saveSessionAndRedirect } from "../../../../utils/save-session-and-redir
 import { getListFromRequestBody } from "../../../../helpers/request-helpers.js";
 
 export const createClientSelectScopesGet = (): ExpressRouteFunc => {
-  return async (_req: Request, res: Response) => {
-    res.render("create-client/scopes/select-scopes/index.njk");
+  return async (req: Request, res: Response) => {
+    res.render("create-client/scopes/select-scopes/index.njk", {
+      scopes: req.session.newClientConfig?.scopes || [],
+    });
   };
 };
 
@@ -22,7 +24,7 @@ export const createClientSelectScopesPost = (): ExpressRouteFunc => {
     return saveSessionAndRedirect(
       req,
       res,
-      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT, {
+      populateUrlRoute(PATH_NAMES.CREATE_CLIENT_NEXT, {
         [":serviceId"]: req.params.serviceId as string,
       })
     );

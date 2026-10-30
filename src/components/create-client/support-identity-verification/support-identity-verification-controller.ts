@@ -14,27 +14,23 @@ export const createClientIsIdentityVerificationSupportedGet =
 export const createClientIsIdentityVerificationSupportedPost =
   (): ExpressRouteFunc => {
     return async (req: Request, res: Response) => {
+      const isIdentityVerificationSupported =
+        req.body["support-identity-verification"] === "true";
       req.session.newClientConfig = {
         ...req.session.newClientConfig,
-        isIdentityVerificationSupported:
-          req.body["support-identity-verification"] === "true",
+        isIdentityVerificationSupported,
+        ...(!isIdentityVerificationSupported && {
+          claims: [],
+          loc: ["PO"],
+          landingPageUrl: undefined,
+        }),
       };
-      if (req.body["support-identity-verification"] === "true") {
-        return saveSessionAndRedirect(
-          req,
-          res,
-          populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS, {
-            [":serviceId"]: req.params.serviceId as string,
-          })
-        );
-      } else {
-        return saveSessionAndRedirect(
-          req,
-          res,
-          populateUrlRoute(PATH_NAMES.CREATE_CLIENT_SUMMARY, {
-            [":serviceId"]: req.params.serviceId as string,
-          })
-        );
-      }
+      return saveSessionAndRedirect(
+        req,
+        res,
+        populateUrlRoute(PATH_NAMES.CREATE_CLIENT_NEXT, {
+          [":serviceId"]: req.params.serviceId as string,
+        })
+      );
     };
   };
