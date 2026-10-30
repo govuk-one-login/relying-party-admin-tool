@@ -32,6 +32,7 @@ import { csrfMiddleware } from "./middleware/csrf-middleware.js";
 import { csrfErrorHandler } from "./handler/csrf-error-handler.js";
 import { sanitizeRequestMiddleware } from "./middleware/sanitize-request-middleware.js";
 import { noCacheMiddleware } from "./middleware/no-cache-middleware.js";
+import { clientRouter } from "./routes/clients-router.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -130,6 +131,7 @@ const createApp = async (): Promise<express.Application> => {
   app.use(indexRouter);
   app.use(servicesRouter);
   app.use(createClientRouter);
+  app.use(clientRouter);
   app.use(editClientRouter);
 
   // Router for all previously used URLs, that we want to redirect on
