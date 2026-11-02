@@ -3,7 +3,7 @@ import { PATH_NAMES } from "../../../app.constants.js";
 import { ExpressRouteFunc } from "../../../types.js";
 import { populateUrlRoute } from "../../../utils/populate-url-route.js";
 import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
-import { getListFromRequestBody } from "../../../helpers/request-helpers.js";
+import { getOptionalList } from "../../../helpers/request-helpers.js";
 
 export const createClientSelectLevelsOfConfidenceGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
@@ -14,7 +14,7 @@ export const createClientSelectLevelsOfConfidenceGet = (): ExpressRouteFunc => {
 export const createClientSelectLevelsOfConfidencePost =
   (): ExpressRouteFunc => {
     return async (req: Request, res: Response) => {
-      const loc = getListFromRequestBody(req, "selected-locs");
+      const loc = getOptionalList(req.body["selected-locs"]);
       req.session.newClientConfig = {
         ...req.session.newClientConfig,
         loc,

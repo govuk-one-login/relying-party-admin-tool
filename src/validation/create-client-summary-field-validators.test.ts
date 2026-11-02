@@ -7,6 +7,10 @@ import {
   clientSecretSummaryFieldValidator,
   tokenAuthenticationMethodSummaryFieldValidator,
   scopesSummaryFieldValidator,
+  claimsFieldValidator,
+  supportIdentityVerificationFieldValidator,
+  landingPageUrlFieldValidator,
+  levelOfConfidenceFieldValidator,
 } from "./create-client-summary-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
@@ -52,6 +56,52 @@ describe("create client summary field validators", () => {
       expect(errorsArray[0].text).length(1);
       expect(errorsArray[0].text[0]).toBe(
         'Invalid client authentication method provided: "invalid-method"'
+      );
+    });
+  });
+
+  describe("claimsFieldValidator", () => {
+    it("should pass validation with valid claims", async () => {
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          claims: ["https://vocab.account.gov.uk/v1/coreIdentityJWT"],
+        })
+        .build();
+
+      const result = await claimsFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should pass validation when claims are empty", async () => {
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          claims: [],
+        })
+        .build();
+
+      const result = await claimsFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when invalid claim added", async () => {
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          claims: ["not-a-claim"],
+        })
+        .build();
+
+      const result = await claimsFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        'Invalid claim provided: "not-a-claim"'
       );
     });
   });
@@ -475,6 +525,253 @@ describe("create client summary field validators", () => {
       expect(errorsArray[0].text).length(1);
       expect(errorsArray[0].text[0]).toBe(
         "Your client name cannot start with ':'"
+      );
+    });
+  });
+
+  describe("supportIdentityVerificationFieldValidator", () => {
+    it("should pass validation when an option is selected", async () => {
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          isIdentityVerificationSupported: "true",
+        })
+        .build();
+
+      const result =
+        await supportIdentityVerificationFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when support identity verification is empty", async () => {
+      const req = new RequestBuilder().withSessionnewClientConfig({}).build();
+
+      const result =
+        await supportIdentityVerificationFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Choose an option to support identity verification or not"
+      );
+    });
+
+    it("should fail validation when support identity verification is true and client secret is set", async () => {
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          clientAuthenticationMethod: "CLIENT_SECRET",
+          isIdentityVerificationSupported: "true",
+        })
+        .build();
+
+      const result =
+        await supportIdentityVerificationFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Identity verification cannot be supported if client secret is used as authentication method"
+      );
+    });
+
+    it("should pass validation when support identity verification is false and client secret is set", async () => {
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          clientAuthenticationMethod: "CLIENT_SECRET",
+          isIdentityVerificationSupported: "false",
+        })
+        .build();
+
+      const result =
+        await supportIdentityVerificationFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(true);
+    });
+  });
+
+  describe("landingPageUrlFieldValidator", () => {
+    it("should pass validation with valid URL", async () => {
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          landingPageUrl: "http://url.com",
+        })
+        .build();
+
+      const result = await landingPageUrlFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should pass validation when empty", async () => {
+      const req = new RequestBuilder().withSessionnewClientConfig({}).build();
+
+      const result = await landingPageUrlFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when URL is invalid", async () => {
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          landingPageUrl: "not-a-url",
+        })
+        .build();
+
+      const result = await landingPageUrlFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Your landing page URL must be a valid URL"
+      );
+    });
+  });
+
+  describe("levelOfConfidenceFieldValidator", () => {
+    it("should pass validation with valid level-of-confidence", async () => {
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          loc: "P0",
+          isIdentityVerificationSupported: true,
+        })
+        .build();
+
+      const result = await levelOfConfidenceFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should pass validation with valid levels-of-confidence", async () => {
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          loc: ["P0", "P1"],
+          isIdentityVerificationSupported: true,
+        })
+        .build();
+
+      const result = await levelOfConfidenceFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should not pass validation with empty level-of-confidence", async () => {
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          loc: "",
+          isIdentityVerificationSupported: true,
+        })
+        .build();
+
+      const result = await levelOfConfidenceFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(false);
+    });
+
+    it("should fail validation with an invalid level-of-confidence", async () => {
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          loc: ["P0", "invalid-loc"],
+          isIdentityVerificationSupported: true,
+        })
+        .build();
+
+      const result = await levelOfConfidenceFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        'Invalid level of confidence provided: "invalid-loc"'
+      );
+    });
+
+    it("should pass validation with P0 and identity verification not supported", async () => {
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          loc: "P0",
+          isIdentityVerificationSupported: false,
+        })
+        .build();
+
+      const result = await levelOfConfidenceFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation with identity verification not supported for P1", async () => {
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          loc: ["P1"],
+          isIdentityVerificationSupported: false,
+        })
+        .build();
+
+      const result = await levelOfConfidenceFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Identity verification must be supported"
+      );
+    });
+
+    it("should fail validation with identity verification not support for P2", async () => {
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          loc: ["P2"],
+          isIdentityVerificationSupported: false,
+        })
+        .build();
+
+      const result = await levelOfConfidenceFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Identity verification must be supported"
+      );
+    });
+
+    it("should fail validation with identity verification not set", async () => {
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          loc: ["P1", "P2"],
+        })
+        .build();
+
+      const result = await levelOfConfidenceFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(2);
+      expect(errorsArray[0].text[0]).toBe(
+        "Identity verification must be supported"
       );
     });
   });

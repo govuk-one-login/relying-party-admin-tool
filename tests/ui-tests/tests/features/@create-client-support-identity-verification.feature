@@ -4,7 +4,7 @@ Feature: Create a new client - support identity verification page
     Given I go to the "create client - support identity verification" page
     And the page has finished loading
     And the page meets our accessibility standards
-    And the page title is "Select token authentication method - Admin Tool"
+    And the page title is "Support identity verification - Admin Tool"
     And the header shows
     And the navigation bar shows
     And the footer shows

@@ -3,7 +3,7 @@ import { PATH_NAMES } from "../../../../app.constants.js";
 import { ExpressRouteFunc } from "../../../../types.js";
 import { populateUrlRoute } from "../../../../utils/populate-url-route.js";
 import { saveSessionAndRedirect } from "../../../../utils/save-session-and-redirect.js";
-import { getListFromRequestBody } from "../../../../helpers/request-helpers.js";
+import { getOptionalList } from "../../../../helpers/request-helpers.js";
 
 export const createClientEditScopesGet = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
@@ -15,7 +15,7 @@ export const createClientEditScopesGet = (): ExpressRouteFunc => {
 export const createClientEditScopesPost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
     let scopes = ["openid"];
-    scopes = scopes.concat(getListFromRequestBody(req, "selected-scopes"));
+    scopes = scopes.concat(getOptionalList(req.body["selected-scopes"]));
     req.session.newClientConfig = {
       ...req.session.newClientConfig,
       scopes,

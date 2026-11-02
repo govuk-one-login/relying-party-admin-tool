@@ -1,15 +1,10 @@
-import type { Request } from "express";
-
-export const getListFromRequestBody = (
-  req: Request,
-  listName: string
-): string[] => {
+export const getOptionalList = (optionalList?: string[] | string): string[] => {
   let list: string[] = [];
-  if (req.body[listName]) {
-    if (Array.isArray(req.body[listName])) {
-      list = list.concat(req.body[listName]);
+  if (optionalList) {
+    if (Array.isArray(optionalList)) {
+      list = list.concat(optionalList);
     } else {
-      list.push(req.body[listName]);
+      list.push(optionalList);
     }
   }
   return list;
