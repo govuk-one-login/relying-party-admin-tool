@@ -793,7 +793,7 @@ describe("create client summary field validators", () => {
       const errorsArray = (result as InvalidField).errors;
 
       expect(errorsArray).length(1);
-      expect(errorsArray[0].text).length(2);
+      expect(errorsArray[0].text).length(1);
       expect(errorsArray[0].text[0]).toBe(
         "Identity verification must be supported"
       );

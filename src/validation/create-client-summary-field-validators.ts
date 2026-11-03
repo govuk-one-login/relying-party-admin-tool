@@ -122,10 +122,10 @@ export const clientNameSummaryFieldValidator = new FieldValidator(
 
 export const supportIdentityVerificationFieldValidator = new FieldValidator(
   requiredValidator("Choose an option to support identity verification or not")
-    .adaptedFrom((req: Request) =>
-      req.session.newClientConfig?.isIdentityVerificationSupported
-        ? req.session.newClientConfig?.isIdentityVerificationSupported?.toString()
-        : ""
+    .adaptedFrom(
+      (req: Request) =>
+        req.session.newClientConfig?.isIdentityVerificationSupported?.toString() ??
+        ""
     )
     .and(
       when(
@@ -135,10 +135,10 @@ export const supportIdentityVerificationFieldValidator = new FieldValidator(
         rule(
           (input?: string) => input !== "true",
           "Identity verification cannot be supported if client secret is used as authentication method"
-        ).adaptedFrom((req: Request) =>
-          req.session.newClientConfig?.isIdentityVerificationSupported
-            ? req.session.newClientConfig?.isIdentityVerificationSupported?.toString()
-            : ""
+        ).adaptedFrom(
+          (req: Request) =>
+            req.session.newClientConfig?.isIdentityVerificationSupported?.toString() ??
+            ""
         )
       )
     ),
@@ -166,18 +166,11 @@ export const levelOfConfidenceFieldValidator = new FieldValidator(
         (req: Request) =>
           req.session.newClientConfig?.isIdentityVerificationSupported !== true,
         rule(
-          (value: string[]) => !value.includes("P1"),
+          (value: string[]) => !value.includes("P1") && !value.includes("P2"),
           "Identity verification must be supported"
+        ).adaptedFrom((req: Request) =>
+          getOptionalList(req.session.newClientConfig?.loc)
         )
-          .and(
-            rule(
-              (value: string[]) => !value.includes("P2"),
-              "Identity verification must be supported"
-            )
-          )
-          .adaptedFrom((req: Request) =>
-            getOptionalList(req.session.newClientConfig?.loc)
-          )
       )
     ),
   "level-of-confidence"
