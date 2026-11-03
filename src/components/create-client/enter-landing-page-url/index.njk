@@ -20,6 +20,7 @@
       name: "landing-page-url",
       value: data['landing-page-url'],
       errorMessage: {
+          attributes: { "data-test-id": "landing-page-url-error"},
         text: errors["landing-page-url"].text
       } if (errors["landing-page-url"])
       })

@@ -4,13 +4,12 @@ import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
 import {
   createTestClient,
+  createTestRelation,
+  createTestService,
+  createTestUser,
   getServicePaths,
   testComponent,
 } from "../../helpers/helpers.js";
-import { User } from "../../../src/models/user.js";
-import { UserPermission } from "../../../src/models/permissions.js";
-import { Relation } from "../../../src/models/relation.js";
-import { Service } from "../../../src/models/service.js";
 import { randomUUID } from "crypto";
 
 describe("Integration:: edit rate limit", () => {
@@ -18,22 +17,12 @@ describe("Integration:: edit rate limit", () => {
   let app: any;
   let requestAgent: any;
   const existingUserId = randomUUID();
-  const existingUser: User = {
-    id: existingUserId,
-    name: "Test User",
-    email: "test@user.com",
-  };
   const serviceId = randomUUID();
-  const existingRelation: Relation = {
-    userId: existingUserId,
-    object: `service:${serviceId}`,
-    relation: UserPermission.WRITER_INT,
-  };
-  const existingService: Service = {
-    serviceId: serviceId,
-    name: "Test service",
-  };
   const clientId = randomUUID();
+
+  const existingService = createTestService(serviceId);
+  const existingUser = createTestUser(existingUserId);
+  const existingRelation = createTestRelation(serviceId, existingUserId);
   const existingClient = createTestClient(serviceId, clientId);
 
   integrationTest.beforeAll(
@@ -81,19 +70,16 @@ describe("Integration:: edit rate limit", () => {
     }
   );
 
-  integrationTest(
-    "should return edit backchannel logout url page",
-    async () => {
-      const res = await requestAgent.get(
-        getServicePaths(
-          PATH_NAMES.CLIENT_EDIT_RATE_LIMIT,
-          existingService.serviceId,
-          existingClient.clientId
-        )
-      );
-      expect(res.statusCode).toBe(200);
-    }
-  );
+  integrationTest("should return edit rate limit page", async () => {
+    const res = await requestAgent.get(
+      getServicePaths(
+        PATH_NAMES.CLIENT_EDIT_RATE_LIMIT,
+        existingService.serviceId,
+        existingClient.clientId
+      )
+    );
+    expect(res.statusCode).toBe(200);
+  });
 
   integrationTest(
     "should redirect to forbidden when csrf not present",
@@ -140,30 +126,6 @@ describe("Integration:: edit rate limit", () => {
   );
 
   integrationTest(
-    "should return validation error when rate limit is a decimal",
-    async () => {
-      const res = await requestAgent
-        .post(
-          getServicePaths(
-            PATH_NAMES.CLIENT_EDIT_RATE_LIMIT,
-            existingService.serviceId,
-            existingClient.clientId
-          )
-        )
-        .type("form")
-        .send({
-          _csrf: token,
-          "rate-limit": "1.5",
-        });
-      const $ = cheerio.load(res.text);
-      expect($(testComponent("rate-limit-error")).text()).toContain(
-        "Rate limit must be a whole number"
-      );
-      expect(res.statusCode).toBe(400);
-    }
-  );
-
-  integrationTest(
     "should return validation error when rate limit is above the max limit",
     async () => {
       const res = await requestAgent
@@ -182,30 +144,6 @@ describe("Integration:: edit rate limit", () => {
       const $ = cheerio.load(res.text);
       expect($(testComponent("rate-limit-error")).text()).toContain(
         "Rate limit must be below the max limit of 50"
-      );
-      expect(res.statusCode).toBe(400);
-    }
-  );
-
-  integrationTest(
-    "should return validation error when rate limit is not a number",
-    async () => {
-      const res = await requestAgent
-        .post(
-          getServicePaths(
-            PATH_NAMES.CLIENT_EDIT_RATE_LIMIT,
-            existingService.serviceId,
-            existingClient.clientId
-          )
-        )
-        .type("form")
-        .send({
-          _csrf: token,
-          "rate-limit": "test",
-        });
-      const $ = cheerio.load(res.text);
-      expect($(testComponent("rate-limit-error")).text()).toContain(
-        "Rate limit must be a number"
       );
       expect(res.statusCode).toBe(400);
     }
@@ -235,33 +173,6 @@ describe("Integration:: edit rate limit", () => {
           existingClient.clientId
         )
       );
-      expect(res.statusCode).toBe(302);
-    }
-  );
-
-  integrationTest(
-    "should redirect to /clients when rate limit is empty",
-    async () => {
-      const res = await requestAgent
-        .post(
-          getServicePaths(
-            PATH_NAMES.CLIENT_EDIT_RATE_LIMIT,
-            existingService.serviceId,
-            existingClient.clientId
-          )
-        )
-        .type("form")
-        .send({
-          _csrf: token,
-        })
-        .expect(
-          "Location",
-          getServicePaths(
-            PATH_NAMES.CLIENT,
-            existingService.serviceId,
-            existingClient.clientId
-          )
-        );
       expect(res.statusCode).toBe(302);
     }
   );

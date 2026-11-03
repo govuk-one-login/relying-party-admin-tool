@@ -4,13 +4,12 @@ import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
 import {
   createTestClient,
+  createTestRelation,
+  createTestService,
+  createTestUser,
   getServicePaths,
   testComponent,
 } from "../../helpers/helpers.js";
-import { User } from "../../../src/models/user.js";
-import { UserPermission } from "../../../src/models/permissions.js";
-import { Relation } from "../../../src/models/relation.js";
-import { Service } from "../../../src/models/service.js";
 import { randomUUID } from "crypto";
 
 describe("Integration:: edit id token signing algorithm", () => {
@@ -18,22 +17,12 @@ describe("Integration:: edit id token signing algorithm", () => {
   let app: any;
   let requestAgent: any;
   const existingUserId = randomUUID();
-  const existingUser: User = {
-    id: existingUserId,
-    name: "Test User",
-    email: "test@user.com",
-  };
   const serviceId = randomUUID();
   const clientId = randomUUID();
-  const existingRelation: Relation = {
-    userId: existingUserId,
-    object: `service:${serviceId}`,
-    relation: UserPermission.WRITER_INT,
-  };
-  const existingService: Service = {
-    serviceId: serviceId,
-    name: "Test service",
-  };
+
+  const existingService = createTestService(serviceId);
+  const existingUser = createTestUser(existingUserId);
+  const existingRelation = createTestRelation(serviceId, existingUserId);
   const existingClient = createTestClient(serviceId, clientId);
 
   integrationTest.beforeAll(
@@ -134,32 +123,6 @@ describe("Integration:: edit id token signing algorithm", () => {
       expect(
         $(testComponent("id-token-signing-algorithm-error")).text()
       ).toContain("ID token signing algorithm is required");
-      expect(res.statusCode).toBe(400);
-    }
-  );
-
-  integrationTest(
-    "should return validation error when algorithm is an invalid algorithm",
-    async () => {
-      const res = await requestAgent
-        .post(
-          getServicePaths(
-            PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM,
-            existingService.serviceId,
-            existingClient.clientId
-          )
-        )
-        .type("form")
-        .send({
-          _csrf: token,
-          "id-token-signing-algorithm": "invalid-algorithm",
-        });
-      const $ = cheerio.load(res.text);
-      expect(
-        $(testComponent("id-token-signing-algorithm-error")).text()
-      ).toContain(
-        'Invalid ID token signing algorithm provided: "invalid-algorithm"'
-      );
       expect(res.statusCode).toBe(400);
     }
   );

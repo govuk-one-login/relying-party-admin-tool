@@ -23,6 +23,7 @@ Feature: Create a new client - summary page
     And the error message: "You must have at least one redirect URL" shows
     And the error message: 'Scopes must contain "openid"' shows
     And the error message: "Choose an option to support identity verification or not" shows
+    And the error message: "You must select one level of confidence" shows
 
   Scenario: Create a new client - summary page validates filled auth only client config
     Given I go to the "create client - enter client name" page

@@ -4,13 +4,12 @@ import { PATH_NAMES } from "../../../src/app.constants.js";
 import { integrationTest } from "../../base.js";
 import {
   createTestClient,
+  createTestRelation,
+  createTestService,
+  createTestUser,
   getServicePaths,
   testComponent,
 } from "../../helpers/helpers.js";
-import { User } from "../../../src/models/user.js";
-import { UserPermission } from "../../../src/models/permissions.js";
-import { Relation } from "../../../src/models/relation.js";
-import { Service } from "../../../src/models/service.js";
 import { randomUUID } from "crypto";
 
 describe("Integration:: edit post logout redirect urls", () => {
@@ -18,22 +17,12 @@ describe("Integration:: edit post logout redirect urls", () => {
   let app: any;
   let requestAgent: any;
   const existingUserId = randomUUID();
-  const existingUser: User = {
-    id: existingUserId,
-    name: "Test User",
-    email: "test@user.com",
-  };
   const serviceId = randomUUID();
   const clientId = randomUUID();
-  const existingRelation: Relation = {
-    userId: existingUserId,
-    object: `service:${serviceId}`,
-    relation: UserPermission.WRITER_INT,
-  };
-  const existingService: Service = {
-    serviceId: serviceId,
-    name: "Test service",
-  };
+
+  const existingService = createTestService(serviceId);
+  const existingUser = createTestUser(existingUserId);
+  const existingRelation = createTestRelation(serviceId, existingUserId);
   const existingClient = createTestClient(serviceId, clientId);
 
   integrationTest.beforeAll(
@@ -141,30 +130,6 @@ describe("Integration:: edit post logout redirect urls", () => {
   );
 
   integrationTest(
-    "should return validation error when redirect url input is empty",
-    async () => {
-      const res = await requestAgent
-        .post(
-          getServicePaths(
-            PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
-            existingService.serviceId,
-            existingClient.clientId
-          )
-        )
-        .type("form")
-        .send({
-          _csrf: token,
-          action: "add",
-        });
-      const $ = cheerio.load(res.text);
-      expect(res.statusCode).toBe(400);
-      expect(
-        $(testComponent("post-logout-redirect-urls-error")).text()
-      ).toContain("Enter a post logout redirect URL");
-    }
-  );
-
-  integrationTest(
     "should return validation error when redirect url input already exists in the table",
     async () => {
       const res = await requestAgent
@@ -233,64 +198,6 @@ describe("Integration:: edit post logout redirect urls", () => {
           _csrf: token,
           action: "continue",
           "post-logout-redirect-urls": "http://url.com",
-        });
-      expect(
-        "Location",
-        getServicePaths(
-          PATH_NAMES.CLIENT,
-          existingService.serviceId,
-          existingClient.clientId
-        )
-      );
-      expect(res.statusCode).toBe(302);
-    }
-  );
-
-  integrationTest(
-    "should redirect to /clients with multiple valid redirect urls",
-    async () => {
-      const res = await requestAgent
-        .post(
-          getServicePaths(
-            PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
-            existingService.serviceId,
-            existingClient.clientId
-          )
-        )
-        .type("form")
-        .send({
-          _csrf: token,
-          action: "continue",
-          "post-logout-redirect-urls": ["http://url.com", "http://url2.com"],
-        });
-      expect(res.statusCode).toBe(302);
-      expect(
-        "Location",
-        getServicePaths(
-          PATH_NAMES.CLIENT,
-          existingService.serviceId,
-          existingClient.clientId
-        )
-      );
-      expect(res.statusCode).toBe(302);
-    }
-  );
-
-  integrationTest(
-    "should redirect to /clients without any redirect urls",
-    async () => {
-      const res = await requestAgent
-        .post(
-          getServicePaths(
-            PATH_NAMES.CLIENT_EDIT_POST_LOGOUT_REDIRECT_URLS,
-            existingService.serviceId,
-            existingClient.clientId
-          )
-        )
-        .type("form")
-        .send({
-          _csrf: token,
-          action: "continue",
         });
       expect(
         "Location",

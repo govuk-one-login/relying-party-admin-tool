@@ -259,18 +259,11 @@ export const selectLevelOfConfidenceFieldValidator = new FieldValidator(
         (req: Request) =>
           req.session.newClientConfig?.isIdentityVerificationSupported !== true,
         rule(
-          (value: string[]) => !value.includes("P1"),
+          (value: string[]) => !value.includes("P1") && !value.includes("P2"),
           "Identity verification must be supported"
+        ).adaptedFrom((req: Request) =>
+          getOptionalList(req.body["selected-locs"])
         )
-          .and(
-            rule(
-              (value: string[]) => !value.includes("P2"),
-              "Identity verification must be supported"
-            )
-          )
-          .adaptedFrom((req: Request) =>
-            getOptionalList(req.body["selected-locs"])
-          )
       )
     ),
   "selected-locs"
