@@ -208,7 +208,7 @@ describe("create client summary field validators", () => {
   describe("publicKeySummaryFieldValidator", () => {
     it("should pass validation when client authentication method is STATIC and valid pem key", async () => {
       const validPublicKey =
-        "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDQk36HYw2tjwb1H88zL3dfPu2X\ngG7svnZgC660jop/Fi49dOOC8uX7u5WuaQP/ncUMHpR1M+av1bCn1NERXYyZ0TLO\nARZOO8fY5gJ5lLbQBngSUiSTTzjAZcQtypjosFLRkEyIMcXQxFc3Dk42mfhJiRFl\nffrIxtcLe1nxq4dRDQIDAQAB\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
+        "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAluh9PbrQX91wl58R5QBG\n4SYgzR4ZlOL1Fj232nkLrLi/iLCWGLeL9Uil884zb3GcMY7wPhP5HbzXYSM9zxAr\nRdQ94s0mEi6v5Kuz07hF1UBMOCDrGRjSfFGQXx51ZXW8tqPTi6kR1U6F3CC7Qu1B\ny7cQDU6t6dBntEmSHK4mgbEnqL+6+tk/YLQtNZ3+E2HpOPaZIaRcVLpzATTrIqyI\nH5YhK2dQFhau04zPMAc/MLF8mQ1cMtYAbxopY91CsOVcmdni4cZYjquCP+Sx0dGK\nmBL3MQhqiWdmXyFlo1NKyHxn9/5zOP5lAi05dHgqjUC7AoF4nKedq0UbH2uxL72b\nrwIDAQAB\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
       const req = new RequestBuilder()
         .withSessionnewClientConfig({
           clientAuthenticationMethod: "STATIC",
@@ -238,7 +238,7 @@ describe("create client summary field validators", () => {
       const errorsArray = (result as InvalidField).errors;
 
       expect(errorsArray).length(1);
-      expect(errorsArray[0].text).length(3);
+      expect(errorsArray[0].text).length(4);
       expect(errorsArray[0].text[0]).toBe("Please enter a valid PEM key");
     });
 
@@ -261,7 +261,7 @@ describe("create client summary field validators", () => {
       const errorsArray = (result as InvalidField).errors;
 
       expect(errorsArray).length(1);
-      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text).length(2);
       expect(errorsArray[0].text[0]).toBe("Please enter a valid public key");
     });
 
@@ -283,9 +283,33 @@ describe("create client summary field validators", () => {
       const errorsArray = (result as InvalidField).errors;
 
       expect(errorsArray).length(1);
-      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text).length(2);
       expect(errorsArray[0].text[0]).toBe(
         "Please enter a valid RSA public key"
+      );
+    });
+
+    it("should fail validation when client authentication method is STATIC and a valid small rsa key", async () => {
+      const publicKey =
+        "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDQk36HYw2tjwb1H88zL3dfPu2X\ngG7svnZgC660jop/Fi49dOOC8uX7u5WuaQP/ncUMHpR1M+av1bCn1NERXYyZ0TLO\nARZOO8fY5gJ5lLbQBngSUiSTTzjAZcQtypjosFLRkEyIMcXQxFc3Dk42mfhJiRFl\nffrIxtcLe1nxq4dRDQIDAQAB\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
+      const req = new RequestBuilder()
+        .withSessionnewClientConfig({
+          clientAuthenticationMethod: "STATIC",
+          publicKey: publicKey,
+          clientTokenAuthenticationMethod: "private_key_jwt",
+        })
+        .build();
+
+      const result = await publicKeySummaryFieldValidator.validate(req);
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Please enter a valid RSA public key with the minimum size of 2048"
       );
     });
 
@@ -305,13 +329,13 @@ describe("create client summary field validators", () => {
       const errorsArray = (result as InvalidField).errors;
 
       expect(errorsArray).length(1);
-      expect(errorsArray[0].text).length(4);
+      expect(errorsArray[0].text).length(5);
       expect(errorsArray[0].text[0]).toBe("Enter a public key");
     });
 
     it("should fail validation when client token authentication method is not private_key_jwt", async () => {
       const validPublicKey =
-        "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDQk36HYw2tjwb1H88zL3dfPu2X\ngG7svnZgC660jop/Fi49dOOC8uX7u5WuaQP/ncUMHpR1M+av1bCn1NERXYyZ0TLO\nARZOO8fY5gJ5lLbQBngSUiSTTzjAZcQtypjosFLRkEyIMcXQxFc3Dk42mfhJiRFl\nffrIxtcLe1nxq4dRDQIDAQAB\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
+        "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAluh9PbrQX91wl58R5QBG\n4SYgzR4ZlOL1Fj232nkLrLi/iLCWGLeL9Uil884zb3GcMY7wPhP5HbzXYSM9zxAr\nRdQ94s0mEi6v5Kuz07hF1UBMOCDrGRjSfFGQXx51ZXW8tqPTi6kR1U6F3CC7Qu1B\ny7cQDU6t6dBntEmSHK4mgbEnqL+6+tk/YLQtNZ3+E2HpOPaZIaRcVLpzATTrIqyI\nH5YhK2dQFhau04zPMAc/MLF8mQ1cMtYAbxopY91CsOVcmdni4cZYjquCP+Sx0dGK\nmBL3MQhqiWdmXyFlo1NKyHxn9/5zOP5lAi05dHgqjUC7AoF4nKedq0UbH2uxL72b\nrwIDAQAB\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
       const req = new RequestBuilder()
         .withSessionnewClientConfig({
           clientAuthenticationMethod: "STATIC",
@@ -335,7 +359,7 @@ describe("create client summary field validators", () => {
 
     it("should fail validation when client token authentication method is empty", async () => {
       const validPublicKey =
-        "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDQk36HYw2tjwb1H88zL3dfPu2X\ngG7svnZgC660jop/Fi49dOOC8uX7u5WuaQP/ncUMHpR1M+av1bCn1NERXYyZ0TLO\nARZOO8fY5gJ5lLbQBngSUiSTTzjAZcQtypjosFLRkEyIMcXQxFc3Dk42mfhJiRFl\nffrIxtcLe1nxq4dRDQIDAQAB\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
+        "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAluh9PbrQX91wl58R5QBG\n4SYgzR4ZlOL1Fj232nkLrLi/iLCWGLeL9Uil884zb3GcMY7wPhP5HbzXYSM9zxAr\nRdQ94s0mEi6v5Kuz07hF1UBMOCDrGRjSfFGQXx51ZXW8tqPTi6kR1U6F3CC7Qu1B\ny7cQDU6t6dBntEmSHK4mgbEnqL+6+tk/YLQtNZ3+E2HpOPaZIaRcVLpzATTrIqyI\nH5YhK2dQFhau04zPMAc/MLF8mQ1cMtYAbxopY91CsOVcmdni4cZYjquCP+Sx0dGK\nmBL3MQhqiWdmXyFlo1NKyHxn9/5zOP5lAi05dHgqjUC7AoF4nKedq0UbH2uxL72b\nrwIDAQAB\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
       const req = new RequestBuilder()
         .withSessionnewClientConfig({
           clientAuthenticationMethod: "STATIC",

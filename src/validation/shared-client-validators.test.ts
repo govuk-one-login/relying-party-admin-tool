@@ -243,7 +243,7 @@ describe("shared client validator tests", () => {
   describe("public key validator", () => {
     it("should pass validation when valid rsa key", async () => {
       const validPublicKey =
-        "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDQk36HYw2tjwb1H88zL3dfPu2X\ngG7svnZgC660jop/Fi49dOOC8uX7u5WuaQP/ncUMHpR1M+av1bCn1NERXYyZ0TLO\nARZOO8fY5gJ5lLbQBngSUiSTTzjAZcQtypjosFLRkEyIMcXQxFc3Dk42mfhJiRFl\nffrIxtcLe1nxq4dRDQIDAQAB\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
+        "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAluh9PbrQX91wl58R5QBG\n4SYgzR4ZlOL1Fj232nkLrLi/iLCWGLeL9Uil884zb3GcMY7wPhP5HbzXYSM9zxAr\nRdQ94s0mEi6v5Kuz07hF1UBMOCDrGRjSfFGQXx51ZXW8tqPTi6kR1U6F3CC7Qu1B\ny7cQDU6t6dBntEmSHK4mgbEnqL+6+tk/YLQtNZ3+E2HpOPaZIaRcVLpzATTrIqyI\nH5YhK2dQFhau04zPMAc/MLF8mQ1cMtYAbxopY91CsOVcmdni4cZYjquCP+Sx0dGK\nmBL3MQhqiWdmXyFlo1NKyHxn9/5zOP5lAi05dHgqjUC7AoF4nKedq0UbH2uxL72b\nrwIDAQAB\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
 
       const result = await publicKeyValidator.validate(validPublicKey);
 
@@ -257,7 +257,10 @@ describe("shared client validator tests", () => {
       const result = await publicKeyValidator.validate(privateKey);
 
       expect(result).toBeInvalid();
-      expect(result).toHaveInvalidErrors(["Please enter a valid public key"]);
+      expect(result).toHaveInvalidErrors([
+        "Please enter a valid public key",
+        "Please enter a valid RSA public key with the minimum size of 2048",
+      ]);
     });
 
     it("should fail validation when invalid public key", async () => {
@@ -270,6 +273,7 @@ describe("shared client validator tests", () => {
         "Please enter a valid PEM key",
         "Please enter a valid RSA public key",
         "Please enter a valid public key",
+        "Please enter a valid RSA public key with the minimum size of 2048",
       ]);
     });
 
@@ -282,6 +286,19 @@ describe("shared client validator tests", () => {
       expect(result).toBeInvalid();
       expect(result).toHaveInvalidErrors([
         "Please enter a valid RSA public key",
+        "Please enter a valid RSA public key with the minimum size of 2048",
+      ]);
+    });
+
+    it("should fail validation when valid key is below minimum size", async () => {
+      const publicKey =
+        "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDQk36HYw2tjwb1H88zL3dfPu2X\ngG7svnZgC660jop/Fi49dOOC8uX7u5WuaQP/ncUMHpR1M+av1bCn1NERXYyZ0TLO\nARZOO8fY5gJ5lLbQBngSUiSTTzjAZcQtypjosFLRkEyIMcXQxFc3Dk42mfhJiRFl\nffrIxtcLe1nxq4dRDQIDAQAB\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
+
+      const result = await publicKeyValidator.validate(publicKey);
+
+      expect(result).toBeInvalid();
+      expect(result).toHaveInvalidErrors([
+        "Please enter a valid RSA public key with the minimum size of 2048",
       ]);
     });
   });

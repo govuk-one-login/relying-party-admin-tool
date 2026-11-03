@@ -98,6 +98,23 @@ export const publicKeyValidator = rule((publicKeyString: string) => {
     rule((publicKeyString: string) => {
       return publicKeyString?.includes("BEGIN PUBLIC KEY");
     }, "Please enter a valid public key")
+  )
+  .and(
+    rule((publicKeyString: string) => {
+      try {
+        const publicKey = crypto.createPublicKey(publicKeyString);
+        if (
+          publicKey.asymmetricKeyDetails === undefined ||
+          publicKey.asymmetricKeyDetails.modulusLength === undefined ||
+          publicKey.asymmetricKeyDetails.modulusLength < 2048
+        ) {
+          return false;
+        }
+        return true;
+      } catch {
+        return false;
+      }
+    }, "Please enter a valid RSA public key with the minimum size of 2048")
   );
 
 export const idTokenSigningAlgorithmValidator = requiredValidator(
