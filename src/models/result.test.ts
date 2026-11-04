@@ -54,4 +54,29 @@ describe("Result tests", () => {
 
     expect(result).toBeFailure(err);
   });
+
+  it("Flat try async returns a success from a result returning function", async () => {
+    const func = async () => Result.success("Success");
+    const result = await Result.flatTryAsync<string>(func);
+
+    expect(result).toBeSuccess("Success");
+  });
+
+  it("Flat try async returns a failure from a result returning function", async () => {
+    const err = new Error("Failure");
+    const func = async () => Result.failure(err);
+    const result = await Result.flatTryAsync<string>(func);
+
+    expect(result).toBeFailure(err);
+  });
+
+  it("Flat try async returns a failure if a result returning function throws", async () => {
+    const err = new Error("Failure");
+    const func = async () => {
+      throw err;
+    };
+    const result = await Result.flatTryAsync<string>(func);
+
+    expect(result).toBeFailure(err);
+  });
 });

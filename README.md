@@ -17,30 +17,20 @@ To run UI tests, read the README in `/tests/ui-tests`.
 
 ### Integration tests
 
-To run integration tests, you need to run DynamoDBLocal first:
+To run integration tests, you need to run floci first:
 
 ```bash
-npm run dynamodblocal:up # This only needs to be done once
+npm run floci:up # This only needs to be done once
 npm run test:integration
 ```
 
-If you are getting a `CredentialsProviderError: The SSO session associated with this profile has expired. To refresh this SSO session run aws sso login with the corresponding profile. ` error, run `unset AWS_PROFILE` and then `npm run dynamodblocal:up`.
+If you are getting a `CredentialsProviderError: The SSO session associated with this profile has expired. To refresh this SSO session run aws sso login with the corresponding profile. ` error, run `unset AWS_PROFILE` and then `npm run floci:up`.
 
 ## Running the application locally
 
 Copy the file `.env.example` to `.env`.
 
-Note that before you run the application locally you need to create the tables in DynamoDBLocal and add the relevant services and permissions. There are scripts you can use to do this and it only has to be run if a new database has been created since the last time you ran it.
-
-```bash
-npm run dynamodblocal:up
-./scripts/create-local-tables.sh
-./scripts/add-data.sh
-```
-
-Then you can run `npm run dev` and go to localhost:6001. You may need to run `npm run build` befoer to get new frontend changes.
-
-If you wish to delete an item from the database, edit `./scripts/delete-data.sh` to delete the item and then run.
+Then you can run `npm run dev` and go to localhost:6001. You may need to run `npm run build` before to get new frontend changes.
 
 ## Running the application against a deployed environment
 

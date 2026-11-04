@@ -1,25 +1,23 @@
-import { DynamoDBClientConfig } from "@aws-sdk/client-dynamodb";
-import {
-  isLocalEnv,
-  getAwsRegion,
-  getDynamoDBLocalBaseUrl,
-} from "../config.js";
+import { isLocalEnv, getAwsRegion, getFlociBaseUrl } from "../config.js";
 
 export interface Credentials {
   accessKeyId?: string;
   secretAccessKey?: string;
 }
 
-const getDynamoDBLocalAWSConfig = (): Partial<DynamoDBClientConfig> => {
+const getFlociAWSConfig = (): { endpoint: string; region: string } => {
   return {
-    endpoint: getDynamoDBLocalBaseUrl(),
+    endpoint: getFlociBaseUrl(),
     region: getAwsRegion(),
   };
 };
 
-export const getAWSConfig = (): Partial<DynamoDBClientConfig> => {
+export const getAWSConfig = (): Partial<{
+  endpoint: string;
+  region: string;
+}> => {
   if (isLocalEnv()) {
-    return getDynamoDBLocalAWSConfig();
+    return getFlociAWSConfig();
   }
 
   return {
