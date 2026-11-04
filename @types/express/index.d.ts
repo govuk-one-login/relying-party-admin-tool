@@ -22,6 +22,10 @@ declare module "express-session" {
     newClientConfig?: CoreClientConfig;
     changedClientConfig?: CoreClientConfig & AdditionalClientConfig;
     currentClientConfig: ClientConfig;
+    isAuthenticated: boolean;
+    state?: string;
+    codeVerifier?: string;
+    nonce?: string;
   }
 }
 
