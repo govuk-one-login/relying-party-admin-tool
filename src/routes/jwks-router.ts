@@ -1,51 +1,62 @@
-import { KMS, GetPublicKeyCommand } from "@aws-sdk/client-kms";
 import express from "express";
-import { createHash } from "crypto";
 import { JWK, importSPKI, exportJWK } from "jose";
 import { PATH_NAMES } from "../app.constants.js";
 import { logger } from "../utils/logger.js";
-import { getAWSConfig } from "../config/aws.js";
 import { getOidcSigningKeyAlias } from "../config.js";
+import { oidcCache } from "../oidc/oidc-cache.js";
+import { Result } from "../models/result.js";
+import { getPublicKeyInfo } from "../oidc/oidc-kms-service.js";
 
 const router = express.Router();
 
-const kmsClient = new KMS(getAWSConfig());
-
-const getKeyFromKms = async (): Promise<JWK> => {
+const getKeyFromKms = async (): Promise<Result<JWK>> => {
   logger.info("Fetching signing key from KMS");
 
-  const { PublicKey, KeyId } = await kmsClient.send(
-    new GetPublicKeyCommand({ KeyId: getOidcSigningKeyAlias() })
+  const publicKeyResult = await Result.flatTryAsync(() =>
+    getPublicKeyInfo(getOidcSigningKeyAlias())
   );
 
-  if (!PublicKey || !KeyId) {
-    throw new Error("No key found");
+  if (!publicKeyResult.success) {
+    return publicKeyResult;
   }
-  const b64 = Buffer.from(PublicKey).toString("base64");
+  const { rawPublicKey, hashedKeyId } = publicKeyResult.value;
+
+  const b64 = Buffer.from(rawPublicKey).toString("base64");
   const pem = `-----BEGIN PUBLIC KEY-----\n${b64.match(/.{1,64}/g)?.join("\n")}\n-----END PUBLIC KEY-----`;
   const cryptoKey = await importSPKI(pem, "ES256");
   const jwk = await exportJWK(cryptoKey);
-  jwk.kid = createHash("SHA256").update(KeyId, "utf8").digest("hex");
+  jwk.kid = hashedKeyId;
   jwk.alg = "ES256";
-  return jwk;
+  return Result.success(jwk);
 };
 
-let oidcSigningJwk: JWK;
+router.get(PATH_NAMES.OIDC_JWKS, async (_req, res) => {
+  const cackeKey = "oidc-client-jwk";
+  const cachedJwk = oidcCache.get<JWK>(cackeKey);
 
-router.get(PATH_NAMES.OIDC_JWKS, async (req, res, next) => {
-  try {
-    if (!oidcSigningJwk) {
-      oidcSigningJwk = await getKeyFromKms();
-    }
+  if (cachedJwk) {
     res.json({
-      keys: [oidcSigningJwk],
+      keys: [cachedJwk],
     });
-  } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Error getting JWK key from KMS";
-    req.log.error(errorMessage);
-    next(error);
+    return;
   }
+
+  const oidcJwkResult = await getKeyFromKms();
+
+  if (!oidcJwkResult.success) {
+    res.status(500).json({
+      message: "Internal server error",
+    });
+    return;
+  }
+
+  const jwk = oidcJwkResult.value;
+
+  oidcCache.set(cackeKey, jwk, 60 * 10); // cache for 10 mins
+  res.json({
+    keys: [jwk],
+  });
+  return;
 });
 
 export { router as jwksRouter };
