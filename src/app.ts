@@ -169,6 +169,7 @@ const startServer = async (
   const stopVitalSigns = frontendVitalSignsInit(server, {
     staticPaths: [/^\/assets\/.*/, /^\/public\/.*/],
     interval: getVitalSignsIntervalSeconds() * 1000,
+    logLevel: "warn",
   });
 
   const closeServer = async (): Promise<void> => {

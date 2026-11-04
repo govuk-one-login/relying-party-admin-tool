@@ -53,3 +53,15 @@ export const getDynamoDBLocalBaseUrl = (): string => {
 export const getIntegrationClientMaxRateLimit = (): number => {
   return Number(process.env.INT_CLIENT_MAX_RATE_LIMIT) || 50;
 };
+
+export const getClientRegistryBaseUrl = (): string => {
+  return getEnvOrThrow("CLIENT_REGISTRY_READ_WRITE_BASE_URL");
+};
+
+const getEnvOrThrow = (name: string): string => {
+  const envVar = process.env[name];
+  if (!envVar) {
+    throw new Error("Unset Environment Variable:" + name);
+  }
+  return envVar;
+};

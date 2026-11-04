@@ -11,12 +11,12 @@ interface CustomMatchers<R = unknown> {
   toBeInvalid(): R;
   toHaveInvalidErrors(expectedErrors: string[]): R;
   toHaveInvalidFieldErrors(expectedErrors: FieldError[]): R;
+  toBeSuccess<T = any>(expectedValue?: T): R;
+  toBeFailure<E = any>(expectedError?: E): R;
 }
 
 declare module "vitest" {
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface Assertion<T> extends CustomMatchers<T> {}
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface AsymmetricMatchersContaining extends CustomMatchers {}
 }
 
@@ -92,6 +92,76 @@ expect.extend({
         `Validation failed as expected, but the error texts did not match.\n\n` +
         `Expected: ${this.utils.printExpected(expectedErrors)}\n` +
         `Received: ${this.utils.printReceived(received.errors)}`,
+    };
+  },
+
+  toBeSuccess(received, expectedValue?) {
+    const { utils } = this;
+    const isSuccess =
+      received !== null &&
+      typeof received === "object" &&
+      received.success === true;
+
+    if (!isSuccess) {
+      return {
+        pass: false,
+        message: () =>
+          `Expected a Success result, but received:\n${utils.printReceived(received)}`,
+      };
+    }
+
+    if (arguments.length === 1) {
+      return {
+        pass: true,
+        message: () => `Expected result NOT to be a Success.`,
+      };
+    }
+
+    const pass = this.equals(received.value, expectedValue);
+
+    return {
+      pass,
+      actual: received.value,
+      expected: expectedValue,
+      message: () =>
+        pass
+          ? `Expected Success value NOT to deeply equal ${utils.printExpected(expectedValue)}`
+          : `Expected Success value to deeply equal ${utils.printExpected(expectedValue)}\n\nReceived: ${utils.printReceived(received.value)}`,
+    };
+  },
+
+  toBeFailure(received, expectedError?) {
+    const { utils } = this;
+    const isFailure =
+      received !== null &&
+      typeof received === "object" &&
+      received.success === false;
+
+    if (!isFailure) {
+      return {
+        pass: false,
+        message: () =>
+          `Expected a Failure result, but received:\n${utils.printReceived(received)}`,
+      };
+    }
+
+    if (arguments.length === 1) {
+      return {
+        pass: true,
+        message: () => `Expected result NOT to be a Failure.`,
+      };
+    }
+
+    const pass = this.equals(received.error, expectedError);
+
+    return {
+      pass,
+      actual: received.error,
+      expected: expectedError,
+      message: () =>
+        pass
+          ? `Expected Failure error NOT to deeply equal ${utils.printExpected(expectedError)}`
+          : `Expected Failure error to deeply equal ${utils.printExpected(expectedError)}\n\nReceived: ${utils.printReceived(received.error)}`,
     };
   },
 });

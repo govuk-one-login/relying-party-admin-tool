@@ -33,6 +33,10 @@ export interface TestFixtures {
     env: "production" | "integration",
     clientId: string
   ) => Promise<ClientSummary>;
+  getAllClientsByServiceId: (
+    serviceId: string,
+    env: "production" | "integration"
+  ) => Promise<ClientSummary[]>;
   deleteClientsFromDynamo: (clients: ClientServiceSummary[]) => Promise<void>;
 }
 
@@ -239,6 +243,32 @@ export const integrationTest = test.extend<TestFixtures>({
         };
       }
     );
+  },
+
+  getAllClientsByServiceId: async ({ dynamoDocClient }, use) => {
+    await use(async (serviceId: string): Promise<ClientSummary[]> => {
+      const result = await dynamoDocClient.query({
+        TableName: `${process.env.VITEST_WORKER_ID}-services`,
+        KeyConditionExpression: "serviceId = :pk AND begins_with(sk, :prefix)",
+        ExpressionAttributeValues: {
+          ":pk": serviceId,
+          ":prefix": "client#",
+        },
+      });
+
+      if (!result.Items) {
+        return [];
+      }
+
+      return result.Items.map((serviceClientRelation) => {
+        const sk = serviceClientRelation["sk"].split("#");
+        return {
+          clientId: sk[2],
+          name: serviceClientRelation["name"],
+          env: serviceClientRelation["env"],
+        };
+      });
+    });
   },
 
   deleteClientsFromDynamo: [

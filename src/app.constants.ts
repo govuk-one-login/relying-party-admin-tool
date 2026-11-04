@@ -141,3 +141,9 @@ export const VALID_CHANNELS = Object.freeze(["web", "generic_app"] as const);
 export const ADDITIONAL_VALID_CHANNELS = Object.freeze([
   "strategic_app",
 ] as const);
+
+export const VALID_SUBJECT_TYPES = Object.freeze([
+  "public",
+  "pairwise",
+] as const);
+export const VALID_CLIENT_TYPES = Object.freeze(["web", "app"] as const);

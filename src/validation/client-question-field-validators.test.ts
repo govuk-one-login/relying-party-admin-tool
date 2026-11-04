@@ -679,7 +679,7 @@ describe("create client field validators", () => {
 
     it("should fail validation when support identity verification is true and client secret is set", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "CLIENT_SECRET",
         })
         .withBody({
@@ -703,7 +703,7 @@ describe("create client field validators", () => {
 
     it("should pass validation when support identity verification is false and client secret is set", async () => {
       const req = new RequestBuilder()
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           clientAuthenticationMethod: "CLIENT_SECRET",
         })
         .withBody({
@@ -1768,7 +1768,7 @@ describe("create client field validators", () => {
         .withBody({
           "selected-locs": "P0",
         })
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           isIdentityVerificationSupported: true,
         })
         .build();
@@ -1783,7 +1783,7 @@ describe("create client field validators", () => {
         .withBody({
           "selected-locs": ["P0", "P1"],
         })
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           isIdentityVerificationSupported: true,
         })
         .build();
@@ -1798,7 +1798,7 @@ describe("create client field validators", () => {
         .withBody({
           "selected-locs": "",
         })
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           isIdentityVerificationSupported: true,
         })
         .build();
@@ -1821,7 +1821,7 @@ describe("create client field validators", () => {
         .withBody({
           "selected-locs": ["P0", "invalid-loc"],
         })
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           isIdentityVerificationSupported: true,
         })
         .build();
@@ -1844,7 +1844,7 @@ describe("create client field validators", () => {
         .withBody({
           "selected-locs": "P0",
         })
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           isIdentityVerificationSupported: false,
         })
         .build();
@@ -1859,7 +1859,7 @@ describe("create client field validators", () => {
         .withBody({
           "selected-locs": "P1",
         })
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           isIdentityVerificationSupported: false,
         })
         .build();
@@ -1882,7 +1882,7 @@ describe("create client field validators", () => {
         .withBody({
           "selected-locs": "P2",
         })
-        .withSessionnewClientConfig({
+        .withSessionNewClientConfig({
           isIdentityVerificationSupported: false,
         })
         .build();
