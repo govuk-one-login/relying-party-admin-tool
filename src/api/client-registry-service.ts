@@ -7,7 +7,6 @@ import {
 import { Claim, LevelOfConfidence, Scope } from "../models/client.js";
 import { Result } from "../models/result.js";
 import { ClientRegistryStorage } from "../ports/client-registry-storage.js";
-import { logger } from "../utils/logger.js";
 
 export class ClientRegistryService {
   private storageService: ClientRegistryStorage;
@@ -27,10 +26,6 @@ export class ClientRegistryService {
     const clientResponse = await this.storageService.addClient(apiRequest);
 
     if (!clientResponse.success) {
-      logger.error(
-        { err: clientResponse.error },
-        "Failed to create request in Client Registry"
-      );
       return Result.failure(clientResponse.error);
     }
     return clientResponse;

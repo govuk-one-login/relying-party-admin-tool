@@ -48,6 +48,10 @@ export const createClientSummaryPost = (
     );
 
     if (!clientResult.success) {
+      req.log.error(
+        { err: clientResult.error, cause: clientResult.error.cause },
+        "Failed to create request in Client Registry"
+      );
       return res.redirect(PATH_NAMES["500_ERROR"]);
     }
     const clientResponse = clientResult.value;
