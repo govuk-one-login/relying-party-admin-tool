@@ -46,8 +46,8 @@ export const getAwsRegion = (): string => {
   return process.env.AWS_REGION ?? "eu-west-2";
 };
 
-export const getDynamoDBLocalBaseUrl = (): string => {
-  return process.env.DYNAMO_ENDPOINT ?? "http://127.0.0.1:8001";
+export const getFlociBaseUrl = (): string => {
+  return process.env.FLOCI_ENDPOINT ?? "http://localhost:4566";
 };
 
 export const getIntegrationClientMaxRateLimit = (): number => {
@@ -64,4 +64,23 @@ const getEnvOrThrow = (name: string): string => {
     throw new Error("Unset Environment Variable:" + name);
   }
   return envVar;
+};
+
+export const getOidcSigningKeyAlias = (): string => {
+  return (
+    process.env.OIDC_SIGNING_KEY_ALIAS ??
+    `alias/${getEnv()}-oidc-signing-key-alias`
+  );
+};
+
+export const getOidcBaseUrl = (): string => {
+  return process.env.OIDC_BASE_URL ?? `http://localhost:3002`;
+};
+
+export const getOidcClientId = (): string => {
+  return process.env.OIDC_CLIENT_ID ?? `rpat`;
+};
+
+export const getOidcCallbackUrl = (): string => {
+  return process.env.OIDC_CALLBACL_URL ?? "http://localhost:6001/callback";
 };
