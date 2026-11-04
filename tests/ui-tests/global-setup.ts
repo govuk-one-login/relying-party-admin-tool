@@ -9,8 +9,8 @@ import { env } from "./env";
 
 const client = new DynamoDBClient({
   region: "eu-west-2",
-  ...(process.env.DYNAMO_ENDPOINT && {
-    endpoint: process.env.DYNAMO_ENDPOINT,
+  ...(process.env.FLOCI_ENDPOINT && {
+    endpoint: process.env.FLOCI_ENDPOINT,
   }),
 });
 

@@ -4,18 +4,18 @@ import { createHash } from "crypto";
 import { JWK, importSPKI, exportJWK } from "jose";
 import { PATH_NAMES } from "../app.constants.js";
 import { logger } from "../utils/logger.js";
+import { getAWSConfig } from "../config/aws.js";
+import { getOidcSigningKeyAlias } from "../config.js";
 
 const router = express.Router();
 
-const kmsClient = new KMS({
-  region: "eu-west-2",
-});
+const kmsClient = new KMS(getAWSConfig());
 
 const getKeyFromKms = async (): Promise<JWK> => {
   logger.info("Fetching signing key from KMS");
 
   const { PublicKey, KeyId } = await kmsClient.send(
-    new GetPublicKeyCommand({ KeyId: process.env.OIDC_SIGNING_KEY_ALIAS })
+    new GetPublicKeyCommand({ KeyId: getOidcSigningKeyAlias() })
   );
 
   if (!PublicKey || !KeyId) {

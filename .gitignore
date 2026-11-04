@@ -22,8 +22,6 @@ tests/ui-tests/playwright/.auth/
 tests/ui-tests/.features-gen/
 tests/ui-tests/.DS_Store/
 
-# DynamoDBLocal
-**/docker/dynamodb
 
 # TypeScript cache
 *.tsbuildinfo
@@ -54,5 +52,5 @@ infra/.terraform.lock.hcl
 .DS_Store
 volume
 
-# DynamoDBLocal
+# floci
 docker/dynamodb/**

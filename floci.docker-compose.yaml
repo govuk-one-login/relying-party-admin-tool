@@ -1,0 +1,18 @@
+services:
+  floci:
+    image: floci/floci:latest-compat@sha256:bb98b11f837bdacdda21ce6635a0773509e50aa471c35be9332a9efef502127c
+    container_name: floci-rpat
+    volumes:
+      # These are executed on startup once the floci container is ready
+      - ./scripts/create-floci-infra.sh:/etc/floci/init/ready.d/01_init.sh:ro
+      - ./scripts/add-data.sh:/etc/floci/init/ready.d/02_add-data.sh:ro
+      # These are executed on shutdown
+      - ./scripts/delete-data.sh:/etc/floci/init/stop.d/01_delete-data.sh:ro
+    ports:
+      - "4566:4566"
+    environment:
+      SERVICES: "dynamodb,kms" # secrets manager needed for oidc stub
+      AWS_DEFAULT_REGION: eu-west-2
+      AWS_ACCESS_KEY_ID: "DUMMYIDEXAMPLE" # pragma: allowlist secret
+      AWS_SECRET_ACCESS_KEY: "DUMMYEXAMPLEKEY" # pragma: allowlist secret
+    restart: on-failure
