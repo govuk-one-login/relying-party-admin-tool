@@ -257,7 +257,7 @@ describe("Integration:: create client summary", () => {
 
     integrationTest(
       "should pass validation when client authentication method is JWKS and valid url",
-      async () => {
+      async ({ getAllClientsByServiceId }) => {
         const noCacheMiddleware =
           await import("../../../src/middleware/no-cache-middleware.js");
         vi.spyOn(noCacheMiddleware, "noCacheMiddleware").mockImplementation(
@@ -295,6 +295,19 @@ describe("Integration:: create client summary", () => {
             getServicePaths(PATH_NAMES.CREATE_CLIENT_SUCCESS, serviceId)
           );
         expect(res.statusCode).toBe(302);
+
+        const clientsForService = await getAllClientsByServiceId(
+          serviceId,
+          "integration"
+        );
+        expect(clientsForService).not.toEqual([]);
+        clientsForService.forEach((client) => {
+          expect(client).toMatchObject({
+            clientId: expect.any(String),
+            name: "Test client",
+            env: "integration",
+          });
+        });
       }
     );
   });
@@ -443,7 +456,7 @@ describe("Integration:: create client summary", () => {
 
     integrationTest(
       "should pass validation when client authentication method is STATIC and valid public key",
-      async () => {
+      async ({ getAllClientsByServiceId }) => {
         const validPublicKey =
           "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAluh9PbrQX91wl58R5QBG\n4SYgzR4ZlOL1Fj232nkLrLi/iLCWGLeL9Uil884zb3GcMY7wPhP5HbzXYSM9zxAr\nRdQ94s0mEi6v5Kuz07hF1UBMOCDrGRjSfFGQXx51ZXW8tqPTi6kR1U6F3CC7Qu1B\ny7cQDU6t6dBntEmSHK4mgbEnqL+6+tk/YLQtNZ3+E2HpOPaZIaRcVLpzATTrIqyI\nH5YhK2dQFhau04zPMAc/MLF8mQ1cMtYAbxopY91CsOVcmdni4cZYjquCP+Sx0dGK\nmBL3MQhqiWdmXyFlo1NKyHxn9/5zOP5lAi05dHgqjUC7AoF4nKedq0UbH2uxL72b\nrwIDAQAB\n-----END PUBLIC KEY-----"; // pragma: allowlist secret
 
@@ -484,6 +497,19 @@ describe("Integration:: create client summary", () => {
             getServicePaths(PATH_NAMES.CREATE_CLIENT_SUCCESS, serviceId)
           );
         expect(res.statusCode).toBe(302);
+
+        const clientsForService = await getAllClientsByServiceId(
+          serviceId,
+          "integration"
+        );
+        expect(clientsForService).not.toEqual([]);
+        clientsForService.forEach((client) => {
+          expect(client).toMatchObject({
+            clientId: expect.any(String),
+            name: "Test client",
+            env: "integration",
+          });
+        });
       }
     );
   });
@@ -632,7 +658,7 @@ describe("Integration:: create client summary", () => {
 
     integrationTest(
       "should pass validation when client authentication method is CLIENT_SECRET and valid client secret",
-      async () => {
+      async ({ getAllClientsByServiceId }) => {
         const noCacheMiddleware =
           await import("../../../src/middleware/no-cache-middleware.js");
         vi.spyOn(noCacheMiddleware, "noCacheMiddleware").mockImplementation(
@@ -672,6 +698,19 @@ describe("Integration:: create client summary", () => {
             getServicePaths(PATH_NAMES.CREATE_CLIENT_SUCCESS, serviceId)
           );
         expect(res.statusCode).toBe(302);
+
+        const clientsForService = await getAllClientsByServiceId(
+          serviceId,
+          "integration"
+        );
+        expect(clientsForService).not.toEqual([]);
+        clientsForService.forEach((client) => {
+          expect(client).toMatchObject({
+            clientId: expect.any(String),
+            name: "Test client",
+            env: "integration",
+          });
+        });
       }
     );
   });
@@ -804,59 +843,75 @@ describe("Integration:: create client summary", () => {
       }
     );
 
-    integrationTest("should pass validation with valid config", async () => {
-      const noCacheMiddleware =
-        await import("../../../src/middleware/no-cache-middleware.js");
-      vi.spyOn(noCacheMiddleware, "noCacheMiddleware").mockImplementation(
-        async (req: any, res: any, next: any): Promise<void> => {
-          req.session.newClientConfig = {
-            ...defaultBaseClientValues,
-            ...defaultIdentityVerificationSupportedClientValues,
-            ...defaultJWKSClientValues,
-          };
-          return next();
-        }
-      );
-
-      identityVerificationSupportedApp = await (
-        await import("../../../src/app.js")
-      ).createApp();
-
-      identityVerificationSupportedRequestAgent = request.agent(
-        identityVerificationSupportedApp
-      );
-
-      await identityVerificationSupportedRequestAgent
-        .get(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_SUMMARY,
-            existingService.serviceId
-          )
-        )
-        .then((res: Response) => {
-          const $ = cheerio.load(res.text);
-          identityVerificationSupportedToken = $("[name=_csrf]").val();
-        });
-
-      const res = await identityVerificationSupportedRequestAgent
-        .post(
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_SUMMARY,
-            existingService.serviceId
-          )
-        )
-        .type("form")
-        .send({
-          _csrf: identityVerificationSupportedToken,
-        })
-        .expect(
-          "Location",
-          getServicePaths(
-            PATH_NAMES.CREATE_CLIENT_SUCCESS,
-            existingService.serviceId
-          )
+    integrationTest(
+      "should pass validation with valid config",
+      async ({ getAllClientsByServiceId }) => {
+        const noCacheMiddleware =
+          await import("../../../src/middleware/no-cache-middleware.js");
+        vi.spyOn(noCacheMiddleware, "noCacheMiddleware").mockImplementation(
+          async (req: any, res: any, next: any): Promise<void> => {
+            req.session.newClientConfig = {
+              ...defaultBaseClientValues,
+              ...defaultIdentityVerificationSupportedClientValues,
+              ...defaultJWKSClientValues,
+            };
+            return next();
+          }
         );
-      expect(res.statusCode).toBe(302);
-    });
+
+        identityVerificationSupportedApp = await (
+          await import("../../../src/app.js")
+        ).createApp();
+
+        identityVerificationSupportedRequestAgent = request.agent(
+          identityVerificationSupportedApp
+        );
+
+        await identityVerificationSupportedRequestAgent
+          .get(
+            getServicePaths(
+              PATH_NAMES.CREATE_CLIENT_SUMMARY,
+              existingService.serviceId
+            )
+          )
+          .then((res: Response) => {
+            const $ = cheerio.load(res.text);
+            identityVerificationSupportedToken = $("[name=_csrf]").val();
+          });
+
+        const res = await identityVerificationSupportedRequestAgent
+          .post(
+            getServicePaths(
+              PATH_NAMES.CREATE_CLIENT_SUMMARY,
+              existingService.serviceId
+            )
+          )
+          .type("form")
+          .send({
+            _csrf: identityVerificationSupportedToken,
+          })
+          .expect(
+            "Location",
+            getServicePaths(
+              PATH_NAMES.CREATE_CLIENT_SUCCESS,
+              existingService.serviceId
+            )
+          );
+        expect(res.statusCode).toBe(302);
+
+        const clientsForService = await getAllClientsByServiceId(
+          serviceId,
+          "integration"
+        );
+        expect(clientsForService).not.toEqual([]);
+        clientsForService.forEach((client) => {
+          expect(client).toMatchObject({
+            clientId: expect.any(String),
+            name: "Test client",
+            env: "integration",
+          });
+        });
+      }
+    );
   });
 });
