@@ -26,6 +26,18 @@ export const Result = {
     }
   },
 
+  async flatTryAsync<T>(
+    fn: () => Promise<Result<T, Error>>
+  ): Promise<Result<T, Error>> {
+    try {
+      return await fn();
+    } catch (e) {
+      return Result.failure(
+        e instanceof Error ? e : new Error("Unknown error thrown: " + e)
+      );
+    }
+  },
+
   success<T>(value: T): Result<T, never> {
     return { success: true, value };
   },
