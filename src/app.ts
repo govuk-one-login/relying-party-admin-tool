@@ -32,6 +32,9 @@ import { csrfMiddleware } from "./middleware/csrf-middleware.js";
 import { csrfErrorHandler } from "./handler/csrf-error-handler.js";
 import { sanitizeRequestMiddleware } from "./middleware/sanitize-request-middleware.js";
 import { noCacheMiddleware } from "./middleware/no-cache-middleware.js";
+import { checkAuthMiddleware } from "./middleware/check-auth-middleware.js";
+import { callbackController } from "./components/oidc/callback.js";
+import { PATH_NAMES } from "./app.constants.js";
 import { clientRouter } from "./routes/clients-router.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -129,6 +132,14 @@ const createApp = async (): Promise<express.Application> => {
   app.use(csrfMiddleware);
 
   app.use(indexRouter);
+  // callback before check auth as it needs to be accessible
+  // to un-authenticated users to prevent an infinte redirect loop
+  app.get(PATH_NAMES.CALLBACK, callbackController);
+
+  // all routes below this require the user to be authenticated
+  if (process.env.USE_AUTH === "true") {
+    app.use(checkAuthMiddleware);
+  }
   app.use(servicesRouter);
   app.use(createClientRouter);
   app.use(clientRouter);
