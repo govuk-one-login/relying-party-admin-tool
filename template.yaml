@@ -148,10 +148,10 @@ Resources:
           AssignPublicIp: DISABLED
           SecurityGroups:
             - !GetAtt ContainerServiceSecurityGroup.GroupId
-          Subnets: # We don't need egress yet
-            - Fn::ImportValue: !Sub "${VpcStackName}-PrivateSubnetIdA"
-            - Fn::ImportValue: !Sub "${VpcStackName}-PrivateSubnetIdB"
-            - Fn::ImportValue: !Sub "${VpcStackName}-PrivateSubnetIdC"
+          Subnets:
+            - Fn::ImportValue: !Sub "${VpcStackName}-ProtectedSubnetIdA"
+            - Fn::ImportValue: !Sub "${VpcStackName}-ProtectedSubnetIdB"
+            - Fn::ImportValue: !Sub "${VpcStackName}-ProtectedSubnetIdC"
       Tags:
         - Key: Product
           Value: !Ref ProductTagValue
