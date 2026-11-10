@@ -4,6 +4,7 @@ export const PATH_NAMES = {
   "500_ERROR": "/error",
   COOKIES: "/cookies",
   HEALTHCHECK: "/healthcheck",
+  CALLBACK: "/callback",
   SERVICES: "/services",
   CREATE_SERVICE: "/services/create",
   SERVICE: "/services/:serviceId",
