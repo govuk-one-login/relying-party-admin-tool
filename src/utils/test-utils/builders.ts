@@ -27,8 +27,8 @@ export class RequestBuilder {
     return this;
   }
 
-  withSession(session: Session & Partial<SessionData>): this {
-    this.session = session;
+  withSession(session: Partial<SessionData>): this {
+    this.session = { ...this.session, ...session };
     return this;
   }
 
