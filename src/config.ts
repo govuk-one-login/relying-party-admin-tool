@@ -82,5 +82,9 @@ export const getOidcClientId = (): string => {
 };
 
 export const getOidcCallbackUrl = (): string => {
-  return process.env.OIDC_CALLBACL_URL ?? "http://localhost:6001/callback";
+  return process.env.OIDC_CALLBACK_URL ?? "http://localhost:6001/callback";
+};
+
+export const getOidcScopes = (): string[] => {
+  return process.env.OIDC_SCOPES?.split(" ") ?? ["openid", "email"];
 };
