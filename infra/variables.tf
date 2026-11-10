@@ -74,6 +74,13 @@ variable "domain_name" {
   type        = string
   description = "Domain of the application"
 }
+
+variable "allowed_egress_domains" {
+  type        = string
+  description = "Comma seperated list of allowed domains that can be resolved by DNS"
+  default     = "*.sign-in.service.gov.uk"
+}
+
 variable "additional_cloudfront_tags" {
   type        = map(string)
   description = "A map of additional tags to apply to the Cloudfront stack"
