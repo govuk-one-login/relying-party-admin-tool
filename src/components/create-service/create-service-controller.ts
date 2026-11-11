@@ -1,15 +1,15 @@
 import type { Request, Response } from "express";
-import crypto from "crypto";
 import { PATH_NAMES } from "../../app.constants.js";
 import { ExpressRouteFunc } from "../../types.js";
 import { populateUrlRoute } from "../../utils/populate-url-route.js";
 import { getTestServiceId } from "../../config.js";
 import { createNewServiceWithManagerUserPermissions } from "../../datastores/user-permissions-services-data-store.js";
+import { randomBytes } from "crypto";
 
 export const createServicePost = (): ExpressRouteFunc => {
   return async (req: Request, res: Response) => {
     const serviceId =
-      getTestServiceId() ?? crypto.randomBytes(20).toString("base64url");
+      getTestServiceId() ?? randomBytes(20).toString("base64url");
     const userId = "userId";
     const serviceName = req.body.name;
 
