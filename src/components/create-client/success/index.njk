@@ -1,0 +1,28 @@
+{% extends "common/layout/base-layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% set pageTitleName = "Create client success" %}
+
+{% block pageContent %}
+  {{
+    govukPanel({
+      titleText: "Client created",
+      html: "Your client ID<br><strong>" + clientId + "</strong>"
+    })
+  }}
+
+  <h2 class="govuk-heading-m">What happens next</h2>
+
+  <p class="govuk-body">
+    Your integration client has been created. You can now view and edit its
+    configuration from your service page.
+  </p>
+
+  {{
+    govukButton({
+      text: "Back to service",
+      href: serviceUrl
+    })
+  }}
+{% endblock %}

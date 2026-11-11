@@ -70,7 +70,9 @@ export const createClientSummaryPost = (
       `Created new client`
     );
 
-    req.session.newClientConfig = {};
+    req.session.newClientConfig = {
+      clientId: clientResponse.clientId,
+    };
     return saveSessionAndRedirect(
       req,
       res,

@@ -83,6 +83,7 @@ import { ClientRegistryService } from "../api/client-registry-service.js";
 import { isDeployedEnv } from "../config.js";
 import { InMemoryClientStorage } from "../adapters/in-memory-client-storage.js";
 import { ApiClientStorageService } from "../adapters/api-client-storage-service.js";
+import { createClientSuccessGet } from "../components/create-client/success/success-controller.js";
 
 const router = express.Router();
 
@@ -238,5 +239,7 @@ router.post(
     )
   )
 );
+
+router.get(PATH_NAMES.CREATE_CLIENT_SUCCESS, createClientSuccessGet());
 
 export { router as createClientRouter };
