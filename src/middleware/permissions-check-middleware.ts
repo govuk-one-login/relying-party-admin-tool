@@ -46,26 +46,27 @@ export const checkReaderPermissionsMiddleware = async (
 ): Promise<void> => {
   const serviceId = req.params.serviceId as string;
   const userId = "userId";
-  try {
-    if (
-      await permissionsService.checkUserHasReaderPermissions(userId, serviceId)
-    ) {
-      next();
-    } else {
-      req.log.warn(
-        {
-          serviceId,
-        },
-        "User does not have permissions to read to service"
-      );
-      return res.redirect(PATH_NAMES["403_ERROR"]);
-    }
-  } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "Error checking user's reader permissions";
-    req.log.error(errorMessage);
+
+  const permissionCheckResult = await Result.tryAsync(() =>
+    permissionsService.checkUserHasReaderPermissions(userId, serviceId)
+  );
+
+  if (!permissionCheckResult.success) {
+    req.log.error(permissionCheckResult.error.message);
     return res.redirect(PATH_NAMES["500_ERROR"]);
   }
+
+  const isPermitted = permissionCheckResult.value;
+
+  if (!isPermitted) {
+    req.log.warn(
+      {
+        serviceId,
+      },
+      "User does not have permissions to read to service"
+    );
+    return res.redirect(PATH_NAMES["403_ERROR"]);
+  }
+
+  next();
 };
