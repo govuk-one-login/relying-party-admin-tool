@@ -476,6 +476,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - kms:GetPublicKey
+                  - kms:Sign
                 Resource:
                   - !GetAtt OidcSigningKey.Arn
       PermissionsBoundary: !If
