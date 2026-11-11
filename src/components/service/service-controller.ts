@@ -2,7 +2,6 @@ import type { Request, Response } from "express";
 import { permissionsService } from "../../services/permissions-service.js";
 import { ExpressRouteFunc } from "../../types.js";
 import { PATH_NAMES } from "../../app.constants.js";
-import path from "path";
 import { ClientEnvironment } from "../../models/client-environment.js";
 import { getServiceByServiceId } from "../../datastores/services-data-store.js";
 import { getAllClientsByServiceId } from "../../datastores/services-data-store.js";
@@ -32,7 +31,7 @@ export const serviceGet = (): ExpressRouteFunc => {
       {
         active: false,
         text: "Team members",
-        href: path.posix.join(req.path, "team-members"),
+        href: req.path + "/team-members",
       },
     ];
     try {
