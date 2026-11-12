@@ -79,11 +79,17 @@ Mappings:
       sessionExpiry: "7200000"
       rpConfigReadWriteApiId: 3x6eix5jh5
       maxRateLimit: 50
+      oidcClientId: XHEJk_RUZt3KO9__q75eokGUarR8TbWrWA
+      oidcBaseUrl: "https://oidc-stub.manage.development.sign-in.service.gov.uk"
+      oidcScopes: "openid email"
     build:
       serviceDomain: "build.sign-in.service.gov.uk"
       sessionExpiry: "7200000"
       rpConfigReadWriteApiId: tswjyvjfd5
       maxRateLimit: 50
+      oidcClientId: TODO
+      oidcBaseUrl: "https://oidc-stub.manage.build.sign-in.service.gov.uk"
+      oidcScopes: "openid email"
     staging:
       serviceDomain: "staging.sign-in.service.gov.uk"
       sessionExpiry: "7200000"
@@ -142,10 +148,10 @@ Resources:
           AssignPublicIp: DISABLED
           SecurityGroups:
             - !GetAtt ContainerServiceSecurityGroup.GroupId
-          Subnets: # We don't need egress yet
-            - Fn::ImportValue: !Sub "${VpcStackName}-PrivateSubnetIdA"
-            - Fn::ImportValue: !Sub "${VpcStackName}-PrivateSubnetIdB"
-            - Fn::ImportValue: !Sub "${VpcStackName}-PrivateSubnetIdC"
+          Subnets:
+            - Fn::ImportValue: !Sub "${VpcStackName}-ProtectedSubnetIdA"
+            - Fn::ImportValue: !Sub "${VpcStackName}-ProtectedSubnetIdB"
+            - Fn::ImportValue: !Sub "${VpcStackName}-ProtectedSubnetIdC"
       Tags:
         - Key: Product
           Value: !Ref ProductTagValue
@@ -253,6 +259,36 @@ Resources:
                   VpceId: !ImportValue
                     Fn::Sub: "${VpcStackName}-ExecuteApiGatewayEndpointId"
                   Environment: !Sub ${Environment}
+            - Name: "OIDC_CLIENT_ID"
+              Value:
+                !FindInMap [
+                  EnvironmentConfiguration,
+                  !Ref Environment,
+                  oidcClientId,
+                ]
+            - Name: "OIDC_BASE_URL"
+              Value:
+                !FindInMap [
+                  EnvironmentConfiguration,
+                  !Ref Environment,
+                  oidcBaseUrl,
+                ]
+            - Name: "OIDC_SCOPES"
+              Value:
+                !FindInMap [
+                  EnvironmentConfiguration,
+                  !Ref Environment,
+                  oidcScopes,
+                ]
+            - Name: "OIDC_CALLBACK_URL"
+              Value: !Sub
+                - "https://manage.${ServiceDomain}/callback"
+                - ServiceDomain:
+                    !FindInMap [
+                      EnvironmentConfiguration,
+                      !Ref Environment,
+                      serviceDomain,
+                    ]
             - Name: "INT_CLIENT_MAX_RATE_LIMIT"
               Value:
                 !FindInMap [
@@ -440,6 +476,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - kms:GetPublicKey
+                  - kms:Sign
                 Resource:
                   - !GetAtt OidcSigningKey.Arn
       PermissionsBoundary: !If

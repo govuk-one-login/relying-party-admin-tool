@@ -1,9 +1,8 @@
-process.env.DYNAMODB_LOCAL_ENDPOINT = "http://127.0.0.1:8001";
-process.env.AWS_ENDPOINT_URL_DYNAMODB = "http://127.0.0.1:8001";
+process.env.FLOCI_ENDPOINT = "http://127.0.0.1:4566";
 process.env.AWS_REGION = "eu-west-2";
 process.env.AWS_ACCESS_KEY_ID = "test"; // pragma: allowlist secret
 process.env.AWS_SECRET_ACCESS_KEY = "test"; // pragma: allowlist secret
 process.env.ENVIRONMENT = process.env.VITEST_WORKER_ID;
 process.env.SESSION_SECRET = "test"; // pragma: allowlist secret
 process.env.SESSION_EXPIRY = "1800000";
-process.env.INT_CLIENT_MAX_RATE_LIMIT = 50;
+process.env.INT_CLIENT_MAX_RATE_LIMIT = "50";

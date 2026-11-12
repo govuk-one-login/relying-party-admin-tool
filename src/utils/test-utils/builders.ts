@@ -4,6 +4,7 @@ import { Logger } from "pino";
 
 export class RequestBuilder {
   private body: Record<string, unknown> | null = null;
+  private query: Record<string, unknown> = {};
   private session: Partial<Session> & Partial<SessionData> = {
     newClientConfig: {},
     save: vi.fn((cb) => {
@@ -27,8 +28,8 @@ export class RequestBuilder {
     return this;
   }
 
-  withSession(session: Session & Partial<SessionData>): this {
-    this.session = session;
+  withSession(session: Partial<SessionData>): this {
+    this.session = { ...this.session, ...session };
     return this;
   }
 
@@ -47,12 +48,18 @@ export class RequestBuilder {
     return this;
   }
 
+  withQueryParams(qp: Record<string, string>): this {
+    this.query = qp;
+    return this;
+  }
+
   build(): Request {
     return {
       body: this.body,
       session: this.session as Session,
       log: this.log as Logger,
       params: this.params,
+      query: this.query,
     } as Request;
   }
 }
@@ -62,4 +69,5 @@ export const mockResponse = (): Response =>
     render: vi.fn(),
     status: vi.fn(),
     redirect: vi.fn(),
+    json: vi.fn(),
   }) as unknown as Response;

@@ -45,10 +45,10 @@ resource "aws_cloudformation_stack" "spoke_vpc_stack" {
     AppConfigDataApiEnabled       = "No"
     CloudTrailApiEnabled          = "No"
     IdentityStoreApiEnabled       = "No"
-    CloudFormationEndpointEnabled = contains(["build"], var.environment) ? "Yes" : "No"                    # Required for acceptance tests to run when inside the VPC
-    SSMApiEnabled                 = contains(["build"], var.environment) ? "Yes" : "No"                    # Required for acceptance tests to run when inside the VPC
-    S3ApiEnabled                  = contains(["build"], var.environment) ? "Yes" : "No"                    # Required for acceptance tests to run when inside the VPC
-    AllowedDomains                = contains(["build"], var.environment) ? "*.sign-in.service.gov.uk" : "" # Required for acceptance tests to run when inside the VPC
+    CloudFormationEndpointEnabled = contains(["build"], var.environment) ? "Yes" : "No" # Required for acceptance tests to run when inside the VPC
+    SSMApiEnabled                 = contains(["build"], var.environment) ? "Yes" : "No" # Required for acceptance tests to run when inside the VPC
+    S3ApiEnabled                  = contains(["build"], var.environment) ? "Yes" : "No" # Required for acceptance tests to run when inside the VPC
+    AllowedDomains                = var.allowed_egress_domains
     }, var.environment == "production" ? {
     # Disaster Recovery
     // Only set this value in production environments.
