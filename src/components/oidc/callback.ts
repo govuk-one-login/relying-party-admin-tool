@@ -23,6 +23,13 @@ export const callbackController = async (
     res.redirect(PATH_NAMES["500_ERROR"]);
     return;
   }
+
+  if (!isSessionValid(req.session)) {
+    req.log.warn("No valid OIDC authorisation session data found");
+    res.redirect(PATH_NAMES["500_ERROR"]);
+    return;
+  }
+
   req.session.isAuthenticated = true;
   req.session.userId = "userId";
 
@@ -35,5 +42,13 @@ const isValidCallbackQueryParams = (req: Request): boolean => {
     typeof req.query.state === "string" &&
     !!req.query.code &&
     typeof req.query.code === "string"
+  );
+};
+
+const isSessionValid = (session: Request["session"]): boolean => {
+  return (
+    typeof session.state === "string" &&
+    typeof session.nonce === "string" &&
+    typeof session.codeVerifier === "string"
   );
 };

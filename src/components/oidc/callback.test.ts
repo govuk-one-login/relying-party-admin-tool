@@ -9,6 +9,11 @@ describe("callback controller tests", () => {
   it("sets the user as authenticated and sets the user ID on the session", async () => {
     const req = new RequestBuilder()
       .withQueryParams({ code: "123", state: "abcd" })
+      .withSession({
+        state: "abcd",
+        codeVerifier: "891011",
+        nonce: "4567",
+      })
       .build();
     const res = mockResponse();
 
@@ -47,6 +52,33 @@ describe("callback controller tests", () => {
       const req = new RequestBuilder()
         .withQueryParams(qp as Record<string, string>)
         .build();
+      const res = mockResponse();
+
+      await callbackController(req, res);
+
+      expect(res.redirect).toHaveBeenCalledWith(PATH_NAMES["500_ERROR"]);
+      expect(req.session.isAuthenticated).toBeUndefined();
+      expect(req.session.userId).toBeUndefined();
+    }
+  );
+
+  it.each([
+    {
+      state: "1234",
+      nonce: "5678",
+    },
+    {
+      state: "1234",
+      codeVerifier: "891011",
+    },
+    {
+      nonce: "5678",
+      codeVerifier: "891011",
+    },
+  ])(
+    "redirects to an error page when the session does not have valid OIDC data: %s",
+    async (sessionData) => {
+      const req = new RequestBuilder().withSession(sessionData).build();
       const res = mockResponse();
 
       await callbackController(req, res);
