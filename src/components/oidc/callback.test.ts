@@ -17,7 +17,7 @@ describe("callback controller tests", () => {
     expect(req.session.userId).toBe("userId");
   });
 
-  it("returns any error query params as JSON", async () => {
+  it("redirects to an error page if an error is returned from the OIDC provider", async () => {
     const errors = {
       error: "invalid_request",
       error_description: "Invalid request object",
@@ -27,7 +27,7 @@ describe("callback controller tests", () => {
 
     await callbackController(req, res);
 
-    expect(res.json).toHaveBeenCalledWith(errors);
+    expect(res.redirect).toHaveBeenCalledWith(PATH_NAMES["500_ERROR"]);
     expect(req.session.isAuthenticated).toBeUndefined();
     expect(req.session.userId).toBeUndefined();
   });

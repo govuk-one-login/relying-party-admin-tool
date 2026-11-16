@@ -7,11 +7,14 @@ export const callbackController = async (
   res: Response
 ): Promise<void> => {
   if (req.query.error) {
-    //TODO: Handle errors
-    res.json({
-      error: req.query.error,
-      error_description: req.query.error_description,
-    });
+    req.log.warn(
+      {
+        error: req.query.error,
+        error_description: req.query.error_description,
+      },
+      "Error returned from OIDC provider"
+    );
+    res.redirect(PATH_NAMES["500_ERROR"]);
     return;
   }
   //TODO: Future ticket to do the callback stuff
