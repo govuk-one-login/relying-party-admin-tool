@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { PATH_NAMES } from "../../app.constants.js";
 import { saveSessionAndRedirect } from "../../utils/save-session-and-redirect.js";
+import { getOidcConfig } from "../../oidc/oidc-client.js";
 
 export const callbackController = async (
   req: Request,
@@ -26,6 +27,14 @@ export const callbackController = async (
 
   if (!isSessionValid(req.session)) {
     req.log.warn("No valid OIDC authorisation session data found");
+    res.redirect(PATH_NAMES["500_ERROR"]);
+    return;
+  }
+
+  const oidcConfig = await getOidcConfig();
+
+  if (!oidcConfig.success) {
+    req.log.error({ error: oidcConfig.error }, "Failed to get OIDC config");
     res.redirect(PATH_NAMES["500_ERROR"]);
     return;
   }

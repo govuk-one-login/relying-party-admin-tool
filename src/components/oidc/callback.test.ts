@@ -1,12 +1,29 @@
+import { Configuration } from "openid-client";
 import { PATH_NAMES } from "../../app.constants.js";
 import {
   mockResponse,
   RequestBuilder,
 } from "../../utils/test-utils/builders.js";
 import { callbackController } from "./callback.js";
+import { getOidcConfig } from "./../../oidc/oidc-client.js";
+import { Result } from "../../models/result.js";
+
+vi.mock(import("./../../oidc/oidc-client.js"), () => ({
+  getOidcConfig: vi.fn(),
+}));
 
 describe("callback controller tests", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
   it("sets the user as authenticated and sets the user ID on the session", async () => {
+    vi.mocked(getOidcConfig).mockResolvedValue(
+      Result.success(
+        new Configuration({ issuer: "http://localhost" }, "test-123")
+      )
+    );
+
     const req = new RequestBuilder()
       .withQueryParams({ code: "123", state: "abcd" })
       .withSession({
