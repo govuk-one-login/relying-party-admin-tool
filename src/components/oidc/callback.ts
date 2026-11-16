@@ -17,9 +17,23 @@ export const callbackController = async (
     res.redirect(PATH_NAMES["500_ERROR"]);
     return;
   }
-  //TODO: Future ticket to do the callback stuff
+
+  if (!isValidCallbackQueryParams(req)) {
+    req.log.warn("No state or auth code returned from OIDC provider");
+    res.redirect(PATH_NAMES["500_ERROR"]);
+    return;
+  }
   req.session.isAuthenticated = true;
   req.session.userId = "userId";
 
   return saveSessionAndRedirect(req, res, PATH_NAMES.SERVICES);
+};
+
+const isValidCallbackQueryParams = (req: Request): boolean => {
+  return (
+    !!req.query.state &&
+    typeof req.query.state === "string" &&
+    !!req.query.code &&
+    typeof req.query.code === "string"
+  );
 };
