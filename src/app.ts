@@ -19,7 +19,7 @@ import { healthcheckRouter } from "./components/healthcheck/healthcheck-routes.j
 import { servicesRouter } from "./routes/services-router.js";
 import { createClientRouter } from "./routes/create-client-router.js";
 import session from "express-session";
-import { pageNotFoundRouter } from "./routes/error-router.js";
+import { clientErrorRouter } from "./routes/client-error-router.js";
 import { setLocalVarsMiddleware } from "./middleware/set-local-vars-middleware.js";
 import { getSessionStore } from "./datastores/session-data-store.js";
 import { getSessionCookieOptions } from "./config/cookie.js";
@@ -136,6 +136,11 @@ const createApp = async (): Promise<express.Application> => {
   // to un-authenticated users to prevent an infinte redirect loop
   app.get(PATH_NAMES.CALLBACK, callbackController);
 
+  app.get(PATH_NAMES["500_ERROR"], (_req, res) => {
+    res.status(500);
+    res.render("common/errors/500.njk");
+  });
+
   // all routes below this require the user to be authenticated
   if (process.env.USE_AUTH === "true") {
     app.use(checkAuthMiddleware);
@@ -147,7 +152,7 @@ const createApp = async (): Promise<express.Application> => {
 
   // Router for all previously used URLs, that we want to redirect on
   // No URL left behind policy
-  app.use(pageNotFoundRouter);
+  app.use(clientErrorRouter);
 
   app.use(csrfErrorHandler);
 

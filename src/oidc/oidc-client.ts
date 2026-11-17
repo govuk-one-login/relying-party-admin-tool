@@ -1,4 +1,9 @@
-import { allowInsecureRequests, Configuration, discovery } from "openid-client";
+import {
+  allowInsecureRequests,
+  Configuration,
+  discovery,
+  enableNonRepudiationChecks,
+} from "openid-client";
 import { getOidcBaseUrl, getOidcClientId, isLocalEnv } from "../config.js";
 import { kmsClientAuth } from "./kms-client-auth.js";
 import { Result } from "../models/result.js";
@@ -18,6 +23,15 @@ export const getOidcConfig = async (
     return Result.success(value);
   }
 
+  // Enforce ID token signature validation
+  const opts = [enableNonRepudiationChecks];
+
+  if (isLocalEnv()) {
+    // The package blocks HTTP requests, which blocks localhost
+    // requests to the discovery endpoint when running locally
+    opts.push(allowInsecureRequests);
+  }
+
   const getServerMetadataResponse = await Result.tryAsync(() =>
     discovery(
       new URL(config.baseUrl),
@@ -25,9 +39,7 @@ export const getOidcConfig = async (
       undefined,
       kmsClientAuth,
       {
-        // The package blocks HTTP requests, which blocks localhost
-        // requests to the discovery endpoint when running locally
-        execute: isLocalEnv() ? [allowInsecureRequests] : [],
+        execute: opts,
         timeout: 5, // Timeout of 5 seconds, default is 30
       }
     )
