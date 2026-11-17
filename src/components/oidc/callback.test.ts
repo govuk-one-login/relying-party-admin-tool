@@ -4,6 +4,7 @@ import {
   fetchUserInfo,
   TokenEndpointResponse,
   TokenEndpointResponseHelpers,
+  UserInfoResponse,
 } from "openid-client";
 import { PATH_NAMES } from "../../app.constants.js";
 import {
@@ -17,6 +18,7 @@ import {
   testIdTokenGenerator,
   testOidcConfig,
 } from "../../utils/test-utils/oidc-test-helpers.js";
+import { addUser } from "../../datastores/user-permissions-data-store.js";
 
 vi.mock(import("./../../oidc/oidc-client.js"), () => ({
   getOidcConfig: vi.fn(),
@@ -28,6 +30,13 @@ vi.mock(import("openid-client"), async (importOriginal) => ({
   fetchUserInfo: vi.fn(),
 }));
 
+vi.mock(
+  import("../../datastores/user-permissions-data-store.js"),
+  async () => ({
+    addUser: vi.fn(),
+  })
+);
+
 describe("callback controller tests", () => {
   beforeEach(() => {
     vi.resetAllMocks();
@@ -35,6 +44,7 @@ describe("callback controller tests", () => {
 
   it("sets the user as authenticated and sets the user ID on the session upon a successful callback", async () => {
     const testUserId = "test-user-1234";
+    const testEmail = "test@example.com";
     vi.mocked(getOidcConfig).mockResolvedValue(
       Result.success(testOidcConfig())
     );
@@ -49,9 +59,11 @@ describe("callback controller tests", () => {
 
     vi.mocked(fetchUserInfo).mockResolvedValue({
       sub: testUserId,
-      email: "user@example.com",
+      email: testEmail,
       email_verified: true,
     });
+
+    vi.mocked(addUser).mockResolvedValue();
 
     const req = new RequestBuilder()
       .withQueryParams({ code: "123", state: "abcd" })
@@ -65,6 +77,7 @@ describe("callback controller tests", () => {
 
     await callbackController(req, res);
 
+    expect(addUser).toHaveBeenCalledWith(testUserId, testEmail, "User");
     expect(res.redirect).toHaveBeenCalledWith(PATH_NAMES["SERVICES"]);
     expect(req.session.regenerate).toHaveBeenCalled();
     expect(req.session.isAuthenticated).toBe(true);
@@ -237,6 +250,109 @@ describe("callback controller tests", () => {
 
     await callbackController(req, res);
 
+    expect(res.redirect).toHaveBeenCalledWith(PATH_NAMES["500_ERROR"]);
+    expect(req.session.isAuthenticated).toBeUndefined();
+    expect(req.session.userId).toBeUndefined();
+  });
+
+  it.each([
+    {
+      sub: "1234",
+    },
+    {
+      email: "test@example.com",
+    },
+    {
+      email_verified: true,
+    },
+    {
+      email: "test@example.com",
+      email_verified: true,
+    },
+    {
+      email: "test@example.com",
+      sub: "1234",
+    },
+    {
+      email_verified: true,
+      sub: "1234",
+    },
+    {
+      email: "test@example.com",
+      email_verified: false,
+      sub: "1234",
+    },
+  ])(
+    "redirects to an error page for invalid userinfo from the IdP: %s",
+    async (userinfo) => {
+      vi.mocked(getOidcConfig).mockResolvedValue(
+        Result.success(testOidcConfig())
+      );
+
+      vi.mocked(authorizationCodeGrant).mockResolvedValue({
+        access_token: "access-token-123",
+        token_type: "bearer",
+        expiresIn: () => 1800,
+        id_token: "id-token",
+        claims: testIdTokenGenerator,
+      } as TokenEndpointResponse & TokenEndpointResponseHelpers);
+
+      vi.mocked(fetchUserInfo).mockResolvedValue(userinfo as UserInfoResponse);
+
+      const req = new RequestBuilder()
+        .withQueryParams({ code: "123", state: "abcd" })
+        .withSession({
+          state: "abcd",
+          codeVerifier: "891011",
+          nonce: "4567",
+        })
+        .build();
+      const res = mockResponse();
+
+      await callbackController(req, res);
+
+      expect(res.redirect).toHaveBeenCalledWith(PATH_NAMES["500_ERROR"]);
+      expect(req.session.isAuthenticated).toBeUndefined();
+      expect(req.session.userId).toBeUndefined();
+    }
+  );
+
+  it("redirects to an error page when failing to store the user", async () => {
+    const testEmail = "test@example.com";
+    const testSub = "test-user-123";
+    vi.mocked(getOidcConfig).mockResolvedValue(
+      Result.success(testOidcConfig())
+    );
+
+    vi.mocked(authorizationCodeGrant).mockResolvedValue({
+      access_token: "access-token-123",
+      token_type: "bearer",
+      expiresIn: () => 1800,
+      id_token: "id-token",
+      claims: () => testIdTokenGenerator(testSub),
+    } as TokenEndpointResponse & TokenEndpointResponseHelpers);
+
+    vi.mocked(fetchUserInfo).mockResolvedValue({
+      email: testEmail,
+      email_verified: true,
+      sub: testSub,
+    });
+
+    vi.mocked(addUser).mockRejectedValue(new Error("Failed to store user"));
+
+    const req = new RequestBuilder()
+      .withQueryParams({ code: "123", state: "abcd" })
+      .withSession({
+        state: "abcd",
+        codeVerifier: "891011",
+        nonce: "4567",
+      })
+      .build();
+    const res = mockResponse();
+
+    await callbackController(req, res);
+
+    expect(addUser).toHaveBeenCalledWith(testSub, testEmail, "User");
     expect(res.redirect).toHaveBeenCalledWith(PATH_NAMES["500_ERROR"]);
     expect(req.session.isAuthenticated).toBeUndefined();
     expect(req.session.userId).toBeUndefined();
