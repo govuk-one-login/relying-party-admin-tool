@@ -1,4 +1,9 @@
-import { Configuration } from "openid-client";
+import {
+  authorizationCodeGrant,
+  ClientError,
+  TokenEndpointResponse,
+  TokenEndpointResponseHelpers,
+} from "openid-client";
 import { PATH_NAMES } from "../../app.constants.js";
 import {
   mockResponse,
@@ -7,9 +12,18 @@ import {
 import { callbackController } from "./callback.js";
 import { getOidcConfig } from "./../../oidc/oidc-client.js";
 import { Result } from "../../models/result.js";
+import {
+  testIdTokenGenerator,
+  testOidcConfig,
+} from "../../utils/test-utils/oidc-test-helpers.js";
 
 vi.mock(import("./../../oidc/oidc-client.js"), () => ({
   getOidcConfig: vi.fn(),
+}));
+
+vi.mock(import("openid-client"), async (importOriginal) => ({
+  ...(await importOriginal()),
+  authorizationCodeGrant: vi.fn(),
 }));
 
 describe("callback controller tests", () => {
@@ -105,4 +119,77 @@ describe("callback controller tests", () => {
       expect(req.session.userId).toBeUndefined();
     }
   );
+
+  it("redirects to an error page if an error page if it fails to get the tokens from the token endpoint", async () => {
+    vi.mocked(getOidcConfig).mockResolvedValue(
+      Result.success(testOidcConfig())
+    );
+    vi.mocked(authorizationCodeGrant).mockRejectedValue(
+      new ClientError("Authorisation code grant expired")
+    );
+
+    const req = new RequestBuilder()
+      .withQueryParams({ code: "123", state: "abcd" })
+      .withSession({
+        state: "abcd",
+        codeVerifier: "891011",
+        nonce: "4567",
+      })
+      .build();
+    const res = mockResponse();
+
+    await callbackController(req, res);
+
+    expect(res.redirect).toHaveBeenCalledWith(PATH_NAMES["500_ERROR"]);
+    expect(req.session.isAuthenticated).toBeUndefined();
+    expect(req.session.userId).toBeUndefined();
+  });
+
+  it.each([
+    {
+      access_token: "1234",
+      claims: testIdTokenGenerator,
+    },
+    {
+      id_token: "456",
+      claims: testIdTokenGenerator,
+    },
+    {
+      access_token: "1234",
+      id_token: "4567",
+      claims: () => undefined,
+    },
+  ])(
+    "redirects to an error page if an invalid token response is recieved: %s",
+    async (tokenResponse) => {
+      vi.mocked(getOidcConfig).mockResolvedValue(
+        Result.success(testOidcConfig())
+      );
+
+      vi.mocked(authorizationCodeGrant).mockResolvedValue(
+        tokenResponse as TokenEndpointResponse & TokenEndpointResponseHelpers
+      );
+
+      vi.mocked(fetchUserInfo).mockRejectedValue(
+        new ClientError("Invalid access token")
+      );
+
+      const req = new RequestBuilder()
+        .withQueryParams({ code: "123", state: "abcd" })
+        .withSession({
+          state: "abcd",
+          codeVerifier: "891011",
+          nonce: "4567",
+        })
+        .build();
+      const res = mockResponse();
+
+      await callbackController(req, res);
+
+      expect(res.redirect).toHaveBeenCalledWith(PATH_NAMES["500_ERROR"]);
+      expect(req.session.isAuthenticated).toBeUndefined();
+      expect(req.session.userId).toBeUndefined();
+    }
+  );
+
 });

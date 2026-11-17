@@ -2,6 +2,12 @@ import { Request, Response } from "express";
 import { PATH_NAMES } from "../../app.constants.js";
 import { saveSessionAndRedirect } from "../../utils/save-session-and-redirect.js";
 import { getOidcConfig } from "../../oidc/oidc-client.js";
+import { Result } from "../../models/result.js";
+import { getOidcCallbackUrl } from "../../config.js";
+import {
+  authorizationCodeGrant,
+  ClientError,
+} from "openid-client";
 
 export const callbackController = async (
   req: Request,
@@ -38,6 +44,49 @@ export const callbackController = async (
     res.redirect(PATH_NAMES["500_ERROR"]);
     return;
   }
+
+  const currentUrl = new URL(getOidcCallbackUrl());
+  currentUrl.search = new URLSearchParams({
+    code: req.query.code as string,
+    state: req.query.state as string,
+    ...(req.query.iss && {
+      // auth response iss claim is optional but the stub requires it
+      iss: req.query.iss as string,
+    }),
+  }).toString();
+
+  const tokenRespose = await Result.tryAsync(() =>
+    authorizationCodeGrant(oidcConfig.value, currentUrl, {
+      expectedNonce: req.session.nonce,
+      expectedState: req.session.state,
+      pkceCodeVerifier: req.session.codeVerifier,
+    })
+  );
+
+  if (!tokenRespose.success) {
+    const error = tokenRespose.error as ClientError;
+    req.log.warn(
+      {
+        error: error.message,
+        code: error.code ?? "No error Code",
+        cause: error.cause,
+      },
+      "Failed to get tokens from OIDC token endpoint"
+    );
+    res.redirect(PATH_NAMES["500_ERROR"]);
+    return;
+  }
+
+  const { access_token, id_token, claims } = tokenRespose.value;
+  const idTokenClaims = claims();
+
+  if (!access_token || !id_token || typeof idTokenClaims === "undefined") {
+    //TODO: Add refresh token checking
+    req.log.error("No access or id_token returned from OIDC provider");
+    res.redirect(PATH_NAMES["500_ERROR"]);
+    return;
+  }
+
 
   req.session.isAuthenticated = true;
   req.session.userId = "userId";
