@@ -30,6 +30,7 @@ declare module "express-session" {
 }
 
 type CoreClientConfig = {
+  clientId?: string;
   clientName?: string;
   redirectUrls?: string[];
   clientAuthenticationMethod?: "JWKS" | "STATIC" | "CLIENT_SECRET";

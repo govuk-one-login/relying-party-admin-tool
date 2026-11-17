@@ -136,6 +136,8 @@ describe("summary controller tests", () => {
       })
     );
     expect(req.session.save).toHaveBeenCalledTimes(1);
-    expect(req.session.newClientConfig).toStrictEqual({});
+    expect(req.session.newClientConfig).toStrictEqual({
+      clientId: testClientId,
+    });
   });
 });

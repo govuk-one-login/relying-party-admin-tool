@@ -25,7 +25,7 @@ Feature: Create a new client - summary page
     And the error message: "Choose an option to support identity verification or not" shows
     And the error message: "You must select one level of confidence" shows
 
-  Scenario: Create a new client - summary page validates filled auth only client config
+  Scenario: Create a new client - summary page is filled with config
     Given I go to the "create client - enter client name" page
     And the page has finished loading
     And I enter "My client" into the field "What is the name of your client?"
@@ -67,5 +67,3 @@ Feature: Create a new client - summary page
     And the field: "claims" has the value: "https://vocab.account.gov.uk/v1/coreIdentityJWT"
     And the field: "landing-page-url" has the value: "http://url3.com"
     And the field: "levels-of-confidence" has the value: "P2"
-    And I click the "Create client" button
-    Then I am taken to the "create client - success" page

@@ -16,6 +16,7 @@
 @import "components/header";
 @import "components/input";
 @import "components/inset-text";
+@import "components/panel";
 @import "components/service-navigation";
 @import "components/radios";
 @import "components/skip-link";
@@ -75,4 +76,8 @@
       text-decoration: underline;
     }
   }
+}
+
+.govuk-panel__body strong {
+  word-break: break-all;
 }
