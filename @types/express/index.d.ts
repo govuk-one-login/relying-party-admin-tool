@@ -26,6 +26,7 @@ declare module "express-session" {
     state?: string;
     codeVerifier?: string;
     nonce?: string;
+    idToken: string;
   }
 }
 

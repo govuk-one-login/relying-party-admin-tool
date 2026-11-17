@@ -13,6 +13,12 @@ export class RequestBuilder {
       }
       return {} as Session;
     }),
+    regenerate: vi.fn((cb) => {
+      if (cb) {
+        cb();
+      }
+      return {} as Session;
+    }),
   };
   private params: Record<string, unknown> = {};
 

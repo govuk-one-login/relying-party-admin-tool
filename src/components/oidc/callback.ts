@@ -7,6 +7,7 @@ import { getOidcCallbackUrl } from "../../config.js";
 import {
   authorizationCodeGrant,
   ClientError,
+  fetchUserInfo,
 } from "openid-client";
 
 export const callbackController = async (
@@ -87,9 +88,34 @@ export const callbackController = async (
     return;
   }
 
+  const userId = idTokenClaims.sub;
+
+  const userInfoResponse = await Result.tryAsync(() =>
+    fetchUserInfo(oidcConfig.value, access_token, userId)
+  );
+
+  if (!userInfoResponse.success) {
+    const error = userInfoResponse.error as ClientError;
+    req.log.error(
+      {
+        error: error.message,
+        code: error.code ?? "No error Code",
+        cause: error.cause,
+      },
+      "Failed to get userinfo from OIDC provider"
+    );
+    res.redirect(PATH_NAMES["500_ERROR"]);
+    return;
+  }
+
+  const _userInfo = userInfoResponse.value;
+
+  // regenerate session to prevent session fixation
+  await regenerateSession(req.session);
 
   req.session.isAuthenticated = true;
-  req.session.userId = "userId";
+  req.session.userId = userId;
+  req.session.idToken = id_token;
 
   return saveSessionAndRedirect(req, res, PATH_NAMES.SERVICES);
 };
@@ -109,4 +135,16 @@ const isSessionValid = (session: Request["session"]): boolean => {
     typeof session.nonce === "string" &&
     typeof session.codeVerifier === "string"
   );
+};
+
+const regenerateSession = (session: Request["session"]): Promise<void> => {
+  return new Promise((res, rej) => {
+    session.regenerate((err) => {
+      if (err) {
+        rej(err);
+      } else {
+        res();
+      }
+    });
+  });
 };

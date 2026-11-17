@@ -1,6 +1,7 @@
 import {
   authorizationCodeGrant,
   ClientError,
+  fetchUserInfo,
   TokenEndpointResponse,
   TokenEndpointResponseHelpers,
 } from "openid-client";
@@ -24,6 +25,7 @@ vi.mock(import("./../../oidc/oidc-client.js"), () => ({
 vi.mock(import("openid-client"), async (importOriginal) => ({
   ...(await importOriginal()),
   authorizationCodeGrant: vi.fn(),
+  fetchUserInfo: vi.fn(),
 }));
 
 describe("callback controller tests", () => {
@@ -31,12 +33,25 @@ describe("callback controller tests", () => {
     vi.resetAllMocks();
   });
 
-  it("sets the user as authenticated and sets the user ID on the session", async () => {
+  it("sets the user as authenticated and sets the user ID on the session upon a successful callback", async () => {
+    const testUserId = "test-user-1234";
     vi.mocked(getOidcConfig).mockResolvedValue(
-      Result.success(
-        new Configuration({ issuer: "http://localhost" }, "test-123")
-      )
+      Result.success(testOidcConfig())
     );
+
+    vi.mocked(authorizationCodeGrant).mockResolvedValue({
+      access_token: "access-token-123",
+      token_type: "bearer",
+      expiresIn: () => 1800,
+      id_token: "id-token",
+      claims: () => testIdTokenGenerator(testUserId),
+    } as TokenEndpointResponse & TokenEndpointResponseHelpers);
+
+    vi.mocked(fetchUserInfo).mockResolvedValue({
+      sub: testUserId,
+      email: "user@example.com",
+      email_verified: true,
+    });
 
     const req = new RequestBuilder()
       .withQueryParams({ code: "123", state: "abcd" })
@@ -51,8 +66,9 @@ describe("callback controller tests", () => {
     await callbackController(req, res);
 
     expect(res.redirect).toHaveBeenCalledWith(PATH_NAMES["SERVICES"]);
+    expect(req.session.regenerate).toHaveBeenCalled();
     expect(req.session.isAuthenticated).toBe(true);
-    expect(req.session.userId).toBe("userId");
+    expect(req.session.userId).toBe(testUserId);
   });
 
   it("redirects to an error page if an error is returned from the OIDC provider", async () => {
@@ -192,4 +208,37 @@ describe("callback controller tests", () => {
     }
   );
 
+  it("redirects to an error page if it fails to get the userinfo from the IdP", async () => {
+    vi.mocked(getOidcConfig).mockResolvedValue(
+      Result.success(testOidcConfig())
+    );
+
+    vi.mocked(authorizationCodeGrant).mockResolvedValue({
+      access_token: "access-token-123",
+      token_type: "bearer",
+      expiresIn: () => 1800,
+      id_token: "id-token",
+      claims: testIdTokenGenerator,
+    } as TokenEndpointResponse & TokenEndpointResponseHelpers);
+
+    vi.mocked(fetchUserInfo).mockRejectedValue(
+      new ClientError("Invalid access token")
+    );
+
+    const req = new RequestBuilder()
+      .withQueryParams({ code: "123", state: "abcd" })
+      .withSession({
+        state: "abcd",
+        codeVerifier: "891011",
+        nonce: "4567",
+      })
+      .build();
+    const res = mockResponse();
+
+    await callbackController(req, res);
+
+    expect(res.redirect).toHaveBeenCalledWith(PATH_NAMES["500_ERROR"]);
+    expect(req.session.isAuthenticated).toBeUndefined();
+    expect(req.session.userId).toBeUndefined();
+  });
 });
