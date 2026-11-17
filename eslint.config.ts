@@ -59,6 +59,14 @@ export default defineConfig(
     rules: {
       ...vitestEslint.configs.all.rules,
       ...defaultVitestRules,
+      "no-unused-vars": [
+        "error",
+        {
+          varsIgnorePattern: "^_",
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
     },
   },
   {

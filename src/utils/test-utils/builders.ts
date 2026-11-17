@@ -15,6 +15,7 @@ export class RequestBuilder {
     }),
   };
   private params: Record<string, unknown> = {};
+  private path: string = "/test";
 
   private log: Partial<Logger> = {
     debug: vi.fn(() => {}),
@@ -48,6 +49,11 @@ export class RequestBuilder {
     return this;
   }
 
+  withPath(path: string): this {
+    this.path = path;
+    return this;
+  }
+
   withQueryParams(qp: Record<string, string>): this {
     this.query = qp;
     return this;
@@ -60,6 +66,7 @@ export class RequestBuilder {
       log: this.log as Logger,
       params: this.params,
       query: this.query,
+      path: this.path,
     } as Request;
   }
 }
