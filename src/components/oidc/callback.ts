@@ -52,9 +52,9 @@ export const callbackController = async (
   currentUrl.search = new URLSearchParams({
     code: req.query.code as string,
     state: req.query.state as string,
-    ...(req.query.iss && {
+    ...(typeof req.query.iss === "string" && {
       // auth response iss claim is optional but the stub requires it
-      iss: req.query.iss as string,
+      iss: req.query.iss,
     }),
   }).toString();
 
@@ -118,7 +118,6 @@ export const callbackController = async (
     return;
   }
 
-  // Do we need a name attribute? If so how should we derive it and is it mandatory?
   const putUserResult = await Result.tryAsync(() =>
     addUser(userId, userInfo.email, userInfo.given_name ?? "User")
   );
