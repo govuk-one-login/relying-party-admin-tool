@@ -39,8 +39,8 @@ import {
 import {
   createClientIsIdentityVerificationSupportedGet,
   createClientIsIdentityVerificationSupportedPost,
-} from "../components/create-client/support-identity-verification/support-identity-verification-controller.js";
-import { validateIsIdentityVerificationSupportedRequest } from "../components/create-client/support-identity-verification/support-identity-verification-validation.js";
+} from "../components/create-client/support-identity-verification/support-identity-verification/support-identity-verification-controller.js";
+import { validateIsIdentityVerificationSupportedRequest } from "../components/create-client/support-identity-verification/validation.js";
 import {
   createClientSelectClaimsGet,
   createClientSelectClaimsPost,

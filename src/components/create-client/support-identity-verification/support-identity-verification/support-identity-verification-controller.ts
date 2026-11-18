@@ -1,13 +1,15 @@
 import type { Request, Response } from "express";
-import { PATH_NAMES } from "../../../app.constants.js";
-import { ExpressRouteFunc } from "../../../types.js";
-import { populateUrlRoute } from "../../../utils/populate-url-route.js";
-import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
+import { PATH_NAMES } from "../../../../app.constants.js";
+import { ExpressRouteFunc } from "../../../../types.js";
+import { populateUrlRoute } from "../../../../utils/populate-url-route.js";
+import { saveSessionAndRedirect } from "../../../../utils/save-session-and-redirect.js";
 
 export const createClientIsIdentityVerificationSupportedGet =
   (): ExpressRouteFunc => {
     return async (_req: Request, res: Response) => {
-      res.render("create-client/support-identity-verification/index.njk");
+      res.render(
+        "create-client/support-identity-verification/support-identity-verification/index.njk"
+      );
     };
   };
 

@@ -6,7 +6,7 @@ export const validateIsIdentityVerificationSupportedRequest =
   (): ValidationChainFunc => {
     return [
       validateFieldsMiddleware(
-        "create-client/support-identity-verification/index.njk",
+        "create-client/support-identity-verification/support-identity-verification/index.njk",
         supportIdentityVerificationFieldValidator
       ),
     ];
