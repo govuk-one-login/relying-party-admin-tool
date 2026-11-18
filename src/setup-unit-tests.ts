@@ -1,4 +1,5 @@
 import "aws-sdk-client-mock-vitest/extend";
+import { CustomMatcher as awsMockMatchers } from "aws-sdk-client-mock-vitest";
 import { expect } from "vitest";
 import {
   FieldError,
@@ -16,6 +17,7 @@ interface CustomMatchers<R = unknown> {
 }
 
 declare module "vitest" {
+  interface Matchers<T> extends awsMockMatchers<T> {}
   interface Assertion<T> extends CustomMatchers<T> {}
   interface AsymmetricMatchersContaining extends CustomMatchers {}
 }

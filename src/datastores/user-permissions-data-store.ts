@@ -1,5 +1,5 @@
 import { Relation } from "../models/relation.js";
-import { User } from "../models/user.js";
+import { User, UserEntry } from "../models/user.js";
 import { dynamoDocClient } from "../utils/dynamo.js";
 
 export const userPermissionsTableName = `${process.env.ENVIRONMENT ?? "test"}-user-permissions`;
@@ -17,6 +17,22 @@ export const getUser = async (id: string): Promise<User | undefined> => {
     name: result.Item.name,
     email: result.Item.email,
   } as User;
+};
+
+export const addUser = async (
+  userId: string,
+  email: string,
+  name: string
+): Promise<void> => {
+  await dynamoDocClient.put({
+    TableName: userPermissionsTableName,
+    Item: {
+      subject: `user:${userId}`,
+      sk: "user",
+      email,
+      name,
+    } satisfies UserEntry,
+  });
 };
 
 export const getServicesWithRelationForUser = async (

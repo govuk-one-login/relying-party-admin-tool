@@ -1,4 +1,5 @@
 import {
+  addUser,
   getServicesWithRelationForUser,
   getUser,
 } from "./user-permissions-data-store.js";
@@ -6,6 +7,7 @@ import { mockClient } from "aws-sdk-client-mock";
 import {
   DynamoDBDocument,
   GetCommand,
+  PutCommand,
   QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
 
@@ -61,6 +63,27 @@ describe("User permissions data store tests", () => {
       const result = await getUser("not-a-user-id");
 
       expect(result).toBeUndefined();
+    });
+  });
+
+  describe("add user", () => {
+    it("should add a user with a given ID ", async () => {
+      mockDynamo
+        .on(PutCommand, {
+          TableName: `${TABLE_PREFIX}-user-permissions`,
+        })
+        .resolves({});
+
+      await addUser("test-user-id", "test@example.com", "User");
+
+      expect(mockDynamo).toHaveReceivedCommandWith(PutCommand, {
+        Item: {
+          subject: `user:test-user-id`,
+          sk: "user",
+          email: "test@example.com",
+          name: "User",
+        },
+      });
     });
   });
 

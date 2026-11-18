@@ -8,7 +8,9 @@ import {
   authorizationCodeGrant,
   ClientError,
   fetchUserInfo,
+  UserInfoResponse,
 } from "openid-client";
+import { addUser } from "../../datastores/user-permissions-data-store.js";
 
 export const callbackController = async (
   req: Request,
@@ -50,9 +52,9 @@ export const callbackController = async (
   currentUrl.search = new URLSearchParams({
     code: req.query.code as string,
     state: req.query.state as string,
-    ...(req.query.iss && {
+    ...(typeof req.query.iss === "string" && {
       // auth response iss claim is optional but the stub requires it
-      iss: req.query.iss as string,
+      iss: req.query.iss,
     }),
   }).toString();
 
@@ -108,8 +110,26 @@ export const callbackController = async (
     return;
   }
 
-  const _userInfo = userInfoResponse.value;
+  const userInfo = userInfoResponse.value;
 
+  if (!isValidUserInfo(userInfo)) {
+    req.log.error("Userinfo missing required information");
+    res.redirect(PATH_NAMES["500_ERROR"]);
+    return;
+  }
+
+  const putUserResult = await Result.tryAsync(() =>
+    addUser(userId, userInfo.email, userInfo.given_name ?? "User")
+  );
+
+  if (!putUserResult.success) {
+    req.log.error(
+      { error: putUserResult.error },
+      "Failed to put user in dynamo"
+    );
+    res.redirect(PATH_NAMES["500_ERROR"]);
+    return;
+  }
   // regenerate session to prevent session fixation
   await regenerateSession(req.session);
 
@@ -147,4 +167,19 @@ const regenerateSession = (session: Request["session"]): Promise<void> => {
       }
     });
   });
+};
+
+const isValidUserInfo = (
+  userinfo: UserInfoResponse
+): userinfo is {
+  email: string;
+  email_verified: true;
+  sub: string;
+} & UserInfoResponse => {
+  return (
+    typeof userinfo.email === "string" &&
+    typeof userinfo.sub === "string" &&
+    typeof userinfo.email_verified === "boolean" &&
+    userinfo.email_verified === true
+  );
 };
