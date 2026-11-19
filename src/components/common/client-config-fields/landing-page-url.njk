@@ -3,10 +3,8 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
-{% set pageTitleName = "Enter landing page URL" %}
-
 {% block pageContent %}
-  <form class="form" action="enter-landing-page-url" method="post">
+  <form class="form" action="{{ formAction }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
     {{
@@ -18,7 +16,7 @@
         },
         id: "landing-page-url",
       name: "landing-page-url",
-      value: data['landing-page-url'],
+      value: landingPageUrl,
       errorMessage: {
           attributes: { "data-test-id": "landing-page-url-error"},
         text: errors["landing-page-url"].text

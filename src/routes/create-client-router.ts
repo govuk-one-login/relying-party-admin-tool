@@ -55,8 +55,8 @@ import {
 import {
   createClientEnterLandingPageUrlGet,
   createClientEnterLandingPageUrlPost,
-} from "../components/create-client/enter-landing-page-url/enter-landing-page-url-controller.js";
-import { validateEnterLandingPageUrlRequest } from "../components/create-client/enter-landing-page-url/enter-landing-page-url-validation.js";
+} from "../components/create-client/landing-page-url/enter-landing-page-url/enter-landing-page-url-controller.js";
+import { validateEnterLandingPageUrlRequest } from "../components/create-client/landing-page-url/validation.js";
 import {
   createClientSummaryGet,
   createClientSummaryPost,
