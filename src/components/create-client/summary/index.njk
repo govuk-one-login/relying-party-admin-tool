@@ -20,7 +20,7 @@
       key: { text: "Check user identity" },
       value: { html: '<div id="identity-verification-supported">' + client.isIdentityVerificationSupported | default("Not set") + '</div>' },
       actions: {
-        items: [{ href: "/", text: "Change", visuallyHiddenText: "identity verification supported" }]
+        items: [{ href: baseUrl + "/edit-support-identity-verification", text: "Change", visuallyHiddenText: "identity verification supported" }]
       }
     }
   ])

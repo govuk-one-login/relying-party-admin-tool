@@ -27,6 +27,8 @@ export const PATH_NAMES = {
   CREATE_CLIENT_EDIT_SCOPES: "/services/:serviceId/clients/create/edit-scopes",
   CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT:
     "/services/:serviceId/clients/create/support-identity-verification",
+  CREATE_CLIENT_EDIT_IDENTITY_VERIFICATION_SUPPORT:
+    "/services/:serviceId/clients/create/edit-support-identity-verification",
   CREATE_CLIENT_SELECT_CLAIMS:
     "/services/:serviceId/clients/create/select-claims",
   CREATE_CLIENT_ENTER_LANDING_PAGE_URL:

@@ -60,6 +60,8 @@ const pageNameToPath: Record<string, string> = {
   "create client - edit scopes": "/services/1/clients/create/edit-scopes",
   "create client - support identity verification":
     "/services/1/clients/create/support-identity-verification",
+  "create client - edit support identity verification":
+    "/services/1/clients/create/edit-support-identity-verification",
   "create client - select claims": "/services/1/clients/create/select-claims",
   "create client - enter landing page url":
     "/services/1/clients/create/enter-landing-page-url",
@@ -307,3 +309,7 @@ Then(
     ).toBeChecked();
   }
 );
+
+Then("the radio: {string} is checked", async ({ page }, radioLabel: string) => {
+  await expect(page.getByRole("radio", { name: radioLabel })).toBeChecked();
+});

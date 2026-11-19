@@ -39,8 +39,11 @@ import {
 import {
   createClientIsIdentityVerificationSupportedGet,
   createClientIsIdentityVerificationSupportedPost,
-} from "../components/create-client/support-identity-verification/support-identity-verification-controller.js";
-import { validateIsIdentityVerificationSupportedRequest } from "../components/create-client/support-identity-verification/support-identity-verification-validation.js";
+} from "../components/create-client/support-identity-verification/support-identity-verification/support-identity-verification-controller.js";
+import {
+  validateEditIsIdentityVerificationSupportedRequest,
+  validateIsIdentityVerificationSupportedRequest,
+} from "../components/create-client/support-identity-verification/validation.js";
 import {
   createClientSelectClaimsGet,
   createClientSelectClaimsPost,
@@ -84,6 +87,10 @@ import { isDeployedEnv } from "../config.js";
 import { InMemoryClientStorage } from "../adapters/in-memory-client-storage.js";
 import { ApiClientStorageService } from "../adapters/api-client-storage-service.js";
 import { createClientSuccessGet } from "../components/create-client/success/success-controller.js";
+import {
+  createClientEditIsIdentityVerificationSupportedGet,
+  createClientEditIsIdentityVerificationSupportedPost,
+} from "../components/create-client/support-identity-verification/edit-support-identity-verification/edit-support-identity-verification-controller.js";
 
 const router = express.Router();
 
@@ -191,6 +198,17 @@ router.post(
   PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT,
   validateIsIdentityVerificationSupportedRequest(),
   createClientIsIdentityVerificationSupportedPost()
+);
+
+router.get(
+  PATH_NAMES.CREATE_CLIENT_EDIT_IDENTITY_VERIFICATION_SUPPORT,
+  createClientEditIsIdentityVerificationSupportedGet()
+);
+
+router.post(
+  PATH_NAMES.CREATE_CLIENT_EDIT_IDENTITY_VERIFICATION_SUPPORT,
+  validateEditIsIdentityVerificationSupportedRequest(),
+  createClientEditIsIdentityVerificationSupportedPost()
 );
 
 router.get(
