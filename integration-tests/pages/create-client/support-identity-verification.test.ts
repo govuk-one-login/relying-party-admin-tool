@@ -10,7 +10,6 @@ import {
   testComponent,
 } from "../../helpers/helpers.js";
 import { randomUUID } from "crypto";
-import { Request } from "express";
 
 describe("Integration:: support identity verification", () => {
   let token: string | string[] | undefined;

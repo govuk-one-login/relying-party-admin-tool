@@ -11,3 +11,13 @@ export const validateIsIdentityVerificationSupportedRequest =
       ),
     ];
   };
+
+export const validateEditIsIdentityVerificationSupportedRequest =
+  (): ValidationChainFunc => {
+    return [
+      validateFieldsMiddleware(
+        "create-client/support-identity-verification/edit-support-identity-verification/index.njk",
+        supportIdentityVerificationFieldValidator
+      ),
+    ];
+  };
