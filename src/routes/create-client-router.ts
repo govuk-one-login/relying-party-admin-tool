@@ -47,8 +47,11 @@ import {
 import {
   createClientSelectClaimsGet,
   createClientSelectClaimsPost,
-} from "../components/create-client/select-claims/select-claims-controller.js";
-import { validateSelectClaimsRequest } from "../components/create-client/select-claims/select-claims-validation.js";
+} from "../components/create-client/claims/select-claims/select-claims-controller.js";
+import {
+  validateEditClaimsRequest,
+  validateSelectClaimsRequest,
+} from "../components/create-client/claims/validation.js";
 import {
   createClientEnterLandingPageUrlGet,
   createClientEnterLandingPageUrlPost,
@@ -91,6 +94,10 @@ import {
   createClientEditIsIdentityVerificationSupportedGet,
   createClientEditIsIdentityVerificationSupportedPost,
 } from "../components/create-client/support-identity-verification/edit-support-identity-verification/edit-support-identity-verification-controller.js";
+import {
+  createClientEditClaimsGet,
+  createClientEditClaimsPost,
+} from "../components/create-client/claims/edit-claims/select-claims-controller.js";
 
 const router = express.Router();
 
@@ -220,6 +227,14 @@ router.post(
   PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS,
   validateSelectClaimsRequest(),
   createClientSelectClaimsPost()
+);
+
+router.get(PATH_NAMES.CREATE_CLIENT_EDIT_CLAIMS, createClientEditClaimsGet());
+
+router.post(
+  PATH_NAMES.CREATE_CLIENT_EDIT_CLAIMS,
+  validateEditClaimsRequest(),
+  createClientEditClaimsPost()
 );
 
 router.get(

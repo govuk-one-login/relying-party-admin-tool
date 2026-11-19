@@ -125,6 +125,19 @@
   ])
 %}
 
+
+{% set claims %}
+  {%- if client.claims -%}
+    {%- for claim in client.claims -%}
+      {%- if not loop.first %}<br />{% endif -%}<code class="red-code"
+        >{{ claim }}</code
+      >
+    {%- endfor -%}
+  {%- else -%}
+    Not set
+  {%- endif -%}
+{% endset %}
+
 {% block pageContent %}
   <form class="form" action="summary" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
@@ -157,10 +170,10 @@
             {
               key: { text: "Claims" },
               value: {
-                html: '<div id="claims">' + (client.claims | join("<br>") if client.claims else "Not set") + '</div>'
+                html: '<div id="claims">' + claims + '</div>'
               },
               actions: {
-                items: [{ href: "/", text: "Change", visuallyHiddenText: "claims" }]
+                items: [{ href: baseUrl + "/edit-claims", text: "Change", visuallyHiddenText: "claims" }]
               }
             },
             {
