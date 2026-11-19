@@ -1,12 +1,14 @@
 import type { Request, Response } from "express";
-import { PATH_NAMES } from "../../../app.constants.js";
-import { ExpressRouteFunc } from "../../../types.js";
-import { populateUrlRoute } from "../../../utils/populate-url-route.js";
-import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
+import { PATH_NAMES } from "../../../../app.constants.js";
+import { ExpressRouteFunc } from "../../../../types.js";
+import { populateUrlRoute } from "../../../../utils/populate-url-route.js";
+import { saveSessionAndRedirect } from "../../../../utils/save-session-and-redirect.js";
 
 export const createClientEnterLandingPageUrlGet = (): ExpressRouteFunc => {
   return async (_req: Request, res: Response) => {
-    res.render("create-client/enter-landing-page-url/index.njk");
+    res.render(
+      "create-client/landing-page-url/enter-landing-page-url/index.njk"
+    );
   };
 };
 

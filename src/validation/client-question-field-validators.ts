@@ -135,7 +135,7 @@ export const jarValidationRequiredFieldValidator = new FieldValidator(
   "jar-validation-required"
 );
 
-export const enterLandingPageUrlFieldValidator = new FieldValidator(
+export const landingPageUrlFieldValidator = new FieldValidator(
   optional(
     validUrlValidator("landing page URL").and(
       productionUrlValidator("landing page URL")
