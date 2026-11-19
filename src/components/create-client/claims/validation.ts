@@ -1,12 +1,12 @@
 import { ValidationChainFunc } from "../../../types.js";
 import { validateFieldsMiddleware } from "../../../middleware/form-validation-middleware.js";
-import { selectClaimsFieldValidator } from "../../../validation/client-question-field-validators.js";
+import { claimsFieldValidator } from "../../../validation/client-question-field-validators.js";
 
 export const validateSelectClaimsRequest = (): ValidationChainFunc => {
   return [
     validateFieldsMiddleware(
-      "create-client/select-claims/index.njk",
-      selectClaimsFieldValidator
+      "create-client/claims/select-claims/index.njk",
+      claimsFieldValidator
     ),
   ];
 };

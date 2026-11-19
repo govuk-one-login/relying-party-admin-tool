@@ -88,7 +88,7 @@ export const clientNameInputFieldValidator = new FieldValidator(
   "client-name"
 );
 
-export const selectClaimsFieldValidator = new FieldValidator(
+export const claimsFieldValidator = new FieldValidator(
   validClaimsValidator.adaptedFrom((req: Request) =>
     getOptionalList(req.body["selected-claims"])
   ),

@@ -47,8 +47,8 @@ import {
 import {
   createClientSelectClaimsGet,
   createClientSelectClaimsPost,
-} from "../components/create-client/select-claims/select-claims-controller.js";
-import { validateSelectClaimsRequest } from "../components/create-client/select-claims/select-claims-validation.js";
+} from "../components/create-client/claims/select-claims/select-claims-controller.js";
+import { validateSelectClaimsRequest } from "../components/create-client/claims/validation.js";
 import {
   createClientEnterLandingPageUrlGet,
   createClientEnterLandingPageUrlPost,

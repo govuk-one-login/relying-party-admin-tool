@@ -2,7 +2,7 @@ import {
   clientNameInputFieldValidator,
   redirectUrlsFieldValidator,
   enterLandingPageUrlFieldValidator,
-  selectClaimsFieldValidator,
+  claimsFieldValidator,
   scopesFieldValidator,
   supportIdentityVerificationFieldValidator,
   clientAuthenticationInputFieldValidatorChain,
@@ -608,7 +608,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectClaimsFieldValidator.validate(req);
+      const result = await claimsFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
@@ -620,7 +620,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectClaimsFieldValidator.validate(req);
+      const result = await claimsFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
@@ -632,7 +632,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await selectClaimsFieldValidator.validate(req);
+      const result = await claimsFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 

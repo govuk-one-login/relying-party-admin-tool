@@ -1,13 +1,13 @@
 import type { Request, Response } from "express";
-import { PATH_NAMES } from "../../../app.constants.js";
-import { ExpressRouteFunc } from "../../../types.js";
-import { populateUrlRoute } from "../../../utils/populate-url-route.js";
-import { saveSessionAndRedirect } from "../../../utils/save-session-and-redirect.js";
-import { getOptionalList } from "../../../helpers/request-helpers.js";
+import { PATH_NAMES } from "../../../../app.constants.js";
+import { ExpressRouteFunc } from "../../../../types.js";
+import { populateUrlRoute } from "../../../../utils/populate-url-route.js";
+import { saveSessionAndRedirect } from "../../../../utils/save-session-and-redirect.js";
+import { getOptionalList } from "../../../../helpers/request-helpers.js";
 
 export const createClientSelectClaimsGet = (): ExpressRouteFunc => {
   return async (_req: Request, res: Response) => {
-    res.render("create-client/select-claims/index.njk");
+    res.render("create-client/claims/select-claims/index.njk");
   };
 };
 
