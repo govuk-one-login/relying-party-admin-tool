@@ -7,6 +7,6 @@ export const setLocalVarsMiddleware = async (
   next: NextFunction
 ): Promise<void> => {
   res.locals.scriptNonce = await generateNonce();
-  res.locals.landingPageUrl = PATH_NAMES.ROOT;
+  res.locals.rootUrl = PATH_NAMES.ROOT;
   next();
 };
