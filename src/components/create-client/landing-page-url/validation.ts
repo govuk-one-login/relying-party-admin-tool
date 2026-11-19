@@ -10,3 +10,12 @@ export const validateEnterLandingPageUrlRequest = (): ValidationChainFunc => {
     ),
   ];
 };
+
+export const validateEditLandingPageUrlRequest = (): ValidationChainFunc => {
+  return [
+    validateFieldsMiddleware(
+      "create-client/landing-page-url/edit-landing-page-url/index.njk",
+      landingPageUrlFieldValidator
+    ),
+  ];
+};

@@ -180,7 +180,7 @@
               key: { text: "Landing Page URL" },
               value: { html: '<div id="landing-page-url">' + (client.landingPageUrl if client.landingPageUrl.length > 0 else "Not set") + '</div>' },
               actions: {
-                items: [{ href: "/", text: "Change", visuallyHiddenText: "landing page url" }]
+                items: [{ href: baseUrl + "/edit-landing-page-url", text: "Change", visuallyHiddenText: "landing page url" }]
               }
             },
             {
