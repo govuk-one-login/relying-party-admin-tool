@@ -31,6 +31,7 @@ export const PATH_NAMES = {
     "/services/:serviceId/clients/create/edit-support-identity-verification",
   CREATE_CLIENT_SELECT_CLAIMS:
     "/services/:serviceId/clients/create/select-claims",
+  CREATE_CLIENT_EDIT_CLAIMS: "/services/:serviceId/clients/create/edit-claims",
   CREATE_CLIENT_ENTER_LANDING_PAGE_URL:
     "/services/:serviceId/clients/create/enter-landing-page-url",
   CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE:

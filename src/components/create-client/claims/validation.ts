@@ -10,3 +10,12 @@ export const validateSelectClaimsRequest = (): ValidationChainFunc => {
     ),
   ];
 };
+
+export const validateEditClaimsRequest = (): ValidationChainFunc => {
+  return [
+    validateFieldsMiddleware(
+      "create-client/claims/edit-claims/index.njk",
+      claimsFieldValidator
+    ),
+  ];
+};
