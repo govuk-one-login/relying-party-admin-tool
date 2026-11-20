@@ -15,5 +15,5 @@ Feature: Client - edit scopes page
     Given I go to the "client - edit scopes" page
     And the page has finished loading
     And I check the checkbox: "email"
-    And I click the "Continue" button
+    And I click the "Confirm" button
     Then I am taken to the "client" page

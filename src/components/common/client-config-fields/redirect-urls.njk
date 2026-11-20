@@ -80,7 +80,7 @@
 
     {{
       govukButton({
-        text: "Continue",
+        text: buttonText | default("Continue"),
         type: "Submit",
         name: "action",
         value: "continue"

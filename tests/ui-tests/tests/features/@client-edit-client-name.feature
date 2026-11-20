@@ -13,8 +13,8 @@ Feature: Client - edit client name page
   Scenario: Client - edit client name page validates the client name
     Given I go to the "client - edit client name" page
     And the page has finished loading
-    And I click the "Continue" button
+    And I click the "Confirm" button
     Then the error message: "Enter your client name" shows
     And I enter "My client" into the field "What is the name of your client?"
-    And I click the "Continue" button
+    And I click the "Confirm" button
     Then I am taken to the "client" page
