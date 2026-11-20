@@ -96,23 +96,33 @@ export const claimsFieldValidator = new FieldValidator(
 );
 
 export const supportIdentityVerificationFieldValidator = new FieldValidator(
-  requiredValidator("Choose an option to support identity verification or not")
-    .adaptedFrom((req: Request) => req.body["support-identity-verification"])
-    .and(
-      when(
-        (req: Request) =>
-          req.session.newClientConfig?.clientAuthenticationMethod ===
-          "CLIENT_SECRET",
-        rule(
-          (input: string) => input !== "true",
-          "Identity verification cannot be supported if client secret is used as authentication method"
-        ).adaptedFrom(
-          (req: Request) => req.body["support-identity-verification"]
-        )
-      )
-    ),
+  requiredValidator(
+    "Choose an option to support identity verification or not"
+  ).adaptedFrom((req: Request) => req.body["support-identity-verification"]),
   "support-identity-verification"
 );
+
+export const createClientSupportIdentityVerificationFieldValidator =
+  new FieldValidator(
+    requiredValidator(
+      "Choose an option to support identity verification or not"
+    )
+      .adaptedFrom((req: Request) => req.body["support-identity-verification"])
+      .and(
+        when(
+          (req: Request) =>
+            req.session.newClientConfig?.clientAuthenticationMethod ===
+            "CLIENT_SECRET",
+          rule(
+            (input: string) => input !== "true",
+            "Identity verification cannot be supported if client secret is used as authentication method"
+          ).adaptedFrom(
+            (req: Request) => req.body["support-identity-verification"]
+          )
+        )
+      ),
+    "support-identity-verification"
+  );
 
 export const idTokenSigningAlgorithmFieldValidator = new FieldValidator(
   idTokenSigningAlgorithmValidator.adaptedFrom(
