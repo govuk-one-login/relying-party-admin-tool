@@ -2,7 +2,7 @@ import { ValidationChainFunc } from "../../../types.js";
 import { validateFieldsMiddleware } from "../../../middleware/form-validation-middleware.js";
 import { supportIdentityVerificationFieldValidator } from "../../../validation/client-question-field-validators.js";
 
-export const validateIsIdentityVerificationSupportedRequest =
+export const validateCreateClientIsIdentityVerificationSupportedRequest =
   (): ValidationChainFunc => {
     return [
       validateFieldsMiddleware(
@@ -12,7 +12,7 @@ export const validateIsIdentityVerificationSupportedRequest =
     ];
   };
 
-export const validateEditIsIdentityVerificationSupportedRequest =
+export const validateCreateClientEditIsIdentityVerificationSupportedRequest =
   (): ValidationChainFunc => {
     return [
       validateFieldsMiddleware(
