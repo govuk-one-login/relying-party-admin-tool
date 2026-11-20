@@ -20,6 +20,7 @@ import {
   maxAgeEnabledFieldValidator,
   permitMissingNonceFieldValidator,
   rateLimitFieldValidator,
+  createClientSupportIdentityVerificationFieldValidator,
 } from "./client-question-field-validators.js";
 import { InvalidField } from "../utils/types.js";
 import { RequestBuilder } from "../utils/test-utils/builders.js";
@@ -676,6 +677,42 @@ describe("create client field validators", () => {
         "Choose an option to support identity verification or not"
       );
     });
+  });
+
+  describe("createClientSupportIdentityVerificationFieldValidator", () => {
+    it("should pass validation when an option is selected", async () => {
+      const req = new RequestBuilder()
+        .withBody({
+          "support-identity-verification": "true",
+        })
+        .build();
+
+      const result =
+        await createClientSupportIdentityVerificationFieldValidator.validate(
+          req
+        );
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it("should fail validation when support identity verification is empty", async () => {
+      const req = new RequestBuilder().withBody({}).build();
+
+      const result =
+        await createClientSupportIdentityVerificationFieldValidator.validate(
+          req
+        );
+
+      expect(result.isValid).toBe(false);
+
+      const errorsArray = (result as InvalidField).errors;
+
+      expect(errorsArray).length(1);
+      expect(errorsArray[0].text).length(1);
+      expect(errorsArray[0].text[0]).toBe(
+        "Choose an option to support identity verification or not"
+      );
+    });
 
     it("should fail validation when support identity verification is true and client secret is set", async () => {
       const req = new RequestBuilder()
@@ -688,7 +725,9 @@ describe("create client field validators", () => {
         .build();
 
       const result =
-        await supportIdentityVerificationFieldValidator.validate(req);
+        await createClientSupportIdentityVerificationFieldValidator.validate(
+          req
+        );
 
       expect(result.isValid).toBe(false);
 
@@ -712,7 +751,9 @@ describe("create client field validators", () => {
         .build();
 
       const result =
-        await supportIdentityVerificationFieldValidator.validate(req);
+        await createClientSupportIdentityVerificationFieldValidator.validate(
+          req
+        );
 
       expect(result.isValid).toBe(true);
     });

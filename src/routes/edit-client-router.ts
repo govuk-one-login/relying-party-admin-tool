@@ -79,6 +79,11 @@ import {
   editRedirectUrlsPost,
 } from "../components/clients/edit-redirect-urls/edit-redirect-urls-controller.js";
 import { validateEditRedirectUrlsRequest } from "../components/clients/edit-redirect-urls/validation.js";
+import {
+  editIsIdentityVerificationSupportedGet,
+  editIsIdentityVerificationSupportedPost,
+} from "../components/clients/edit-support-identity-verification/edit-support-identity-verification-controller.js";
+import { validateEditIsIdentityVerificationSupportedRequest } from "../components/clients/edit-support-identity-verification/edit-support-identity-verification-validation.js";
 
 const router = express.Router();
 
@@ -125,6 +130,17 @@ router.post(
   PATH_NAMES.CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM,
   validateEditIdTokenSigningAlgorithmRequest(),
   editIdTokenSigningAlgorithmPost()
+);
+
+router.get(
+  PATH_NAMES.CLIENT_EDIT_IDENTITY_VERIFICATION_SUPPORT,
+  editIsIdentityVerificationSupportedGet()
+);
+
+router.post(
+  PATH_NAMES.CLIENT_EDIT_IDENTITY_VERIFICATION_SUPPORT,
+  validateEditIsIdentityVerificationSupportedRequest(),
+  editIsIdentityVerificationSupportedPost()
 );
 
 router.get(PATH_NAMES.CLIENT_EDIT_IS_ACTIVE, editIsActiveGet());

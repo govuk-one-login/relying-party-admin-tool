@@ -3,7 +3,7 @@ import { ValidationChainFunc } from "../../../types.js";
 import { validateFieldsMiddleware } from "../../../middleware/form-validation-middleware.js";
 import { clientAuthenticationInputFieldValidatorChain } from "../../../validation/client-question-field-validators.js";
 
-export const validateSelectClientAuthenticationRequest =
+export const validateCreateClientSelectClientAuthenticationRequest =
   (): ValidationChainFunc => {
     return [
       validateFieldsMiddleware(
@@ -14,7 +14,7 @@ export const validateSelectClientAuthenticationRequest =
     ];
   };
 
-export const validateEditClientAuthenticationRequest =
+export const validateCreateClientEditClientAuthenticationRequest =
   (): ValidationChainFunc => {
     return [
       validateFieldsMiddleware(

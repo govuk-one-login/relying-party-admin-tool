@@ -17,8 +17,8 @@ import {
   createClientSelectClientAuthenticationPost,
 } from "../components/create-client/client-authentication-method/select-client-authentication-method/select-client-authentication-method-controller.js";
 import {
-  validateEditClientAuthenticationRequest,
-  validateSelectClientAuthenticationRequest,
+  validateCreateClientEditClientAuthenticationRequest,
+  validateCreateClientSelectClientAuthenticationRequest,
 } from "../components/create-client/client-authentication-method/validation.js";
 import {
   createClientEnterRedirectUrlsGet,
@@ -41,22 +41,22 @@ import {
   createClientIsIdentityVerificationSupportedPost,
 } from "../components/create-client/support-identity-verification/support-identity-verification/support-identity-verification-controller.js";
 import {
-  validateEditIsIdentityVerificationSupportedRequest,
-  validateIsIdentityVerificationSupportedRequest,
+  validateCreateClientEditIsIdentityVerificationSupportedRequest,
+  validateCreateClientIsIdentityVerificationSupportedRequest,
 } from "../components/create-client/support-identity-verification/validation.js";
 import {
   createClientSelectClaimsGet,
   createClientSelectClaimsPost,
 } from "../components/create-client/claims/select-claims/select-claims-controller.js";
 import {
-  validateEditClaimsRequest,
-  validateSelectClaimsRequest,
+  validateCreateClientEditClaimsRequest,
+  validateCreateClientSelectClaimsRequest,
 } from "../components/create-client/claims/validation.js";
 import {
   createClientEnterLandingPageUrlGet,
   createClientEnterLandingPageUrlPost,
 } from "../components/create-client/enter-landing-page-url/enter-landing-page-url-controller.js";
-import { validateEnterLandingPageUrlRequest } from "../components/create-client/enter-landing-page-url/enter-landing-page-url-validation.js";
+import { validateCreateClientEnterLandingPageUrlRequest } from "../components/create-client/enter-landing-page-url/enter-landing-page-url-validation.js";
 import {
   createClientSummaryGet,
   createClientSummaryPost,
@@ -79,7 +79,7 @@ import {
   createClientSelectLevelsOfConfidenceGet,
   createClientSelectLevelsOfConfidencePost,
 } from "../components/create-client/select-levels-of-confidence/select-levels-of-confidence-controller.js";
-import { validateSelectLevelsOfConfidenceRequest } from "../components/create-client/select-levels-of-confidence/select-levels-of-confidence-validation.js";
+import { validateCreateClientSelectLevelsOfConfidenceRequest } from "../components/create-client/select-levels-of-confidence/select-levels-of-confidence-validation.js";
 import {
   createClientEditScopesGet,
   createClientEditScopesPost,
@@ -140,7 +140,7 @@ router.get(
 
 router.post(
   PATH_NAMES.CREATE_CLIENT_SELECT_CLIENT_AUTHENTICATION,
-  validateSelectClientAuthenticationRequest(),
+  validateCreateClientSelectClientAuthenticationRequest(),
   createClientSelectClientAuthenticationPost()
 );
 
@@ -151,7 +151,7 @@ router.get(
 
 router.post(
   PATH_NAMES.CREATE_CLIENT_EDIT_CLIENT_AUTHENTICATION,
-  validateEditClientAuthenticationRequest(),
+  validateCreateClientEditClientAuthenticationRequest(),
   createClientEditClientAuthenticationPost()
 );
 
@@ -203,7 +203,7 @@ router.get(
 
 router.post(
   PATH_NAMES.CREATE_CLIENT_IDENTITY_VERIFICATION_SUPPORT,
-  validateIsIdentityVerificationSupportedRequest(),
+  validateCreateClientIsIdentityVerificationSupportedRequest(),
   createClientIsIdentityVerificationSupportedPost()
 );
 
@@ -214,7 +214,7 @@ router.get(
 
 router.post(
   PATH_NAMES.CREATE_CLIENT_EDIT_IDENTITY_VERIFICATION_SUPPORT,
-  validateEditIsIdentityVerificationSupportedRequest(),
+  validateCreateClientEditIsIdentityVerificationSupportedRequest(),
   createClientEditIsIdentityVerificationSupportedPost()
 );
 
@@ -225,7 +225,7 @@ router.get(
 
 router.post(
   PATH_NAMES.CREATE_CLIENT_SELECT_CLAIMS,
-  validateSelectClaimsRequest(),
+  validateCreateClientSelectClaimsRequest(),
   createClientSelectClaimsPost()
 );
 
@@ -233,7 +233,7 @@ router.get(PATH_NAMES.CREATE_CLIENT_EDIT_CLAIMS, createClientEditClaimsGet());
 
 router.post(
   PATH_NAMES.CREATE_CLIENT_EDIT_CLAIMS,
-  validateEditClaimsRequest(),
+  validateCreateClientEditClaimsRequest(),
   createClientEditClaimsPost()
 );
 
@@ -244,7 +244,7 @@ router.get(
 
 router.post(
   PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL,
-  validateEnterLandingPageUrlRequest(),
+  validateCreateClientEnterLandingPageUrlRequest(),
   createClientEnterLandingPageUrlPost()
 );
 
@@ -255,7 +255,7 @@ router.get(
 
 router.post(
   PATH_NAMES.CREATE_CLIENT_SELECT_LEVELS_OF_CONFIDENCE,
-  validateSelectLevelsOfConfidenceRequest(),
+  validateCreateClientSelectLevelsOfConfidenceRequest(),
   createClientSelectLevelsOfConfidencePost()
 );
 

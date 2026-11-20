@@ -42,10 +42,14 @@ export type LevelOfConfidence = (typeof ALL_VALID_LOCS)[number];
 export interface ClientConfig {
   backchannelLogoutUrl?: string;
   channel: Channel;
+  claims?: Claim[];
   clientName: string;
   idTokenSigningAlgorithm: IdTokenSigningAlgorithm;
   isActive: boolean;
+  isIdentityVerificationSupported: boolean;
   jarValidationRequired: boolean;
+  landingPageUrl?: string;
+  loc: LevelOfConfidence[];
   maxAgeEnabled: boolean;
   permitMissingNonce: boolean;
   pkceEnforced: boolean;
