@@ -27,10 +27,10 @@ export const defaultIdentityVerificationSupportedClientValues = {
   isIdentityVerificationSupported: true,
   claims: [],
   landingPageUrl: "https://test.com/landing-page",
-  loc: ["P2"],
+  locs: ["P2"],
 };
 
 export const defaultIdentityVerificationNotSupportedClientValues = {
   isIdentityVerificationSupported: false,
-  loc: ["P0"],
+  locs: ["P0"],
 };

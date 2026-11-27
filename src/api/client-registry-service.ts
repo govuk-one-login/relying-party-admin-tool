@@ -59,7 +59,7 @@ export class ClientRegistryService {
       clientName: config.clientName!,
       redirectUrls: config.redirectUrls!,
       //TODO: fix types
-      clientLoCs: (config.loc as LevelOfConfidence[]) || [],
+      clientLoCs: (config.locs as LevelOfConfidence[]) || [],
       identityVerificationSupported:
         config.isIdentityVerificationSupported || false,
       //TODO: fix types

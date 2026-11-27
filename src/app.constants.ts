@@ -46,6 +46,8 @@ export const PATH_NAMES = {
     "/services/:serviceId/clients/:clientId/edit-client-name",
   CLIENT_EDIT_ID_TOKEN_SIGNING_ALGORITHM:
     "/services/:serviceId/clients/:clientId/edit-id-token-signing-algorithm",
+  CLIENT_EDIT_IDENTITY_VERIFICATION_SUPPORT:
+    "/services/:serviceId/clients/:clientId/edit-support-identity-verification",
   CLIENT_EDIT_IS_ACTIVE:
     "/services/:serviceId/clients/:clientId/edit-is-active",
   CLIENT_EDIT_JAR_VALIDATION_REQUIRED:

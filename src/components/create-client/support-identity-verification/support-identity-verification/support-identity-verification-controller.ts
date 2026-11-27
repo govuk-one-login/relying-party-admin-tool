@@ -21,7 +21,7 @@ export const createClientIsIdentityVerificationSupportedPost =
         isIdentityVerificationSupported:
           req.body["support-identity-verification"] === "true",
         ...(req.body["support-identity-verification"] === "false" && {
-          loc: ["P0"],
+          locs: ["P0"],
         }),
       };
       if (req.body["support-identity-verification"] === "true") {

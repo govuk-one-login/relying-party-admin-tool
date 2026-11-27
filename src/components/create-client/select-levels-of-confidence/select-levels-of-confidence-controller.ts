@@ -14,10 +14,10 @@ export const createClientSelectLevelsOfConfidenceGet = (): ExpressRouteFunc => {
 export const createClientSelectLevelsOfConfidencePost =
   (): ExpressRouteFunc => {
     return async (req: Request, res: Response) => {
-      const loc = getOptionalList(req.body["selected-locs"]);
+      const locs = getOptionalList(req.body["selected-locs"]);
       req.session.newClientConfig = {
         ...req.session.newClientConfig,
-        loc,
+        locs,
       };
       return saveSessionAndRedirect(
         req,

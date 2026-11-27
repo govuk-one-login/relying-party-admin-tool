@@ -31,5 +31,5 @@ Feature: Client - edit redirect urls page
     Then the table contains the text: "http://url2.com"
     And I click on the url table remove button for: "http://url.com"
     Then the table does not contains the text: "http://url.com"
-    And I click the "Continue" button
+    And I click the "Confirm" button
     Then I am taken to the "client" page

@@ -43,7 +43,7 @@ type CoreClientConfig = {
   isIdentityVerificationSupported?: boolean;
   claims?: string[];
   landingPageUrl?: string;
-  loc?: string[];
+  locs?: string[];
 };
 
 type AdditionalClientConfig = {

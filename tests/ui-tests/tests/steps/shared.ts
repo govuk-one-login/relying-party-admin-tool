@@ -23,6 +23,8 @@ const pageNameToPath: Record<string, string> = {
     "/services/1/clients/intClientId1/edit-client-name",
   "client - edit id token signing algorithm":
     "/services/1/clients/intClientId1/edit-id-token-signing-algorithm",
+  "client - edit support identity verification":
+    "/services/1/clients/intClientId1/edit-support-identity-verification",
   "client - edit is active": "/services/1/clients/intClientId1/edit-is-active",
   "client - edit jar validation required":
     "/services/1/clients/intClientId1/edit-jar-validation-required",

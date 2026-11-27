@@ -78,7 +78,7 @@ describe("Integration:: select levels of confidence", () => {
         )
         .type("form")
         .send({
-          "selected-loc": ["P2"],
+          "selected-locs": ["P2"],
         });
       expect(res.statusCode).toBe(403);
       expect(res.text).toContain("You do not have access to this page.");
