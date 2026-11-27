@@ -186,7 +186,7 @@
             {
               key: { text: "Level of Confidence values" },
               value: {
-                html: '<div id="levels-of-confidence">' + (client.loc | join("<br>") if client.loc else "Not set") + '</div>'
+                html: '<div id="levels-of-confidence">' + (client.locs | join("<br>") if client.locs else "Not set") + '</div>'
               },
               actions: {
                 items: [{ href: "/", text: "Change", visuallyHiddenText: "level of confidence values" }]

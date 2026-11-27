@@ -36,7 +36,7 @@ export const createClientEditIsIdentityVerificationSupportedPost =
         req.session.newClientConfig = {
           ...req.session.newClientConfig,
           isIdentityVerificationSupported: true,
-          loc: undefined,
+          locs: undefined,
         };
         return saveSessionAndRedirect(
           req,
@@ -49,7 +49,7 @@ export const createClientEditIsIdentityVerificationSupportedPost =
         req.session.newClientConfig = {
           ...req.session.newClientConfig,
           isIdentityVerificationSupported: false,
-          loc: ["P0"],
+          locs: ["P0"],
           landingPageUrl: undefined,
           claims: undefined,
         };

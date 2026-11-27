@@ -667,7 +667,7 @@ describe("create client summary field validators", () => {
     it("should pass validation with valid level-of-confidence", async () => {
       const req = new RequestBuilder()
         .withSessionNewClientConfig({
-          loc: "P0",
+          locs: "P0",
           isIdentityVerificationSupported: true,
         })
         .build();
@@ -680,7 +680,7 @@ describe("create client summary field validators", () => {
     it("should pass validation with valid levels-of-confidence", async () => {
       const req = new RequestBuilder()
         .withSessionNewClientConfig({
-          loc: ["P0", "P1"],
+          locs: ["P0", "P1"],
           isIdentityVerificationSupported: true,
         })
         .build();
@@ -693,7 +693,7 @@ describe("create client summary field validators", () => {
     it("should not pass validation with empty level-of-confidence", async () => {
       const req = new RequestBuilder()
         .withSessionNewClientConfig({
-          loc: "",
+          locs: "",
           isIdentityVerificationSupported: true,
         })
         .build();
@@ -706,7 +706,7 @@ describe("create client summary field validators", () => {
     it("should fail validation with an invalid level-of-confidence", async () => {
       const req = new RequestBuilder()
         .withSessionNewClientConfig({
-          loc: ["P0", "invalid-loc"],
+          locs: ["P0", "invalid-loc"],
           isIdentityVerificationSupported: true,
         })
         .build();
@@ -727,7 +727,7 @@ describe("create client summary field validators", () => {
     it("should pass validation with P0 and identity verification not supported", async () => {
       const req = new RequestBuilder()
         .withSessionNewClientConfig({
-          loc: "P0",
+          locs: "P0",
           isIdentityVerificationSupported: false,
         })
         .build();
@@ -740,7 +740,7 @@ describe("create client summary field validators", () => {
     it("should fail validation with identity verification not supported for P1", async () => {
       const req = new RequestBuilder()
         .withSessionNewClientConfig({
-          loc: ["P1"],
+          locs: ["P1"],
           isIdentityVerificationSupported: false,
         })
         .build();
@@ -761,7 +761,7 @@ describe("create client summary field validators", () => {
     it("should fail validation with identity verification not support for P2", async () => {
       const req = new RequestBuilder()
         .withSessionNewClientConfig({
-          loc: ["P2"],
+          locs: ["P2"],
           isIdentityVerificationSupported: false,
         })
         .build();
@@ -782,7 +782,7 @@ describe("create client summary field validators", () => {
     it("should fail validation with identity verification not set", async () => {
       const req = new RequestBuilder()
         .withSessionNewClientConfig({
-          loc: ["P1", "P2"],
+          locs: ["P1", "P2"],
         })
         .build();
 

@@ -159,7 +159,7 @@ export const landingPageUrlFieldValidator = new FieldValidator(
 export const levelOfConfidenceFieldValidator = new FieldValidator(
   validLevelOfConfidenceValidator
     .adaptedFrom((req: Request) =>
-      getOptionalList(req.session.newClientConfig?.loc)
+      getOptionalList(req.session.newClientConfig?.locs)
     )
     .and(
       when(
@@ -169,7 +169,7 @@ export const levelOfConfidenceFieldValidator = new FieldValidator(
           (value: string[]) => !value.includes("P1") && !value.includes("P2"),
           "Identity verification must be supported"
         ).adaptedFrom((req: Request) =>
-          getOptionalList(req.session.newClientConfig?.loc)
+          getOptionalList(req.session.newClientConfig?.locs)
         )
       )
     ),

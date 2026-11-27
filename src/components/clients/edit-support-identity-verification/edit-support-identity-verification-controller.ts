@@ -27,13 +27,13 @@ export const editIsIdentityVerificationSupportedPost = (): ExpressRouteFunc => {
         req.session.changedClientConfig = {
           ...req.session.changedClientConfig,
           isIdentityVerificationSupported: true,
-          loc: [],
+          locs: [],
         };
       } else {
         req.session.changedClientConfig = {
           ...req.session.changedClientConfig,
           isIdentityVerificationSupported: false,
-          loc: ["P0"],
+          locs: ["P0"],
           landingPageUrl: undefined,
           claims: [],
         };

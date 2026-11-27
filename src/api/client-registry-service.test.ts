@@ -120,7 +120,7 @@ describe("client registry service tests", () => {
       isIdentityVerificationSupported: false,
       landingPageUrl: undefined,
       claims: undefined,
-      loc: undefined,
+      locs: undefined,
     });
 
     const expectedOutput = generateClientRegistryInput({

@@ -27,7 +27,7 @@ qQIDAQAB
     "https://vocab.account.gov.uk/v1/returnCode",
   ],
   landingPageUrl: "https://example.com/landing-page",
-  loc: ["P2"],
+  locs: ["P2"],
   ...overrides,
 });
 

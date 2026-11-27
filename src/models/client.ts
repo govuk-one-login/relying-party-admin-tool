@@ -49,7 +49,7 @@ export interface ClientConfig {
   isIdentityVerificationSupported: boolean;
   jarValidationRequired: boolean;
   landingPageUrl?: string;
-  loc: LevelOfConfidence[];
+  locs: LevelOfConfidence[];
   maxAgeEnabled: boolean;
   permitMissingNonce: boolean;
   pkceEnforced: boolean;
