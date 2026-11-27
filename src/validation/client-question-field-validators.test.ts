@@ -1,7 +1,7 @@
 import {
   clientNameInputFieldValidator,
   redirectUrlsFieldValidator,
-  enterLandingPageUrlFieldValidator,
+  landingPageUrlFieldValidator,
   claimsFieldValidator,
   scopesFieldValidator,
   supportIdentityVerificationFieldValidator,
@@ -832,7 +832,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await enterLandingPageUrlFieldValidator.validate(req);
+      const result = await landingPageUrlFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
@@ -840,7 +840,7 @@ describe("create client field validators", () => {
     it("should pass validation when empty", async () => {
       const req = new RequestBuilder().withBody({}).build();
 
-      const result = await enterLandingPageUrlFieldValidator.validate(req);
+      const result = await landingPageUrlFieldValidator.validate(req);
 
       expect(result.isValid).toBe(true);
     });
@@ -852,7 +852,7 @@ describe("create client field validators", () => {
         })
         .build();
 
-      const result = await enterLandingPageUrlFieldValidator.validate(req);
+      const result = await landingPageUrlFieldValidator.validate(req);
 
       expect(result.isValid).toBe(false);
 
@@ -881,7 +881,7 @@ describe("create client field validators", () => {
           })
           .build();
 
-        const result = await enterLandingPageUrlFieldValidator.validate(req);
+        const result = await landingPageUrlFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
@@ -889,7 +889,7 @@ describe("create client field validators", () => {
       it("should pass validation when empty", async () => {
         const req = new RequestBuilder().withBody({}).build();
 
-        const result = await enterLandingPageUrlFieldValidator.validate(req);
+        const result = await landingPageUrlFieldValidator.validate(req);
 
         expect(result.isValid).toBe(true);
       });
@@ -901,7 +901,7 @@ describe("create client field validators", () => {
           })
           .build();
 
-        const result = await enterLandingPageUrlFieldValidator.validate(req);
+        const result = await landingPageUrlFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -921,7 +921,7 @@ describe("create client field validators", () => {
           })
           .build();
 
-        const result = await enterLandingPageUrlFieldValidator.validate(req);
+        const result = await landingPageUrlFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 
@@ -941,7 +941,7 @@ describe("create client field validators", () => {
           })
           .build();
 
-        const result = await enterLandingPageUrlFieldValidator.validate(req);
+        const result = await landingPageUrlFieldValidator.validate(req);
 
         expect(result.isValid).toBe(false);
 

@@ -55,8 +55,11 @@ import {
 import {
   createClientEnterLandingPageUrlGet,
   createClientEnterLandingPageUrlPost,
-} from "../components/create-client/enter-landing-page-url/enter-landing-page-url-controller.js";
-import { validateEnterLandingPageUrlRequest } from "../components/create-client/enter-landing-page-url/enter-landing-page-url-validation.js";
+} from "../components/create-client/landing-page-url/enter-landing-page-url/enter-landing-page-url-controller.js";
+import {
+  validateEditLandingPageUrlRequest,
+  validateEnterLandingPageUrlRequest,
+} from "../components/create-client/landing-page-url/validation.js";
 import {
   createClientSummaryGet,
   createClientSummaryPost,
@@ -98,6 +101,10 @@ import {
   createClientEditClaimsGet,
   createClientEditClaimsPost,
 } from "../components/create-client/claims/edit-claims/select-claims-controller.js";
+import {
+  createClientEditLandingPageUrlGet,
+  createClientEditLandingPageUrlPost,
+} from "../components/create-client/landing-page-url/edit-landing-page-url/edit-landing-page-url-controller.js";
 
 const router = express.Router();
 
@@ -246,6 +253,17 @@ router.post(
   PATH_NAMES.CREATE_CLIENT_ENTER_LANDING_PAGE_URL,
   validateEnterLandingPageUrlRequest(),
   createClientEnterLandingPageUrlPost()
+);
+
+router.get(
+  PATH_NAMES.CREATE_CLIENT_EDIT_LANDING_PAGE_URL,
+  createClientEditLandingPageUrlGet()
+);
+
+router.post(
+  PATH_NAMES.CREATE_CLIENT_EDIT_LANDING_PAGE_URL,
+  validateEditLandingPageUrlRequest(),
+  createClientEditLandingPageUrlPost()
 );
 
 router.get(
